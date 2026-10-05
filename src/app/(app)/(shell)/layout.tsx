@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { BottomTabs } from "@/components/shell/bottom-tabs";
 import { Sidebar } from "@/components/shell/sidebar";
 import { TopBar } from "@/components/shell/top-bar";
+import { Toaster } from "@/components/ui/toast";
 import { logoutAction } from "@/features/auth/actions";
 import { requireUser } from "@/server/auth/session";
 
@@ -37,6 +38,7 @@ export default async function ShellLayout({
         </main>
       </div>
       <BottomTabs />
+      <Toaster />
     </div>
   );
 }

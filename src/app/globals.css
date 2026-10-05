@@ -260,3 +260,69 @@
   animation-iteration-count: 1 !important;
   transition-duration: 1ms !important;
 }
+
+/* Scroll reveal (components/ui/reveal.tsx): fade and rise 12px, once, 200ms. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-js] [data-reveal] {
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+  }
+  [data-js] [data-reveal]:not([data-visible]) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Anchor links land below the sticky marketing navbar. */
+html {
+  scroll-padding-top: 80px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:has([data-smooth-scroll]) {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Hero preview (features/marketing/components/hero-preview.tsx): CSS-only, plays once.
+   Under reduced motion the 1ms durations above make these land on their end state. */
+@keyframes hero-tick-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hero-tick-fill {
+  to {
+    background: var(--success);
+    border-color: var(--success);
+  }
+}
+@keyframes hero-tick-strike {
+  to {
+    color: var(--ink-muted);
+    text-decoration-color: currentColor;
+  }
+}
+@keyframes hero-ring-fill {
+  from {
+    stroke-dashoffset: var(--ring-from);
+  }
+}
+.hero-tick {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hero-tick-draw 200ms var(--ease-out) forwards;
+}
+.hero-tick-box {
+  animation: hero-tick-fill 120ms var(--ease-out) forwards;
+}
+.hero-tick-text {
+  text-decoration: line-through transparent;
+  animation: hero-tick-strike 200ms var(--ease-out) forwards;
+}
+.hero-ring {
+  animation: hero-ring-fill 600ms var(--ease-out) both;
+}

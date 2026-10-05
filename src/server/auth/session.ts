@@ -40,6 +40,21 @@ async function currentPath() {
   return store.get("x-pathname") ?? "/today";
 }
 
+/**
+ * Cheap "is someone signed in?" for public pages: checks the access token only, no DB
+ * read. Never use it to authorize anything; that is what requireUser() is for.
+ */
+export async function hasSession() {
+  const store = await cookies();
+  return Boolean(
+    await verifyAccessToken(
+      store.get(ACCESS_COOKIE)?.value,
+      env.JWT_ACCESS_SECRET,
+      systemClock.now(),
+    ),
+  );
+}
+
 /** Guard for pages and server actions (CLAUDE.md rule 9). Redirects to login when signed out. */
 export async function requireUser(): Promise<SessionUser> {
   const user = await getCurrentUser();

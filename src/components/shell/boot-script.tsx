@@ -2,7 +2,7 @@
 // sidebar state so neither flashes on load. Keep in sync with lib/theme.ts and
 // components/shell/sidebar.tsx.
 const script = `(function(){try{
-var d=document.documentElement;
+var d=document.documentElement;d.setAttribute("data-js","");
 var p=localStorage.getItem("theme");if(p!=="light"&&p!=="dark")p="system";
 var q=matchMedia("(prefers-color-scheme: dark)");
 var t=p==="system"?(q.matches?"dark":"light"):p;

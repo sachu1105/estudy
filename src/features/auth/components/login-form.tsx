@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/lib/use-hydrated";
 
 import { loginAction, resendVerificationAction } from "../actions";
 import { loginSchema, type LoginInput } from "../schemas";
@@ -13,6 +14,9 @@ import { FormAlert } from "./form-alert";
 import { TextField } from "./text-field";
 
 export function LoginForm({ next }: { next?: string }) {
+  // Disabled until hydrated: an early tap would otherwise do a native GET submit and put
+  // the form values (passwords included) in the URL.
+  const hydrated = useHydrated();
   const [serverError, setServerError] = useState<{
     message: string;
     code?: string;
@@ -42,6 +46,7 @@ export function LoginForm({ next }: { next?: string }) {
 
   return (
     <form
+      method="post"
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
       className="flex flex-col gap-4"
@@ -90,7 +95,7 @@ export function LoginForm({ next }: { next?: string }) {
         variant="primary"
         size="lg"
         className="mt-2 w-full"
-        disabled={isSubmitting}
+        disabled={!hydrated || isSubmitting}
       >
         {isSubmitting ? "Logging in…" : "Log in"}
       </Button>

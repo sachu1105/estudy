@@ -1,8 +1,7 @@
 "use client";
 
-import { motion, useReducedMotionConfig } from "motion/react";
 import { ToggleGroup } from "radix-ui";
-import { useId, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
@@ -30,9 +29,6 @@ export function SegmentedControl<T extends string>({
   size = "md",
   className,
 }: SegmentedControlProps<T>) {
-  const reduceMotion = useReducedMotionConfig();
-  const indicatorId = useId();
-
   return (
     <ToggleGroup.Root
       type="single"
@@ -54,23 +50,16 @@ export function SegmentedControl<T extends string>({
             aria-label={option.ariaLabel}
             className={cn(
               "relative flex cursor-pointer items-center justify-center gap-1.5 rounded-[9px] font-heading font-medium",
-              "transition-colors duration-[120ms] [&_svg]:size-4",
+              "transition-[background-color,color,box-shadow] duration-[200ms] ease-out [&_svg]:size-4",
               size === "sm"
                 ? "h-8 px-2.5 text-small md:h-7"
                 : "h-10 px-3.5 text-small md:h-8",
-              active ? "text-ink" : "text-ink-muted hover:text-ink",
+              // CSS-only active state, so the theme toggle adds no animation library to public pages.
+              active
+                ? "bg-surface text-ink shadow-sm dark:bg-border"
+                : "text-ink-muted hover:text-ink",
             )}
           >
-            {active ? (
-              <motion.span
-                layoutId={indicatorId}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.2,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="absolute inset-0 rounded-[9px] bg-surface shadow-sm dark:bg-border"
-              />
-            ) : null}
             <span className="relative flex items-center gap-1.5">
               {option.label}
             </span>

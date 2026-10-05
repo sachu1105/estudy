@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/lib/use-hydrated";
 
 import type { ActionResult, EmailOnlyInput } from "../schemas";
 import { emailOnlySchema } from "../schemas";
@@ -28,6 +29,9 @@ export function EmailRequestForm({
   defaultEmail = "",
   variant = "primary",
 }: EmailRequestFormProps) {
+  // Disabled until hydrated: an early tap would otherwise do a native GET submit and put
+  // the form values (passwords included) in the URL.
+  const hydrated = useHydrated();
   const [result, setResult] = useState<ActionResult | null>(null);
   const form = useForm<EmailOnlyInput>({
     resolver: zodResolver(emailOnlySchema),
@@ -41,6 +45,7 @@ export function EmailRequestForm({
 
   return (
     <form
+      method="post"
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
       className="flex flex-col gap-4"
@@ -63,7 +68,7 @@ export function EmailRequestForm({
         variant={variant}
         size="lg"
         className="w-full"
-        disabled={isSubmitting}
+        disabled={!hydrated || isSubmitting}
       >
         {isSubmitting ? pendingLabel : submitLabel}
       </Button>

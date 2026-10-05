@@ -52,7 +52,7 @@ export function TaskList({ tasks, onDoneChange }: TaskListProps) {
               transition={transition}
               aria-label={group.heading}
             >
-              <h4 className="mb-1 px-3 text-micro text-ink-subtle uppercase">
+              <h4 className="mb-1 px-3 text-micro text-ink-muted uppercase">
                 {group.heading} · {group.items.length}
               </h4>
               <AnimatePresence initial={false}>

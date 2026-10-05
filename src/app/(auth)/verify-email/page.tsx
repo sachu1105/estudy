@@ -19,6 +19,7 @@ export default async function VerifyEmailPage({
   const params = await searchParams;
   const token = first(params.token);
   const email = first(params.email);
+  const next = first(params.next);
 
   if (token) {
     return (
@@ -45,7 +46,10 @@ export default async function VerifyEmailPage({
         )
       }
       footer={
-        <Link href="/login" className="font-medium text-accent hover:underline">
+        <Link
+          href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+          className="font-medium text-accent hover:underline"
+        >
           Back to log in
         </Link>
       }

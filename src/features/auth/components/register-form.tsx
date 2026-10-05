@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/lib/use-hydrated";
 
 import { registerAction } from "../actions";
 import { registerSchema, type RegisterInput } from "../schemas";
@@ -20,7 +21,10 @@ function browserTimezone() {
   }
 }
 
-export function RegisterForm() {
+export function RegisterForm({ next }: { next?: string }) {
+  // Disabled until hydrated: an early tap would otherwise do a native GET submit and put
+  // the form values (passwords included) in the URL.
+  const hydrated = useHydrated();
   const [serverError, setServerError] = useState<{
     message: string;
     code?: string;
@@ -36,6 +40,7 @@ export function RegisterForm() {
     const result = await registerAction({
       ...values,
       timezone: browserTimezone(),
+      next,
     });
     if (result && !result.ok)
       setServerError({ message: result.error, code: result.code });
@@ -43,6 +48,7 @@ export function RegisterForm() {
 
   return (
     <form
+      method="post"
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
       className="flex flex-col gap-4"
@@ -85,11 +91,11 @@ export function RegisterForm() {
         variant="primary"
         size="lg"
         className="mt-2 w-full"
-        disabled={isSubmitting}
+        disabled={!hydrated || isSubmitting}
       >
         {isSubmitting ? "Creating account…" : "Create account"}
       </Button>
-      <p className="text-center text-small text-ink-subtle">
+      <p className="text-center text-small text-ink-muted">
         By creating an account you agree to the{" "}
         <Link href="/terms" className="underline hover:text-ink">
           terms

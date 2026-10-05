@@ -47,7 +47,7 @@ export function TopicRow({
         <span
           className={cn(
             "truncate text-body font-medium transition-colors duration-[200ms]",
-            done ? "text-ink-subtle line-through" : "text-ink",
+            done ? "text-ink-muted line-through" : "text-ink",
           )}
         >
           {title}

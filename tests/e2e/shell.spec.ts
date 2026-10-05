@@ -66,9 +66,12 @@ test.describe("app shell", () => {
 
   test("command palette opens with Ctrl+K and navigates", async ({ page }) => {
     await page.goto("/today");
-    await page.keyboard.press("Control+k");
     const input = page.getByPlaceholder("Search or jump to…");
-    await expect(input).toBeVisible();
+    // The shortcut listener attaches on hydration; retry until the page is interactive.
+    await expect(async () => {
+      await page.keyboard.press("Control+k");
+      await expect(input).toBeVisible({ timeout: 1_000 });
+    }).toPass();
     await input.fill("progress");
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/progress$/);

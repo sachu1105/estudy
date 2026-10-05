@@ -1,33 +1,73 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ExamStrip } from "@/features/marketing/components/exam-strip";
+import { Faq, faqs } from "@/features/marketing/components/faq";
+import { FeaturesBento } from "@/features/marketing/components/features-bento";
+import { FinalCta } from "@/features/marketing/components/final-cta";
+import { GroupsSection } from "@/features/marketing/components/groups-section";
+import { Hero } from "@/features/marketing/components/hero";
+import { HowItWorks } from "@/features/marketing/components/how-it-works";
+import { PricingTeaser } from "@/features/marketing/components/pricing-teaser";
+import { ctaHref } from "@/features/marketing/components/section-heading";
+import { site } from "@/lib/site";
+import { hasSession } from "@/server/auth/session";
+import { billingEnabled } from "@/server/entitlements";
+import { env } from "@/server/env";
 
-// Placeholder. The real landing page is milestone 2.5.
-export default function LandingPage() {
+export const metadata: Metadata = {
+  title: { absolute: `${site.name}: daily plans for Kerala PSC, SSC and RRB` },
+  description: site.description,
+  alternates: { canonical: "/" },
+};
+
+function JsonLd() {
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: site.name,
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web, Android, iOS",
+      description: site.description,
+      url: env.APP_URL,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+      publisher: { "@type": "Organization", name: site.company },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    },
+  ];
   return (
-    <section className="flex flex-col items-start gap-6 py-12">
-      <p className="text-micro text-ink-muted uppercase">
-        For Kerala PSC, SSC and RRB aspirants
-      </p>
-      <h1 className="max-w-2xl text-display">
-        Your syllabus, turned into a daily plan you can actually finish.
-      </h1>
-      <p className="max-w-xl text-ink-muted">
-        Upload your syllabus, set how strong you are in each subject, and get a
-        day-by-day plan with mock tests after every task.
-      </p>
-      <div className="flex flex-wrap gap-3">
-        <Button asChild variant="primary" size="lg">
-          <Link href="/today">Open the app</Link>
-        </Button>
-        {process.env.NODE_ENV !== "production" ? (
-          <Button asChild variant="ghost" size="lg">
-            <Link href="/dev/ui">Design system</Link>
-          </Button>
-        ) : null}
-      </div>
-      <Badge tone="accent">Free during launch. No card needed.</Badge>
-    </section>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}
+
+export default async function LandingPage() {
+  const signedIn = await hasSession();
+  const href = ctaHref(signedIn);
+
+  return (
+    <>
+      <JsonLd />
+      <Hero signedIn={signedIn} />
+      <ExamStrip />
+      <FeaturesBento />
+      <HowItWorks />
+      <GroupsSection />
+      <PricingTeaser billingEnabled={billingEnabled} ctaHref={href} />
+      <Faq />
+      <FinalCta href={href} />
+    </>
   );
 }

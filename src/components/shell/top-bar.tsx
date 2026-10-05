@@ -88,7 +88,7 @@ export function TopBar({ viewer, logout }: TopBarProps) {
       <button
         type="button"
         onClick={() => setPaletteOpen(true)}
-        className="flex h-10 max-w-sm flex-1 cursor-pointer items-center gap-2.5 rounded-control border border-border bg-surface px-3 text-body text-ink-subtle transition-colors hover:border-ink-subtle"
+        className="flex h-10 max-w-sm flex-1 cursor-pointer items-center gap-2.5 rounded-control border border-border bg-surface px-3 text-body text-ink-muted transition-colors hover:border-ink-subtle"
       >
         <Search className="size-4" aria-hidden />
         <span className="flex-1 text-left">Search or jump to…</span>

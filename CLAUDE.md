@@ -193,7 +193,7 @@ neutral; the accent marks the one thing that matters.
   border        #E6E6E1   1px borders and dividers
   ink           #16161A   headings and body text
   inkMuted      #5F5F6B   secondary text, labels
-  inkSubtle     #9A9AA3   placeholders, disabled, timestamps
+  inkSubtle     #9A9AA3   placeholders, disabled, decorative icons. Below AA: never for readable text
   accent        #3B5BFD   primary button, active nav, links, focus ring, progress
   accentSoft    #EBEEFF   selected rows, active chips
   accentInk     #2238C9   text on accentSoft

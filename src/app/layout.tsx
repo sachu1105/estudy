@@ -2,8 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 
 import { BootScript } from "@/components/shell/boot-script";
-import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { site } from "@/lib/site";
+import { env } from "@/server/env";
 
 import "./globals.css";
 
@@ -20,16 +21,22 @@ const inter = Inter({
   display: "swap",
 });
 
+// Only small numerals use mono, so it loads lazily instead of competing with the
+// heading and body fonts for the first paint.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
-  title: { default: "Study planner", template: "%s · Study planner" },
-  description:
-    "A day-by-day study plan for Kerala PSC, SSC and RRB aspirants, with a mock test after every task.",
+  metadataBase: new URL(env.APP_URL),
+  title: { default: site.name, template: `%s · ${site.name}` },
+  description: site.description,
+  applicationName: site.name,
+  openGraph: { type: "website", siteName: site.name, locale: "en_IN" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
@@ -52,7 +59,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-dvh">
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
-        <Toaster />
       </body>
     </html>
   );

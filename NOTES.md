@@ -103,3 +103,49 @@ Read after `CLAUDE.md` at the start of every session. Append, don't rewrite.
 - E2E: a `setup` project registers a user through the UI, reads the email from Mailpit
   (:8025 API), and saves `playwright/.auth/user.json`. Desktop and mobile projects reuse it.
   The global setup clears `rl:*` keys so repeated runs don't hit rate limits.
+
+## Milestone 2.5 — public landing page (2026-10-05)
+
+### Decisions
+- Landing lives in `src/features/marketing/components`, one file per section. `src/lib/site.ts`
+  holds the product name, exams, section anchors, contact email and social links.
+  **TODO(owner):** `site.contactEmail` is a placeholder and `site.social` is empty; the footer
+  renders only listed social links.
+- Signed-in detection on public pages uses `hasSession()` (access-token check only, no DB).
+  Never use it to authorize. Marketing pages are therefore dynamic.
+- "Create your study plan" goes to `/register?next=/onboarding` (or `/onboarding` when signed
+  in). `next` is threaded through register -> verify-email -> login links. The link inside the
+  verification email has no `next`, so that path lands on /today; milestone 5 should send
+  users without a plan to /onboarding.
+- Pricing cards are generated from `server/entitlements/config.ts`, so they can't drift from
+  real limits. No prices are shown until billing exists.
+- Reveal-on-scroll is `components/ui/reveal.tsx` (IntersectionObserver) plus CSS keyed on
+  `<html data-js>` (set by BootScript), so content is visible without JS and under reduced motion.
+- The hero preview is a server component with CSS-only animations (no motion on public
+  pages). SegmentedControl's indicator is CSS-only now for the same reason. The Toaster
+  mounts in the app shell and /dev/ui only, not the root layout.
+- FAQ uses native `<details>`. JSON-LD: SoftwareApplication plus FAQPage.
+- SEO: per-page `opengraph-image.tsx` via `app/_og/render.tsx`, `sitemap.ts`, `robots.ts`
+  (app routes disallowed), `icon.svg`, `apple-icon.tsx`. Next serves OG images at hashed URLs
+  (`/opengraph-image-<hash>`), so tests read the URL from the `og:image` meta tag.
+- Privacy and terms are plain-language drafts that say so on the page. They need legal review.
+
+### Lighthouse (production build, 2026-10-05)
+- Desktop: performance, accessibility, best practices and SEO all 100.
+- Mobile (simulated slow 4G, 4x CPU): performance 92; accessibility, best practices, SEO 100.
+  Observed LCP is ~350ms; the simulated 3.3s comes from about 187 KB of JS (React, Next, Radix).
+  Next lever if needed: replace the Radix Sheet in the marketing nav with native `<dialog>`.
+
+### Gotchas
+- CSS grid items default to `min-width: auto`, so a single implicit column grows to fit
+  `truncate`d content and overflows a 360px screen. Always write `grid-cols-1` (minmax(0,1fr)).
+- `ink-subtle` fails WCAG AA for text in both themes. Use it only for placeholders, disabled
+  states and decorative icons; readable text uses `ink-muted`. CLAUDE.md updated.
+- Radix Sheet locks scrolling while open, so in-page anchors tapped inside it don't scroll.
+  The marketing nav defers the scroll to `onCloseAutoFocus`.
+- Auth submit buttons stay disabled until hydration (`lib/use-hydrated.ts`) and the forms use
+  `method="post"`. Before this, an early tap on a slow phone did a native GET submit, which
+  would have put the password in the URL.
+- E2E against `next dev`: at most 4 workers locally and a 10s expect timeout. More workers
+  starve the on-demand compiler and look like random auth failures. Retry keyboard shortcuts
+  with `expect(...).toPass()` because listeners attach on hydration.

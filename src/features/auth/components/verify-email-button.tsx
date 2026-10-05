@@ -3,12 +3,16 @@
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/lib/use-hydrated";
 
 import { verifyEmailAction } from "../actions";
 import { FormAlert } from "./form-alert";
 
 // Verification needs a click: email scanners that prefetch links can't consume the token.
 export function VerifyEmailButton({ token }: { token: string }) {
+  // Disabled until hydrated: an early tap would otherwise do a native GET submit and put
+  // the form values (passwords included) in the URL.
+  const hydrated = useHydrated();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -28,7 +32,7 @@ export function VerifyEmailButton({ token }: { token: string }) {
         size="lg"
         className="w-full"
         onClick={verify}
-        disabled={pending}
+        disabled={!hydrated || pending}
       >
         {pending ? "Verifying…" : "Verify email"}
       </Button>

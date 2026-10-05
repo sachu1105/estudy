@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { Switch } from "@/components/ui/switch";
+import { Toaster } from "@/components/ui/toast";
 
 import { GalleryControls } from "./gallery-controls";
 import { GalleryDisplay } from "./gallery-display";
@@ -67,6 +68,7 @@ export function Showcase() {
           <ThemePanel theme="dark" />
         </div>
       </div>
+      <Toaster />
     </MotionConfig>
   );
 }

@@ -63,7 +63,10 @@ export async function registerAction(input: unknown): Promise<ActionResult> {
   const result = await accountService.register(parsed.data, meta);
   if (!result.ok)
     return { ok: false, error: result.message, code: result.code };
-  redirect(`/verify-email?sent=1&email=${encodeURIComponent(result.email)}`);
+  const params = new URLSearchParams({ sent: "1", email: result.email });
+  const next = safeNext(parsed.data.next, "");
+  if (next) params.set("next", next);
+  redirect(`/verify-email?${params.toString()}`);
 }
 
 export async function logoutAction(): Promise<void> {

@@ -6,7 +6,11 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const metadata: Metadata = { title: "Create account" };
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: PageProps<"/register">) {
+  const raw = (await searchParams).next;
+  const next = Array.isArray(raw) ? raw[0] : raw;
   return (
     <AuthCard
       title="Create your account"
@@ -15,7 +19,7 @@ export default function RegisterPage() {
         <>
           Already have an account?{" "}
           <Link
-            href="/login"
+            href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
             className="font-medium text-accent hover:underline"
           >
             Log in
@@ -23,7 +27,7 @@ export default function RegisterPage() {
         </>
       }
     >
-      <RegisterForm />
+      <RegisterForm next={next} />
     </AuthCard>
   );
 }

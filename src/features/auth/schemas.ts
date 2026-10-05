@@ -29,6 +29,7 @@ export const registerSchema = z.object({
   email,
   password: newPassword,
   timezone: z.string().max(64).optional(),
+  next: z.string().max(500).optional(),
 });
 
 export const emailOnlySchema = z.object({ email });
