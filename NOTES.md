@@ -253,3 +253,129 @@ rule 16. `inkSubtle` is still kept off readable text (WCAG AA floor), timestamps
   now splits (e.g. 15 + 15 or 20 + 15). Regression test and `beginner-120-days` fixture
   added. The other 30 fixtures are unchanged apart from the new fields (checked by
   diffing with reason, pinned and title stripped).
+
+## Milestone 4 — catalogue, syllabus upload and AI parsing (2026-10-05)
+
+### Data
+- `SyllabusParse` holds one validated AI tree per file hash (rule 4), shared by every upload of
+  the same bytes. Each `SyllabusVersion` gets its own editable copy of the tree (fresh uuids),
+  so one user's review edits never reach another user, and nobody gets someone else's edits.
+- The hash is computed on the server from the bytes that actually arrived in storage, never
+  sent by the client, so a user can't claim another user's hash to read their parse.
+- `AiUsage` is append-only (trigger, like AuditLog); its user FK is RESTRICT for that reason.
+- `Exam` rows are seeded by `pnpm db:seed` (7 exams). Catalogue syllabuses start empty; the
+  admin upload and approval flow (PENDING -> APPROVED) arrives with the admin panel (M12).
+
+### Upload flow
+1. `POST /api/uploads/syllabus` checks type, size (15 MB) and `limit(user,'syllabusUploads')`,
+   returns a presigned PUT (Content-Type and Content-Length signed) under
+   `syllabus/<userId>/<uuid>`. Nothing is saved yet.
+2. The browser PUTs straight to MinIO/R2 (XHR for progress).
+3. `POST /api/uploads/syllabus/complete` checks the key belongs to the user, re-checks size,
+   sniffs the real type from magic bytes (PDF, DOCX, PNG/JPEG/WebP; HTML/SVG/other zips are
+   rejected and deleted), hashes, then either links an existing parse instantly (READY job,
+   `reused: true`) or creates a ParseJob and enqueues it. Pasted text takes the same path.
+- Production R2/S3 needs a CORS rule allowing PUT from APP_URL. `S3_PUBLIC_ENDPOINT` lets a
+  phone on the LAN upload to MinIO in dev.
+- The file picker offers PDF and DOCX only. The server accepts photos, but OCR is a placeholder
+  (`unavailableOcr`) until milestone 7.5, so photos fail with a clear message.
+
+### Worker pipeline (`pnpm worker`)
+- BullMQ queue `syllabus-parse`, job id = ParseJob id (no double queueing), ELITE gets
+  priority, 3 attempts with backoff for infrastructure errors only. Bad input (`ParseInputError`)
+  and invalid AI output after one retry (`AiOutputError`) fail at once with a user-facing
+  message. Stages go to Redis pub/sub `job:<id>`; `/api/jobs/[id]/stream` (SSE) relays them,
+  `/api/jobs/[id]` is the polling fallback. API routes aren't refreshed by proxy.ts, so the
+  client retries once through `/api/auth/refresh` on a 401.
+- Extraction: unpdf (PDF text layer; a PDF with none is reported as a scan), mammoth (DOCX).
+- Structuring is section by section (`server/ai/sections.ts`): the syllabus's own headings
+  ("Part I ...", "1. History") and marks are found with regexes first, and the model is asked
+  for one section at a time. A first version sent whole pages to qwen2.5:3b, which dropped
+  General English and Malayalam entirely, collapsed General Knowledge into 8 topics, and
+  rated everything weight 5. Section by section, the same sample gives 12 subjects and about
+  200 topics, nothing dropped, nothing invented.
+- Safeguards: a short untitled preamble (the notification header) is skipped, because the
+  model invented topics from it; a reply with under half the section's listed items is asked
+  again once and the better reply kept; a section the model returns nothing for keeps its
+  listed items; a subject the model names after the container part takes the section heading.
+- Topic weight comes from the syllabus's marks when most topics have them: a part's marks are
+  spread over the topics of all its subjects, and the most marks per topic is weight 5
+  (`applyMarkWeights`). Deterministic, so milestone 6's "Why this?" can explain it.
+  Difficulty and foundational still come from the model; the 3B model rates nearly everything
+  difficulty 3 and nothing foundational. Users fix that in review; the hosted model should do
+  better.
+- Prompt `structure-syllabus@3` in `server/ai/prompts/`. Ollama gets the JSON schema as
+  `format` (structured outputs), temperature 0, num_ctx 8192. Pieces are capped at 3,500
+  characters so replies fit the 4,096-token output budget.
+- Real run, qwen2.5:3b on this laptop's CPU: the 5.5k-character LDC sample
+  (`fixtures/syllabus/ldc-sample.txt`) takes about 150 s and 12 calls. Check a real file
+  with `pnpm tsx --conditions=react-server scripts/try-parse.ts <file>` while `pnpm worker`
+  runs.
+- AIProvider has `generate()`; `structureSyllabus` and `generateValidated` (zod + one retry +
+  AiUsage logging for every attempt) sit on top. Question generation (M7) and summaries (M6)
+  add prompts beside it rather than new provider methods. The hosted provider targets the
+  Anthropic Messages API; cost is logged from `AI_PRICE_*_PER_MTOK`.
+
+### Review screen
+- Tree state is a pure reducer (`features/syllabus/tree-reducer.ts`): rename, add, delete
+  (a subject keeps at least one topic), move up/down, drag reorder (motion `Reorder` with a
+  handle, so it works on touch), merge selected topics (names joined, higher weight and
+  difficulty, foundational if any), edit weight, difficulty and foundational.
+- Autosave 2 s after the last change (`saveDraftAction`, rate limited); "Fill in every name to
+  save" while invalid. Confirm saves the whole tree and sets the private version APPROVED;
+  "Edit" reopens it as DRAFT. Phones switch between Topics and Source text; the confirm bar
+  is sticky above the tab bar.
+- Weight and difficulty use native selects, so phones get their own picker and hundreds of
+  rows stay light.
+
+### Malayalam (checked after the owner asked)
+- Name keys keep Unicode marks (`\p{M}`): Malayalam vowel signs are marks, and stripping them
+  made കല and കാല the same key, so one was dropped as a duplicate.
+- Section headings and marks also match ഭാഗം / വിഭാഗം / പേപ്പർ / മൊഡ്യൂൾ and മാർക്ക്.
+- A headed section is always one subject named by its heading: on Malayalam, qwen2.5:3b named
+  a section after one of its topics (മണ്ണിനങ്ങൾ) and invented a second subject.
+- `isGrounded`: a topic is kept only if a strict majority of its words appear in its section's
+  text. `withMissingItems`: listed items no topic covers are added back. Together: nothing
+  invented, nothing dropped. The cost: a model typo plus the rescued original can both
+  appear (കേരളത്തി / കേരളത്തിലെ ദേശീയ പ്രസ്ഥാനം); the user merges them in review.
+- `fixtures/syllabus/malayalam-sample.txt` parses in about 40 s with every item present.
+- Not yet checked: real PSC PDFs typeset in legacy (non-Unicode) Malayalam fonts such as
+  ML-TT. Their text layer extracts as Latin gibberish; that needs a real file to design for.
+
+### Subject folders replace the topic-by-topic review (owner's request)
+- After parsing, `/syllabus/[id]` is a board of subject folder cards (grid, row by row in
+  syllabus order, one column on phones). Subjects are renamed, moved, removed or added from a
+  card's menu; one tap confirms. Nobody rates topics one by one to get started: weights come
+  from the marks and the model, and stay editable.
+- `/syllabus/[id]/subjects/[subjectId]` is the folder: Topics (read view; "Edit topics" opens
+  the editor with drag, merge, weight, difficulty, foundation), Materials and Tests (honest
+  empty states until the vault, milestones 7.5 and 7.6), Progress (links to plan creation).
+- A private syllabus stays editable after confirming (no reopen step); plans will snapshot
+  the tree in milestone 5. Confirm remains the rule 5 gate before a plan.
+- Agreed order with the owner: folders now, the study plan (milestone 5) next, the vault later.
+
+### Real PSC PDFs (two uploaded by the owner, kept as text in fixtures/syllabus)
+- `degree-level-ldc.txt` and `plus-two-prelims-2022.txt` are unpdf's output for real Kerala
+  PSC notifications. The first version of the splitter made 33 and 40 subjects of them.
+- Layout the splitter now knows: a "Distribution of Marks" table (skipped up to "Detailed
+  Syllabus"), parts as "I. GENERAL KNOWLEDGE" / "Part I" / "ഭാഗം", sections as "(i) HISTORY
+  (5 Marks)", "ii) GEOGRAPHY", "(i). ...", "ii Vocabulary", "(1) ...", "A. ...", "Part I (1)
+  ചരിത്രം (5 Marks)" on one line, "Part III" with its title on the next line, spaced-out
+  "( 1 0 M a r k s )". Numbered "1)" lines are topics unless the document has no other
+  section style. ALL-CAPS headings become sentence case.
+- Result: the LDC PDF gives exactly its 17 marks-table sections and 461 topics (about 6 min
+  on CPU with qwen2.5:3b); plus-two gives 15 sections.
+- Marks belong to the section that states them; weight is 3 for the median marks per topic,
+  plus or minus one per doubling (log2), clamped to 1-5. Scaling to the maximum let Current
+  Affairs (15 marks, one topic) flatten every other weight to 1.
+- `listedItems` joins PDF line wraps and splits on commas, semicolons and dashes (a dash
+  splits only when spaced or before a capital, so "Quasi-judicial" survives).
+- Malayalam in old PSC fonts: `server/ai/malayalam.ts` detects visual-order text (a vowel
+  sign with no consonant before it can't occur in valid Unicode) and repairs order and the
+  misread ാ glyph. Lost conjunct letters can't be recovered, so the parse records
+  `MALAYALAM_GARBLED` and the board tells the user to check names. The plus-two PDF is the
+  bad case; the LDC PDF's Malayalam is broken differently and only partly repairable. Real fix:
+  OCR the rendered pages (Tesseract `mal`, or a vision model) with the vault's OcrProvider.
+- Parses are cached per (file hash, parser version) now, not per hash: the parser version
+  (`structure-syllabus@4`) covers splitting, repairs and prompt. A syllabus read by an older
+  version shows "Read again", which replaces its tree (after a confirm dialog).

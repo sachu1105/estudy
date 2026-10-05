@@ -140,7 +140,9 @@ describe("overrides", () => {
     });
     // No second copy of the topic's study.
     expect(
-      tasksOf(p).filter((t) => t.type === "STUDY" && t.topicId === study.topicId),
+      tasksOf(p).filter(
+        (t) => t.type === "STUDY" && t.topicId === study.topicId,
+      ),
     ).toHaveLength(1);
     // Revisions start after the moved block.
     for (const t of tasksOf(p))
@@ -231,7 +233,10 @@ describe("overrides", () => {
       ...base,
       today,
       targetDays: 85,
-      overrides: [pin(study, "LOCK"), pin(study, "MOVE", { date: "2030-01-01" })],
+      overrides: [
+        pin(study, "LOCK"),
+        pin(study, "MOVE", { date: "2030-01-01" }),
+      ],
     });
     expect(find(p, study.id)?.pinned ?? false).toBe(false);
   });

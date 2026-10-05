@@ -50,8 +50,8 @@ export default function TermsPage() {
       <p>
         Every feature except mock tests made from your own study vault is free
         during launch. Vault mock tests need a paid plan. If other features
-        become paid, we will tell you in advance, and moving to the free plan will never delete
-        your data.
+        become paid, we will tell you in advance, and moving to the free plan
+        will never delete your data.
       </p>
       <h2>Questions</h2>
       <p>

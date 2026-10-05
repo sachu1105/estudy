@@ -161,8 +161,7 @@ export function assertReason(task: Task, fail: (message: string) => never) {
     fail(`${task.id} names its override exactly when pinned`);
   if (task.type === "STUDY" && !task.pinned && !r.study)
     fail(`${task.id} explains its block size`);
-  const spaced =
-    task.type === "REVISION" && !task.finalReview && !task.pinned;
+  const spaced = task.type === "REVISION" && !task.finalReview && !task.pinned;
   if (spaced !== (r.revision !== null))
     fail(`${task.id} explains its revision gap`);
   if (r.revision && r.revision.touch !== task.touch)

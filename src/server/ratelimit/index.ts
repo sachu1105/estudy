@@ -16,6 +16,11 @@ export const rules = {
   resetPerAccount: { limit: 3, windowMs: 60 * MINUTE },
   verifyResendPerAccount: { limit: 3, windowMs: 60 * MINUTE },
   refreshPerIp: { limit: 60, windowMs: MINUTE },
+  uploadSignPerUser: { limit: 30, windowMs: 60 * MINUTE },
+  /** Anything that may start an AI parse: completed uploads, pasted text, retries. */
+  parsePerUser: { limit: 10, windowMs: 60 * MINUTE },
+  /** Review autosave runs every couple of seconds while editing. */
+  syllabusSavePerUser: { limit: 120, windowMs: 5 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

@@ -154,7 +154,9 @@ export function buildModel(input: ParsedPlanInput): Model {
   const relative = (iso: string | null) => (iso ? toDay(iso) - start : null);
 
   const skippedTopics = new Set(
-    input.overrides.flatMap((o) => (o.kind === "TOPIC_DONE" ? [o.topicId] : [])),
+    input.overrides.flatMap((o) =>
+      o.kind === "TOPIC_DONE" ? [o.topicId] : [],
+    ),
   );
   const topicSubject = new Map(
     input.subjects.flatMap((s) => s.topics.map((t) => [t.id, s.id] as const)),
@@ -167,8 +169,7 @@ export function buildModel(input: ParsedPlanInput): Model {
     const day = toDay(o.date);
     if (day < start || day > end) return false;
     if (o.topicId && !topicSubject.has(o.topicId)) return false;
-    if (!o.topicId && o.subjectId && !subjectIds.has(o.subjectId))
-      return false;
+    if (!o.topicId && o.subjectId && !subjectIds.has(o.subjectId)) return false;
     if (o.topicId && skippedTopics.has(o.topicId)) return false;
     seen.add(o.taskId);
     return true;
@@ -176,7 +177,10 @@ export function buildModel(input: ParsedPlanInput): Model {
   const pinsByTopic = new Map<string, PinOverride[]>();
   for (const pin of pins) {
     if (!pin.topicId) continue;
-    pinsByTopic.set(pin.topicId, [...(pinsByTopic.get(pin.topicId) ?? []), pin]);
+    pinsByTopic.set(pin.topicId, [
+      ...(pinsByTopic.get(pin.topicId) ?? []),
+      pin,
+    ]);
   }
 
   const subjects = input.subjects.map((subject, subjectIndex): ModelSubject => {
@@ -271,7 +275,9 @@ export function buildModel(input: ParsedPlanInput): Model {
       topics,
       sectionMockDone:
         input.completedSectionMocks.includes(subject.id) ||
-        pins.some((p) => p.type === "SECTION_MOCK" && p.subjectId === subject.id),
+        pins.some(
+          (p) => p.type === "SECTION_MOCK" && p.subjectId === subject.id,
+        ),
     };
   });
 

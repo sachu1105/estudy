@@ -63,6 +63,10 @@ model User {
   passwordResets     PasswordReset[]
   subscriptions      Subscription[]
   auditLogs          AuditLog[]
+  syllabusVersions   SyllabusVersion[] @relation("SyllabusOwner")
+  approvedSyllabuses SyllabusVersion[] @relation("SyllabusApprover")
+  parseJobs          ParseJob[]
+  aiUsage            AiUsage[]
 }
 
 model RefreshToken {
@@ -135,4 +139,187 @@ model AuditLog {
 
   @@index([actorId, createdAt])
   @@index([action, createdAt])
+}
+
+// --- Milestone 4: catalogue, syllabus upload and AI parsing ---------------------
+
+enum SyllabusStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SyllabusVisibility {
+  PRIVATE
+  CATALOGUE
+}
+
+enum SourceKind {
+  PDF
+  DOCX
+  IMAGE
+  TEXT
+}
+
+enum ParseJobStatus {
+  QUEUED
+  RUNNING
+  READY
+  FAILED
+}
+
+/// What the user sees: queued -> reading -> structuring -> ready (or failed).
+enum ParseStage {
+  QUEUED
+  READING
+  STRUCTURING
+  READY
+  FAILED
+}
+
+model Exam {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique
+  name        String
+  /// "Kerala PSC", "SSC", "RRB"
+  board       String
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  syllabuses SyllabusVersion[]
+}
+
+/// One AI parse per distinct file (CLAUDE.md rule 4), shared by every upload of the same
+/// bytes. Holds the raw validated AI tree; each upload gets its own editable copy.
+model SyllabusParse {
+  id            String   @id @default(uuid()) @db.Uuid
+  /// SHA-256 (hex) of the uploaded bytes, computed on the server.
+  fileHash      String
+  sourceKind    SourceKind
+  extractedText String
+  /// Validated output of the structuring prompt: { subjects: [...] }.
+  tree          Json
+  provider      String
+  model         String
+  promptVersion String
+  /// Problems the user should know about, e.g. MALAYALAM_GARBLED (old PDF fonts).
+  warnings      String[] @default([])
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+
+  versions SyllabusVersion[]
+
+  /// Once per file per parser version: a better parser reads a file again, once.
+  @@unique([fileHash, promptVersion])
+}
+
+model SyllabusVersion {
+  id            String             @id @default(uuid()) @db.Uuid
+  title         String
+  status        SyllabusStatus     @default(DRAFT)
+  visibility    SyllabusVisibility @default(PRIVATE)
+  examId        String?            @db.Uuid
+  exam          Exam?              @relation(fields: [examId], references: [id], onDelete: SetNull)
+  ownerId       String?            @db.Uuid
+  owner         User?              @relation("SyllabusOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  fileHash      String?
+  sourceFileKey String?
+  sourceKind    SourceKind?
+  sourceName    String?
+  sizeBytes     Int?
+  parseId       String?            @db.Uuid
+  parse         SyllabusParse?     @relation(fields: [parseId], references: [id], onDelete: SetNull)
+  approvedAt    DateTime?          @db.Timestamptz(6)
+  approvedById  String?            @db.Uuid
+  approvedBy    User?              @relation("SyllabusApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime           @updatedAt @db.Timestamptz(6)
+  deletedAt     DateTime?          @db.Timestamptz(6)
+
+  subjects  Subject[]
+  parseJobs ParseJob[]
+
+  @@index([ownerId, deletedAt])
+  @@index([visibility, status])
+  @@index([fileHash])
+}
+
+model Subject {
+  id                String          @id @db.Uuid
+  syllabusVersionId String          @db.Uuid
+  syllabusVersion   SyllabusVersion @relation(fields: [syllabusVersionId], references: [id], onDelete: Cascade)
+  name              String
+  order             Int
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+
+  topics Topic[]
+
+  @@index([syllabusVersionId, order])
+}
+
+model Topic {
+  id           String   @id @db.Uuid
+  subjectId    String   @db.Uuid
+  subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  name         String
+  /// 1-5: share of the exam's marks.
+  weight       Int
+  /// 1-5
+  difficulty   Int
+  /// Basics other topics build on; beginner mode studies these first.
+  foundational Boolean  @default(false)
+  order        Int
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([subjectId, order])
+}
+
+model ParseJob {
+  id                String          @id @default(uuid()) @db.Uuid
+  syllabusVersionId String          @db.Uuid
+  syllabusVersion   SyllabusVersion @relation(fields: [syllabusVersionId], references: [id], onDelete: Cascade)
+  userId            String?         @db.Uuid
+  user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status            ParseJobStatus  @default(QUEUED)
+  stage             ParseStage      @default(QUEUED)
+  /// 0-100, for the progress bar while structuring several chunks.
+  progress          Int             @default(0)
+  /// User-facing: what happened and how to fix it.
+  error             String?
+  attempts          Int             @default(0)
+  /// Set when an identical file's parse was reused instead of calling the AI.
+  reused            Boolean         @default(false)
+  startedAt         DateTime?       @db.Timestamptz(6)
+  finishedAt        DateTime?       @db.Timestamptz(6)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+
+  @@index([syllabusVersionId, createdAt])
+  @@index([userId, createdAt])
+}
+
+/// Tokens and cost of every AI call. Append-only.
+model AiUsage {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String?  @db.Uuid
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// What the call was for: STRUCTURE_SYLLABUS, GENERATE_QUESTIONS, SUMMARIZE
+  purpose       String
+  provider      String
+  model         String
+  promptVersion String
+  /// Job or record the call belongs to, e.g. a ParseJob id.
+  refId         String?  @db.Uuid
+  inputTokens   Int
+  outputTokens  Int
+  /// Cost in millionths of a US dollar; 0 for local models.
+  costMicros    Int
+  durationMs    Int
+  ok            Boolean
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, createdAt])
+  @@index([purpose, createdAt])
 }

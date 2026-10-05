@@ -21,16 +21,20 @@
     "fixtures:plan": "tsx scripts/plan-fixtures.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@aws-sdk/s3-request-presigner": "^3.1146.0",
     "@hookform/resolvers": "^5.9.1",
     "@node-rs/argon2": "^2.2.1",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "^7.10.0",
+    "bullmq": "^6.3.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "ioredis": "^6.0.0",
     "jose": "^6.2.12",
     "lucide-react": "^1.52.0",
+    "mammoth": "^1.13.0",
     "motion": "^14.0.0",
     "next": "16.3.8",
     "nodemailer": "^10.0.14",
@@ -42,6 +46,7 @@
     "server-only": "^0.0.1",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
+    "unpdf": "^1.8.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {

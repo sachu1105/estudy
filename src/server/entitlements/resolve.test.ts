@@ -46,7 +46,9 @@ describe("entitlements with billing disabled", () => {
   it("opens paidOnly features to a real or admin-granted PRO or ELITE plan", () => {
     expect(limit(pro(), "vaultMocksPerMonth")).toBe(30);
     expect(limit(pro(), "pagesPerVaultMock")).toBe(40);
-    const elite = { subscription: { ...pro().subscription, plan: "ELITE" as const } };
+    const elite = {
+      subscription: { ...pro().subscription, plan: "ELITE" as const },
+    };
     expect(limit(elite, "vaultMocksPerMonth")).toBe(100);
   });
 });

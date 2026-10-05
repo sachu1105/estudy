@@ -18,6 +18,8 @@ const appRoutes = [
   "/plan",
   "/calendar",
   "/syllabus",
+  "/syllabus/new",
+  "/syllabus/catalogue",
   "/tests",
   "/groups",
   "/rank",

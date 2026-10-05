@@ -25,12 +25,21 @@ export const envSchema = z
     S3_ACCESS_KEY_ID: z.string().min(1),
     S3_SECRET_ACCESS_KEY: z.string().min(1),
     S3_FORCE_PATH_STYLE: z.stringbool(),
+    /** Host browsers upload to, when it differs from S3_ENDPOINT (e.g. a phone on the LAN). */
+    S3_PUBLIC_ENDPOINT: optionalString.pipe(z.url().optional()),
 
     AI_PROVIDER: z.enum(["ollama", "hosted"]),
     OLLAMA_BASE_URL: z.url(),
     OLLAMA_MODEL: z.string().min(1),
     AI_API_KEY: optionalString,
     AI_MODEL: optionalString,
+    /** Hosted API base URL; defaults to the Anthropic API. */
+    AI_API_URL: optionalString.pipe(z.url().optional()),
+    /** Prices in US dollars per million tokens, for the AiUsage cost column. */
+    AI_PRICE_INPUT_PER_MTOK: z.coerce.number().min(0).default(0),
+    AI_PRICE_OUTPUT_PER_MTOK: z.coerce.number().min(0).default(0),
+    /** Parse jobs one worker runs at once. Keep 1 for a local Ollama model. */
+    WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(32).default(1),
 
     SMTP_HOST: z.string().min(1),
     SMTP_PORT: z.coerce.number().int().positive(),

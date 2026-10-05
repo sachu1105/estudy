@@ -1,0 +1,130 @@
+import { randomUUID } from "node:crypto";
+
+import { config } from "dotenv";
+import { Client } from "pg";
+
+const env = config({ path: ".env", quiet: true }).parsed ?? {};
+
+async function withDb<T>(run: (db: Client) => Promise<T>) {
+  const db = new Client({
+    connectionString: process.env.DATABASE_URL ?? env.DATABASE_URL,
+  });
+  await db.connect();
+  try {
+    return await run(db);
+  } finally {
+    await db.end();
+  }
+}
+
+/**
+ * A syllabus the worker has already read, waiting for review: what a user sees once
+ * parsing is done. Lets the review screen be tested without running the AI.
+ */
+type SeedTree = {
+  subjects: {
+    name: string;
+    topics: {
+      name: string;
+      weight: number;
+      difficulty: number;
+      foundational: boolean;
+    }[];
+  }[];
+};
+
+/** The largest real parse in the dev database, for screenshots. */
+export function latestParsedTree() {
+  return withDb(async (db) => {
+    const { rows } = await db.query<{ tree: SeedTree }>(
+      `SELECT tree FROM "SyllabusParse" WHERE provider <> 'fake' AND "promptVersion" = 'structure-syllabus@4' ORDER BY jsonb_array_length(tree->'subjects') DESC, "createdAt" DESC LIMIT 1`,
+    );
+    return rows[0]?.tree ?? null;
+  });
+}
+
+export function seedParsedDraft(
+  ownerId: string,
+  title: string,
+  seedTree?: SeedTree,
+) {
+  return withDb(async (db) => {
+    const parseId = randomUUID();
+    const versionId = randomUUID();
+    const tree: SeedTree = seedTree ?? {
+      subjects: [
+        {
+          name: "Indian Constitution",
+          topics: [
+            { name: "Preamble", weight: 3, difficulty: 2, foundational: true },
+            {
+              name: "Fundamental rights",
+              weight: 5,
+              difficulty: 3,
+              foundational: false,
+            },
+            {
+              name: "Directive principles",
+              weight: 4,
+              difficulty: 3,
+              foundational: false,
+            },
+          ],
+        },
+        {
+          name: "Kerala geography",
+          topics: [
+            {
+              name: "Rivers of Kerala",
+              weight: 4,
+              difficulty: 2,
+              foundational: false,
+            },
+          ],
+        },
+      ],
+    };
+    await db.query(
+      `INSERT INTO "SyllabusParse" (id, "fileHash", "sourceKind", "extractedText", tree, provider, model, "promptVersion")
+       VALUES ($1, $2, 'TEXT', $3, $4, 'fake', 'seed', 'seed@1')`,
+      [
+        parseId,
+        randomUUID().replace(/-/g, "").padEnd(64, "0"),
+        "Part I Indian Constitution\nPreamble, fundamental rights, directive principles\nPart II Kerala geography\nRivers of Kerala",
+        JSON.stringify(tree),
+      ],
+    );
+    await db.query(
+      `INSERT INTO "SyllabusVersion" (id, title, "ownerId", "fileHash", "sourceFileKey", "sourceKind", "parseId", "updatedAt")
+       VALUES ($1, $2, $3, 'seed', 'seed', 'TEXT', $4, now())`,
+      [versionId, title, ownerId, parseId],
+    );
+    for (const [order, subject] of tree.subjects.entries()) {
+      const subjectId = randomUUID();
+      await db.query(
+        `INSERT INTO "Subject" (id, "syllabusVersionId", name, "order") VALUES ($1, $2, $3, $4)`,
+        [subjectId, versionId, subject.name, order],
+      );
+      for (const [topicOrder, t] of subject.topics.entries())
+        await db.query(
+          `INSERT INTO "Topic" (id, "subjectId", name, weight, difficulty, foundational, "order")
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            randomUUID(),
+            subjectId,
+            t.name,
+            t.weight,
+            t.difficulty,
+            t.foundational,
+            topicOrder,
+          ],
+        );
+    }
+    await db.query(
+      `INSERT INTO "ParseJob" (id, "syllabusVersionId", "userId", status, stage, progress, "updatedAt", "finishedAt")
+       VALUES ($1, $2, $3, 'READY', 'READY', 100, now(), now())`,
+      [randomUUID(), versionId, ownerId],
+    );
+    return versionId;
+  });
+}

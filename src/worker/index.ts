@@ -1,20 +1,19 @@
 // Background worker entrypoint, run as its own process with `pnpm worker`.
-// BullMQ queues and jobs are registered here from milestone 4 onward.
 import "dotenv/config";
 
 import { env } from "@/server/env";
 
-console.log(
-  `[worker] started (${env.NODE_ENV}, ai=${env.AI_PROVIDER}). No jobs registered yet.`,
-);
+import { startParseWorker } from "./jobs/parse-syllabus";
 
-function shutdown(signal: string) {
-  console.log(`[worker] ${signal} received, shutting down.`);
+console.log(`[worker] started (${env.NODE_ENV}, ai=${env.AI_PROVIDER}).`);
+
+const workers = [startParseWorker()];
+
+async function shutdown(signal: string) {
+  console.log(`[worker] ${signal} received, finishing current jobs.`);
+  await Promise.all(workers.map((w) => w.close()));
   process.exit(0);
 }
 
-process.on("SIGINT", () => shutdown("SIGINT"));
-process.on("SIGTERM", () => shutdown("SIGTERM"));
-
-// Keep the process alive until real queues hold it open.
-setInterval(() => {}, 1 << 30);
+process.on("SIGINT", () => void shutdown("SIGINT"));
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
