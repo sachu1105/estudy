@@ -207,3 +207,49 @@ or prisma imports (checked by ESLint and by grep). Entry points: `generatePlan(i
   in progress, and recent leads carry over: an on-track replan now moves 0 topics.
 - zod 4: `.extend()` on a refined object throws, so the refinement is a shared function
   applied to both `planInputSchema` and `replanInputSchema`.
+
+## Build plan update — explainability, overrides, vault, paidOnly (2026-10-05)
+
+The owner edited the build plan: new rules 14 (every AI decision explainable and
+overridable) and 15 (vault material is private), a study vault (milestones 7.5, 7.6), and
+paidOnly entitlements. Their edit dropped the mobile-first rule; it stays, renumbered to
+rule 16. `inkSubtle` is still kept off readable text (WCAG AA floor), timestamps included.
+
+### Entitlements
+- `PAID_ONLY` in `config.ts` lists `vaultMocksPerMonth` and `pagesPerVaultMock`. Those
+  resolve against the user's real subscription (`subscribedPlanOf`) even while
+  BILLING_ENABLED=false. An admin grant is a Subscription row with source ADMIN_GRANT.
+- New limits: `vaultStorageBytes` 200 MB / 5 GB / 20 GB, `vaultFolders` unlimited.
+- Landing, FAQ and terms now say vault mock tests are the one paid feature.
+
+### Plan engine: reasons
+- Every PlanTask has `reason`: `rule` (STUDY_BLOCK, CHECK_AFTER_STUDY, SPACED_REVISION,
+  FINAL_REVIEW, SECTION_COMPLETE, FULL_MOCK, USER_TASK), a minutes `breakdown` on topic
+  tasks, `study` (block cap, beginner block, foundations first), `revision` (touch, gap,
+  studied on, extra touch cause, clamped to end) and `override`. Codes, not sentences:
+  the "Why this?" UI (milestone 6) turns them into copy, ready for Malayalam.
+- `topicAdjustment.causes` (HIGH_SCORE, LOW_SCORE, MISSED_REVISIONS) explains a
+  confidence that differs from the user's own. Milestone 6 stores them with adjustments.
+- `assertPlanInvariants` now checks every task's reason is complete.
+
+### Plan engine: overrides
+- `overrides` on both functions. MOVE, RESIZE, LOCK and CUSTOM all pin one task: the
+  engine places it exactly (id, date, minutes) and schedules around it in what is left of
+  the day. A pinned STUDY brings its CHECK_TEST and counts toward the topic's minutes;
+  revisions count from the later of the pinned and scheduled blocks. A pinned REVISION
+  replaces the engine's touch of the same number. A pinned SECTION_MOCK replaces the
+  automatic one. TOPIC_DONE removes a topic from the plan.
+- Pins before today or past the horizon are ignored, as are pins naming a topic or subject
+  that no longer exists, so replans never fail on a stale override. Milestone 6 stores
+  them as PlanOverride rows; "Reset to suggested" deletes the row.
+- Pinned tasks are exempt from phase, block-size, capacity and interleaving rules: the
+  user's choice wins. Scheduled ids never collide with pinned ids (`~2` suffix).
+- FULL_MOCK ids are now date-based (`FULL_MOCK:2026-12-01`) so they stay stable across
+  replans. Part numbers are counted in date order rather than read from the id.
+
+### Bug fixed
+- Beginner mode could leave week one empty: a 30-35 minute topic was cut below the
+  25-minute starting block to avoid a sliver, deferred, and the same happened daily. It
+  now splits (e.g. 15 + 15 or 20 + 15). Regression test and `beginner-120-days` fixture
+  added. The other 30 fixtures are unchanged apart from the new fields (checked by
+  diffing with reason, pinned and title stripped).

@@ -1,7 +1,9 @@
 import type { Clock } from "@/lib/clock";
 
 import {
+  PAID_ONLY,
   planConfig,
+  type Feature,
   type FlagFeature,
   type LimitFeature,
   type PlanName,
@@ -20,8 +22,8 @@ type Options = { billingEnabled: boolean; clock: Clock };
 
 // CLAUDE.md rule 8: the only place that decides what a plan grants.
 export function createEntitlements({ billingEnabled, clock }: Options) {
-  function planOf(subject: EntitlementSubject): PlanName {
-    if (!billingEnabled) return "ELITE";
+  /** The plan the user actually holds, ignoring the free-launch override. */
+  function subscribedPlanOf(subject: EntitlementSubject): PlanName {
     const sub = subject.subscription;
     if (!sub) return "FREE";
     // PAST_DUE keeps access during the grace period; CANCELLED keeps it until periodEnd.
@@ -32,18 +34,34 @@ export function createEntitlements({ billingEnabled, clock }: Options) {
     return entitled ? sub.plan : "FREE";
   }
 
+  function planOf(subject: EntitlementSubject): PlanName {
+    return billingEnabled ? subscribedPlanOf(subject) : "ELITE";
+  }
+
+  function configFor(subject: EntitlementSubject, feature: Feature) {
+    const plan = PAID_ONLY.has(feature)
+      ? subscribedPlanOf(subject)
+      : planOf(subject);
+    return planConfig[plan];
+  }
+
   function limit(subject: EntitlementSubject, feature: LimitFeature): number {
-    return planConfig[planOf(subject)].limits[feature];
+    return configFor(subject, feature).limits[feature];
   }
 
   function can(
     subject: EntitlementSubject,
     feature: FlagFeature | LimitFeature,
   ): boolean {
-    const config = planConfig[planOf(subject)];
+    const config = configFor(subject, feature);
     if (feature in config.flags) return config.flags[feature as FlagFeature];
     return config.limits[feature as LimitFeature] > 0;
   }
 
-  return { planOf, limit, can };
+  /** Paid-only features the user can't use yet, so the UI can show an upgrade card. */
+  function isPaidOnly(feature: Feature) {
+    return PAID_ONLY.has(feature);
+  }
+
+  return { planOf, subscribedPlanOf, limit, can, isPaidOnly };
 }

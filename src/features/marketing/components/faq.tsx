@@ -8,7 +8,7 @@ import { SectionHeading } from "./section-heading";
 export const faqs = [
   {
     q: "Is it free?",
-    a: "Yes. Every feature is free during launch, with no card needed. Paid plans arrive later for heavy users; the free plan stays.",
+    a: "Yes. Planning, check tests, mocks, groups and the study vault are free during launch, with no card needed. Only mock tests made from your own notes and PDFs need a paid plan. The free plan stays.",
   },
   {
     q: "Which exams does it support?",

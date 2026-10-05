@@ -32,7 +32,31 @@
             "total": 1
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:current-affairs-t1:1",
@@ -44,7 +68,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -69,7 +113,31 @@
             "total": 1
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:current-affairs-t2:1",
@@ -81,7 +149,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -106,7 +194,31 @@
             "total": 1
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:current-affairs-t3:1",
@@ -118,7 +230,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -140,7 +272,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-05",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -162,7 +320,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-05",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:current-affairs-t2:1",
@@ -174,7 +358,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-06",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:current-affairs-t3:1",
@@ -186,10 +396,36 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 1,
+              "difficulty": 1,
+              "baseMinutes": 30,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 4,
+              "confidence": 4,
+              "confidencePct": 70,
+              "confidenceCauses": [],
+              "topicMinutes": 20
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-07",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
-          "id": "FULL_MOCK:4",
+          "id": "FULL_MOCK:2026-10-09",
           "type": "FULL_MOCK",
           "date": "2026-10-09",
           "subjectId": null,
@@ -198,7 +434,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     }

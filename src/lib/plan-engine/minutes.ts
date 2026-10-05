@@ -58,17 +58,33 @@ export function revisionMinutes(study: number) {
   return Math.max(10, round5(study * 20, 100));
 }
 
+export type ExtraTouch = "LOW_CONFIDENCE" | "WEAK_CHECK_TEST";
+export type RevisionSlot = { offset: number; extra: ExtraTouch | null };
+
 /**
  * Spaced revision: days after the topic is studied. Confidence 1-2 gets a 4th, earlier touch.
  * A weak check test (< 60%) adds one more touch between the 3rd and 10th day.
  */
+export function revisionSchedule(
+  confidence: Confidence,
+  extraRevision: boolean,
+): RevisionSlot[] {
+  const slots: RevisionSlot[] = [3, 10, 30].map((offset) => ({
+    offset,
+    extra: null,
+  }));
+  if (confidence <= 2) slots.push({ offset: 1, extra: "LOW_CONFIDENCE" });
+  if (extraRevision) slots.push({ offset: 6, extra: "WEAK_CHECK_TEST" });
+  return slots
+    .filter((s, i) => slots.findIndex((o) => o.offset === s.offset) === i)
+    .sort((a, b) => a.offset - b.offset);
+}
+
 export function revisionOffsets(
   confidence: Confidence,
   extraRevision: boolean,
 ) {
-  const offsets = confidence <= 2 ? [1, 3, 10, 30] : [3, 10, 30];
-  if (extraRevision) offsets.push(6);
-  return [...new Set(offsets)].sort((a, b) => a - b);
+  return revisionSchedule(confidence, extraRevision).map((s) => s.offset);
 }
 
 /** Minutes the plan may use on a day: the user's minutes minus the 10% buffer. */

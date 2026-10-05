@@ -10,6 +10,7 @@
 //   5. touches clamped to the horizon end, pulled earlier into free review time
 //   6. optional final-review revisions to fill what is left (review phase only)
 
+import { fromDay } from "./dates";
 import {
   BEGINNER_BLOCK,
   BEGINNER_DAYS,
@@ -27,23 +28,23 @@ const MIN_FIRST_BLOCK = 30;
 const PACE_HEADROOM_PCT = 125;
 /** A continuing topic finishes today, past the pace, if this little is left. */
 const FINISH_SLACK = 20;
-import type { Model, ModelSubject, ModelTopic } from "./model";
-import type { TaskType, TimeWindow } from "./schemas";
+import {
+  plainReason,
+  topicReason,
+  type DraftTask,
+  type Model,
+  type ModelSubject,
+  type ModelTopic,
+} from "./model";
+import type { ExtraTouch } from "./schemas";
 
-export type DraftTask = {
-  key: string;
-  type: TaskType;
-  subjectId: string | null;
-  topicId: string | null;
-  minutes: number;
-  window: TimeWindow;
-  touch: number | null;
-  finalReview: boolean;
-};
+export type { DraftTask } from "./model";
 
 type Touch = {
   due: number;
   touch: number;
+  offset: number;
+  extra: ExtraTouch | null;
   pullable: boolean;
   placedDay: number | null;
 };
@@ -58,6 +59,8 @@ type TopicState = {
   readyDay: number | null;
   studyParts: number;
   finalReviewed: boolean;
+  /** Day the study finished, which revision gaps count from. */
+  studiedDay: number | null;
 };
 
 export type ScheduleResult = {
@@ -83,11 +86,20 @@ export function schedule(model: Model): ScheduleResult {
   const sectionPlaced = new Set<string>();
   const leads: (string | null)[] = [];
 
+  /** Scheduled tasks never take an id a pinned task already holds. */
+  function uniqueKey(base: string) {
+    let key = base;
+    for (let n = 2; model.pinnedKeys.has(key); n++) key = `${base}~${n}`;
+    return key;
+  }
+
   function createTouches(state: TopicState, studiedDay: number) {
     const t = state.topic;
+    state.studiedDay = studiedDay;
     const last = Math.max(studiedDay, t.lastRevisedDay ?? studiedDay);
     let touchNo = t.revisionsDone;
-    for (const offset of t.offsets.slice(t.revisionsDone)) {
+    for (let i = t.revisionsDone; i < t.offsets.length; i++) {
+      const offset = t.offsets[i];
       let due = Math.max(studiedDay + offset, last + 1, 0);
       let pullable = false;
       if (due > N - 1) {
@@ -101,10 +113,28 @@ export function schedule(model: Model): ScheduleResult {
         continue;
       }
       touchNo++;
-      state.touches.push({ due, touch: touchNo, pullable, placedDay: null });
+      // The user pinned this touch by hand; theirs replaces ours.
+      if (t.pinnedTouches.has(touchNo)) continue;
+      state.touches.push({
+        due,
+        touch: touchNo,
+        offset,
+        extra: t.extras[i],
+        pullable,
+        placedDay: null,
+      });
     }
-    if (t.revisionsDone + state.touches.length < 2 || t.revisionsDone >= 2) {
+    const pinnedCount = t.pinnedRevisionDays.length;
+    if (
+      t.revisionsDone >= 2 ||
+      t.revisionsDone + state.touches.length + pinnedCount < 2
+    ) {
       state.readyDay = Math.max(studiedDay, t.lastRevisedDay ?? studiedDay);
+    } else if (t.revisionsDone + pinnedCount >= 2) {
+      state.readyDay = Math.max(
+        studiedDay,
+        t.pinnedRevisionDays[1 - t.revisionsDone],
+      );
     }
   }
 
@@ -121,19 +151,26 @@ export function schedule(model: Model): ScheduleResult {
         readyDay: null,
         studyParts: 0,
         finalReviewed: false,
+        studiedDay: null,
       };
       states.set(topic.id, state);
       // Share of a subject's work left is measured against its full syllabus, so a re-plan
       // paces subjects exactly as the original plan did.
       total += topic.studyTotal;
       remaining += topic.studyRemaining;
-      if (topic.started) {
+      if (topic.skipped) {
+        state.readyDay = -1; // already known: counts as ready for its section mock
+      } else if (topic.started) {
         state.studyParts = 0;
         inProgress.push(state);
       } else if (topic.studyRemaining > 0) {
         queue.push(state);
       } else if (topic.studiedDay !== null) {
         createTouches(state, topic.studiedDay);
+      } else if (topic.pinnedStudyLastDay !== null) {
+        // Every remaining minute is pinned: revisions follow the last pinned block.
+        state.lastActivity = topic.pinnedStudyLastDay;
+        createTouches(state, topic.pinnedStudyLastDay);
       }
     }
     queues.set(subject.id, queue);
@@ -188,6 +225,15 @@ export function schedule(model: Model): ScheduleResult {
     return queues.get(subject.id)!.shift()!;
   }
 
+  for (const day of model.pinned)
+    for (const task of day)
+      if (
+        task.type === "STUDY" ||
+        task.type === "CHECK_TEST" ||
+        task.type === "REVISION"
+      )
+        requiredMinutesPlaced += task.minutes;
+
   // Full mocks: spread evenly over review days that can hold one, ending on the last.
   const fullMockDays = new Set<number>();
   const eligible = Array.from({ length: N - L }, (_, i) => L + i).filter(
@@ -235,18 +281,33 @@ export function schedule(model: Model): ScheduleResult {
       touch.placedDay = d;
       state.next++;
       state.lastActivity = d;
-      const doneSoFar = state.topic.revisionsDone + state.next;
+      const t = state.topic;
+      const doneSoFar =
+        t.revisionsDone +
+        state.next +
+        t.pinnedRevisionDays.filter((p) => p <= d).length;
       if (state.readyDay === null && doneSoFar >= 2) state.readyDay = d;
       push(
         {
-          key: `REVISION:${state.topic.id}:${touch.touch}`,
+          key: uniqueKey(`REVISION:${t.id}:${touch.touch}`),
           type: "REVISION",
-          subjectId: state.topic.subjectId,
-          topicId: state.topic.id,
-          minutes: state.topic.revMinutes,
-          window: state.topic.window,
+          subjectId: t.subjectId,
+          topicId: t.id,
+          minutes: t.revMinutes,
+          window: t.window,
           touch: touch.touch,
           finalReview: false,
+          pinned: false,
+          title: null,
+          reason: topicReason(t, "SPACED_REVISION", {
+            revision: {
+              touch: touch.touch,
+              gapDays: touch.offset,
+              studiedOn: fromDay(model.startDay + state.studiedDay!),
+              extra: touch.extra,
+              clampedToEnd: touch.pullable,
+            },
+          }),
         },
         true,
       );
@@ -258,6 +319,7 @@ export function schedule(model: Model): ScheduleResult {
           (s) =>
             s.next < s.touches.length &&
             (s.lastActivity ?? -Infinity) < d &&
+            !s.topic.pinnedRevisionDays.includes(d) &&
             accept(s.touches[s.next]),
         )
         .sort(
@@ -271,11 +333,16 @@ export function schedule(model: Model): ScheduleResult {
     for (const state of heads((t) => t.due <= d))
       if (fits(state.topic.revMinutes)) placeTouch(state);
 
-    // 2. Full mock.
-    if (!learning && fullMockDays.has(d) && fits(FULL_MOCK_MINUTES)) {
+    // 2. Full mock (unless the user already pinned one today).
+    if (
+      !learning &&
+      fullMockDays.has(d) &&
+      !model.pinned[d].some((t) => t.type === "FULL_MOCK") &&
+      fits(FULL_MOCK_MINUTES)
+    ) {
       push(
         {
-          key: `FULL_MOCK:${d}`,
+          key: uniqueKey(`FULL_MOCK:${fromDay(model.startDay + d)}`),
           type: "FULL_MOCK",
           subjectId: null,
           topicId: null,
@@ -283,6 +350,9 @@ export function schedule(model: Model): ScheduleResult {
           window: model.defaultWindow,
           touch: null,
           finalReview: false,
+          pinned: false,
+          title: null,
+          reason: plainReason("FULL_MOCK"),
         },
         false,
       );
@@ -302,7 +372,7 @@ export function schedule(model: Model): ScheduleResult {
         sectionPlaced.add(subject.id);
         push(
           {
-            key: `SECTION_MOCK:${subject.id}`,
+            key: uniqueKey(`SECTION_MOCK:${subject.id}`),
             type: "SECTION_MOCK",
             subjectId: subject.id,
             topicId: null,
@@ -310,6 +380,9 @@ export function schedule(model: Model): ScheduleResult {
             window: subject.window,
             touch: null,
             finalReview: false,
+            pinned: false,
+            title: null,
+            reason: plainReason("SECTION_COMPLETE"),
           },
           false,
         );
@@ -326,7 +399,10 @@ export function schedule(model: Model): ScheduleResult {
           : capacity; // past the deadline: catch up with everything available
       const studyLimit =
         used + Math.max(paced, MIN_FIRST_BLOCK + CHECK_TEST_MINUTES);
-      let firstOfDay = true;
+      // A pinned study block leads the day; interleaving counts it.
+      const pinnedLead = model.pinned[d].find((t) => t.type === "STUDY");
+      if (pinnedLead) leads[d] = pinnedLead.subjectId;
+      let firstOfDay = !pinnedLead;
       for (;;) {
         const limit =
           model.beginner && d < BEGINNER_DAYS ? BEGINNER_BLOCK : MAX_BLOCK;
@@ -337,23 +413,6 @@ export function schedule(model: Model): ScheduleResult {
         const state = pick(d, firstOfDay);
         if (!state) break;
         const t = state.topic;
-        let block = Math.min(t.studyRemaining, limit, room);
-        const rest = t.studyRemaining - block;
-        if (
-          state.studyParts > 0 &&
-          rest > 0 &&
-          rest <= FINISH_SLACK &&
-          block + rest <= limit &&
-          used + block + rest + CHECK_TEST_MINUTES <= capacity
-        ) {
-          block += rest; // finish the topic today rather than leave a short tail
-        } else if (rest > 0 && rest < MIN_BLOCK) {
-          // Avoid leaving a sliver: take it now if allowed, else leave one minimum block. On days
-          // too short for either, accept the short tail rather than stall the topic forever.
-          if (block + rest <= Math.min(room, limit)) block += rest;
-          else if (t.studyRemaining - MIN_BLOCK >= MIN_BLOCK)
-            block = t.studyRemaining - MIN_BLOCK;
-        }
         const starting = state.studyParts === 0;
         // On days too short for a 30-minute block, a whole day's room is the minimum instead.
         const dayRoom = Math.max(
@@ -363,15 +422,38 @@ export function schedule(model: Model): ScheduleResult {
         const minimum = starting
           ? Math.min(t.studyRemaining, limit, MIN_FIRST_BLOCK, dayRoom)
           : Math.min(t.studyRemaining, MIN_BLOCK);
-        if (block < minimum) {
+        let block = Math.min(t.studyRemaining, limit, room);
+        const rest = t.studyRemaining - block;
+        let shortened = false;
+        if (
+          state.studyParts > 0 &&
+          rest > 0 &&
+          rest <= FINISH_SLACK &&
+          block + rest <= limit &&
+          used + block + rest + CHECK_TEST_MINUTES <= capacity
+        ) {
+          block += rest; // finish the topic today rather than leave a short tail
+        } else if (rest > 0 && rest < MIN_BLOCK) {
+          // Avoid leaving a sliver: take it now if allowed, else leave one minimum block (a
+          // 35-minute topic in a beginner's 25-minute week splits 20 + 15, not 25 + 10). On days
+          // too short for either, accept the short tail rather than stall the topic forever.
+          if (block + rest <= Math.min(room, limit)) block += rest;
+          else if (t.studyRemaining - MIN_BLOCK >= MIN_BLOCK) {
+            block = t.studyRemaining - MIN_BLOCK;
+            // Capped by the block limit, not today's room: waiting a day would never help.
+            shortened = limit <= room;
+          }
+        }
+        if (block < minimum && !shortened) {
           // Not worth starting (or continuing) here; it goes first tomorrow.
           if (!inProgress.includes(state)) inProgress.unshift(state);
           break;
         }
         state.studyParts++;
+        const studyKey = uniqueKey(`STUDY:${t.id}:${state.studyParts}`);
         push(
           {
-            key: `STUDY:${t.id}:${state.studyParts}`,
+            key: studyKey,
             type: "STUDY",
             subjectId: t.subjectId,
             topicId: t.id,
@@ -379,12 +461,21 @@ export function schedule(model: Model): ScheduleResult {
             window: t.window,
             touch: null,
             finalReview: false,
+            pinned: false,
+            title: null,
+            reason: topicReason(t, "STUDY_BLOCK", {
+              study: {
+                blockCap: limit,
+                beginnerBlock: model.beginner && d < BEGINNER_DAYS,
+                foundationalFirst: model.beginner && t.foundational,
+              },
+            }),
           },
           true,
         );
         push(
           {
-            key: `CHECK_TEST:${t.id}:${state.studyParts}`,
+            key: uniqueKey(`CHECK_TEST:${studyKey.slice("STUDY:".length)}`),
             type: "CHECK_TEST",
             subjectId: t.subjectId,
             topicId: t.id,
@@ -392,6 +483,9 @@ export function schedule(model: Model): ScheduleResult {
             window: t.window,
             touch: null,
             finalReview: false,
+            pinned: false,
+            title: null,
+            reason: topicReason(t, "CHECK_AFTER_STUDY"),
           },
           true,
         );
@@ -405,8 +499,10 @@ export function schedule(model: Model): ScheduleResult {
         const index = inProgress.indexOf(state);
         if (t.studyRemaining === 0) {
           if (index >= 0) inProgress.splice(index, 1);
-          state.lastActivity = d;
-          createTouches(state, d);
+          // Revisions count from the last block, scheduled or pinned.
+          const studied = Math.max(d, t.pinnedStudyLastDay ?? d);
+          state.lastActivity = studied;
+          createTouches(state, studied);
         } else if (index < 0) {
           inProgress.push(state);
         }
@@ -421,6 +517,7 @@ export function schedule(model: Model): ScheduleResult {
         .filter(
           (s) =>
             !s.finalReviewed &&
+            !s.topic.skipped &&
             s.topic.studyRemaining === 0 &&
             s.next === s.touches.length &&
             (s.lastActivity ?? -Infinity) < d,
@@ -438,7 +535,7 @@ export function schedule(model: Model): ScheduleResult {
         state.lastActivity = d;
         push(
           {
-            key: `REVISION:${state.topic.id}:final`,
+            key: uniqueKey(`REVISION:${state.topic.id}:final`),
             type: "REVISION",
             subjectId: state.topic.subjectId,
             topicId: state.topic.id,
@@ -446,6 +543,9 @@ export function schedule(model: Model): ScheduleResult {
             window: state.topic.window,
             touch: null,
             finalReview: true,
+            pinned: false,
+            title: null,
+            reason: topicReason(state.topic, "FINAL_REVIEW"),
           },
           false,
         );

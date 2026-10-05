@@ -82,7 +82,12 @@ export function assertPlanInvariants(input: PlanInput, plan: PlanOutput) {
     const total = day.tasks.reduce((sum, t) => sum + t.minutes, 0);
     if (total !== day.plannedMinutes)
       fail(`plannedMinutes adds up on ${day.date}`);
-    if (total > day.capacityMinutes) fail(`over capacity on ${day.date}`);
+    // The user may overfill a day by hand; the engine only fills what pins leave free.
+    const pinnedTotal = day.tasks
+      .filter((t) => t.pinned)
+      .reduce((sum, t) => sum + t.minutes, 0);
+    if (total - pinnedTotal > Math.max(0, day.capacityMinutes - pinnedTotal))
+      fail(`over capacity on ${day.date}`);
     if (
       day.capacityMinutes !==
       dayCapacity(input.availability.minutesByWeekday[day.weekday])
@@ -98,6 +103,8 @@ export function assertPlanInvariants(input: PlanInput, plan: PlanOutput) {
         fail(`task ${task.id} is filed under its own date`);
       if (task.topicId && subjectsByTopic.get(task.topicId) !== task.subjectId)
         fail(`subject of ${task.id}`);
+      assertReason(task, fail);
+      if (task.pinned) return; // the user's choice overrides phase and block rules
       if (
         date >= reviewStart &&
         task.type !== "REVISION" &&
@@ -139,6 +146,38 @@ export function assertPlanInvariants(input: PlanInput, plan: PlanOutput) {
   assertInterleaving(plan);
 }
 
+type Task = PlanOutput["days"][number]["tasks"][number];
+
+/** Every task explains itself (CLAUDE.md rule 14). */
+export function assertReason(task: Task, fail: (message: string) => never) {
+  const r = task.reason;
+  const topicTask =
+    task.type === "STUDY" ||
+    task.type === "CHECK_TEST" ||
+    task.type === "REVISION";
+  if (topicTask !== (r.breakdown !== null))
+    fail(`${task.id} has a minutes breakdown exactly when it is a topic task`);
+  if (task.pinned !== (r.override !== null))
+    fail(`${task.id} names its override exactly when pinned`);
+  if (task.type === "STUDY" && !task.pinned && !r.study)
+    fail(`${task.id} explains its block size`);
+  const spaced =
+    task.type === "REVISION" && !task.finalReview && !task.pinned;
+  if (spaced !== (r.revision !== null))
+    fail(`${task.id} explains its revision gap`);
+  if (r.revision && r.revision.touch !== task.touch)
+    fail(`${task.id} reason names its own touch`);
+  const rules: Record<Task["type"], string> = {
+    STUDY: "STUDY_BLOCK",
+    CHECK_TEST: "CHECK_AFTER_STUDY",
+    REVISION: task.finalReview ? "FINAL_REVIEW" : "SPACED_REVISION",
+    SECTION_MOCK: "SECTION_COMPLETE",
+    FULL_MOCK: "FULL_MOCK",
+    CUSTOM: "USER_TASK",
+  };
+  if (r.rule !== rules[task.type]) fail(`${task.id} reason rule ${r.rule}`);
+}
+
 /**
  * No subject leads 3+ days in a row while another subject still has unstudied topics.
  * (With one subject left the rule cannot be met, so it is relaxed.)
@@ -155,8 +194,12 @@ export function assertInterleaving(plan: PlanOutput) {
   );
   for (let i = 2; i < plan.days.length; i++) {
     const lead = plan.days[i].leadSubjectId;
+    const pinnedLead = [0, 1, 2].some((k) =>
+      plan.days[i - k].tasks.some((t) => t.type === "STUDY" && t.pinned),
+    );
     if (
       !lead ||
+      pinnedLead ||
       plan.days[i - 1].leadSubjectId !== lead ||
       plan.days[i - 2].leadSubjectId !== lead
     )

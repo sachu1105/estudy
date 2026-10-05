@@ -32,7 +32,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t1:1",
@@ -44,7 +68,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -69,7 +113,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t1:2",
@@ -81,7 +149,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -106,7 +194,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:1",
@@ -118,7 +230,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -143,7 +275,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t1:3",
@@ -155,7 +311,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -180,7 +356,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t1:4",
@@ -192,7 +392,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -217,7 +437,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:2",
@@ -229,7 +473,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -254,7 +518,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:3",
@@ -266,7 +554,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -288,7 +596,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -313,7 +647,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:4",
@@ -325,7 +683,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -350,7 +728,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t2:1",
@@ -362,7 +764,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -387,7 +809,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t2:2",
@@ -399,7 +845,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -421,7 +887,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -446,7 +938,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t2:3",
@@ -458,7 +974,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -483,7 +1019,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t2:4",
@@ -495,7 +1055,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -517,7 +1097,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -542,7 +1148,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:1",
@@ -554,7 +1184,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -576,7 +1226,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-18",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -601,7 +1277,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:2",
@@ -613,7 +1313,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -635,7 +1355,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -660,7 +1406,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:3",
@@ -672,7 +1442,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -697,7 +1487,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:4",
@@ -709,7 +1523,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -734,7 +1568,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t3:1",
@@ -746,7 +1604,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -771,7 +1649,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t3:2",
@@ -783,7 +1685,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -805,7 +1727,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-18",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:1",
@@ -817,7 +1765,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-25",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -842,7 +1816,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t3:3",
@@ -854,7 +1852,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -879,7 +1897,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t3:4",
@@ -891,7 +1933,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -916,7 +1978,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:1",
@@ -928,7 +2014,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -953,7 +2059,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:2",
@@ -965,7 +2095,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -987,7 +2137,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-30",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1012,7 +2188,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:3",
@@ -1024,7 +2224,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1046,7 +2266,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-25",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1071,7 +2317,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:4",
@@ -1083,7 +2353,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1108,7 +2398,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t4:1",
@@ -1120,7 +2434,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1145,7 +2479,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t4:2",
@@ -1157,7 +2515,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1179,7 +2557,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t3:1",
@@ -1191,7 +2595,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-11-05",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1213,7 +2643,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-30",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1238,7 +2694,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t4:3",
@@ -1250,7 +2730,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1275,7 +2775,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-geography-t4:4",
@@ -1287,7 +2811,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1309,7 +2853,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1340,7 +2910,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-11-11",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1362,7 +2958,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-11-05",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1393,7 +3015,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-18",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1442,7 +3090,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-11-11",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1482,7 +3156,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-25",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1540,7 +3240,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-30",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1607,7 +3333,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-11-05",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1674,7 +3426,33 @@
           "window": "NIGHT",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-11-11",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -2002,7 +3780,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-geography-t2:final",
@@ -2014,7 +3812,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2036,7 +3854,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-geography-t4:final",
@@ -2048,7 +3886,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2070,7 +3928,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:final",
@@ -2082,7 +3960,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2104,7 +4002,27 @@
           "window": "NIGHT",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 50
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },

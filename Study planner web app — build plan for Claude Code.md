@@ -34,6 +34,17 @@ tests, discuss, ask questions and compete on a group rank. A global rank shows e
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
 
+The user is never asked to blindly trust the AI. Every AI decision is visible and
+editable: the parsed syllabus, the minutes given to each topic and why, the order of
+tasks, how the streak is counted, why a topic got an extra revision. Users can override
+any of it by hand.
+
+Study vault: every subject and topic gets its own folder, created automatically from
+the syllabus. Users keep their own notes, website links, PDFs and photos of pages
+(camera capture or upload from device) in those folders, plus custom folders of their
+own. On the paid plans, they can turn the material in any folder into a mock test: the
+AI reads their notes, PDFs and scanned pages and writes questions from them.
+
 ## Stack
 
 One Next.js app for frontend, backend and admin. One separate worker process from the
@@ -67,7 +78,7 @@ studyplanner/
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
       (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, settings, onboarding
+                       progress, vault, settings, onboarding
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
@@ -139,7 +150,9 @@ Run test, lint and typecheck before declaring any task done.
 
 8. ENTITLEMENTS GO THROUGH ONE FUNCTION. Use `can(user, feature)` and
    `limit(user, feature)` from server/entitlements. Never write `plan === 'PRO'`
-   anywhere else. While BILLING_ENABLED=false, every user resolves to ELITE.
+   anywhere else. While BILLING_ENABLED=false, every user resolves to ELITE, except
+   features marked paidOnly, which need a real PRO or ELITE subscription or an
+   admin grant.
 
 9. AUTHORIZATION IS SERVER-SIDE ON EVERY ENTRYPOINT. Every route handler and server
    action starts with requireUser() or requireRole(). Middleware only refreshes tokens
@@ -159,12 +172,16 @@ Run test, lint and typecheck before declaring any task done.
 
 13. Rate-limit auth, uploads, AI-triggering actions and test submissions with Redis.
 
-14. MOBILE FIRST, EVERY SCREEN. Most users study on a phone. Every page, dialog, form,
-    table and admin screen is designed at 360px wide first, then scaled up. No horizontal
-    scroll at 360px, tap targets at least 44x44px, text never below 13px, inputs 16px on
-    mobile (no iOS zoom), safe-area insets respected, nothing hidden behind the bottom tab
-    bar. A feature is not done until it is checked at 360px, 390px and 1366px, and its
-    Playwright tests run on both the desktop and mobile projects.
+14. EVERY AI DECISION IS EXPLAINABLE AND OVERRIDABLE. The plan engine returns a
+    reason with each allocation (base minutes x intensity x confidence, revision
+    gaps, why a touch was added). The UI shows it under "Why this?". Any user edit
+    (minutes, day, order, locked task) is stored as an override that the re-plan
+    respects. AI-written questions always show their source.
+
+15. VAULT MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
+    them unless they explicitly share an item to a group. Questions generated from
+    their material never enter the public question pool. Files are served only
+    through short-lived signed URLs after an ownership check.
 
 ## Plans and entitlements
 
@@ -182,6 +199,14 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   group file storage         50 MB       1 GB         5 GB
   analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
+  study vault storage        200 MB      5 GB         20 GB
+  vault folders and notes    unlimited   unlimited    unlimited
+  mock tests from my vault   no          30 / month   100 / month   (paidOnly)
+  pages per vault mock       -           40           150
+
+"Mock tests from my vault" is the core paid feature. It is paidOnly: it stays locked
+during the free launch period and opens only with a PRO or ELITE subscription or an
+admin grant. Locked users see what it does and a calm upgrade card, never a dead button.
 
 ## Product rules
 
@@ -212,7 +237,7 @@ neutral; the accent marks the one thing that matters.
   border        #E6E6E1   1px borders and dividers
   ink           #16161A   headings and body text
   inkMuted      #5F5F6B   secondary text, labels
-  inkSubtle     #9A9AA3   placeholders, disabled, decorative icons. Below AA: never for readable text
+  inkSubtle     #9A9AA3   placeholders, disabled, timestamps
   accent        #3B5BFD   primary button, active nav, links, focus ring, progress
   accentSoft    #EBEEFF   selected rows, active chips
   accentInk     #2238C9   text on accentSoft
@@ -297,14 +322,6 @@ Sentence case, active voice, same verb through a flow ("Start session" ->
 "Session started"). Errors say what happened and how to fix it; never apologise.
 Empty states are invitations: "No groups yet. Create one and invite a friend."
 
-### Mobile
-
-Design at 360px first. Single column under 768px; grids collapse, never shrink.
-Sheets from the bottom replace popovers and side panels on phones. Primary actions sit
-within thumb reach (bottom of the screen) on long forms and focus views. Tables become
-stacked cards on mobile. Use dvh, not vh. Test with a real phone before calling a
-milestone done.
-
 ### Accessibility floor
 
 WCAG AA contrast. Visible accent focus ring. Full keyboard navigation. Works at 200%
@@ -369,7 +386,8 @@ Read CLAUDE.md. Milestone 1 is committed.
 4. middleware.ts refreshes tokens and redirects unauthenticated users. requireUser()
    and requireRole() helpers used on every protected handler and action.
 5. server/entitlements: config.ts with the limits table from CLAUDE.md, can() and
-   limit(). BILLING_ENABLED=false resolves everyone to ELITE. Unit-test both modes.
+   limit(). BILLING_ENABLED=false resolves everyone to ELITE except paidOnly
+   features. Unit-test both modes, including a paidOnly feature staying locked.
 6. Redis rate limiting on login, register, reset (sliding window).
 7. Auth screens using the design system: calm, single column, one accent button.
 8. Seed script creates one SUPER_ADMIN from env vars.
@@ -505,7 +523,14 @@ replan(input & { history: CompletedWork[] }): { plan, diff }
 - diff: minutes planned vs done, topics moved, touches added or dropped, coverage before
   and after
 
+Explainability (CLAUDE.md rule 14): every PlanTask carries a `reason` object - base
+minutes, intensity and confidence multipliers, which revision touch it is, and why
+any extra touch was added. Both functions accept `overrides` (moved, resized, locked,
+custom or already-done tasks) and must honour them.
+
 Write tests FIRST:
+- every task has a complete reason object
+- locked and moved overrides survive a replan unchanged
 - no task after the horizon; every final revision before it
 - no subject leads 3+ consecutive days
 - every STUDY task is followed by a CHECK_TEST for the same topic
@@ -610,6 +635,15 @@ Read CLAUDE.md. Milestones 1-5 are committed.
    No overdue items anywhere.
 8. Empty, loading (skeletons) and error states for every screen per the copy rules.
 
+9. Transparency (CLAUDE.md rule 14): a "Why this?" panel on every task and topic
+   showing the minutes breakdown, revision schedule and reason for any extra touch.
+   A "How your plan was built" page showing the full inputs (horizon, availability,
+   intensities, confidences) and totals. A "How your streak works" panel showing
+   which days counted, freezes used and why.
+10. Manual control: drag a task to another day, change its minutes, lock it, add a
+    custom task, or mark a topic as already done. Store each as a PlanOverride the
+    re-plan respects. A "Reset to suggested" action per task.
+
 Run all tests. Then commit and stop.
 ```
 
@@ -644,6 +678,94 @@ Read CLAUDE.md. Milestones 1-6 are committed.
 
 Test: a user scoring 20% on a topic gets more scheduled minutes on it after replan than
 a user scoring 90%.
+```
+
+### Milestone 7.5 — study vault: folders, notes, links and files
+
+```
+Read CLAUDE.md. Milestones 1-7 are committed.
+
+Build the study vault at /vault and inside every subject and topic page.
+
+1. Prisma: Folder (ownerId, parentId, subjectId?, topicId?, name, kind SYSTEM |
+   CUSTOM, order), VaultItem (folderId, ownerId, type NOTE | LINK | FILE | IMAGE,
+   title, tags[], pinned, sizeBytes, sha256, storageKey, mimeType, pageCount,
+   extractedText, extractStatus, createdAt, deletedAt for trash), Note body stored as
+   JSON (editor document) plus plain text for search.
+2. Auto folders: when a plan is created, create one SYSTEM folder per subject and one
+   per topic under it, mirroring the syllabus tree. Users can add CUSTOM folders and
+   sub-folders anywhere, rename, reorder and move items by drag and drop. SYSTEM
+   folders can be renamed but not deleted.
+3. Notes: rich text editor (Tiptap) with headings, lists, bold, highlight, tables,
+   checklists and inline images. Autosave every 2s with a quiet "Saved" indicator.
+4. Links: paste a URL; the worker fetches title, description and favicon server-side
+   (SSRF-safe: block private IP ranges, 5s timeout, 1 MB cap). Show as a link card.
+5. Files: upload PDFs and images from device (drag and drop, multi-select) or capture
+   a page with the phone camera (<input accept="image/*" capture="environment">).
+   Client-side compress images to max 2000px, auto-rotate from EXIF. Multi-page
+   capture: take several photos and save them as one document. Presigned uploads to
+   S3; enforce limit(user, 'vaultStorage') before signing.
+6. Extraction job per file: PDF text via unpdf; images and scanned PDFs via OCR
+   (OcrProvider interface - Tesseract in the worker for dev, a hosted vision model in
+   production; English and Malayalam). Store extractedText for search and for vault
+   mocks. Show extraction status on each item.
+7. Viewer: in-app PDF viewer and image lightbox, with zoom and page navigation.
+8. Search across the whole vault (Postgres full-text on titles, notes and extracted
+   text) with filters by subject, type and tag. Cmd/Ctrl+K can search the vault.
+9. Topic page integration: every topic page shows its folder - notes, links and files
+   - next to the plan tasks, with a quick "Add note / link / file" bar.
+10. Today and the session screen: "Open topic folder" so materials are one click away
+    while studying.
+11. Share to group: any single item can be shared into a group the user belongs to
+    (copy, not a live link). Unsharing removes the group copy.
+12. Trash with 30-day restore. Storage usage meter in settings.
+13. Security: ownership check on every read, signed URLs that expire in 5 minutes,
+    MIME sniffing on upload, never render uploaded HTML or SVG inline.
+
+Empty state for a new topic folder: "Nothing here yet. Add a note, a link or a photo
+of your notebook."
+```
+
+### Milestone 7.6 — mock tests from your own material (paid)
+
+```
+Read CLAUDE.md. Milestones 1-7.5 are committed.
+
+The core paid feature: turn what the user collected into a mock test. Gated by
+can(user, 'vaultMocks'), which is paidOnly.
+
+1. Entry points: "Create mock test" button on any folder, on a multi-selection of
+   items, and on a single file or note.
+2. Setup sheet: chosen sources listed with page counts; question count (10, 20, 30,
+   50), difficulty (easy, mixed, hard), question style (factual, conceptual, PSC
+   style), language (English, Malayalam), timed or untimed, negative marking toggle.
+   Show the page limit for their plan and how many vault mocks remain this month.
+3. Generation job: gather extractedText from the selected items (wait for any pending
+   OCR), chunk by page, generate questions with AIProvider. Each question must carry a
+   source reference (item id + page or note section). zod-validate, dedupe, drop any
+   question whose answer is not supported by its source chunk (second AI check pass).
+4. Progress via SSE: reading material -> writing questions -> checking answers ->
+   ready. The user can leave and get an in-app notification when it is done.
+5. Review before taking (CLAUDE.md rule 5 - the user is the gate for their own
+   material): list of questions with source snippets; edit, delete, regenerate one,
+   or approve all. Saved as a private MockTest with source = VAULT.
+6. Taking the test reuses the milestone 7 test player. After each answer, "See in
+   your notes" opens the exact source page or note section.
+7. Results feed proficiency and the weekly re-plan like any other test, and are
+   listed inside the folder they came from ("Tests from this folder").
+8. Retake options: same questions shuffled, only the ones I got wrong, or generate a
+   fresh set (counts against the monthly limit).
+9. Locked state for FREE users: the button stays visible, opens a short explanation
+   with a sample of what a vault mock looks like and an upgrade card. No dead clicks.
+10. Costs: log every generation in AiUsage with page count and tokens; hard cap pages
+    per request by plan; cache results by (source hashes + settings) so an identical
+    request never pays twice.
+11. Vault mocks can be shared to a group as a test (questions only, never the source
+    files unless the user also shares them).
+
+Tests: a FREE user with BILLING_ENABLED=false is still blocked; a PRO user over the
+monthly limit is blocked with a clear message; every generated question has a valid
+source reference; deleting a source file does not break past attempts.
 ```
 
 ### Milestone 8 — use it yourself

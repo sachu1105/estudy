@@ -45,6 +45,17 @@ function rows(plan: PlanName) {
     },
     { label: `${storage(limits.groupStorageBytes)} group storage`, on: true },
     {
+      label: `${storage(limits.vaultStorageBytes)} study vault for notes, links and files`,
+      on: true,
+    },
+    {
+      label:
+        limits.vaultMocksPerMonth > 0
+          ? `${limits.vaultMocksPerMonth} mock tests a month from your own notes, up to ${limits.pagesPerVaultMock} pages each`
+          : "Mock tests from your own notes",
+      on: limits.vaultMocksPerMonth > 0,
+    },
+    {
       label: flags.topperComparison
         ? "Full analytics and topper comparison"
         : flags.fullAnalytics
@@ -78,8 +89,8 @@ export function PricingTeaser({
         </Reveal>
         {!billingEnabled ? (
           <Reveal className="mx-auto mt-8 flex max-w-xl items-center justify-center gap-2 rounded-control bg-accent-soft px-4 py-3 text-center text-body font-medium text-accent-ink">
-            <Gift className="size-4 shrink-0" aria-hidden /> Every feature is
-            free during launch
+            <Gift className="size-4 shrink-0" aria-hidden /> Free during
+            launch, except mock tests from your own notes
           </Reveal>
         ) : null}
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">

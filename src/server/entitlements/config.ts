@@ -14,12 +14,25 @@ export type LimitFeature =
   | "sectionMocksPerWeek"
   | "groupsCreated"
   | "groupsJoined"
-  | "groupStorageBytes";
+  | "groupStorageBytes"
+  | "vaultStorageBytes"
+  | "vaultFolders"
+  | "vaultMocksPerMonth"
+  | "pagesPerVaultMock";
 
 export type FlagFeature =
   "aiExplanations" | "fullAnalytics" | "topperComparison" | "priorityParsing";
 
 export type Feature = LimitFeature | FlagFeature;
+
+/**
+ * Paid features stay locked during the free launch (BILLING_ENABLED=false). They resolve
+ * against the user's real subscription: PRO or ELITE, paid or granted by an admin.
+ */
+export const PAID_ONLY: ReadonlySet<Feature> = new Set<Feature>([
+  "vaultMocksPerMonth",
+  "pagesPerVaultMock",
+]);
 
 type PlanConfig = {
   limits: Record<LimitFeature, number>;
@@ -36,6 +49,10 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: 1,
       groupsJoined: 3,
       groupStorageBytes: 50 * MB,
+      vaultStorageBytes: 200 * MB,
+      vaultFolders: Infinity,
+      vaultMocksPerMonth: 0,
+      pagesPerVaultMock: 0,
     },
     flags: {
       aiExplanations: false,
@@ -53,6 +70,10 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: 5,
       groupsJoined: 10,
       groupStorageBytes: 1 * GB,
+      vaultStorageBytes: 5 * GB,
+      vaultFolders: Infinity,
+      vaultMocksPerMonth: 30,
+      pagesPerVaultMock: 40,
     },
     flags: {
       aiExplanations: true,
@@ -70,6 +91,10 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: Infinity,
       groupsJoined: Infinity,
       groupStorageBytes: 5 * GB,
+      vaultStorageBytes: 20 * GB,
+      vaultFolders: Infinity,
+      vaultMocksPerMonth: 100,
+      pagesPerVaultMock: 150,
     },
     flags: {
       aiExplanations: true,

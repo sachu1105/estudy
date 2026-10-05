@@ -4,6 +4,7 @@ import { clampConfidence, studyMinutes, type Confidence } from "./minutes";
 import {
   replanInputSchema,
   type CompletedWork,
+  type ConfidenceCause,
   type CoverageWarning,
   type ParsedReplanInput,
   type PlanOutput,
@@ -62,21 +63,28 @@ function recomputeConfidence(
 ) {
   let confidence: number = prior;
   let weak = false;
+  const causes: ConfidenceCause[] = [];
   if (history && history.accuracies.length > 0) {
     // Integer mean in basis points keeps this exact across machines.
     const meanBp = Math.round(
       history.accuracies.reduce((s, a) => s + a * 10_000, 0) /
         history.accuracies.length,
     );
-    if (meanBp >= STRONG_ACCURACY * 10_000) confidence += 1;
-    else if (meanBp < WEAK_ACCURACY * 10_000) {
+    if (meanBp >= STRONG_ACCURACY * 10_000) {
+      confidence += 1;
+      causes.push("HIGH_SCORE");
+    } else if (meanBp < WEAK_ACCURACY * 10_000) {
       confidence -= 1;
       weak = true;
+      causes.push("LOW_SCORE");
     }
   }
   const revisionsDone = history?.revisions ?? 0;
-  if (revisionsDue > 0 && revisionsDone * 2 < revisionsDue) confidence -= 1;
-  return { confidence: clampConfidence(confidence), weak };
+  if (revisionsDue > 0 && revisionsDone * 2 < revisionsDue) {
+    confidence -= 1;
+    causes.push("MISSED_REVISIONS");
+  }
+  return { confidence: clampConfidence(confidence), weak, causes };
 }
 
 function coverageBefore(
@@ -233,7 +241,7 @@ export function replan(raw: ReplanInput): {
         prior.get(topic.id)?.confidence ?? subject.confidence,
       );
       const done = byTopic.get(topic.id);
-      const { confidence, weak } = recomputeConfidence(
+      const { confidence, weak, causes } = recomputeConfidence(
         priorConfidence,
         done,
         revisionsDue.get(topic.id) ?? 0,
@@ -244,6 +252,13 @@ export function replan(raw: ReplanInput): {
           topicId: topic.id,
           confidence,
           extraRevision: weak,
+          // Nothing new this week: keep the causes that explain the current confidence.
+          causes:
+            causes.length > 0
+              ? causes
+              : confidence !== subject.confidence
+                ? (prior.get(topic.id)?.causes ?? [])
+                : [],
         });
       }
       if (!done) continue;
@@ -271,6 +286,7 @@ export function replan(raw: ReplanInput): {
     availability: input.availability,
     beginnerMode: input.beginnerMode,
     subjects: input.subjects,
+    overrides: input.overrides,
     adjustments,
     progress,
     completedSectionMocks: [

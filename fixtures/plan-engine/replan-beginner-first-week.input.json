@@ -201,7 +201,31 @@
                 "total": 5
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t2:1",
@@ -213,7 +237,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -238,7 +282,31 @@
                 "total": 5
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t2:2",
@@ -250,7 +318,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -275,7 +363,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t2:1",
@@ -287,7 +399,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -312,7 +444,31 @@
                 "total": 5
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t2:3",
@@ -324,7 +480,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -349,7 +525,31 @@
                 "total": 5
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t2:4",
@@ -361,7 +561,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -386,7 +606,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t2:2",
@@ -398,7 +642,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -423,7 +687,31 @@
                 "total": 5
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 25,
+                  "beginnerBlock": true,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t2:5",
@@ -435,7 +723,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -457,7 +765,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-11",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t2:3",
@@ -472,7 +806,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t2:3",
@@ -484,7 +842,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -509,7 +887,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t2:4",
@@ -521,7 +923,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -543,7 +965,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-11",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t2:1",
@@ -555,7 +1003,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-13",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:indian-constitution-t4:1",
@@ -570,7 +1044,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t4:1",
@@ -582,7 +1080,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -607,7 +1125,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t4:2",
@@ -619,7 +1161,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -641,7 +1203,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-13",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t4:1",
@@ -656,7 +1244,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t4:1",
@@ -668,7 +1280,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -693,7 +1325,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t4:3",
@@ -705,7 +1361,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -730,7 +1406,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t4:4",
@@ -742,7 +1442,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -764,7 +1484,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-18",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t4:2",
@@ -779,7 +1525,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t4:2",
@@ -791,7 +1561,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -816,7 +1606,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t4:3",
@@ -828,7 +1642,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -850,7 +1684,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-11",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:indian-constitution-t4:2",
@@ -862,7 +1722,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-18",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:indian-constitution-t1:1",
@@ -877,7 +1763,31 @@
                 "total": 2
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t1:1",
@@ -889,7 +1799,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -914,7 +1844,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": true
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t4:4",
@@ -926,7 +1880,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -948,7 +1922,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-13",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t4:1",
@@ -960,7 +1960,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-22",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:indian-constitution-t1:2",
@@ -975,7 +2001,31 @@
                 "total": 2
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t1:2",
@@ -987,7 +2037,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1009,7 +2079,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-23",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t1:1",
@@ -1024,7 +2120,31 @@
                 "total": 2
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t1:1",
@@ -1036,7 +2156,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1058,7 +2198,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-22",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t1:2",
@@ -1073,7 +2239,31 @@
                 "total": 2
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t1:2",
@@ -1085,7 +2275,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1107,7 +2317,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-23",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t1:1",
@@ -1119,7 +2355,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-25",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:indian-constitution-t3:1",
@@ -1134,7 +2396,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t3:1",
@@ -1146,7 +2432,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1171,7 +2477,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t3:2",
@@ -1183,7 +2513,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1205,7 +2555,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-18",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t1:2",
@@ -1217,7 +2593,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-25",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t3:1",
@@ -1232,7 +2634,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t3:1",
@@ -1244,7 +2670,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1269,7 +2715,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t3:3",
@@ -1281,7 +2751,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1306,7 +2796,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:indian-constitution-t3:4",
@@ -1318,7 +2832,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1340,7 +2874,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-30",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t3:2",
@@ -1355,7 +2915,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t3:2",
@@ -1367,7 +2951,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1389,7 +2993,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-22",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t3:3",
@@ -1404,7 +3034,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t3:3",
@@ -1416,7 +3070,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1438,7 +3112,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-23",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:indian-constitution-t3:2",
@@ -1450,7 +3150,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-30",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "STUDY:kerala-geography-t3:4",
@@ -1465,7 +3191,31 @@
                 "total": 4
               },
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "CHECK_TEST:kerala-geography-t3:4",
@@ -1477,7 +3227,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1499,7 +3269,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 1,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-11-02",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "SECTION_MOCK:indian-constitution",
@@ -1511,7 +3307,16 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SECTION_COMPLETE",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1533,7 +3338,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-25",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1555,7 +3386,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 2,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-11-02",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1577,7 +3434,16 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SECTION_COMPLETE",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1617,7 +3483,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-30",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1639,7 +3531,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-11",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1670,7 +3588,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-13",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t3:3",
@@ -1682,7 +3626,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 3,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-11-02",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1740,7 +3710,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-18",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1789,7 +3785,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-22",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1811,7 +3833,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-23",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1842,7 +3890,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-25",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -1864,7 +3938,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t2:final",
@@ -1876,7 +3970,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 125
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:indian-constitution-t4:final",
@@ -1888,7 +4002,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t4:final",
@@ -1900,7 +4034,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 2,
+                  "difficulty": 5,
+                  "baseMinutes": 74,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 120
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1922,7 +4076,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t1:final",
@@ -1934,7 +4108,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1947,7 +4141,7 @@
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:53",
+              "id": "FULL_MOCK:2026-11-27",
               "type": "FULL_MOCK",
               "date": "2026-11-27",
               "subjectId": null,
@@ -1956,7 +4150,16 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FULL_MOCK",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -1987,7 +4190,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-30",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -2000,7 +4229,7 @@
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:56",
+              "id": "FULL_MOCK:2026-11-30",
               "type": "FULL_MOCK",
               "date": "2026-11-30",
               "subjectId": null,
@@ -2009,7 +4238,16 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FULL_MOCK",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:indian-constitution-t3:final",
@@ -2021,7 +4259,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         },
@@ -2052,7 +4310,33 @@
               "window": "MORNING",
               "part": null,
               "touch": 4,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-11-02",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
             }
           ]
         },
@@ -2065,7 +4349,7 @@
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:59",
+              "id": "FULL_MOCK:2026-12-03",
               "type": "FULL_MOCK",
               "date": "2026-12-03",
               "subjectId": null,
@@ -2074,7 +4358,16 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": false
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FULL_MOCK",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             },
             {
               "id": "REVISION:kerala-geography-t3:final",
@@ -2086,7 +4379,27 @@
               "window": "MORNING",
               "part": null,
               "touch": null,
-              "finalReview": true
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 5,
+                  "difficulty": 2,
+                  "baseMinutes": 86,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 1,
+                  "confidence": 1,
+                  "confidencePct": 160,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
             }
           ]
         }

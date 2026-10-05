@@ -1,8 +1,8 @@
 {
   "fn": "replan",
   "input": {
-    "today": "2026-10-12",
-    "targetDays": 83,
+    "today": "2026-10-15",
+    "targetDays": 65,
     "availability": {
       "minutesByWeekday": [
         120,
@@ -181,38 +181,69 @@
         ]
       }
     ],
+    "overrides": [
+      {
+        "kind": "MOVE",
+        "taskId": "STUDY:kerala-renaissance-t1:1",
+        "type": "STUDY",
+        "date": "2026-10-10",
+        "minutes": 35,
+        "window": "MORNING",
+        "subjectId": "kerala-renaissance",
+        "topicId": "kerala-renaissance-t1",
+        "touch": null
+      },
+      {
+        "kind": "RESIZE",
+        "taskId": "STUDY:indian-constitution-t2:2",
+        "type": "STUDY",
+        "date": "2026-10-11",
+        "minutes": 55,
+        "window": "MORNING",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t2",
+        "touch": null
+      },
+      {
+        "kind": "LOCK",
+        "taskId": "REVISION:indian-constitution-t1:1",
+        "type": "REVISION",
+        "date": "2026-10-07",
+        "minutes": 10,
+        "window": "MORNING",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t1",
+        "touch": 1
+      },
+      {
+        "kind": "CUSTOM",
+        "taskId": "custom-previous-paper",
+        "type": "CUSTOM",
+        "date": "2026-10-25",
+        "minutes": 60,
+        "title": "Previous year LDC paper"
+      },
+      {
+        "kind": "TOPIC_DONE",
+        "topicId": "kerala-renaissance-t2"
+      }
+    ],
     "history": [
       {
         "date": "2026-10-05",
         "type": "STUDY",
-        "subjectId": "indian-constitution",
-        "topicId": "indian-constitution-t1",
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t1",
         "minutes": 30,
         "accuracy": null
       },
       {
         "date": "2026-10-05",
         "type": "CHECK_TEST",
-        "subjectId": "indian-constitution",
-        "topicId": "indian-constitution-t1",
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t1",
         "minutes": 10,
-        "accuracy": 0.75
-      },
-      {
-        "date": "2026-10-06",
-        "type": "STUDY",
-        "subjectId": "indian-constitution",
-        "topicId": "indian-constitution-t1",
-        "minutes": 20,
-        "accuracy": null
-      },
-      {
-        "date": "2026-10-06",
-        "type": "CHECK_TEST",
-        "subjectId": "indian-constitution",
-        "topicId": "indian-constitution-t1",
-        "minutes": 10,
-        "accuracy": 0.75
+        "accuracy": 0.65
       },
       {
         "date": "2026-10-07",
@@ -225,90 +256,74 @@
       {
         "date": "2026-10-07",
         "type": "STUDY",
-        "subjectId": "kerala-geography",
-        "topicId": "kerala-geography-t1",
-        "minutes": 30,
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t1",
+        "minutes": 15,
         "accuracy": null
       },
       {
         "date": "2026-10-07",
         "type": "CHECK_TEST",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t1",
+        "minutes": 10,
+        "accuracy": 0.65
+      },
+      {
+        "date": "2026-10-08",
+        "type": "REVISION",
         "subjectId": "kerala-geography",
         "topicId": "kerala-geography-t1",
         "minutes": 10,
-        "accuracy": 0.75
+        "accuracy": null
       },
       {
         "date": "2026-10-08",
         "type": "STUDY",
-        "subjectId": "kerala-renaissance",
-        "topicId": "kerala-renaissance-t1",
-        "minutes": 30,
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t2",
+        "minutes": 35,
         "accuracy": null
       },
       {
         "date": "2026-10-08",
         "type": "CHECK_TEST",
-        "subjectId": "kerala-renaissance",
-        "topicId": "kerala-renaissance-t1",
-        "minutes": 10,
-        "accuracy": 0.75
-      },
-      {
-        "date": "2026-10-09",
-        "type": "REVISION",
-        "subjectId": "indian-constitution",
-        "topicId": "indian-constitution-t1",
-        "minutes": 10,
-        "accuracy": null
-      },
-      {
-        "date": "2026-10-09",
-        "type": "STUDY",
-        "subjectId": "kerala-renaissance",
-        "topicId": "kerala-renaissance-t1",
-        "minutes": 20,
-        "accuracy": null
-      },
-      {
-        "date": "2026-10-09",
-        "type": "CHECK_TEST",
-        "subjectId": "kerala-renaissance",
-        "topicId": "kerala-renaissance-t1",
-        "minutes": 10,
-        "accuracy": 0.75
-      },
-      {
-        "date": "2026-10-10",
-        "type": "REVISION",
         "subjectId": "kerala-geography",
-        "topicId": "kerala-geography-t1",
+        "topicId": "kerala-geography-t2",
         "minutes": 10,
+        "accuracy": 0.65
+      },
+      {
+        "date": "2026-10-09",
+        "type": "STUDY",
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t2",
+        "minutes": 45,
         "accuracy": null
       },
       {
-        "date": "2026-10-10",
-        "type": "REVISION",
-        "subjectId": "kerala-renaissance",
-        "topicId": "kerala-renaissance-t1",
+        "date": "2026-10-09",
+        "type": "CHECK_TEST",
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t2",
         "minutes": 10,
-        "accuracy": null
+        "accuracy": 0.65
       },
       {
-        "date": "2026-10-10",
+        "date": "2026-10-11",
         "type": "STUDY",
         "subjectId": "indian-constitution",
         "topicId": "indian-constitution-t2",
-        "minutes": 30,
+        "minutes": 55,
         "accuracy": null
       },
       {
-        "date": "2026-10-10",
+        "date": "2026-10-11",
         "type": "CHECK_TEST",
         "subjectId": "indian-constitution",
         "topicId": "indian-constitution-t2",
         "minutes": 10,
-        "accuracy": 0.75
+        "accuracy": 0.65
       },
       {
         "date": "2026-10-11",
@@ -324,19 +339,67 @@
         "subjectId": "indian-constitution",
         "topicId": "indian-constitution-t2",
         "minutes": 10,
-        "accuracy": 0.75
+        "accuracy": 0.65
+      },
+      {
+        "date": "2026-10-12",
+        "type": "REVISION",
+        "subjectId": "kerala-geography",
+        "topicId": "kerala-geography-t2",
+        "minutes": 15,
+        "accuracy": null
+      },
+      {
+        "date": "2026-10-12",
+        "type": "STUDY",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t2",
+        "minutes": 15,
+        "accuracy": null
+      },
+      {
+        "date": "2026-10-12",
+        "type": "CHECK_TEST",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t2",
+        "minutes": 10,
+        "accuracy": 0.65
+      },
+      {
+        "date": "2026-10-13",
+        "type": "REVISION",
+        "subjectId": "indian-constitution",
+        "topicId": "indian-constitution-t2",
+        "minutes": 25,
+        "accuracy": null
+      },
+      {
+        "date": "2026-10-13",
+        "type": "STUDY",
+        "subjectId": "kerala-renaissance",
+        "topicId": "kerala-renaissance-t1",
+        "minutes": 15,
+        "accuracy": null
+      },
+      {
+        "date": "2026-10-13",
+        "type": "CHECK_TEST",
+        "subjectId": "kerala-renaissance",
+        "topicId": "kerala-renaissance-t1",
+        "minutes": 10,
+        "accuracy": 0.65
       }
     ],
     "previousPlan": {
       "kind": "PLAN",
       "startDate": "2026-10-05",
-      "endDate": "2027-01-02",
+      "endDate": "2026-12-18",
       "timelineStartDate": "2026-10-05",
-      "horizonDays": 90,
-      "reviewStartDate": "2026-12-20",
-      "availableMinutes": 9720,
-      "requiredMinutes": 3560,
-      "plannedMinutes": 4295,
+      "horizonDays": 75,
+      "reviewStartDate": "2026-12-08",
+      "availableMinutes": 7920,
+      "requiredMinutes": 3280,
+      "plannedMinutes": 3975,
       "coveragePercent": 100,
       "droppedTouches": 0,
       "days": [
@@ -346,212 +409,12 @@
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 40,
-          "leadSubjectId": "indian-constitution",
-          "tasks": [
-            {
-              "id": "STUDY:indian-constitution-t1:1",
-              "type": "STUDY",
-              "date": "2026-10-05",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": {
-                "index": 1,
-                "total": 2
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:indian-constitution-t1:1",
-              "type": "CHECK_TEST",
-              "date": "2026-10-05",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-06",
-          "weekday": 2,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 30,
-          "leadSubjectId": "indian-constitution",
-          "tasks": [
-            {
-              "id": "STUDY:indian-constitution-t1:2",
-              "type": "STUDY",
-              "date": "2026-10-06",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 20,
-              "window": "MORNING",
-              "part": {
-                "index": 2,
-                "total": 2
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:indian-constitution-t1:2",
-              "type": "CHECK_TEST",
-              "date": "2026-10-06",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-07",
-          "weekday": 3,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 50,
           "leadSubjectId": "kerala-geography",
           "tasks": [
             {
-              "id": "REVISION:indian-constitution-t1:1",
-              "type": "REVISION",
-              "date": "2026-10-07",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 1,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": {
-                  "touch": 1,
-                  "gapDays": 1,
-                  "studiedOn": "2026-10-06",
-                  "extra": "LOW_CONFIDENCE",
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "STUDY:kerala-geography-t1:1",
               "type": "STUDY",
-              "date": "2026-10-07",
+              "date": "2026-10-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t1",
               "minutes": 30,
@@ -590,7 +453,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t1:1",
               "type": "CHECK_TEST",
-              "date": "2026-10-07",
+              "date": "2026-10-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t1",
               "minutes": 10,
@@ -622,20 +485,20 @@
           ]
         },
         {
-          "date": "2026-10-08",
-          "weekday": 4,
+          "date": "2026-10-06",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
-          "leadSubjectId": "kerala-renaissance",
+          "plannedMinutes": 45,
+          "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "STUDY:kerala-renaissance-t1:1",
+              "id": "STUDY:indian-constitution-t1:1",
               "type": "STUDY",
-              "date": "2026-10-08",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
-              "minutes": 30,
+              "date": "2026-10-06",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
+              "minutes": 35,
               "window": "MORNING",
               "part": {
                 "index": 1,
@@ -669,11 +532,11 @@
               }
             },
             {
-              "id": "CHECK_TEST:kerala-renaissance-t1:1",
+              "id": "CHECK_TEST:indian-constitution-t1:1",
               "type": "CHECK_TEST",
-              "date": "2026-10-08",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
+              "date": "2026-10-06",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
@@ -703,25 +566,25 @@
           ]
         },
         {
-          "date": "2026-10-09",
-          "weekday": 5,
+          "date": "2026-10-07",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
-          "leadSubjectId": "kerala-renaissance",
+          "plannedMinutes": 35,
+          "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:indian-constitution-t1:2",
+              "id": "REVISION:indian-constitution-t1:1",
               "type": "REVISION",
-              "date": "2026-10-09",
+              "date": "2026-10-07",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 2,
+              "touch": 1,
               "finalReview": false,
-              "pinned": false,
+              "pinned": true,
               "title": null,
               "reason": {
                 "rule": "SPACED_REVISION",
@@ -738,23 +601,19 @@
                   "topicMinutes": 50
                 },
                 "study": null,
-                "revision": {
-                  "touch": 2,
-                  "gapDays": 3,
-                  "studiedOn": "2026-10-06",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
+                "revision": null,
+                "override": {
+                  "kind": "LOCK"
+                }
               }
             },
             {
-              "id": "STUDY:kerala-renaissance-t1:2",
+              "id": "STUDY:indian-constitution-t1:2",
               "type": "STUDY",
-              "date": "2026-10-09",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
-              "minutes": 20,
+              "date": "2026-10-07",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
+              "minutes": 15,
               "window": "MORNING",
               "part": {
                 "index": 2,
@@ -788,11 +647,11 @@
               }
             },
             {
-              "id": "CHECK_TEST:kerala-renaissance-t1:2",
+              "id": "CHECK_TEST:indian-constitution-t1:2",
               "type": "CHECK_TEST",
-              "date": "2026-10-09",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
+              "date": "2026-10-07",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
@@ -822,17 +681,17 @@
           ]
         },
         {
-          "date": "2026-10-10",
-          "weekday": 6,
+          "date": "2026-10-08",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 60,
-          "leadSubjectId": "indian-constitution",
+          "plannedMinutes": 55,
+          "leadSubjectId": "kerala-geography",
           "tasks": [
             {
               "id": "REVISION:kerala-geography-t1:1",
               "type": "REVISION",
-              "date": "2026-10-10",
+              "date": "2026-10-08",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t1",
               "minutes": 10,
@@ -860,7 +719,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 3,
-                  "studiedOn": "2026-10-07",
+                  "studiedOn": "2026-10-05",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -868,15 +727,248 @@
               }
             },
             {
-              "id": "REVISION:kerala-renaissance-t1:1",
-              "type": "REVISION",
+              "id": "STUDY:kerala-geography-t2:1",
+              "type": "STUDY",
+              "date": "2026-10-08",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 35,
+              "window": "MORNING",
+              "part": {
+                "index": 1,
+                "total": 2
+              },
+              "touch": null,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
+            },
+            {
+              "id": "CHECK_TEST:kerala-geography-t2:1",
+              "type": "CHECK_TEST",
+              "date": "2026-10-08",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-10-09",
+          "weekday": 5,
+          "phase": "LEARN",
+          "capacityMinutes": 108,
+          "plannedMinutes": 55,
+          "leadSubjectId": "kerala-geography",
+          "tasks": [
+            {
+              "id": "STUDY:kerala-geography-t2:2",
+              "type": "STUDY",
+              "date": "2026-10-09",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 45,
+              "window": "MORNING",
+              "part": {
+                "index": 2,
+                "total": 2
+              },
+              "touch": null,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": {
+                  "blockCap": 60,
+                  "beginnerBlock": false,
+                  "foundationalFirst": false
+                },
+                "revision": null,
+                "override": null
+              }
+            },
+            {
+              "id": "CHECK_TEST:kerala-geography-t2:2",
+              "type": "CHECK_TEST",
+              "date": "2026-10-09",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-10-10",
+          "weekday": 6,
+          "phase": "LEARN",
+          "capacityMinutes": 108,
+          "plannedMinutes": 95,
+          "leadSubjectId": "kerala-renaissance",
+          "tasks": [
+            {
+              "id": "STUDY:kerala-renaissance-t1:1",
+              "type": "STUDY",
+              "date": "2026-10-10",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
+              "minutes": 35,
+              "window": "MORNING",
+              "part": {
+                "index": 1,
+                "total": 2
+              },
+              "touch": null,
+              "finalReview": false,
+              "pinned": true,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": {
+                  "kind": "MOVE"
+                }
+              }
+            },
+            {
+              "id": "CHECK_TEST:kerala-renaissance-t1:1",
+              "type": "CHECK_TEST",
               "date": "2026-10-10",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 1,
+              "touch": null,
+              "finalReview": false,
+              "pinned": true,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": {
+                  "kind": "MOVE"
+                }
+              }
+            },
+            {
+              "id": "REVISION:indian-constitution-t1:2",
+              "type": "REVISION",
+              "date": "2026-10-10",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 2,
               "finalReview": false,
               "pinned": false,
               "title": null,
@@ -896,10 +988,10 @@
                 },
                 "study": null,
                 "revision": {
-                  "touch": 1,
-                  "gapDays": 1,
-                  "studiedOn": "2026-10-09",
-                  "extra": "LOW_CONFIDENCE",
+                  "touch": 2,
+                  "gapDays": 3,
+                  "studiedOn": "2026-10-07",
+                  "extra": null,
                   "clampedToEnd": false
                 },
                 "override": null
@@ -983,7 +1075,7 @@
           "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
+          "plannedMinutes": 105,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
@@ -992,10 +1084,81 @@
               "date": "2026-10-11",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t2",
-              "minutes": 30,
+              "minutes": 55,
               "window": "MORNING",
               "part": {
                 "index": 2,
+                "total": 4
+              },
+              "touch": null,
+              "finalReview": false,
+              "pinned": true,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 130
+                },
+                "study": null,
+                "revision": null,
+                "override": {
+                  "kind": "RESIZE"
+                }
+              }
+            },
+            {
+              "id": "CHECK_TEST:indian-constitution-t2:2",
+              "type": "CHECK_TEST",
+              "date": "2026-10-11",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": false,
+              "pinned": true,
+              "title": null,
+              "reason": {
+                "rule": "CHECK_AFTER_STUDY",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 130
+                },
+                "study": null,
+                "revision": null,
+                "override": {
+                  "kind": "RESIZE"
+                }
+              }
+            },
+            {
+              "id": "STUDY:indian-constitution-t2:2~2",
+              "type": "STUDY",
+              "date": "2026-10-11",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
+              "minutes": 30,
+              "window": "MORNING",
+              "part": {
+                "index": 3,
                 "total": 4
               },
               "touch": null,
@@ -1026,7 +1189,7 @@
               }
             },
             {
-              "id": "CHECK_TEST:indian-constitution-t2:2",
+              "id": "CHECK_TEST:indian-constitution-t2:2~2",
               "type": "CHECK_TEST",
               "date": "2026-10-11",
               "subjectId": "indian-constitution",
@@ -1064,39 +1227,39 @@
           "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 50,
-          "leadSubjectId": "kerala-renaissance",
+          "plannedMinutes": 40,
+          "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t1:2",
+              "id": "REVISION:kerala-geography-t2:1",
               "type": "REVISION",
               "date": "2026-10-12",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
-              "minutes": 10,
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 15,
               "window": "MORNING",
               "part": null,
-              "touch": 2,
+              "touch": 1,
               "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
                 "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
                   "confidenceCauses": [],
-                  "topicMinutes": 50
+                  "topicMinutes": 80
                 },
                 "study": null,
                 "revision": {
-                  "touch": 2,
+                  "touch": 1,
                   "gapDays": 3,
                   "studiedOn": "2026-10-09",
                   "extra": null,
@@ -1106,15 +1269,15 @@
               }
             },
             {
-              "id": "STUDY:kerala-renaissance-t2:1",
+              "id": "STUDY:indian-constitution-t2:3",
               "type": "STUDY",
               "date": "2026-10-12",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 30,
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
+              "minutes": 15,
               "window": "MORNING",
               "part": {
-                "index": 1,
+                "index": 4,
                 "total": 4
               },
               "touch": null,
@@ -1145,11 +1308,11 @@
               }
             },
             {
-              "id": "CHECK_TEST:kerala-renaissance-t2:1",
+              "id": "CHECK_TEST:indian-constitution-t2:3",
               "type": "CHECK_TEST",
               "date": "2026-10-12",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
@@ -1183,27 +1346,24 @@
           "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
-          "leadSubjectId": "indian-constitution",
+          "plannedMinutes": 50,
+          "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
-              "id": "STUDY:indian-constitution-t2:3",
-              "type": "STUDY",
+              "id": "REVISION:indian-constitution-t2:1",
+              "type": "REVISION",
               "date": "2026-10-13",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t2",
-              "minutes": 30,
+              "minutes": 25,
               "window": "MORNING",
-              "part": {
-                "index": 3,
-                "total": 4
-              },
-              "touch": null,
+              "part": null,
+              "touch": 1,
               "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
-                "rule": "STUDY_BLOCK",
+                "rule": "SPACED_REVISION",
                 "breakdown": {
                   "weight": 3,
                   "difficulty": 4,
@@ -1215,6 +1375,47 @@
                   "confidencePct": 130,
                   "confidenceCauses": [],
                   "topicMinutes": 130
+                },
+                "study": null,
+                "revision": {
+                  "touch": 1,
+                  "gapDays": 1,
+                  "studiedOn": "2026-10-12",
+                  "extra": "LOW_CONFIDENCE",
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
+              "id": "STUDY:kerala-renaissance-t1:1~2",
+              "type": "STUDY",
+              "date": "2026-10-13",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
+              "minutes": 15,
+              "window": "MORNING",
+              "part": {
+                "index": 2,
+                "total": 2
+              },
+              "touch": null,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "STUDY_BLOCK",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
                 },
                 "study": {
                   "blockCap": 60,
@@ -1226,11 +1427,11 @@
               }
             },
             {
-              "id": "CHECK_TEST:indian-constitution-t2:3",
+              "id": "CHECK_TEST:kerala-renaissance-t1:1~2",
               "type": "CHECK_TEST",
               "date": "2026-10-13",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
@@ -1241,16 +1442,16 @@
               "reason": {
                 "rule": "CHECK_AFTER_STUDY",
                 "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
                   "intensity": "INTENSE",
                   "intensityPct": 130,
                   "subjectConfidence": 2,
                   "confidence": 2,
                   "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 130
+                  "topicMinutes": 50
                 },
                 "study": null,
                 "revision": null,
@@ -1268,572 +1469,15 @@
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "STUDY:indian-constitution-t2:4",
-              "type": "STUDY",
+              "id": "REVISION:kerala-renaissance-t1:1",
+              "type": "REVISION",
               "date": "2026-10-14",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 40,
-              "window": "MORNING",
-              "part": {
-                "index": 4,
-                "total": 4
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:indian-constitution-t2:4",
-              "type": "CHECK_TEST",
-              "date": "2026-10-14",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-15",
-          "weekday": 4,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 65,
-          "leadSubjectId": "kerala-renaissance",
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t2:1",
-              "type": "REVISION",
-              "date": "2026-10-15",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 1,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 1,
-                  "gapDays": 1,
-                  "studiedOn": "2026-10-14",
-                  "extra": "LOW_CONFIDENCE",
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "STUDY:kerala-renaissance-t2:2",
-              "type": "STUDY",
-              "date": "2026-10-15",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": {
-                "index": 2,
-                "total": 4
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-renaissance-t2:2",
-              "type": "CHECK_TEST",
-              "date": "2026-10-15",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-16",
-          "weekday": 5,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 50,
-          "leadSubjectId": "kerala-renaissance",
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t1:3",
-              "type": "REVISION",
-              "date": "2026-10-16",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 3,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": {
-                  "touch": 3,
-                  "gapDays": 10,
-                  "studiedOn": "2026-10-06",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "STUDY:kerala-renaissance-t2:3",
-              "type": "STUDY",
-              "date": "2026-10-16",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": {
-                "index": 3,
-                "total": 4
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-renaissance-t2:3",
-              "type": "CHECK_TEST",
-              "date": "2026-10-16",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-17",
-          "weekday": 6,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 75,
-          "leadSubjectId": "kerala-geography",
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t2:2",
-              "type": "REVISION",
-              "date": "2026-10-17",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 2,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 2,
-                  "gapDays": 3,
-                  "studiedOn": "2026-10-14",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:kerala-geography-t1:2",
-              "type": "REVISION",
-              "date": "2026-10-17",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 2,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 30
-                },
-                "study": null,
-                "revision": {
-                  "touch": 2,
-                  "gapDays": 10,
-                  "studiedOn": "2026-10-07",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "STUDY:kerala-geography-t2:1",
-              "type": "STUDY",
-              "date": "2026-10-17",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": {
-                "index": 1,
-                "total": 2
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-geography-t2:1",
-              "type": "CHECK_TEST",
-              "date": "2026-10-17",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-18",
-          "weekday": 0,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 50,
-          "leadSubjectId": "kerala-renaissance",
-          "tasks": [
-            {
-              "id": "STUDY:kerala-renaissance-t2:4",
-              "type": "STUDY",
-              "date": "2026-10-18",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 40,
-              "window": "MORNING",
-              "part": {
-                "index": 4,
-                "total": 4
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-renaissance-t2:4",
-              "type": "CHECK_TEST",
-              "date": "2026-10-18",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-19",
-          "weekday": 1,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 95,
-          "leadSubjectId": "kerala-geography",
-          "tasks": [
-            {
-              "id": "REVISION:kerala-renaissance-t1:3",
-              "type": "REVISION",
-              "date": "2026-10-19",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t1",
               "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 3,
+              "touch": 1,
               "finalReview": false,
               "pinned": false,
               "title": null,
@@ -1853,47 +1497,9 @@
                 },
                 "study": null,
                 "revision": {
-                  "touch": 3,
-                  "gapDays": 10,
-                  "studiedOn": "2026-10-09",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:kerala-renaissance-t2:1",
-              "type": "REVISION",
-              "date": "2026-10-19",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 1,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-10-18",
+                  "studiedOn": "2026-10-13",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -1901,90 +1507,9 @@
               }
             },
             {
-              "id": "STUDY:kerala-geography-t2:2",
-              "type": "STUDY",
-              "date": "2026-10-19",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 50,
-              "window": "MORNING",
-              "part": {
-                "index": 2,
-                "total": 2
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-geography-t2:2",
-              "type": "CHECK_TEST",
-              "date": "2026-10-19",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-10-20",
-          "weekday": 2,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 40,
-          "leadSubjectId": "indian-constitution",
-          "tasks": [
-            {
               "id": "STUDY:indian-constitution-t3:1",
               "type": "STUDY",
-              "date": "2026-10-20",
+              "date": "2026-10-14",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2023,7 +1548,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t3:1",
               "type": "CHECK_TEST",
-              "date": "2026-10-20",
+              "date": "2026-10-14",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 10,
@@ -2055,19 +1580,19 @@
           ]
         },
         {
-          "date": "2026-10-21",
-          "weekday": 3,
+          "date": "2026-10-15",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 65,
+          "plannedMinutes": 75,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t2:2",
+              "id": "REVISION:indian-constitution-t2:2",
               "type": "REVISION",
-              "date": "2026-10-21",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
+              "date": "2026-10-15",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
               "minutes": 25,
               "window": "MORNING",
               "part": null,
@@ -2093,7 +1618,45 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-10-18",
+                  "studiedOn": "2026-10-12",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
+              "id": "REVISION:kerala-geography-t1:2",
+              "type": "REVISION",
+              "date": "2026-10-15",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t1",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 2,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 30
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-05",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -2103,7 +1666,7 @@
             {
               "id": "STUDY:indian-constitution-t3:2",
               "type": "STUDY",
-              "date": "2026-10-21",
+              "date": "2026-10-15",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2142,7 +1705,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t3:2",
               "type": "CHECK_TEST",
-              "date": "2026-10-21",
+              "date": "2026-10-15",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 10,
@@ -2174,45 +1737,45 @@
           ]
         },
         {
-          "date": "2026-10-22",
-          "weekday": 4,
+          "date": "2026-10-16",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 55,
+          "plannedMinutes": 50,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
-              "id": "REVISION:kerala-geography-t2:1",
+              "id": "REVISION:kerala-renaissance-t1:2",
               "type": "REVISION",
-              "date": "2026-10-22",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 15,
+              "date": "2026-10-16",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
+              "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 1,
+              "touch": 2,
               "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
                 "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 80
+                  "topicMinutes": 50
                 },
                 "study": null,
                 "revision": {
-                  "touch": 1,
+                  "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-10-19",
+                  "studiedOn": "2026-10-13",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -2222,7 +1785,7 @@
             {
               "id": "STUDY:kerala-renaissance-t3:1",
               "type": "STUDY",
-              "date": "2026-10-22",
+              "date": "2026-10-16",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -2261,7 +1824,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t3:1",
               "type": "CHECK_TEST",
-              "date": "2026-10-22",
+              "date": "2026-10-16",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 10,
@@ -2293,17 +1856,55 @@
           ]
         },
         {
-          "date": "2026-10-23",
-          "weekday": 5,
+          "date": "2026-10-17",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
+          "plannedMinutes": 50,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
+              "id": "REVISION:indian-constitution-t1:3",
+              "type": "REVISION",
+              "date": "2026-10-17",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 3,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-07",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "STUDY:indian-constitution-t3:3",
               "type": "STUDY",
-              "date": "2026-10-23",
+              "date": "2026-10-17",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2342,7 +1943,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t3:3",
               "type": "CHECK_TEST",
-              "date": "2026-10-23",
+              "date": "2026-10-17",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 10,
@@ -2374,55 +1975,17 @@
           ]
         },
         {
-          "date": "2026-10-24",
-          "weekday": 6,
+          "date": "2026-10-18",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 65,
+          "plannedMinutes": 40,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:indian-constitution-t2:3",
-              "type": "REVISION",
-              "date": "2026-10-24",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 3,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 3,
-                  "gapDays": 10,
-                  "studiedOn": "2026-10-14",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "STUDY:indian-constitution-t3:4",
               "type": "STUDY",
-              "date": "2026-10-24",
+              "date": "2026-10-18",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2461,7 +2024,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t3:4",
               "type": "CHECK_TEST",
-              "date": "2026-10-24",
+              "date": "2026-10-18",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 10,
@@ -2493,17 +2056,55 @@
           ]
         },
         {
-          "date": "2026-10-25",
-          "weekday": 0,
+          "date": "2026-10-19",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
+          "plannedMinutes": 55,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
+              "id": "REVISION:kerala-geography-t2:2",
+              "type": "REVISION",
+              "date": "2026-10-19",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 15,
+              "window": "MORNING",
+              "part": null,
+              "touch": 2,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": null,
+                "revision": {
+                  "touch": 2,
+                  "gapDays": 10,
+                  "studiedOn": "2026-10-09",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "STUDY:kerala-renaissance-t3:2",
               "type": "STUDY",
-              "date": "2026-10-25",
+              "date": "2026-10-19",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -2542,7 +2143,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t3:2",
               "type": "CHECK_TEST",
-              "date": "2026-10-25",
+              "date": "2026-10-19",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 10,
@@ -2574,8 +2175,8 @@
           ]
         },
         {
-          "date": "2026-10-26",
-          "weekday": 1,
+          "date": "2026-10-20",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 35,
@@ -2584,7 +2185,7 @@
             {
               "id": "STUDY:indian-constitution-t3:5",
               "type": "STUDY",
-              "date": "2026-10-26",
+              "date": "2026-10-20",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 25,
@@ -2623,7 +2224,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t3:5",
               "type": "CHECK_TEST",
-              "date": "2026-10-26",
+              "date": "2026-10-20",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 10,
@@ -2655,8 +2256,8 @@
           ]
         },
         {
-          "date": "2026-10-27",
-          "weekday": 2,
+          "date": "2026-10-21",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 70,
@@ -2665,7 +2266,7 @@
             {
               "id": "REVISION:indian-constitution-t3:1",
               "type": "REVISION",
-              "date": "2026-10-27",
+              "date": "2026-10-21",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2693,7 +2294,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-10-26",
+                  "studiedOn": "2026-10-20",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -2703,7 +2304,7 @@
             {
               "id": "STUDY:kerala-renaissance-t3:3",
               "type": "STUDY",
-              "date": "2026-10-27",
+              "date": "2026-10-21",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -2742,7 +2343,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t3:3",
               "type": "CHECK_TEST",
-              "date": "2026-10-27",
+              "date": "2026-10-21",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 10,
@@ -2774,19 +2375,19 @@
           ]
         },
         {
-          "date": "2026-10-28",
-          "weekday": 3,
+          "date": "2026-10-22",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 65,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t2:3",
+              "id": "REVISION:indian-constitution-t2:3",
               "type": "REVISION",
-              "date": "2026-10-28",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
+              "date": "2026-10-22",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
               "minutes": 25,
               "window": "MORNING",
               "part": null,
@@ -2812,7 +2413,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-10-18",
+                  "studiedOn": "2026-10-12",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -2822,7 +2423,7 @@
             {
               "id": "STUDY:kerala-renaissance-t3:4",
               "type": "STUDY",
-              "date": "2026-10-28",
+              "date": "2026-10-22",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -2861,7 +2462,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t3:4",
               "type": "CHECK_TEST",
-              "date": "2026-10-28",
+              "date": "2026-10-22",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 10,
@@ -2893,17 +2494,17 @@
           ]
         },
         {
-          "date": "2026-10-29",
-          "weekday": 4,
+          "date": "2026-10-23",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 85,
+          "plannedMinutes": 80,
           "leadSubjectId": "kerala-geography",
           "tasks": [
             {
               "id": "REVISION:indian-constitution-t3:2",
               "type": "REVISION",
-              "date": "2026-10-29",
+              "date": "2026-10-23",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -2931,7 +2532,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-10-26",
+                  "studiedOn": "2026-10-20",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -2939,37 +2540,37 @@
               }
             },
             {
-              "id": "REVISION:kerala-geography-t2:2",
+              "id": "REVISION:kerala-renaissance-t1:3",
               "type": "REVISION",
-              "date": "2026-10-29",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 15,
+              "date": "2026-10-23",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
+              "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 2,
+              "touch": 3,
               "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
                 "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 80
+                  "topicMinutes": 50
                 },
                 "study": null,
                 "revision": {
-                  "touch": 2,
+                  "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-10-19",
+                  "studiedOn": "2026-10-13",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -2979,14 +2580,14 @@
             {
               "id": "STUDY:kerala-geography-t3:1",
               "type": "STUDY",
-              "date": "2026-10-29",
+              "date": "2026-10-23",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 30,
               "window": "MORNING",
               "part": {
                 "index": 1,
-                "total": 3
+                "total": 2
               },
               "touch": null,
               "finalReview": false,
@@ -3018,7 +2619,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t3:1",
               "type": "CHECK_TEST",
-              "date": "2026-10-29",
+              "date": "2026-10-23",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 10,
@@ -3050,8 +2651,8 @@
           ]
         },
         {
-          "date": "2026-10-30",
-          "weekday": 5,
+          "date": "2026-10-24",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 35,
@@ -3060,7 +2661,7 @@
             {
               "id": "STUDY:kerala-renaissance-t3:5",
               "type": "STUDY",
-              "date": "2026-10-30",
+              "date": "2026-10-24",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 25,
@@ -3099,7 +2700,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t3:5",
               "type": "CHECK_TEST",
-              "date": "2026-10-30",
+              "date": "2026-10-24",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 10,
@@ -3131,17 +2732,40 @@
           ]
         },
         {
-          "date": "2026-10-31",
-          "weekday": 6,
+          "date": "2026-10-25",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 70,
-          "leadSubjectId": "kerala-geography",
+          "plannedMinutes": 90,
+          "leadSubjectId": null,
           "tasks": [
+            {
+              "id": "custom-previous-paper",
+              "type": "CUSTOM",
+              "date": "2026-10-25",
+              "subjectId": null,
+              "topicId": null,
+              "minutes": 60,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": false,
+              "pinned": true,
+              "title": "Previous year LDC paper",
+              "reason": {
+                "rule": "USER_TASK",
+                "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": {
+                  "kind": "CUSTOM"
+                }
+              }
+            },
             {
               "id": "REVISION:kerala-renaissance-t3:1",
               "type": "REVISION",
-              "date": "2026-10-31",
+              "date": "2026-10-25",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -3169,24 +2793,34 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-10-30",
+                  "studiedOn": "2026-10-24",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
                 "override": null
               }
-            },
+            }
+          ]
+        },
+        {
+          "date": "2026-10-26",
+          "weekday": 1,
+          "phase": "LEARN",
+          "capacityMinutes": 108,
+          "plannedMinutes": 65,
+          "leadSubjectId": "kerala-geography",
+          "tasks": [
             {
               "id": "STUDY:kerala-geography-t3:2",
               "type": "STUDY",
-              "date": "2026-10-31",
+              "date": "2026-10-26",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
-              "minutes": 30,
+              "minutes": 55,
               "window": "MORNING",
               "part": {
                 "index": 2,
-                "total": 3
+                "total": 2
               },
               "touch": null,
               "finalReview": false,
@@ -3218,7 +2852,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t3:2",
               "type": "CHECK_TEST",
-              "date": "2026-10-31",
+              "date": "2026-10-26",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 10,
@@ -3250,89 +2884,8 @@
           ]
         },
         {
-          "date": "2026-11-01",
-          "weekday": 0,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 35,
-          "leadSubjectId": "kerala-geography",
-          "tasks": [
-            {
-              "id": "STUDY:kerala-geography-t3:3",
-              "type": "STUDY",
-              "date": "2026-11-01",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t3",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": {
-                "index": 3,
-                "total": 3
-              },
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "STUDY_BLOCK",
-                "breakdown": {
-                  "weight": 5,
-                  "difficulty": 2,
-                  "baseMinutes": 86,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 85
-                },
-                "study": {
-                  "blockCap": 60,
-                  "beginnerBlock": false,
-                  "foundationalFirst": false
-                },
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "CHECK_TEST:kerala-geography-t3:3",
-              "type": "CHECK_TEST",
-              "date": "2026-11-01",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t3",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "CHECK_AFTER_STUDY",
-                "breakdown": {
-                  "weight": 5,
-                  "difficulty": 2,
-                  "baseMinutes": 86,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 85
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-11-02",
-          "weekday": 1,
+          "date": "2026-10-27",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 70,
@@ -3341,7 +2894,7 @@
             {
               "id": "REVISION:kerala-renaissance-t3:2",
               "type": "REVISION",
-              "date": "2026-11-02",
+              "date": "2026-10-27",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -3369,7 +2922,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-10-30",
+                  "studiedOn": "2026-10-24",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -3379,7 +2932,7 @@
             {
               "id": "STUDY:indian-constitution-t4:1",
               "type": "STUDY",
-              "date": "2026-11-02",
+              "date": "2026-10-27",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 30,
@@ -3418,7 +2971,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t4:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-02",
+              "date": "2026-10-27",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 10,
@@ -3450,8 +3003,8 @@
           ]
         },
         {
-          "date": "2026-11-03",
-          "weekday": 2,
+          "date": "2026-10-28",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 40,
@@ -3460,7 +3013,7 @@
             {
               "id": "STUDY:indian-constitution-t4:2",
               "type": "STUDY",
-              "date": "2026-11-03",
+              "date": "2026-10-28",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 30,
@@ -3499,7 +3052,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t4:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-03",
+              "date": "2026-10-28",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 10,
@@ -3531,8 +3084,8 @@
           ]
         },
         {
-          "date": "2026-11-04",
-          "weekday": 3,
+          "date": "2026-10-29",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 55,
@@ -3541,7 +3094,7 @@
             {
               "id": "REVISION:kerala-geography-t3:1",
               "type": "REVISION",
-              "date": "2026-11-04",
+              "date": "2026-10-29",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 15,
@@ -3569,7 +3122,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-01",
+                  "studiedOn": "2026-10-26",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -3579,7 +3132,7 @@
             {
               "id": "STUDY:kerala-renaissance-t4:1",
               "type": "STUDY",
-              "date": "2026-11-04",
+              "date": "2026-10-29",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 30,
@@ -3618,7 +3171,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t4:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-04",
+              "date": "2026-10-29",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 10,
@@ -3650,55 +3203,17 @@
           ]
         },
         {
-          "date": "2026-11-05",
-          "weekday": 4,
+          "date": "2026-10-30",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 80,
+          "plannedMinutes": 70,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:indian-constitution-t1:4",
-              "type": "REVISION",
-              "date": "2026-11-05",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-10-06",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "REVISION:indian-constitution-t3:3",
               "type": "REVISION",
-              "date": "2026-11-05",
+              "date": "2026-10-30",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -3726,7 +3241,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-10-26",
+                  "studiedOn": "2026-10-20",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -3736,7 +3251,7 @@
             {
               "id": "STUDY:indian-constitution-t4:3",
               "type": "STUDY",
-              "date": "2026-11-05",
+              "date": "2026-10-30",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 30,
@@ -3775,7 +3290,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t4:3",
               "type": "CHECK_TEST",
-              "date": "2026-11-05",
+              "date": "2026-10-30",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 10,
@@ -3807,55 +3322,17 @@
           ]
         },
         {
-          "date": "2026-11-06",
-          "weekday": 5,
+          "date": "2026-10-31",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 55,
+          "plannedMinutes": 45,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:kerala-geography-t1:3",
-              "type": "REVISION",
-              "date": "2026-11-06",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 3,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 30
-                },
-                "study": null,
-                "revision": {
-                  "touch": 3,
-                  "gapDays": 30,
-                  "studiedOn": "2026-10-07",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "STUDY:indian-constitution-t4:4",
               "type": "STUDY",
-              "date": "2026-11-06",
+              "date": "2026-10-31",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 35,
@@ -3894,7 +3371,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t4:4",
               "type": "CHECK_TEST",
-              "date": "2026-11-06",
+              "date": "2026-10-31",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 10,
@@ -3926,8 +3403,8 @@
           ]
         },
         {
-          "date": "2026-11-07",
-          "weekday": 6,
+          "date": "2026-11-01",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 65,
@@ -3936,7 +3413,7 @@
             {
               "id": "REVISION:indian-constitution-t4:1",
               "type": "REVISION",
-              "date": "2026-11-07",
+              "date": "2026-11-01",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 25,
@@ -3964,7 +3441,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-06",
+                  "studiedOn": "2026-10-31",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -3974,7 +3451,7 @@
             {
               "id": "STUDY:kerala-renaissance-t4:2",
               "type": "STUDY",
-              "date": "2026-11-07",
+              "date": "2026-11-01",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 30,
@@ -4013,7 +3490,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t4:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-07",
+              "date": "2026-11-01",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 10,
@@ -4045,55 +3522,17 @@
           ]
         },
         {
-          "date": "2026-11-08",
-          "weekday": 0,
+          "date": "2026-11-02",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 50,
+          "plannedMinutes": 40,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t1:4",
-              "type": "REVISION",
-              "date": "2026-11-08",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t1",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-10-09",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "STUDY:kerala-renaissance-t4:3",
               "type": "STUDY",
-              "date": "2026-11-08",
+              "date": "2026-11-02",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 30,
@@ -4132,7 +3571,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t4:3",
               "type": "CHECK_TEST",
-              "date": "2026-11-08",
+              "date": "2026-11-02",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 10,
@@ -4164,8 +3603,8 @@
           ]
         },
         {
-          "date": "2026-11-09",
-          "weekday": 1,
+          "date": "2026-11-03",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 95,
@@ -4174,7 +3613,7 @@
             {
               "id": "REVISION:indian-constitution-t4:2",
               "type": "REVISION",
-              "date": "2026-11-09",
+              "date": "2026-11-03",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 25,
@@ -4202,7 +3641,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-06",
+                  "studiedOn": "2026-10-31",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -4212,7 +3651,7 @@
             {
               "id": "REVISION:kerala-renaissance-t3:3",
               "type": "REVISION",
-              "date": "2026-11-09",
+              "date": "2026-11-03",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -4240,7 +3679,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-10-30",
+                  "studiedOn": "2026-10-24",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -4250,7 +3689,7 @@
             {
               "id": "STUDY:kerala-geography-t4:1",
               "type": "STUDY",
-              "date": "2026-11-09",
+              "date": "2026-11-03",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 30,
@@ -4289,7 +3728,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t4:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-09",
+              "date": "2026-11-03",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 10,
@@ -4321,17 +3760,55 @@
           ]
         },
         {
-          "date": "2026-11-10",
-          "weekday": 2,
+          "date": "2026-11-04",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 45,
+          "plannedMinutes": 55,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
+              "id": "REVISION:kerala-geography-t1:3",
+              "type": "REVISION",
+              "date": "2026-11-04",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t1",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 3,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 30
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-05",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "STUDY:kerala-renaissance-t4:4",
               "type": "STUDY",
-              "date": "2026-11-10",
+              "date": "2026-11-04",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 35,
@@ -4370,7 +3847,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t4:4",
               "type": "CHECK_TEST",
-              "date": "2026-11-10",
+              "date": "2026-11-04",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 10,
@@ -4402,8 +3879,8 @@
           ]
         },
         {
-          "date": "2026-11-11",
-          "weekday": 3,
+          "date": "2026-11-05",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 95,
@@ -4412,7 +3889,7 @@
             {
               "id": "REVISION:kerala-geography-t3:2",
               "type": "REVISION",
-              "date": "2026-11-11",
+              "date": "2026-11-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 15,
@@ -4440,7 +3917,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-01",
+                  "studiedOn": "2026-10-26",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -4450,7 +3927,7 @@
             {
               "id": "REVISION:kerala-renaissance-t4:1",
               "type": "REVISION",
-              "date": "2026-11-11",
+              "date": "2026-11-05",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 25,
@@ -4478,7 +3955,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-10",
+                  "studiedOn": "2026-11-04",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -4488,7 +3965,7 @@
             {
               "id": "STUDY:kerala-geography-t4:2",
               "type": "STUDY",
-              "date": "2026-11-11",
+              "date": "2026-11-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 45,
@@ -4527,7 +4004,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t4:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-11",
+              "date": "2026-11-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 10,
@@ -4559,17 +4036,55 @@
           ]
         },
         {
-          "date": "2026-11-12",
-          "weekday": 4,
+          "date": "2026-11-06",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 40,
+          "plannedMinutes": 50,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
+              "id": "REVISION:indian-constitution-t1:4",
+              "type": "REVISION",
+              "date": "2026-11-06",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t1",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 4,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-07",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "STUDY:indian-constitution-t5:1",
               "type": "STUDY",
-              "date": "2026-11-12",
+              "date": "2026-11-06",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -4608,7 +4123,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t5:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-12",
+              "date": "2026-11-06",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 10,
@@ -4640,55 +4155,17 @@
           ]
         },
         {
-          "date": "2026-11-13",
-          "weekday": 5,
+          "date": "2026-11-07",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 90,
+          "plannedMinutes": 65,
           "leadSubjectId": "indian-constitution",
           "tasks": [
             {
-              "id": "REVISION:indian-constitution-t2:4",
-              "type": "REVISION",
-              "date": "2026-11-13",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-10-14",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
               "id": "REVISION:kerala-renaissance-t4:2",
               "type": "REVISION",
-              "date": "2026-11-13",
+              "date": "2026-11-07",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 25,
@@ -4716,7 +4193,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-10",
+                  "studiedOn": "2026-11-04",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -4726,7 +4203,7 @@
             {
               "id": "STUDY:indian-constitution-t5:2",
               "type": "STUDY",
-              "date": "2026-11-13",
+              "date": "2026-11-07",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -4765,7 +4242,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t5:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-13",
+              "date": "2026-11-07",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 10,
@@ -4797,17 +4274,55 @@
           ]
         },
         {
-          "date": "2026-11-14",
-          "weekday": 6,
+          "date": "2026-11-08",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 55,
+          "plannedMinutes": 70,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
+              "id": "REVISION:kerala-geography-t2:3",
+              "type": "REVISION",
+              "date": "2026-11-08",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t2",
+              "minutes": 15,
+              "window": "MORNING",
+              "part": null,
+              "touch": 3,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-09",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "REVISION:kerala-geography-t4:1",
               "type": "REVISION",
-              "date": "2026-11-14",
+              "date": "2026-11-08",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 15,
@@ -4835,7 +4350,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-11",
+                  "studiedOn": "2026-11-05",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -4845,7 +4360,7 @@
             {
               "id": "STUDY:kerala-renaissance-t5:1",
               "type": "STUDY",
-              "date": "2026-11-14",
+              "date": "2026-11-08",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -4884,7 +4399,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t5:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-14",
+              "date": "2026-11-08",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 10,
@@ -4916,8 +4431,8 @@
           ]
         },
         {
-          "date": "2026-11-15",
-          "weekday": 0,
+          "date": "2026-11-09",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 40,
@@ -4926,7 +4441,7 @@
             {
               "id": "STUDY:indian-constitution-t5:3",
               "type": "STUDY",
-              "date": "2026-11-15",
+              "date": "2026-11-09",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -4965,7 +4480,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t5:3",
               "type": "CHECK_TEST",
-              "date": "2026-11-15",
+              "date": "2026-11-09",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 10,
@@ -4997,8 +4512,8 @@
           ]
         },
         {
-          "date": "2026-11-16",
-          "weekday": 1,
+          "date": "2026-11-10",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 85,
@@ -5007,7 +4522,7 @@
             {
               "id": "REVISION:indian-constitution-t4:3",
               "type": "REVISION",
-              "date": "2026-11-16",
+              "date": "2026-11-10",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 25,
@@ -5035,7 +4550,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-06",
+                  "studiedOn": "2026-10-31",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5045,7 +4560,7 @@
             {
               "id": "STUDY:indian-constitution-t5:4",
               "type": "STUDY",
-              "date": "2026-11-16",
+              "date": "2026-11-10",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 50,
@@ -5084,7 +4599,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t5:4",
               "type": "CHECK_TEST",
-              "date": "2026-11-16",
+              "date": "2026-11-10",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 10,
@@ -5116,17 +4631,55 @@
           ]
         },
         {
-          "date": "2026-11-17",
-          "weekday": 2,
+          "date": "2026-11-11",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 95,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
+              "id": "REVISION:indian-constitution-t2:4",
+              "type": "REVISION",
+              "date": "2026-11-11",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
+              "minutes": 25,
+              "window": "MORNING",
+              "part": null,
+              "touch": 4,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 130
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-10-12",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
               "id": "REVISION:indian-constitution-t5:1",
               "type": "REVISION",
-              "date": "2026-11-17",
+              "date": "2026-11-11",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -5154,46 +4707,8 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-16",
+                  "studiedOn": "2026-11-10",
                   "extra": "LOW_CONFIDENCE",
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:kerala-renaissance-t2:4",
-              "type": "REVISION",
-              "date": "2026-11-17",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-10-18",
-                  "extra": null,
                   "clampedToEnd": false
                 },
                 "override": null
@@ -5202,7 +4717,7 @@
             {
               "id": "STUDY:kerala-renaissance-t5:2",
               "type": "STUDY",
-              "date": "2026-11-17",
+              "date": "2026-11-11",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -5241,7 +4756,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t5:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-17",
+              "date": "2026-11-11",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 10,
@@ -5273,45 +4788,45 @@
           ]
         },
         {
-          "date": "2026-11-18",
-          "weekday": 3,
+          "date": "2026-11-12",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
-          "plannedMinutes": 55,
+          "plannedMinutes": 50,
           "leadSubjectId": "kerala-renaissance",
           "tasks": [
             {
-              "id": "REVISION:kerala-geography-t2:3",
+              "id": "REVISION:kerala-renaissance-t1:4",
               "type": "REVISION",
-              "date": "2026-11-18",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t2",
-              "minutes": 15,
+              "date": "2026-11-12",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t1",
+              "minutes": 10,
               "window": "MORNING",
               "part": null,
-              "touch": 3,
+              "touch": 4,
               "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
                 "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 80
+                  "topicMinutes": 50
                 },
                 "study": null,
                 "revision": {
-                  "touch": 3,
+                  "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-10-19",
+                  "studiedOn": "2026-10-13",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5321,7 +4836,7 @@
             {
               "id": "STUDY:kerala-renaissance-t5:3",
               "type": "STUDY",
-              "date": "2026-11-18",
+              "date": "2026-11-12",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -5360,7 +4875,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t5:3",
               "type": "CHECK_TEST",
-              "date": "2026-11-18",
+              "date": "2026-11-12",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 10,
@@ -5392,8 +4907,8 @@
           ]
         },
         {
-          "date": "2026-11-19",
-          "weekday": 4,
+          "date": "2026-11-13",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 70,
@@ -5402,7 +4917,7 @@
             {
               "id": "REVISION:indian-constitution-t5:2",
               "type": "REVISION",
-              "date": "2026-11-19",
+              "date": "2026-11-13",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -5430,7 +4945,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-16",
+                  "studiedOn": "2026-11-10",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5440,7 +4955,7 @@
             {
               "id": "STUDY:indian-constitution-t6:1",
               "type": "STUDY",
-              "date": "2026-11-19",
+              "date": "2026-11-13",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 30,
@@ -5479,7 +4994,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t6:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-19",
+              "date": "2026-11-13",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 10,
@@ -5511,8 +5026,8 @@
           ]
         },
         {
-          "date": "2026-11-20",
-          "weekday": 5,
+          "date": "2026-11-14",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 85,
@@ -5521,7 +5036,7 @@
             {
               "id": "REVISION:kerala-renaissance-t4:3",
               "type": "REVISION",
-              "date": "2026-11-20",
+              "date": "2026-11-14",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 25,
@@ -5549,7 +5064,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-10",
+                  "studiedOn": "2026-11-04",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5559,7 +5074,7 @@
             {
               "id": "STUDY:kerala-renaissance-t5:4",
               "type": "STUDY",
-              "date": "2026-11-20",
+              "date": "2026-11-14",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 50,
@@ -5598,7 +5113,7 @@
             {
               "id": "CHECK_TEST:kerala-renaissance-t5:4",
               "type": "CHECK_TEST",
-              "date": "2026-11-20",
+              "date": "2026-11-14",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 10,
@@ -5630,8 +5145,8 @@
           ]
         },
         {
-          "date": "2026-11-21",
-          "weekday": 6,
+          "date": "2026-11-15",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 75,
@@ -5640,7 +5155,7 @@
             {
               "id": "REVISION:kerala-geography-t4:2",
               "type": "REVISION",
-              "date": "2026-11-21",
+              "date": "2026-11-15",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 15,
@@ -5668,7 +5183,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-11",
+                  "studiedOn": "2026-11-05",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5678,7 +5193,7 @@
             {
               "id": "REVISION:kerala-renaissance-t5:1",
               "type": "REVISION",
-              "date": "2026-11-21",
+              "date": "2026-11-15",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -5706,7 +5221,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-20",
+                  "studiedOn": "2026-11-14",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -5716,7 +5231,7 @@
             {
               "id": "STUDY:indian-constitution-t6:2",
               "type": "STUDY",
-              "date": "2026-11-21",
+              "date": "2026-11-15",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 20,
@@ -5755,7 +5270,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t6:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-21",
+              "date": "2026-11-15",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 10,
@@ -5787,8 +5302,8 @@
           ]
         },
         {
-          "date": "2026-11-22",
-          "weekday": 0,
+          "date": "2026-11-16",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 50,
@@ -5797,7 +5312,7 @@
             {
               "id": "REVISION:indian-constitution-t6:1",
               "type": "REVISION",
-              "date": "2026-11-22",
+              "date": "2026-11-16",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 10,
@@ -5825,7 +5340,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-21",
+                  "studiedOn": "2026-11-15",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -5835,7 +5350,7 @@
             {
               "id": "STUDY:kerala-geography-t5:1",
               "type": "STUDY",
-              "date": "2026-11-22",
+              "date": "2026-11-16",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 30,
@@ -5874,7 +5389,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t5:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-22",
+              "date": "2026-11-16",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 10,
@@ -5906,8 +5421,8 @@
           ]
         },
         {
-          "date": "2026-11-23",
-          "weekday": 1,
+          "date": "2026-11-17",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 90,
@@ -5916,7 +5431,7 @@
             {
               "id": "REVISION:kerala-renaissance-t5:2",
               "type": "REVISION",
-              "date": "2026-11-23",
+              "date": "2026-11-17",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -5944,7 +5459,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-20",
+                  "studiedOn": "2026-11-14",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -5954,7 +5469,7 @@
             {
               "id": "STUDY:kerala-geography-t5:2",
               "type": "STUDY",
-              "date": "2026-11-23",
+              "date": "2026-11-17",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 50,
@@ -5993,7 +5508,7 @@
             {
               "id": "CHECK_TEST:kerala-geography-t5:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-23",
+              "date": "2026-11-17",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 10,
@@ -6025,8 +5540,8 @@
           ]
         },
         {
-          "date": "2026-11-24",
-          "weekday": 2,
+          "date": "2026-11-18",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 80,
@@ -6035,7 +5550,7 @@
             {
               "id": "REVISION:indian-constitution-t6:2",
               "type": "REVISION",
-              "date": "2026-11-24",
+              "date": "2026-11-18",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 10,
@@ -6063,7 +5578,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-21",
+                  "studiedOn": "2026-11-15",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6073,7 +5588,7 @@
             {
               "id": "SECTION_MOCK:kerala-renaissance",
               "type": "SECTION_MOCK",
-              "date": "2026-11-24",
+              "date": "2026-11-18",
               "subjectId": "kerala-renaissance",
               "topicId": null,
               "minutes": 30,
@@ -6094,7 +5609,7 @@
             {
               "id": "STUDY:indian-constitution-t7:1",
               "type": "STUDY",
-              "date": "2026-11-24",
+              "date": "2026-11-18",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 30,
@@ -6133,7 +5648,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t7:1",
               "type": "CHECK_TEST",
-              "date": "2026-11-24",
+              "date": "2026-11-18",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 10,
@@ -6165,8 +5680,8 @@
           ]
         },
         {
-          "date": "2026-11-25",
-          "weekday": 3,
+          "date": "2026-11-19",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 70,
@@ -6175,7 +5690,7 @@
             {
               "id": "REVISION:indian-constitution-t3:4",
               "type": "REVISION",
-              "date": "2026-11-25",
+              "date": "2026-11-19",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -6203,7 +5718,7 @@
                 "revision": {
                   "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-10-26",
+                  "studiedOn": "2026-10-20",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6213,7 +5728,7 @@
             {
               "id": "STUDY:indian-constitution-t7:2",
               "type": "STUDY",
-              "date": "2026-11-25",
+              "date": "2026-11-19",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 30,
@@ -6252,7 +5767,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t7:2",
               "type": "CHECK_TEST",
-              "date": "2026-11-25",
+              "date": "2026-11-19",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 10,
@@ -6284,8 +5799,8 @@
           ]
         },
         {
-          "date": "2026-11-26",
-          "weekday": 4,
+          "date": "2026-11-20",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 85,
@@ -6294,7 +5809,7 @@
             {
               "id": "REVISION:indian-constitution-t5:3",
               "type": "REVISION",
-              "date": "2026-11-26",
+              "date": "2026-11-20",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t5",
               "minutes": 30,
@@ -6322,7 +5837,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-16",
+                  "studiedOn": "2026-11-10",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6332,7 +5847,7 @@
             {
               "id": "REVISION:kerala-geography-t5:1",
               "type": "REVISION",
-              "date": "2026-11-26",
+              "date": "2026-11-20",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 15,
@@ -6360,7 +5875,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-23",
+                  "studiedOn": "2026-11-17",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6370,7 +5885,7 @@
             {
               "id": "STUDY:indian-constitution-t7:3",
               "type": "STUDY",
-              "date": "2026-11-26",
+              "date": "2026-11-20",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 30,
@@ -6409,7 +5924,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t7:3",
               "type": "CHECK_TEST",
-              "date": "2026-11-26",
+              "date": "2026-11-20",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 10,
@@ -6441,8 +5956,8 @@
           ]
         },
         {
-          "date": "2026-11-27",
-          "weekday": 5,
+          "date": "2026-11-21",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 50,
@@ -6451,7 +5966,7 @@
             {
               "id": "STUDY:indian-constitution-t7:4",
               "type": "STUDY",
-              "date": "2026-11-27",
+              "date": "2026-11-21",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 40,
@@ -6490,7 +6005,7 @@
             {
               "id": "CHECK_TEST:indian-constitution-t7:4",
               "type": "CHECK_TEST",
-              "date": "2026-11-27",
+              "date": "2026-11-21",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 10,
@@ -6522,8 +6037,8 @@
           ]
         },
         {
-          "date": "2026-11-28",
-          "weekday": 6,
+          "date": "2026-11-22",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 25,
@@ -6532,7 +6047,7 @@
             {
               "id": "REVISION:indian-constitution-t7:1",
               "type": "REVISION",
-              "date": "2026-11-28",
+              "date": "2026-11-22",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 25,
@@ -6560,7 +6075,7 @@
                 "revision": {
                   "touch": 1,
                   "gapDays": 1,
-                  "studiedOn": "2026-11-27",
+                  "studiedOn": "2026-11-21",
                   "extra": "LOW_CONFIDENCE",
                   "clampedToEnd": false
                 },
@@ -6570,8 +6085,8 @@
           ]
         },
         {
-          "date": "2026-11-29",
-          "weekday": 0,
+          "date": "2026-11-23",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 30,
@@ -6580,7 +6095,7 @@
             {
               "id": "REVISION:kerala-renaissance-t3:4",
               "type": "REVISION",
-              "date": "2026-11-29",
+              "date": "2026-11-23",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -6608,7 +6123,7 @@
                 "revision": {
                   "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-10-30",
+                  "studiedOn": "2026-10-24",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6618,8 +6133,8 @@
           ]
         },
         {
-          "date": "2026-11-30",
-          "weekday": 1,
+          "date": "2026-11-24",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 55,
@@ -6628,7 +6143,7 @@
             {
               "id": "REVISION:indian-constitution-t7:2",
               "type": "REVISION",
-              "date": "2026-11-30",
+              "date": "2026-11-24",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 25,
@@ -6656,7 +6171,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 3,
-                  "studiedOn": "2026-11-27",
+                  "studiedOn": "2026-11-21",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6666,7 +6181,7 @@
             {
               "id": "REVISION:kerala-renaissance-t5:3",
               "type": "REVISION",
-              "date": "2026-11-30",
+              "date": "2026-11-24",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t5",
               "minutes": 30,
@@ -6694,7 +6209,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-20",
+                  "studiedOn": "2026-11-14",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6704,8 +6219,8 @@
           ]
         },
         {
-          "date": "2026-12-01",
-          "weekday": 2,
+          "date": "2026-11-25",
+          "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 55,
@@ -6714,7 +6229,7 @@
             {
               "id": "REVISION:indian-constitution-t6:3",
               "type": "REVISION",
-              "date": "2026-12-01",
+              "date": "2026-11-25",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t6",
               "minutes": 10,
@@ -6742,7 +6257,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-21",
+                  "studiedOn": "2026-11-15",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6752,7 +6267,7 @@
             {
               "id": "REVISION:kerala-geography-t3:3",
               "type": "REVISION",
-              "date": "2026-12-01",
+              "date": "2026-11-25",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 15,
@@ -6780,7 +6295,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 30,
-                  "studiedOn": "2026-11-01",
+                  "studiedOn": "2026-10-26",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6790,7 +6305,7 @@
             {
               "id": "SECTION_MOCK:indian-constitution",
               "type": "SECTION_MOCK",
-              "date": "2026-12-01",
+              "date": "2026-11-25",
               "subjectId": "indian-constitution",
               "topicId": null,
               "minutes": 30,
@@ -6811,8 +6326,8 @@
           ]
         },
         {
-          "date": "2026-12-02",
-          "weekday": 3,
+          "date": "2026-11-26",
+          "weekday": 4,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 0,
@@ -6820,8 +6335,8 @@
           "tasks": []
         },
         {
-          "date": "2026-12-03",
-          "weekday": 4,
+          "date": "2026-11-27",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 15,
@@ -6830,7 +6345,7 @@
             {
               "id": "REVISION:kerala-geography-t5:2",
               "type": "REVISION",
-              "date": "2026-12-03",
+              "date": "2026-11-27",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t5",
               "minutes": 15,
@@ -6858,7 +6373,7 @@
                 "revision": {
                   "touch": 2,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-23",
+                  "studiedOn": "2026-11-17",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6868,8 +6383,8 @@
           ]
         },
         {
-          "date": "2026-12-04",
-          "weekday": 5,
+          "date": "2026-11-28",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 30,
@@ -6878,7 +6393,7 @@
             {
               "id": "SECTION_MOCK:kerala-geography",
               "type": "SECTION_MOCK",
-              "date": "2026-12-04",
+              "date": "2026-11-28",
               "subjectId": "kerala-geography",
               "topicId": null,
               "minutes": 30,
@@ -6899,8 +6414,8 @@
           ]
         },
         {
-          "date": "2026-12-05",
-          "weekday": 6,
+          "date": "2026-11-29",
+          "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 0,
@@ -6908,8 +6423,8 @@
           "tasks": []
         },
         {
-          "date": "2026-12-06",
-          "weekday": 0,
+          "date": "2026-11-30",
+          "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 25,
@@ -6918,7 +6433,7 @@
             {
               "id": "REVISION:indian-constitution-t4:4",
               "type": "REVISION",
-              "date": "2026-12-06",
+              "date": "2026-11-30",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 25,
@@ -6946,7 +6461,7 @@
                 "revision": {
                   "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-11-06",
+                  "studiedOn": "2026-10-31",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -6956,8 +6471,8 @@
           ]
         },
         {
-          "date": "2026-12-07",
-          "weekday": 1,
+          "date": "2026-12-01",
+          "weekday": 2,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 25,
@@ -6966,7 +6481,7 @@
             {
               "id": "REVISION:indian-constitution-t7:3",
               "type": "REVISION",
-              "date": "2026-12-07",
+              "date": "2026-12-01",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t7",
               "minutes": 25,
@@ -6994,7 +6509,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 10,
-                  "studiedOn": "2026-11-27",
+                  "studiedOn": "2026-11-21",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -7004,16 +6519,7 @@
           ]
         },
         {
-          "date": "2026-12-08",
-          "weekday": 2,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-09",
+          "date": "2026-12-02",
           "weekday": 3,
           "phase": "LEARN",
           "capacityMinutes": 108,
@@ -7022,8 +6528,17 @@
           "tasks": []
         },
         {
-          "date": "2026-12-10",
+          "date": "2026-12-03",
           "weekday": 4,
+          "phase": "LEARN",
+          "capacityMinutes": 108,
+          "plannedMinutes": 0,
+          "leadSubjectId": null,
+          "tasks": []
+        },
+        {
+          "date": "2026-12-04",
+          "weekday": 5,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 25,
@@ -7032,7 +6547,7 @@
             {
               "id": "REVISION:kerala-renaissance-t4:4",
               "type": "REVISION",
-              "date": "2026-12-10",
+              "date": "2026-12-04",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 25,
@@ -7060,7 +6575,7 @@
                 "revision": {
                   "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-11-10",
+                  "studiedOn": "2026-11-04",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -7070,8 +6585,8 @@
           ]
         },
         {
-          "date": "2026-12-11",
-          "weekday": 5,
+          "date": "2026-12-05",
+          "weekday": 6,
           "phase": "LEARN",
           "capacityMinutes": 108,
           "plannedMinutes": 15,
@@ -7080,7 +6595,7 @@
             {
               "id": "REVISION:kerala-geography-t4:3",
               "type": "REVISION",
-              "date": "2026-12-11",
+              "date": "2026-12-05",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 15,
@@ -7108,7 +6623,7 @@
                 "revision": {
                   "touch": 3,
                   "gapDays": 30,
-                  "studiedOn": "2026-11-11",
+                  "studiedOn": "2026-11-05",
                   "extra": null,
                   "clampedToEnd": false
                 },
@@ -7118,16 +6633,7 @@
           ]
         },
         {
-          "date": "2026-12-12",
-          "weekday": 6,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-13",
+          "date": "2026-12-06",
           "weekday": 0,
           "phase": "LEARN",
           "capacityMinutes": 108,
@@ -7136,7 +6642,7 @@
           "tasks": []
         },
         {
-          "date": "2026-12-14",
+          "date": "2026-12-07",
           "weekday": 1,
           "phase": "LEARN",
           "capacityMinutes": 108,
@@ -7145,104 +6651,20 @@
           "tasks": []
         },
         {
-          "date": "2026-12-15",
+          "date": "2026-12-08",
           "weekday": 2,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-16",
-          "weekday": 3,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 30,
-          "leadSubjectId": null,
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t5:4",
-              "type": "REVISION",
-              "date": "2026-12-16",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t5",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 140
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-11-16",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-17",
-          "weekday": 4,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-18",
-          "weekday": 5,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-19",
-          "weekday": 6,
-          "phase": "LEARN",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-20",
-          "weekday": 0,
           "phase": "REVIEW",
           "capacityMinutes": 108,
-          "plannedMinutes": 100,
+          "plannedMinutes": 105,
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t5:4",
+              "id": "REVISION:indian-constitution-t7:4",
               "type": "REVISION",
-              "date": "2026-12-20",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t5",
-              "minutes": 30,
+              "date": "2026-12-08",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t7",
+              "minutes": 25,
               "window": "MORNING",
               "part": null,
               "touch": 4,
@@ -7252,24 +6674,24 @@
               "reason": {
                 "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
                   "intensity": "INTENSE",
                   "intensityPct": 130,
                   "subjectConfidence": 2,
                   "confidence": 2,
                   "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 140
+                  "topicMinutes": 130
                 },
                 "study": null,
                 "revision": {
                   "touch": 4,
                   "gapDays": 30,
-                  "studiedOn": "2026-11-20",
+                  "studiedOn": "2026-11-21",
                   "extra": null,
-                  "clampedToEnd": false
+                  "clampedToEnd": true
                 },
                 "override": null
               }
@@ -7277,7 +6699,7 @@
             {
               "id": "REVISION:indian-constitution-t3:final",
               "type": "REVISION",
-              "date": "2026-12-20",
+              "date": "2026-12-08",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t3",
               "minutes": 30,
@@ -7309,7 +6731,7 @@
             {
               "id": "REVISION:kerala-renaissance-t3:final",
               "type": "REVISION",
-              "date": "2026-12-20",
+              "date": "2026-12-08",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t3",
               "minutes": 30,
@@ -7341,7 +6763,7 @@
             {
               "id": "REVISION:indian-constitution-t1:final",
               "type": "REVISION",
-              "date": "2026-12-20",
+              "date": "2026-12-08",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t1",
               "minutes": 10,
@@ -7369,155 +6791,11 @@
                 "revision": null,
                 "override": null
               }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-21",
-          "weekday": 1,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 105,
-          "leadSubjectId": null,
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t6:4",
-              "type": "REVISION",
-              "date": "2026-12-21",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t6",
-              "minutes": 10,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 50
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-11-21",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:indian-constitution-t5:final",
-              "type": "REVISION",
-              "date": "2026-12-21",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t5",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": true,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "FINAL_REVIEW",
-                "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 140
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:kerala-renaissance-t5:final",
-              "type": "REVISION",
-              "date": "2026-12-21",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t5",
-              "minutes": 30,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": true,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "FINAL_REVIEW",
-                "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 140
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
-            },
-            {
-              "id": "REVISION:indian-constitution-t2:final",
-              "type": "REVISION",
-              "date": "2026-12-21",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t2",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": true,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "FINAL_REVIEW",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
             },
             {
               "id": "REVISION:kerala-renaissance-t1:final",
               "type": "REVISION",
-              "date": "2026-12-21",
+              "date": "2026-12-08",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t1",
               "minutes": 10,
@@ -7549,19 +6827,51 @@
           ]
         },
         {
-          "date": "2026-12-22",
-          "weekday": 2,
+          "date": "2026-12-09",
+          "weekday": 3,
           "phase": "REVIEW",
           "capacityMinutes": 108,
           "plannedMinutes": 100,
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "REVISION:kerala-renaissance-t2:final",
+              "id": "REVISION:indian-constitution-t2:final",
               "type": "REVISION",
-              "date": "2026-12-22",
-              "subjectId": "kerala-renaissance",
-              "topicId": "kerala-renaissance-t2",
+              "date": "2026-12-09",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t2",
+              "minutes": 25,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 3,
+                  "difficulty": 4,
+                  "baseMinutes": 78,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 130
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            },
+            {
+              "id": "REVISION:indian-constitution-t7:final",
+              "type": "REVISION",
+              "date": "2026-12-09",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t7",
               "minutes": 25,
               "window": "MORNING",
               "part": null,
@@ -7591,7 +6901,7 @@
             {
               "id": "REVISION:indian-constitution-t4:final",
               "type": "REVISION",
-              "date": "2026-12-22",
+              "date": "2026-12-09",
               "subjectId": "indian-constitution",
               "topicId": "indian-constitution-t4",
               "minutes": 25,
@@ -7623,7 +6933,7 @@
             {
               "id": "REVISION:kerala-renaissance-t4:final",
               "type": "REVISION",
-              "date": "2026-12-22",
+              "date": "2026-12-09",
               "subjectId": "kerala-renaissance",
               "topicId": "kerala-renaissance-t4",
               "minutes": 25,
@@ -7651,43 +6961,59 @@
                 "revision": null,
                 "override": null
               }
-            },
+            }
+          ]
+        },
+        {
+          "date": "2026-12-10",
+          "weekday": 4,
+          "phase": "REVIEW",
+          "capacityMinutes": 108,
+          "plannedMinutes": 85,
+          "leadSubjectId": null,
+          "tasks": [
             {
-              "id": "REVISION:indian-constitution-t6:final",
+              "id": "REVISION:indian-constitution-t5:4",
               "type": "REVISION",
-              "date": "2026-12-22",
+              "date": "2026-12-10",
               "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t6",
-              "minutes": 10,
+              "topicId": "indian-constitution-t5",
+              "minutes": 30,
               "window": "MORNING",
               "part": null,
-              "touch": null,
-              "finalReview": true,
+              "touch": 4,
+              "finalReview": false,
               "pinned": false,
               "title": null,
               "reason": {
-                "rule": "FINAL_REVIEW",
+                "rule": "SPACED_REVISION",
                 "breakdown": {
-                  "weight": 1,
-                  "difficulty": 1,
-                  "baseMinutes": 30,
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
                   "intensity": "INTENSE",
                   "intensityPct": 130,
                   "subjectConfidence": 2,
                   "confidence": 2,
                   "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 50
+                  "topicMinutes": 140
                 },
                 "study": null,
-                "revision": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-11-10",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
                 "override": null
               }
             },
             {
               "id": "REVISION:kerala-geography-t3:final",
               "type": "REVISION",
-              "date": "2026-12-22",
+              "date": "2026-12-10",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t3",
               "minutes": 15,
@@ -7715,80 +7041,11 @@
                 "revision": null,
                 "override": null
               }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-23",
-          "weekday": 3,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 105,
-          "leadSubjectId": null,
-          "tasks": [
-            {
-              "id": "REVISION:kerala-geography-t5:3",
-              "type": "REVISION",
-              "date": "2026-12-23",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t5",
-              "minutes": 15,
-              "window": "MORNING",
-              "part": null,
-              "touch": 3,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": null,
-                "revision": {
-                  "touch": 3,
-                  "gapDays": 30,
-                  "studiedOn": "2026-11-23",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            },
-            {
-              "id": "FULL_MOCK:2026-12-23",
-              "type": "FULL_MOCK",
-              "date": "2026-12-23",
-              "subjectId": null,
-              "topicId": null,
-              "minutes": 75,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "FULL_MOCK",
-                "breakdown": null,
-                "study": null,
-                "revision": null,
-                "override": null
-              }
             },
             {
               "id": "REVISION:kerala-geography-t2:final",
               "type": "REVISION",
-              "date": "2026-12-23",
+              "date": "2026-12-10",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t2",
               "minutes": 15,
@@ -7816,53 +7073,11 @@
                 "revision": null,
                 "override": null
               }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-24",
-          "weekday": 4,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 40,
-          "leadSubjectId": null,
-          "tasks": [
-            {
-              "id": "REVISION:kerala-geography-t5:final",
-              "type": "REVISION",
-              "date": "2026-12-24",
-              "subjectId": "kerala-geography",
-              "topicId": "kerala-geography-t5",
-              "minutes": 15,
-              "window": "MORNING",
-              "part": null,
-              "touch": null,
-              "finalReview": true,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "FINAL_REVIEW",
-                "breakdown": {
-                  "weight": 4,
-                  "difficulty": 3,
-                  "baseMinutes": 82,
-                  "intensity": "STEADY",
-                  "intensityPct": 100,
-                  "subjectConfidence": 3,
-                  "confidence": 3,
-                  "confidencePct": 100,
-                  "confidenceCauses": [],
-                  "topicMinutes": 80
-                },
-                "study": null,
-                "revision": null,
-                "override": null
-              }
             },
             {
               "id": "REVISION:kerala-geography-t4:final",
               "type": "REVISION",
-              "date": "2026-12-24",
+              "date": "2026-12-10",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t4",
               "minutes": 15,
@@ -7894,7 +7109,7 @@
             {
               "id": "REVISION:kerala-geography-t1:final",
               "type": "REVISION",
-              "date": "2026-12-24",
+              "date": "2026-12-10",
               "subjectId": "kerala-geography",
               "topicId": "kerala-geography-t1",
               "minutes": 10,
@@ -7926,26 +7141,17 @@
           ]
         },
         {
-          "date": "2026-12-25",
+          "date": "2026-12-11",
           "weekday": 5,
           "phase": "REVIEW",
           "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2026-12-26",
-          "weekday": 6,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 75,
+          "plannedMinutes": 105,
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:2026-12-26",
+              "id": "FULL_MOCK:2026-12-11",
               "type": "FULL_MOCK",
-              "date": "2026-12-26",
+              "date": "2026-12-11",
               "subjectId": null,
               "topicId": null,
               "minutes": 75,
@@ -7962,72 +7168,14 @@
                 "revision": null,
                 "override": null
               }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-27",
-          "weekday": 0,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 25,
-          "leadSubjectId": null,
-          "tasks": [
+            },
             {
-              "id": "REVISION:indian-constitution-t7:4",
+              "id": "REVISION:indian-constitution-t5:final",
               "type": "REVISION",
-              "date": "2026-12-27",
+              "date": "2026-12-11",
               "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t7",
-              "minutes": 25,
-              "window": "MORNING",
-              "part": null,
-              "touch": 4,
-              "finalReview": false,
-              "pinned": false,
-              "title": null,
-              "reason": {
-                "rule": "SPACED_REVISION",
-                "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
-                  "intensity": "INTENSE",
-                  "intensityPct": 130,
-                  "subjectConfidence": 2,
-                  "confidence": 2,
-                  "confidencePct": 130,
-                  "confidenceCauses": [],
-                  "topicMinutes": 130
-                },
-                "study": null,
-                "revision": {
-                  "touch": 4,
-                  "gapDays": 30,
-                  "studiedOn": "2026-11-27",
-                  "extra": null,
-                  "clampedToEnd": false
-                },
-                "override": null
-              }
-            }
-          ]
-        },
-        {
-          "date": "2026-12-28",
-          "weekday": 1,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 25,
-          "leadSubjectId": null,
-          "tasks": [
-            {
-              "id": "REVISION:indian-constitution-t7:final",
-              "type": "REVISION",
-              "date": "2026-12-28",
-              "subjectId": "indian-constitution",
-              "topicId": "indian-constitution-t7",
-              "minutes": 25,
+              "topicId": "indian-constitution-t5",
+              "minutes": 30,
               "window": "MORNING",
               "part": null,
               "touch": null,
@@ -8037,16 +7185,16 @@
               "reason": {
                 "rule": "FINAL_REVIEW",
                 "breakdown": {
-                  "weight": 3,
-                  "difficulty": 4,
-                  "baseMinutes": 78,
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
                   "intensity": "INTENSE",
                   "intensityPct": 130,
                   "subjectConfidence": 2,
                   "confidence": 2,
                   "confidencePct": 130,
                   "confidenceCauses": [],
-                  "topicMinutes": 130
+                  "topicMinutes": 140
                 },
                 "study": null,
                 "revision": null,
@@ -8056,8 +7204,8 @@
           ]
         },
         {
-          "date": "2026-12-29",
-          "weekday": 2,
+          "date": "2026-12-12",
+          "weekday": 6,
           "phase": "REVIEW",
           "capacityMinutes": 108,
           "plannedMinutes": 0,
@@ -8065,17 +7213,112 @@
           "tasks": []
         },
         {
-          "date": "2026-12-30",
-          "weekday": 3,
+          "date": "2026-12-13",
+          "weekday": 0,
           "phase": "REVIEW",
           "capacityMinutes": 108,
-          "plannedMinutes": 75,
+          "plannedMinutes": 0,
+          "leadSubjectId": null,
+          "tasks": []
+        },
+        {
+          "date": "2026-12-14",
+          "weekday": 1,
+          "phase": "REVIEW",
+          "capacityMinutes": 108,
+          "plannedMinutes": 30,
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:2026-12-30",
+              "id": "REVISION:kerala-renaissance-t5:4",
+              "type": "REVISION",
+              "date": "2026-12-14",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t5",
+              "minutes": 30,
+              "window": "MORNING",
+              "part": null,
+              "touch": 4,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-11-14",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-12-15",
+          "weekday": 2,
+          "phase": "REVIEW",
+          "capacityMinutes": 108,
+          "plannedMinutes": 85,
+          "leadSubjectId": null,
+          "tasks": [
+            {
+              "id": "REVISION:indian-constitution-t6:4",
+              "type": "REVISION",
+              "date": "2026-12-15",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t6",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": 4,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": {
+                  "touch": 4,
+                  "gapDays": 30,
+                  "studiedOn": "2026-11-15",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            },
+            {
+              "id": "FULL_MOCK:2026-12-15",
               "type": "FULL_MOCK",
-              "date": "2026-12-30",
+              "date": "2026-12-15",
               "subjectId": null,
               "topicId": null,
               "minutes": 75,
@@ -8096,35 +7339,139 @@
           ]
         },
         {
-          "date": "2026-12-31",
-          "weekday": 4,
+          "date": "2026-12-16",
+          "weekday": 3,
           "phase": "REVIEW",
           "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2027-01-01",
-          "weekday": 5,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 0,
-          "leadSubjectId": null,
-          "tasks": []
-        },
-        {
-          "date": "2027-01-02",
-          "weekday": 6,
-          "phase": "REVIEW",
-          "capacityMinutes": 108,
-          "plannedMinutes": 75,
+          "plannedMinutes": 40,
           "leadSubjectId": null,
           "tasks": [
             {
-              "id": "FULL_MOCK:2027-01-02",
+              "id": "REVISION:kerala-renaissance-t5:final",
+              "type": "REVISION",
+              "date": "2026-12-16",
+              "subjectId": "kerala-renaissance",
+              "topicId": "kerala-renaissance-t5",
+              "minutes": 30,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 140
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            },
+            {
+              "id": "REVISION:indian-constitution-t6:final",
+              "type": "REVISION",
+              "date": "2026-12-16",
+              "subjectId": "indian-constitution",
+              "topicId": "indian-constitution-t6",
+              "minutes": 10,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 1,
+                  "difficulty": 1,
+                  "baseMinutes": 30,
+                  "intensity": "INTENSE",
+                  "intensityPct": 130,
+                  "subjectConfidence": 2,
+                  "confidence": 2,
+                  "confidencePct": 130,
+                  "confidenceCauses": [],
+                  "topicMinutes": 50
+                },
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-12-17",
+          "weekday": 4,
+          "phase": "REVIEW",
+          "capacityMinutes": 108,
+          "plannedMinutes": 15,
+          "leadSubjectId": null,
+          "tasks": [
+            {
+              "id": "REVISION:kerala-geography-t5:3",
+              "type": "REVISION",
+              "date": "2026-12-17",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t5",
+              "minutes": 15,
+              "window": "MORNING",
+              "part": null,
+              "touch": 3,
+              "finalReview": false,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "SPACED_REVISION",
+                "breakdown": {
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
+                "study": null,
+                "revision": {
+                  "touch": 3,
+                  "gapDays": 30,
+                  "studiedOn": "2026-11-17",
+                  "extra": null,
+                  "clampedToEnd": false
+                },
+                "override": null
+              }
+            }
+          ]
+        },
+        {
+          "date": "2026-12-18",
+          "weekday": 5,
+          "phase": "REVIEW",
+          "capacityMinutes": 108,
+          "plannedMinutes": 90,
+          "leadSubjectId": null,
+          "tasks": [
+            {
+              "id": "FULL_MOCK:2026-12-18",
               "type": "FULL_MOCK",
-              "date": "2027-01-02",
+              "date": "2026-12-18",
               "subjectId": null,
               "topicId": null,
               "minutes": 75,
@@ -8137,6 +7484,38 @@
               "reason": {
                 "rule": "FULL_MOCK",
                 "breakdown": null,
+                "study": null,
+                "revision": null,
+                "override": null
+              }
+            },
+            {
+              "id": "REVISION:kerala-geography-t5:final",
+              "type": "REVISION",
+              "date": "2026-12-18",
+              "subjectId": "kerala-geography",
+              "topicId": "kerala-geography-t5",
+              "minutes": 15,
+              "window": "MORNING",
+              "part": null,
+              "touch": null,
+              "finalReview": true,
+              "pinned": false,
+              "title": null,
+              "reason": {
+                "rule": "FINAL_REVIEW",
+                "breakdown": {
+                  "weight": 4,
+                  "difficulty": 3,
+                  "baseMinutes": 82,
+                  "intensity": "STEADY",
+                  "intensityPct": 100,
+                  "subjectConfidence": 3,
+                  "confidence": 3,
+                  "confidencePct": 100,
+                  "confidenceCauses": [],
+                  "topicMinutes": 80
+                },
                 "study": null,
                 "revision": null,
                 "override": null

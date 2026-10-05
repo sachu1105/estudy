@@ -34,10 +34,14 @@ function estimateWorkload(model: Model) {
     for (const topic of subject.topics) {
       const blocks = Math.ceil(topic.studyRemaining / MAX_BLOCK);
       study += topic.studyRemaining + blocks * CHECK_TEST_MINUTES;
+      if (topic.skipped) continue;
       const offsets = topic.offsets.slice(topic.revisionsDone);
-      const count =
+      const count = Math.max(
+        0,
         offsets.filter((o) => o < N).length +
-        (offsets.some((o) => o >= N) ? 1 : 0);
+          (offsets.some((o) => o >= N) ? 1 : 0) -
+          topic.pinnedTouches.size,
+      );
       touches += count * topic.revMinutes;
     }
   }
@@ -69,13 +73,21 @@ function warning(
   };
 }
 
+function bump(counts: Map<string, number>, key: string) {
+  const next = (counts.get(key) ?? 0) + 1;
+  counts.set(key, next);
+  return next;
+}
+
 function assemble(
   model: Model,
   result: ScheduleResult,
   available: number,
 ): PlanOutput {
+  // Pinned tasks come first in their day; the scheduler's tasks follow.
+  const drafts = result.days.map((day, i) => [...model.pinned[i], ...day]);
   const partsByTopic = new Map<string, number>();
-  for (const day of result.days) {
+  for (const day of drafts) {
     for (const task of day) {
       if (task.type === "STUDY")
         partsByTopic.set(
@@ -85,7 +97,8 @@ function assemble(
     }
   }
 
-  const days = result.days.map((draft, i): PlanDay => {
+  const partSeen = new Map<string, number>();
+  const days = drafts.map((draft, i): PlanDay => {
     const dayNumber = model.startDay + i;
     const date = fromDay(dayNumber);
     const tasks = draft.map((task): PlanTask => ({
@@ -99,18 +112,21 @@ function assemble(
       part:
         task.type === "STUDY"
           ? {
-              index: Number(task.key.split(":").at(-1)),
+              index: bump(partSeen, task.topicId!),
               total: partsByTopic.get(task.topicId!)!,
             }
           : null,
       touch: task.touch,
       finalReview: task.finalReview,
+      pinned: task.pinned,
+      title: task.title,
+      reason: task.reason,
     }));
     return {
       date,
       weekday: (((dayNumber + 4) % 7) + 7) % 7,
       phase: i < model.learnDays ? "LEARN" : "REVIEW",
-      capacityMinutes: model.capacities[i],
+      capacityMinutes: model.dayCapacities[i],
       plannedMinutes: tasks.reduce((sum, t) => sum + t.minutes, 0),
       leadSubjectId: tasks.find((t) => t.type === "STUDY")?.subjectId ?? null,
       tasks,
@@ -165,6 +181,7 @@ export function generatePlan(raw: PlanInput): PlanOutput | CoverageWarning {
   if (result.unplacedStudyMinutes > 0 || result.unplacedTouches > 0) {
     const totalStudy = model.subjects
       .flatMap((s) => s.topics)
+      .filter((t) => !t.skipped)
       .reduce((sum, t) => sum + t.studyTotal, 0);
     const studied = totalStudy - result.unplacedStudyMinutes;
     return warning(model, "PLACEMENT", {

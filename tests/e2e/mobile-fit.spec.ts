@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// CLAUDE.md rule 14: every screen fits a 360px phone with no horizontal scroll.
+// CLAUDE.md rule 16: every screen fits a 360px phone with no horizontal scroll.
 const publicRoutes = [
   "/",
   "/about",

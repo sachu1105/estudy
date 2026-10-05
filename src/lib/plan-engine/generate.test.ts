@@ -300,6 +300,14 @@ describe("coverage warning", () => {
 });
 
 describe("beginner mode", () => {
+  it("studies every day of week one even when topics don't split into 25-minute blocks", () => {
+    // Regression: a 30-35 minute topic was cut below the 25-minute starting block to avoid a
+    // sliver, deferred to tomorrow, and the same happened every day, leaving week one empty.
+    const result = plan(makeInput({ beginnerMode: true, targetDays: 120 }));
+    for (const day of result.days.slice(0, 7))
+      expect(day.tasks.some((t) => t.type === "STUDY")).toBe(true);
+  });
+
   it("uses 25-minute blocks in week one, foundations first and no section mock", () => {
     const input = makeInput({
       beginnerMode: true,

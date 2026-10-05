@@ -33,7 +33,33 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t1:1",
@@ -45,7 +71,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -70,7 +118,33 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t1:2",
@@ -82,7 +156,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -104,7 +200,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-10-13",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -135,7 +259,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-10-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -169,7 +321,33 @@
               "total": 1
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t1:1",
@@ -181,7 +359,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -203,7 +403,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-10-18",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t1:1",
@@ -218,7 +446,33 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t1:1",
@@ -230,7 +484,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -255,7 +531,33 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t1:2",
@@ -267,7 +569,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -289,7 +613,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-10-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t1:1",
@@ -301,7 +653,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-10-20",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t2:1",
@@ -316,7 +696,31 @@
               "total": 3
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t2:1",
@@ -328,7 +732,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -353,7 +777,31 @@
               "total": 3
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t2:2",
@@ -365,7 +813,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -387,7 +855,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-10-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t1:2",
@@ -399,7 +895,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-10-20",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t2:1",
@@ -414,7 +938,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t2:1",
@@ -426,7 +974,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -451,7 +1019,31 @@
               "total": 3
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t2:3",
@@ -463,7 +1055,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -485,7 +1097,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-10-24",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t2:2",
@@ -500,7 +1138,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t2:2",
@@ -512,7 +1174,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -537,7 +1219,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t2:3",
@@ -549,7 +1255,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -571,7 +1297,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-10-24",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t2:1",
@@ -586,7 +1338,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t2:1",
@@ -598,7 +1374,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -620,7 +1416,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-10-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t2:4",
@@ -635,7 +1459,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t2:4",
@@ -647,7 +1495,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -669,7 +1537,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-10-28",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t2:2",
@@ -684,7 +1578,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t2:2",
@@ -696,7 +1614,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -718,7 +1656,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-10-20",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t3:1",
@@ -733,7 +1699,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t3:1",
@@ -745,7 +1735,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -767,7 +1777,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-10-28",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t3:2",
@@ -782,7 +1818,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t3:2",
@@ -794,7 +1854,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -816,7 +1896,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 3,
+                "studiedOn": "2026-10-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t3:1",
@@ -831,7 +1937,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t3:1",
@@ -843,7 +1973,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -868,7 +2018,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t3:3",
@@ -880,7 +2054,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -902,7 +2096,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-10-24",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t3:4",
@@ -917,7 +2137,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t3:4",
@@ -929,7 +2173,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -951,7 +2215,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-03",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t3:2",
@@ -966,7 +2256,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t3:2",
@@ -978,7 +2292,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1003,7 +2337,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t3:3",
@@ -1015,7 +2373,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1037,7 +2415,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-03",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t3:1",
@@ -1052,7 +2456,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t3:1",
@@ -1064,7 +2492,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1086,7 +2534,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-10-28",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t3:4",
@@ -1101,7 +2575,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t3:4",
@@ -1113,7 +2611,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1135,7 +2653,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 10,
+                "studiedOn": "2026-10-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t3:1",
@@ -1147,7 +2691,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-07",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t3:2",
@@ -1162,7 +2732,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t3:2",
@@ -1174,7 +2768,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1199,7 +2813,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t4:1",
@@ -1211,7 +2849,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1233,7 +2891,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-07",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t4:2",
@@ -1248,7 +2932,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t4:2",
@@ -1260,7 +2968,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1282,7 +3010,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 3,
+                "studiedOn": "2026-11-08",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t4:1",
@@ -1297,7 +3051,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t4:1",
@@ -1309,7 +3087,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1331,7 +3129,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-10-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t4:3",
@@ -1346,7 +3172,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t4:3",
@@ -1358,7 +3208,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1380,7 +3250,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-03",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t4:4",
@@ -1395,7 +3291,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t4:4",
@@ -1407,7 +3327,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1429,7 +3369,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-13",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t4:2",
@@ -1444,7 +3410,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t4:2",
@@ -1456,7 +3446,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1481,7 +3491,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t4:3",
@@ -1493,7 +3527,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1515,7 +3569,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t4:1",
@@ -1530,7 +3610,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t4:1",
@@ -1542,7 +3646,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1564,7 +3688,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-10-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t3:3",
@@ -1576,7 +3728,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-07",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t4:4",
@@ -1591,7 +3769,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t4:4",
@@ -1603,7 +3805,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1625,7 +3847,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 10,
+                "studiedOn": "2026-11-08",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t4:1",
@@ -1637,7 +3885,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-17",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t4:2",
@@ -1652,7 +3926,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t4:2",
@@ -1664,7 +3962,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1686,7 +4004,35 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-10-20",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t5:1",
@@ -1701,7 +4047,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t5:1",
@@ -1713,7 +4083,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1735,7 +4125,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-17",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t5:2",
@@ -1750,7 +4166,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t5:2",
@@ -1762,7 +4202,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1784,7 +4244,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 3,
+                "studiedOn": "2026-11-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t5:1",
@@ -1799,7 +4285,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t5:1",
@@ -1811,7 +4321,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1836,7 +4366,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t5:3",
@@ -1848,7 +4402,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1870,7 +4444,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-10-24",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t4:3",
@@ -1882,7 +4482,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t5:4",
@@ -1897,7 +4523,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t5:4",
@@ -1909,7 +4559,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1934,7 +4604,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t5:2",
@@ -1946,7 +4640,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -1971,7 +4685,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t5:5",
@@ -1983,7 +4721,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2005,7 +4763,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-25",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t5:3",
@@ -2020,7 +4804,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t5:3",
@@ -2032,7 +4840,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2054,7 +4882,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-10-28",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t4:3",
@@ -2066,7 +4920,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-17",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-renaissance-t5:4",
@@ -2081,7 +4961,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t5:4",
@@ -2093,7 +4997,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2115,7 +5039,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-25",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t2:3",
@@ -2127,7 +5077,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 30,
+                "studiedOn": "2026-10-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t4:2",
@@ -2139,7 +5115,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 10,
+                "studiedOn": "2026-11-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t6:1",
@@ -2154,7 +5156,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t6:1",
@@ -2166,7 +5192,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2191,7 +5237,31 @@
               "total": 5
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-renaissance-t5:5",
@@ -2203,7 +5273,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2225,7 +5315,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-29",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t6:2",
@@ -2240,7 +5356,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t6:2",
@@ -2252,7 +5392,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2274,7 +5434,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-11-30",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t5:1",
@@ -2289,7 +5475,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t5:1",
@@ -2301,7 +5511,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2323,7 +5553,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:kerala-geography-t5:2",
@@ -2338,7 +5594,31 @@
               "total": 2
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:kerala-geography-t5:2",
@@ -2350,7 +5630,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2372,7 +5672,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-03",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t6:2",
@@ -2384,7 +5710,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-11-30",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "SECTION_MOCK:kerala-renaissance",
@@ -2396,7 +5748,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SECTION_COMPLETE",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2421,7 +5782,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t7:1",
@@ -2433,7 +5818,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2455,7 +5860,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-25",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t5:1",
@@ -2467,7 +5898,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 3,
+                "studiedOn": "2026-12-02",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t7:2",
@@ -2482,7 +5939,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t7:2",
@@ -2494,7 +5975,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2519,7 +6020,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t7:3",
@@ -2531,7 +6056,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2553,7 +6098,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-07",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "STUDY:indian-constitution-t7:4",
@@ -2568,7 +6139,31 @@
               "total": 4
             },
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "STUDY_BLOCK",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": {
+                "blockCap": 60,
+                "beginnerBlock": false,
+                "foundationalFirst": false
+              },
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "CHECK_TEST:indian-constitution-t7:4",
@@ -2580,7 +6175,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "CHECK_AFTER_STUDY",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2602,7 +6217,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 1,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 1,
+                "gapDays": 1,
+                "studiedOn": "2026-12-07",
+                "extra": "LOW_CONFIDENCE",
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t3:3",
@@ -2614,7 +6255,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 30,
+                "studiedOn": "2026-11-08",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2636,7 +6303,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2658,7 +6351,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-11-30",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t7:2",
@@ -2670,7 +6389,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 3,
+                "studiedOn": "2026-12-07",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2692,7 +6437,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SECTION_COMPLETE",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2714,7 +6468,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 2,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 2,
+                "gapDays": 10,
+                "studiedOn": "2026-12-02",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2736,7 +6516,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-13",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "SECTION_MOCK:kerala-geography",
@@ -2748,7 +6554,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SECTION_COMPLETE",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2797,7 +6612,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 10,
+                "studiedOn": "2026-12-07",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t4:4",
@@ -2809,7 +6650,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-17",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2831,7 +6698,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 30,
+                "studiedOn": "2026-11-18",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -2862,7 +6755,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-12-07",
+                "extra": null,
+                "clampedToEnd": true
+              },
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t1:final",
@@ -2874,7 +6793,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t1:final",
@@ -2886,7 +6827,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 1,
+                "confidencePct": 160,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 60
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t3:final",
@@ -2898,7 +6861,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t3:final",
@@ -2910,7 +6893,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 145
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2932,7 +6935,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t7:final",
@@ -2944,7 +6967,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-renaissance-t2:final",
@@ -2956,7 +6999,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 130
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t4:final",
@@ -2968,7 +7031,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -2990,7 +7073,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 125
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t1:final",
@@ -3002,7 +7105,29 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [
+                  "MISSED_REVISIONS"
+                ],
+                "topicMinutes": 40
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t3:final",
@@ -3014,7 +7139,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 5,
+                "difficulty": 2,
+                "baseMinutes": 86,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 85
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t2:final",
@@ -3026,7 +7171,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 3,
+                "difficulty": 4,
+                "baseMinutes": 78,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t4:final",
@@ -3038,7 +7203,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 2,
+                "difficulty": 5,
+                "baseMinutes": 74,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 75
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -3051,7 +7236,7 @@
         "leadSubjectId": null,
         "tasks": [
           {
-            "id": "FULL_MOCK:72",
+            "id": "FULL_MOCK:2026-12-23",
             "type": "FULL_MOCK",
             "date": "2026-12-23",
             "subjectId": null,
@@ -3060,7 +7245,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FULL_MOCK",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -3091,7 +7285,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-25",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -3104,7 +7324,7 @@
         "leadSubjectId": null,
         "tasks": [
           {
-            "id": "FULL_MOCK:75",
+            "id": "FULL_MOCK:2026-12-26",
             "type": "FULL_MOCK",
             "date": "2026-12-26",
             "subjectId": null,
@@ -3113,7 +7333,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FULL_MOCK",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t5:final",
@@ -3125,7 +7354,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -3165,7 +7414,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-29",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -3187,10 +7462,36 @@
             "window": "MORNING",
             "part": null,
             "touch": 4,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": {
+                "touch": 4,
+                "gapDays": 30,
+                "studiedOn": "2026-11-30",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           },
           {
-            "id": "FULL_MOCK:79",
+            "id": "FULL_MOCK:2026-12-30",
             "type": "FULL_MOCK",
             "date": "2026-12-30",
             "subjectId": null,
@@ -3199,7 +7500,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FULL_MOCK",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -3221,7 +7531,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 140
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:indian-constitution-t6:final",
@@ -3233,7 +7563,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 1,
+                "difficulty": 1,
+                "baseMinutes": 30,
+                "intensity": "INTENSE",
+                "intensityPct": 130,
+                "subjectConfidence": 2,
+                "confidence": 2,
+                "confidencePct": 130,
+                "confidenceCauses": [],
+                "topicMinutes": 50
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       },
@@ -3255,7 +7605,33 @@
             "window": "MORNING",
             "part": null,
             "touch": 3,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "SPACED_REVISION",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": {
+                "touch": 3,
+                "gapDays": 30,
+                "studiedOn": "2026-12-02",
+                "extra": null,
+                "clampedToEnd": false
+              },
+              "override": null
+            }
           }
         ]
       },
@@ -3268,7 +7644,7 @@
         "leadSubjectId": null,
         "tasks": [
           {
-            "id": "FULL_MOCK:82",
+            "id": "FULL_MOCK:2027-01-02",
             "type": "FULL_MOCK",
             "date": "2027-01-02",
             "subjectId": null,
@@ -3277,7 +7653,16 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": false
+            "finalReview": false,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FULL_MOCK",
+              "breakdown": null,
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           },
           {
             "id": "REVISION:kerala-geography-t5:final",
@@ -3289,7 +7674,27 @@
             "window": "MORNING",
             "part": null,
             "touch": null,
-            "finalReview": true
+            "finalReview": true,
+            "pinned": false,
+            "title": null,
+            "reason": {
+              "rule": "FINAL_REVIEW",
+              "breakdown": {
+                "weight": 4,
+                "difficulty": 3,
+                "baseMinutes": 82,
+                "intensity": "STEADY",
+                "intensityPct": 100,
+                "subjectConfidence": 3,
+                "confidence": 3,
+                "confidencePct": 100,
+                "confidenceCauses": [],
+                "topicMinutes": 80
+              },
+              "study": null,
+              "revision": null,
+              "override": null
+            }
           }
         ]
       }
@@ -3402,17 +7807,26 @@
     {
       "topicId": "indian-constitution-t1",
       "confidence": 1,
-      "extraRevision": false
+      "extraRevision": false,
+      "causes": [
+        "MISSED_REVISIONS"
+      ]
     },
     {
       "topicId": "kerala-geography-t1",
       "confidence": 2,
-      "extraRevision": false
+      "extraRevision": false,
+      "causes": [
+        "MISSED_REVISIONS"
+      ]
     },
     {
       "topicId": "kerala-renaissance-t1",
       "confidence": 1,
-      "extraRevision": false
+      "extraRevision": false,
+      "causes": [
+        "MISSED_REVISIONS"
+      ]
     }
   ]
 }

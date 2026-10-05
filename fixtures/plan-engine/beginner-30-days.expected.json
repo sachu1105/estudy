@@ -32,7 +32,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t2:1",
@@ -44,7 +68,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -69,7 +113,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t2:2",
@@ -81,7 +149,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -106,7 +194,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:1",
@@ -118,7 +230,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -143,7 +275,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t2:3",
@@ -155,7 +311,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -180,7 +356,31 @@
             "total": 4
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t2:4",
@@ -192,7 +392,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -214,7 +434,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-09",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:english-t3:2",
@@ -229,7 +475,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:2",
@@ -241,7 +511,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -266,7 +556,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 25,
+              "beginnerBlock": true,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t3:3",
@@ -278,7 +592,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -300,7 +634,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t3:1",
@@ -312,7 +672,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-11",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:kerala-renaissance-t4:1",
@@ -327,7 +713,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t4:1",
@@ -339,7 +749,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -364,7 +794,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": true
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t4:2",
@@ -376,7 +830,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -398,7 +872,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-13",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t3:2",
@@ -410,7 +910,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-11",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:english-t1:1",
@@ -425,7 +951,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:1",
@@ -437,7 +987,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -462,7 +1032,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t1:2",
@@ -474,7 +1068,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -496,7 +1110,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t1:1",
@@ -508,7 +1148,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-15",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:kerala-renaissance-t1:1",
@@ -523,7 +1189,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t1:1",
@@ -535,7 +1225,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -560,7 +1270,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t1:2",
@@ -572,7 +1306,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -594,7 +1348,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-17",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t1:2",
@@ -606,7 +1386,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:english-t2:1",
@@ -621,7 +1427,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:1",
@@ -633,7 +1463,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -655,7 +1505,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:english-t2:2",
@@ -670,7 +1546,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:english-t2:2",
@@ -682,7 +1582,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -704,7 +1624,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-17",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:1",
@@ -716,7 +1662,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-19",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:kerala-renaissance-t3:1",
@@ -731,7 +1703,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t3:1",
@@ -743,7 +1739,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -765,7 +1781,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-11",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:kerala-renaissance-t3:2",
@@ -780,7 +1822,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:kerala-renaissance-t3:2",
@@ -792,7 +1858,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -814,7 +1900,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 1,
+              "studiedOn": "2026-10-21",
+              "extra": "LOW_CONFIDENCE",
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:2",
@@ -826,7 +1938,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -848,7 +1986,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "SECTION_MOCK:english",
@@ -860,7 +2024,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SECTION_COMPLETE",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -882,7 +2055,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 3,
+              "studiedOn": "2026-10-21",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -904,7 +2103,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "SECTION_MOCK:kerala-renaissance",
@@ -916,7 +2141,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SECTION_COMPLETE",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -947,7 +2181,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-17",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -978,7 +2238,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1000,7 +2286,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-09",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-renaissance-t4:4",
@@ -1012,7 +2324,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-renaissance-t1:4",
@@ -1024,7 +2362,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-17",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t3:4",
@@ -1036,7 +2400,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-11",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t1:4",
@@ -1048,7 +2438,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:4",
@@ -1060,7 +2476,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1082,7 +2524,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 10,
+              "studiedOn": "2026-10-21",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-renaissance-t2:final",
@@ -1094,7 +2562,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-renaissance-t4:final",
@@ -1106,7 +2594,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:kerala-renaissance-t1:final",
@@ -1118,7 +2626,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t3:final",
@@ -1130,7 +2658,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t1:final",
@@ -1142,7 +2690,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:english-t2:final",
@@ -1154,7 +2722,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 1,
+              "baseMinutes": 42,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 65
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1176,7 +2764,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 4,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": {
+              "touch": 4,
+              "gapDays": 30,
+              "studiedOn": "2026-10-21",
+              "extra": null,
+              "clampedToEnd": true
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1198,7 +2812,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 2,
+              "difficulty": 2,
+              "baseMinutes": 50,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 1,
+              "confidence": 1,
+              "confidencePct": 160,
+              "confidenceCauses": [],
+              "topicMinutes": 80
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1211,7 +2845,7 @@
       "leadSubjectId": null,
       "tasks": [
         {
-          "id": "FULL_MOCK:29",
+          "id": "FULL_MOCK:2026-11-03",
           "type": "FULL_MOCK",
           "date": "2026-11-03",
           "subjectId": null,
@@ -1220,7 +2854,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     }

@@ -32,7 +32,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t1:1",
@@ -44,7 +68,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -69,7 +113,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t1:2",
@@ -81,7 +149,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -106,7 +194,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t1:1",
@@ -118,7 +230,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -143,7 +275,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t1:2",
@@ -155,7 +311,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -177,7 +353,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-06",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:intense-subject-t1:1",
@@ -192,7 +394,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t1:1",
@@ -204,7 +430,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -229,7 +475,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t1:2",
@@ -241,7 +511,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -263,7 +553,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-08",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:light-subject-t2:1",
@@ -278,7 +594,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t2:1",
@@ -290,7 +630,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -315,7 +675,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t1:3",
@@ -327,7 +711,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -352,7 +756,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t2:2",
@@ -364,7 +792,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -389,7 +837,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t2:1",
@@ -401,7 +873,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -423,7 +915,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-12",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:steady-subject-t2:2",
@@ -438,7 +956,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t2:2",
@@ -450,7 +992,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -472,7 +1034,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-06",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t2:1",
@@ -484,7 +1072,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:intense-subject-t2:1",
@@ -499,7 +1113,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t2:1",
@@ -511,7 +1149,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -536,7 +1194,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t2:2",
@@ -548,7 +1230,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -570,7 +1272,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-08",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t2:1",
@@ -582,7 +1310,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:light-subject-t3:1",
@@ -597,7 +1351,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t3:1",
@@ -609,7 +1387,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -634,7 +1432,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t2:3",
@@ -646,7 +1468,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -671,7 +1513,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t3:2",
@@ -683,7 +1549,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -708,7 +1594,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t3:1",
@@ -720,7 +1630,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -742,7 +1672,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-12",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t2:1",
@@ -754,7 +1710,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:steady-subject-t3:2",
@@ -769,7 +1751,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t3:2",
@@ -781,7 +1787,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -803,7 +1829,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t3:1",
@@ -815,7 +1867,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-20",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:intense-subject-t3:1",
@@ -830,7 +1908,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t3:1",
@@ -842,7 +1944,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -867,7 +1989,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t3:2",
@@ -879,7 +2025,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -901,7 +2067,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t3:1",
@@ -913,7 +2105,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-22",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:light-subject-t4:1",
@@ -928,7 +2146,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t4:1",
@@ -940,7 +2182,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -965,7 +2227,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t3:3",
@@ -977,7 +2263,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1002,7 +2308,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:light-subject-t4:2",
@@ -1014,7 +2344,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1039,7 +2389,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t4:1",
@@ -1051,7 +2425,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1073,7 +2467,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t3:1",
@@ -1085,7 +2505,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-26",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:steady-subject-t4:2",
@@ -1100,7 +2546,31 @@
             "total": 2
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:steady-subject-t4:2",
@@ -1112,7 +2582,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1134,7 +2624,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-20",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t4:1",
@@ -1146,7 +2662,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-27",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:intense-subject-t4:1",
@@ -1161,7 +2703,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t4:1",
@@ -1173,7 +2739,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1198,7 +2784,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t4:2",
@@ -1210,7 +2820,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1232,7 +2862,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-22",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t4:1",
@@ -1244,7 +2900,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-10-29",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "STUDY:intense-subject-t4:3",
@@ -1259,7 +2941,31 @@
             "total": 3
           },
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "STUDY_BLOCK",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": {
+              "blockCap": 60,
+              "beginnerBlock": false,
+              "foundationalFirst": false
+            },
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "CHECK_TEST:intense-subject-t4:3",
@@ -1271,7 +2977,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "CHECK_AFTER_STUDY",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1311,7 +3037,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 1,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 1,
+              "gapDays": 3,
+              "studiedOn": "2026-11-01",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1333,7 +3085,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-06",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t3:2",
@@ -1345,7 +3123,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-26",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1367,7 +3171,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-27",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1389,7 +3219,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-08",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "SECTION_MOCK:light-subject",
@@ -1401,7 +3257,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SECTION_COMPLETE",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1423,7 +3288,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-10-29",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1445,7 +3336,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SECTION_COMPLETE",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1476,7 +3376,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-12",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t4:2",
@@ -1488,7 +3414,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 2,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 2,
+              "gapDays": 10,
+              "studiedOn": "2026-11-01",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1510,7 +3462,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-13",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         },
         {
           "id": "SECTION_MOCK:intense-subject",
@@ -1522,7 +3500,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SECTION_COMPLETE",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -1553,7 +3540,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-15",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1602,7 +3615,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-19",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1624,7 +3663,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-20",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1655,7 +3720,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-22",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1704,7 +3795,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-26",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1726,7 +3843,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-27",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1757,7 +3900,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-10-29",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1797,7 +3966,33 @@
           "window": "MORNING",
           "part": null,
           "touch": 3,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "SPACED_REVISION",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": {
+              "touch": 3,
+              "gapDays": 30,
+              "studiedOn": "2026-11-01",
+              "extra": null,
+              "clampedToEnd": false
+            },
+            "override": null
+          }
         }
       ]
     },
@@ -1981,7 +4176,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t2:final",
@@ -1993,7 +4208,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t3:final",
@@ -2005,7 +4240,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:light-subject-t4:final",
@@ -2017,7 +4272,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "LIGHT",
+              "intensityPct": 75,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 55
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t1:final",
@@ -2029,7 +4304,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t2:final",
@@ -2041,7 +4336,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t3:final",
@@ -2053,7 +4368,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:steady-subject-t4:final",
@@ -2065,7 +4400,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "STEADY",
+              "intensityPct": 100,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 70
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2087,7 +4442,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t2:final",
@@ -2099,7 +4474,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t3:final",
@@ -2111,7 +4506,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         },
         {
           "id": "REVISION:intense-subject-t4:final",
@@ -2123,7 +4538,27 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": true
+          "finalReview": true,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FINAL_REVIEW",
+            "breakdown": {
+              "weight": 3,
+              "difficulty": 3,
+              "baseMinutes": 70,
+              "intensity": "INTENSE",
+              "intensityPct": 130,
+              "subjectConfidence": 3,
+              "confidence": 3,
+              "confidencePct": 100,
+              "confidenceCauses": [],
+              "topicMinutes": 90
+            },
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2145,7 +4580,7 @@
       "leadSubjectId": null,
       "tasks": [
         {
-          "id": "FULL_MOCK:79",
+          "id": "FULL_MOCK:2026-12-23",
           "type": "FULL_MOCK",
           "date": "2026-12-23",
           "subjectId": null,
@@ -2154,7 +4589,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2185,7 +4629,7 @@
       "leadSubjectId": null,
       "tasks": [
         {
-          "id": "FULL_MOCK:82",
+          "id": "FULL_MOCK:2026-12-26",
           "type": "FULL_MOCK",
           "date": "2026-12-26",
           "subjectId": null,
@@ -2194,7 +4638,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2234,7 +4687,7 @@
       "leadSubjectId": null,
       "tasks": [
         {
-          "id": "FULL_MOCK:86",
+          "id": "FULL_MOCK:2026-12-30",
           "type": "FULL_MOCK",
           "date": "2026-12-30",
           "subjectId": null,
@@ -2243,7 +4696,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     },
@@ -2274,7 +4736,7 @@
       "leadSubjectId": null,
       "tasks": [
         {
-          "id": "FULL_MOCK:89",
+          "id": "FULL_MOCK:2027-01-02",
           "type": "FULL_MOCK",
           "date": "2027-01-02",
           "subjectId": null,
@@ -2283,7 +4745,16 @@
           "window": "MORNING",
           "part": null,
           "touch": null,
-          "finalReview": false
+          "finalReview": false,
+          "pinned": false,
+          "title": null,
+          "reason": {
+            "rule": "FULL_MOCK",
+            "breakdown": null,
+            "study": null,
+            "revision": null,
+            "override": null
+          }
         }
       ]
     }

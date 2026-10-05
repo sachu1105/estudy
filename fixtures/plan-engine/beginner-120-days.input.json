@@ -1,0 +1,185 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 120,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": true,
+    "subjects": [
+      {
+        "id": "constitution",
+        "name": "constitution",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "constitution-t1",
+            "name": "constitution topic 1",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "constitution-t2",
+            "name": "constitution topic 2",
+            "weight": 3,
+            "difficulty": 4,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "constitution-t3",
+            "name": "constitution topic 3",
+            "weight": 5,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "constitution-t4",
+            "name": "constitution topic 4",
+            "weight": 2,
+            "difficulty": 5,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "constitution-t5",
+            "name": "constitution topic 5",
+            "weight": 4,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          },
+          {
+            "id": "constitution-t6",
+            "name": "constitution topic 6",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 5
+          }
+        ]
+      },
+      {
+        "id": "geography",
+        "name": "geography",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "geography-t1",
+            "name": "geography topic 1",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "geography-t2",
+            "name": "geography topic 2",
+            "weight": 3,
+            "difficulty": 4,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "geography-t3",
+            "name": "geography topic 3",
+            "weight": 5,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "geography-t4",
+            "name": "geography topic 4",
+            "weight": 2,
+            "difficulty": 5,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "geography-t5",
+            "name": "geography topic 5",
+            "weight": 4,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          }
+        ]
+      },
+      {
+        "id": "aptitude",
+        "name": "aptitude",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "aptitude-t1",
+            "name": "aptitude topic 1",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "aptitude-t2",
+            "name": "aptitude topic 2",
+            "weight": 3,
+            "difficulty": 4,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "aptitude-t3",
+            "name": "aptitude topic 3",
+            "weight": 5,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "aptitude-t4",
+            "name": "aptitude topic 4",
+            "weight": 2,
+            "difficulty": 5,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "aptitude-t5",
+            "name": "aptitude topic 5",
+            "weight": 4,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          },
+          {
+            "id": "aptitude-t6",
+            "name": "aptitude topic 6",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 5
+          }
+        ]
+      }
+    ]
+  }
+}

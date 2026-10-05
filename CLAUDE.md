@@ -15,6 +15,17 @@ tests, discuss, ask questions and compete on a group rank. A global rank shows e
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
 
+The user is never asked to blindly trust the AI. Every AI decision is visible and
+editable: the parsed syllabus, the minutes given to each topic and why, the order of
+tasks, how the streak is counted, why a topic got an extra revision. Users can override
+any of it by hand.
+
+Study vault: every subject and topic gets its own folder, created automatically from
+the syllabus. Users keep their own notes, website links, PDFs and photos of pages
+(camera capture or upload from device) in those folders, plus custom folders of their
+own. On the paid plans, they can turn the material in any folder into a mock test: the
+AI reads their notes, PDFs and scanned pages and writes questions from them.
+
 ## Stack
 
 One Next.js app for frontend, backend and admin. One separate worker process from the
@@ -48,7 +59,7 @@ studyplanner/
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
       (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, settings, onboarding
+                       progress, vault, settings, onboarding
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
@@ -120,7 +131,9 @@ Run test, lint and typecheck before declaring any task done.
 
 8. ENTITLEMENTS GO THROUGH ONE FUNCTION. Use `can(user, feature)` and
    `limit(user, feature)` from server/entitlements. Never write `plan === 'PRO'`
-   anywhere else. While BILLING_ENABLED=false, every user resolves to ELITE.
+   anywhere else. While BILLING_ENABLED=false, every user resolves to ELITE, except
+   features marked paidOnly, which need a real PRO or ELITE subscription or an
+   admin grant.
 
 9. AUTHORIZATION IS SERVER-SIDE ON EVERY ENTRYPOINT. Every route handler and server
    action starts with requireUser() or requireRole(). Middleware only refreshes tokens
@@ -140,7 +153,18 @@ Run test, lint and typecheck before declaring any task done.
 
 13. Rate-limit auth, uploads, AI-triggering actions and test submissions with Redis.
 
-14. MOBILE FIRST, EVERY SCREEN. Most users study on a phone. Every page, dialog, form,
+14. EVERY AI DECISION IS EXPLAINABLE AND OVERRIDABLE. The plan engine returns a
+    reason with each allocation (base minutes x intensity x confidence, revision
+    gaps, why a touch was added). The UI shows it under "Why this?". Any user edit
+    (minutes, day, order, locked task) is stored as an override that the re-plan
+    respects. AI-written questions always show their source.
+
+15. VAULT MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
+    them unless they explicitly share an item to a group. Questions generated from
+    their material never enter the public question pool. Files are served only
+    through short-lived signed URLs after an ownership check.
+
+16. MOBILE FIRST, EVERY SCREEN. Most users study on a phone. Every page, dialog, form,
     table and admin screen is designed at 360px wide first, then scaled up. No horizontal
     scroll at 360px, tap targets at least 44x44px, text never below 13px, inputs 16px on
     mobile (no iOS zoom), safe-area insets respected, nothing hidden behind the bottom tab
@@ -163,6 +187,14 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   group file storage         50 MB       1 GB         5 GB
   analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
+  study vault storage        200 MB      5 GB         20 GB
+  vault folders and notes    unlimited   unlimited    unlimited
+  mock tests from my vault   no          30 / month   100 / month   (paidOnly)
+  pages per vault mock       -           40           150
+
+"Mock tests from my vault" is the core paid feature. It is paidOnly: it stays locked
+during the free launch period and opens only with a PRO or ELITE subscription or an
+admin grant. Locked users see what it does and a calm upgrade card, never a dead button.
 
 ## Product rules
 

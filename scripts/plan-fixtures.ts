@@ -435,7 +435,84 @@ const replans: Fixture[] = [
   ),
 ];
 
-export const fixtures: Fixture[] = [...generated, ...replans];
+/** A user who moved, resized and locked tasks, and added one of their own. */
+function overridesFixture(): { input: PlanInput; first: PlanOutput } {
+  const base = makeInput({ targetDays: 75, subjects: pscLdc().slice(0, 3) });
+  const first = generatePlan(base);
+  if (first.kind !== "PLAN") throw new Error("overrides: base must plan");
+  const tasks = first.days.flatMap((d) => d.tasks);
+  const study = tasks.filter((t) => t.type === "STUDY");
+  const revision = tasks.find((t) => t.type === "REVISION" && !t.finalReview)!;
+  const asPin = (
+    t: PlanOutput["days"][number]["tasks"][number],
+    kind: "MOVE" | "RESIZE" | "LOCK",
+    date = t.date,
+    minutes = t.minutes,
+  ) => ({
+    kind,
+    taskId: t.id,
+    type: t.type as "STUDY" | "REVISION",
+    date,
+    minutes,
+    window: t.window,
+    subjectId: t.subjectId,
+    topicId: t.topicId,
+    touch: t.touch,
+  });
+  return {
+    first,
+    input: {
+      ...base,
+      overrides: [
+        asPin(study[3], "MOVE", addDays(study[3].date, 2)),
+        asPin(study[6], "RESIZE", study[6].date, study[6].minutes + 15),
+        asPin(revision, "LOCK"),
+        {
+          kind: "CUSTOM",
+          taskId: "custom-previous-paper",
+          type: "CUSTOM",
+          date: addDays(base.today, 20),
+          minutes: 60,
+          title: "Previous year LDC paper",
+        },
+        { kind: "TOPIC_DONE", topicId: study[9].topicId! },
+      ],
+    },
+  };
+}
+
+const withOverrides = overridesFixture();
+const pinnedPlan = generatePlan(withOverrides.input);
+if (pinnedPlan.kind !== "PLAN") throw new Error("overrides must plan");
+
+const overrideFixtures: Fixture[] = [
+  {
+    name: "beginner-120-days",
+    fn: "generatePlan",
+    input: makeInput({ targetDays: 120, beginnerMode: true }),
+  },
+  { name: "overrides-pinned", fn: "generatePlan", input: withOverrides.input },
+  {
+    name: "replan-with-overrides",
+    fn: "replan",
+    input: {
+      ...withOverrides.input,
+      today: addDays(TODAY, 10),
+      targetDays: 65,
+      history: simulateHistory(pinnedPlan, addDays(TODAY, 10), (_t, day) => ({
+        done: day % 4 !== 1,
+        accuracy: 0.65,
+      })),
+      previousPlan: pinnedPlan,
+    },
+  },
+];
+
+export const fixtures: Fixture[] = [
+  ...generated,
+  ...replans,
+  ...overrideFixtures,
+];
 
 function run(fixture: Fixture) {
   return fixture.fn === "generatePlan"

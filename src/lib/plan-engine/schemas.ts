@@ -24,6 +24,23 @@ export const taskTypeSchema = z.enum([
   "CHECK_TEST",
   "SECTION_MOCK",
   "FULL_MOCK",
+  "CUSTOM",
+]);
+
+/** Why a topic's confidence changed at a re-plan. */
+export const confidenceCauseSchema = z.enum([
+  "HIGH_SCORE",
+  "LOW_SCORE",
+  "MISSED_REVISIONS",
+]);
+/** Why a revision touch beyond the standard 3, 10 and 30 days was added. */
+export const extraTouchSchema = z.enum(["LOW_CONFIDENCE", "WEAK_CHECK_TEST"]);
+export const overrideKindSchema = z.enum([
+  "MOVE",
+  "RESIZE",
+  "LOCK",
+  "CUSTOM",
+  "TOPIC_DONE",
 ]);
 
 export const topicSchema = z.object({
@@ -64,7 +81,50 @@ export const topicAdjustmentSchema = z.object({
   topicId: id,
   confidence: level,
   extraRevision: z.boolean(),
+  causes: z.array(confidenceCauseSchema).default([]),
 });
+
+/**
+ * A user's hand edit (CLAUDE.md rule 14). MOVE, RESIZE, LOCK and CUSTOM pin one task: the
+ * engine places it exactly as given and plans everything else around it. A pinned STUDY
+ * always brings its CHECK_TEST along. Pins dated outside the horizon, or naming a topic or
+ * subject that no longer exists, are ignored.
+ */
+export const pinOverrideSchema = z.object({
+  kind: z.enum(["MOVE", "RESIZE", "LOCK", "CUSTOM"]),
+  taskId: id,
+  type: z.enum(["STUDY", "REVISION", "SECTION_MOCK", "FULL_MOCK", "CUSTOM"]),
+  date: isoDateSchema,
+  minutes: z.number().int().min(5).max(600),
+  window: timeWindowSchema.optional(),
+  subjectId: id.nullable().default(null),
+  topicId: id.nullable().default(null),
+  /** REVISION: which touch this is; the engine then skips its own copy of that touch. */
+  touch: z.number().int().min(1).nullable().default(null),
+  /** CUSTOM: the user's own label. */
+  title: z.string().trim().min(1).max(120).nullable().default(null),
+});
+
+/** The user already knows this topic: no study, no check tests, no revisions. */
+export const topicDoneOverrideSchema = z.object({
+  kind: z.literal("TOPIC_DONE"),
+  topicId: id,
+});
+
+export const planOverrideSchema = z
+  .union([topicDoneOverrideSchema, pinOverrideSchema])
+  .superRefine((o, ctx) => {
+    if (o.kind === "TOPIC_DONE") return;
+    const issue = (message: string) =>
+      ctx.addIssue({ code: "custom", path: ["type"], message });
+    if ((o.kind === "CUSTOM") !== (o.type === "CUSTOM"))
+      issue("Custom overrides are custom tasks, and only they are.");
+    if ((o.type === "STUDY" || o.type === "REVISION") && !o.topicId)
+      issue("Study and revision tasks need a topic.");
+    if (o.type === "SECTION_MOCK" && !o.subjectId)
+      issue("A section mock needs a subject.");
+    if (o.type === "CUSTOM" && !o.title) issue("A custom task needs a title.");
+  });
 
 const planInputBase = z.object({
   today: isoDateSchema,
@@ -83,6 +143,7 @@ const planInputBase = z.object({
   timelineStart: isoDateSchema.optional(),
   /** Lead subjects of the two days before today, oldest first, so interleaving carries over. */
   recentLeads: z.array(id.nullable()).max(2).default([]),
+  overrides: z.array(planOverrideSchema).max(2000).default([]),
 });
 
 type PlanInputShape = z.output<typeof planInputBase>;
@@ -129,6 +190,60 @@ function checkPlanInput(input: PlanInputShape, ctx: z.RefinementCtx) {
 
 export const planInputSchema = planInputBase.superRefine(checkPlanInput);
 
+/** The numbers behind a topic's study time: base minutes x intensity x confidence. */
+export const minutesBreakdownSchema = z.object({
+  weight: level,
+  difficulty: level,
+  baseMinutes: z.number().int().positive(),
+  intensity: intensitySchema,
+  intensityPct: z.number().int().positive(),
+  /** What the user set for the subject. */
+  subjectConfidence: level,
+  /** What the plan used: differs after a re-plan moved it (see confidenceCauses). */
+  confidence: level,
+  confidencePct: z.number().int().positive(),
+  confidenceCauses: z.array(confidenceCauseSchema),
+  /** Total study time for the topic, before it is split into blocks. */
+  topicMinutes: z.number().int().positive(),
+});
+
+/** "Why this?" for one task. Codes, not sentences, so the UI can translate them. */
+export const taskReasonSchema = z.object({
+  rule: z.enum([
+    "STUDY_BLOCK",
+    "CHECK_AFTER_STUDY",
+    "SPACED_REVISION",
+    "FINAL_REVIEW",
+    "SECTION_COMPLETE",
+    "FULL_MOCK",
+    "USER_TASK",
+  ]),
+  /** Every task tied to a topic. */
+  breakdown: minutesBreakdownSchema.nullable(),
+  study: z
+    .object({
+      /** Longest block allowed that day: 60, or 25 in a beginner's first week. */
+      blockCap: z.number().int().positive(),
+      beginnerBlock: z.boolean(),
+      /** Beginner mode put this foundational topic ahead of the rest. */
+      foundationalFirst: z.boolean(),
+    })
+    .nullable(),
+  revision: z
+    .object({
+      touch: z.number().int().min(1),
+      /** Planned gap after studying: 1, 3, 6, 10 or 30 days. */
+      gapDays: z.number().int().min(1),
+      studiedOn: isoDateSchema,
+      extra: extraTouchSchema.nullable(),
+      /** The gap ran past the end of the plan, so the touch moved inside it. */
+      clampedToEnd: z.boolean(),
+    })
+    .nullable(),
+  /** Set when the user placed this task by hand. */
+  override: z.object({ kind: overrideKindSchema }).nullable(),
+});
+
 export const planTaskSchema = z.object({
   id: z.string(),
   type: taskTypeSchema,
@@ -145,6 +260,11 @@ export const planTaskSchema = z.object({
   touch: z.number().int().min(1).nullable(),
   /** Optional final-review revision in the last 15%; not counted as required work. */
   finalReview: z.boolean(),
+  /** Placed by a user override; re-plans keep it exactly where it is. */
+  pinned: z.boolean(),
+  /** CUSTOM only: the user's label. */
+  title: z.string().nullable(),
+  reason: taskReasonSchema,
 });
 
 export const planDaySchema = z.object({
@@ -232,6 +352,13 @@ export type Subject = z.infer<typeof subjectSchema>;
 export type Availability = z.infer<typeof availabilitySchema>;
 export type TopicProgress = z.infer<typeof topicProgressSchema>;
 export type TopicAdjustment = z.infer<typeof topicAdjustmentSchema>;
+export type ConfidenceCause = z.infer<typeof confidenceCauseSchema>;
+export type ExtraTouch = z.infer<typeof extraTouchSchema>;
+export type PlanOverride = z.input<typeof planOverrideSchema>;
+export type ParsedPlanOverride = z.output<typeof planOverrideSchema>;
+export type PinOverride = z.output<typeof pinOverrideSchema>;
+export type MinutesBreakdown = z.infer<typeof minutesBreakdownSchema>;
+export type TaskReason = z.infer<typeof taskReasonSchema>;
 export type PlanInput = z.input<typeof planInputSchema>;
 export type ParsedPlanInput = z.output<typeof planInputSchema>;
 export type PlanTask = z.infer<typeof planTaskSchema>;

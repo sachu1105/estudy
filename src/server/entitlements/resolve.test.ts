@@ -33,6 +33,21 @@ describe("entitlements with billing disabled", () => {
     expect(can(free, "topperComparison")).toBe(true);
     expect(limit(free, "syllabusUploads")).toBe(Infinity);
     expect(limit(free, "groupStorageBytes")).toBe(5 * 1024 ** 3);
+    expect(limit(free, "vaultStorageBytes")).toBe(20 * 1024 ** 3);
+  });
+
+  it("keeps paidOnly features locked for users without a real paid plan", () => {
+    expect(can(free, "vaultMocksPerMonth")).toBe(false);
+    expect(limit(free, "vaultMocksPerMonth")).toBe(0);
+    expect(limit(free, "pagesPerVaultMock")).toBe(0);
+    expect(can(pro({ status: "EXPIRED" }), "vaultMocksPerMonth")).toBe(false);
+  });
+
+  it("opens paidOnly features to a real or admin-granted PRO or ELITE plan", () => {
+    expect(limit(pro(), "vaultMocksPerMonth")).toBe(30);
+    expect(limit(pro(), "pagesPerVaultMock")).toBe(40);
+    const elite = { subscription: { ...pro().subscription, plan: "ELITE" as const } };
+    expect(limit(elite, "vaultMocksPerMonth")).toBe(100);
   });
 });
 
@@ -78,5 +93,13 @@ describe("entitlements with billing enabled", () => {
 
   it("drops expired subscriptions to FREE", () => {
     expect(planOf(pro({ status: "EXPIRED" }))).toBe("FREE");
+  });
+
+  it("applies the vault limits from CLAUDE.md", () => {
+    expect(limit(free, "vaultStorageBytes")).toBe(200 * 1024 ** 2);
+    expect(limit(free, "vaultFolders")).toBe(Infinity);
+    expect(can(free, "vaultMocksPerMonth")).toBe(false);
+    expect(limit(pro(), "vaultStorageBytes")).toBe(5 * 1024 ** 3);
+    expect(limit(pro(), "vaultMocksPerMonth")).toBe(30);
   });
 });

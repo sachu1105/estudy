@@ -26,7 +26,10 @@ test.describe("landing, signed out", () => {
       page.getByText("Free during launch. No card needed."),
     ).toBeVisible();
     await expect(
-      page.getByText("Every feature is free during launch", { exact: true }),
+      page.getByText(
+        "Free during launch, except mock tests from your own notes",
+        { exact: true },
+      ),
     ).toBeAttached();
   });
 
