@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Study planner
 
-## Getting Started
+A web-first study planner for Kerala PSC, SSC, RRB and banking aspirants. See `CLAUDE.md`
+for the product contract and rules, and `NOTES.md` for decisions made along the way.
 
-First, run the development server:
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install                 # also generates the Prisma client
+cp .env.example .env         # defaults match docker-compose.yml
+docker compose up -d         # postgres, redis, ollama (+ model pull), minio, mailpit
+pnpm dev                     # http://localhost:3000
+pnpm worker                  # background worker (separate terminal)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Useful local URLs: design system at `/dev/ui` (dev only), MinIO console at
+http://localhost:9001, Mailpit inbox at http://localhost:8025.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command                                           | What it does                        |
+| ------------------------------------------------- | ----------------------------------- |
+| `pnpm dev` / `pnpm build` / `pnpm start`          | Next.js                             |
+| `pnpm worker`                                     | BullMQ worker with hot reload       |
+| `pnpm lint` / `pnpm typecheck` / `pnpm format`    | Code quality                        |
+| `pnpm test`                                       | Vitest unit and integration tests   |
+| `pnpm e2e`                                        | Playwright (starts `pnpm dev`)      |
+| `pnpm db:migrate` / `pnpm db:seed` / `db:generate` | Prisma                              |
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Run `pnpm test`, `pnpm lint` and `pnpm typecheck` before calling any task done.

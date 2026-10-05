@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+/* Design tokens (CLAUDE.md "Design system"). Components use token names only. */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant sidebar-collapsed (&:where([data-sidebar="collapsed"] *));
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-muted: #f0f0ec;
+  --border: #e6e6e1;
+  --ink: #16161a;
+  --ink-muted: #5f5f6b;
+  --ink-subtle: #9a9aa3;
+  --accent: #3b5bfd;
+  --accent-soft: #ebeeff;
+  --accent-ink: #2238c9;
+  --on-accent: #ffffff;
+  --streak: #f59e0b;
+  --streak-soft: #fef3dc;
+  --streak-ink: #b45309;
+  --success: #1f9d61;
+  --success-soft: #e6f5ee;
+  --success-ink: #157a4a;
+  --danger: #e5484d;
+  --danger-soft: #fdecec;
+  --danger-ink: #c0262c;
+  --overlay: rgb(16 16 24 / 0.32);
+
+  --shadow-sm-value:
+    0 1px 2px rgb(16 16 24 / 0.04), 0 1px 1px rgb(16 16 24 / 0.03);
+  --shadow-md-value: 0 4px 16px rgb(16 16 24 / 0.06);
+  --shadow-lg-value: 0 16px 40px rgb(16 16 24 / 0.1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e0e11;
+  --surface: #16161b;
+  --surface-muted: #1e1e25;
+  --border: #2a2a33;
+  --ink: #ededf0;
+  --ink-muted: #a1a1ab;
+  --ink-subtle: #6e6e78;
+  --accent: #6a84ff;
+  --accent-soft: #1c2350;
+  --accent-ink: #b7c3ff;
+  --on-accent: #0e0e11;
+  --streak: #fbbf24;
+  --streak-soft: #3a2c0a;
+  --streak-ink: #fbbf24;
+  --success: #3ccb85;
+  --success-soft: #12301f;
+  --success-ink: #8ee6b9;
+  --danger: #ff6b6f;
+  --danger-soft: #3a1517;
+  --danger-ink: #ffb4b6;
+  --overlay: rgb(0 0 0 / 0.6);
+
+  /* Dark mode: borders and lighter surfaces instead of shadows. */
+  --shadow-sm-value: 0 0 0 1px transparent;
+  --shadow-md-value: 0 0 0 1px var(--border);
+  --shadow-lg-value: 0 0 0 1px var(--border);
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+  --color-streak: var(--streak);
+  --color-streak-soft: var(--streak-soft);
+  --color-streak-ink: var(--streak-ink);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-ink: var(--success-ink);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-ink: var(--danger-ink);
+  --color-overlay: var(--overlay);
+
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --text-display: 32px;
+  --text-display--line-height: 40px;
+  --text-h1: 24px;
+  --text-h1--line-height: 32px;
+  --text-h2: 20px;
+  --text-h2--line-height: 28px;
+  --text-h3: 16px;
+  --text-h3--line-height: 24px;
+  --text-body: 15px;
+  --text-body--line-height: 24px;
+  --text-small: 13px;
+  --text-small--line-height: 20px;
+  --text-micro: 11px;
+  --text-micro--line-height: 16px;
+  --text-micro--letter-spacing: 0.06em;
+
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --radius-chip: 8px;
+
+  --shadow-sm: var(--shadow-sm-value);
+  --shadow-md: var(--shadow-md-value);
+  --shadow-lg: var(--shadow-lg-value);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --container-content: 1120px;
+
+  --animate-fade-in: fade-in 200ms var(--ease-out);
+  --animate-fade-out: fade-out 200ms var(--ease-out);
+  --animate-pop-in: pop-in 200ms var(--ease-out);
+  --animate-pop-out: pop-out 120ms var(--ease-out);
+  --animate-sheet-in-right: sheet-in-right 300ms var(--ease-out);
+  --animate-sheet-out-right: sheet-out-right 200ms var(--ease-out);
+  --animate-sheet-in-left: sheet-in-left 300ms var(--ease-out);
+  --animate-sheet-out-left: sheet-out-left 200ms var(--ease-out);
+  --animate-sheet-in-bottom: sheet-in-bottom 300ms var(--ease-out);
+  --animate-sheet-out-bottom: sheet-out-bottom 200ms var(--ease-out);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes sheet-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes sheet-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes sheet-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes sheet-out-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes sheet-in-bottom {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-out-bottom {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    color: var(--ink);
+  }
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: 600;
+  }
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: 600;
+  }
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: 500;
+  }
+
+  ::placeholder {
+    color: var(--ink-subtle);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion: OS setting, or forced on a subtree (used by /dev/ui). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-reduce-motion="true"],
+[data-reduce-motion="true"] * {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
