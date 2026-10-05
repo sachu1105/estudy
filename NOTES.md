@@ -379,3 +379,22 @@ rule 16. `inkSubtle` is still kept off readable text (WCAG AA floor), timestamps
 - Parses are cached per (file hash, parser version) now, not per hash: the parser version
   (`structure-syllabus@4`) covers splitting, repairs and prompt. A syllabus read by an older
   version shows "Read again", which replaces its tree (after a confirm dialog).
+
+### Hosted page reading and the parse caches (owner's choice, 2026-10-05)
+- `AI_PROVIDER=hosted`: PDFs and photos go to the model as pages (`structureDocument`, prompt
+  `structure-document@1`, one call, up to 20k output tokens). The rendered page is read, so
+  Malayalam in old fonts and scanned PDFs need no repair; the text layer is still extracted
+  (best effort) for "Source text" and the near-duplicate check. DOCX and pasted text still go
+  through the section path. Photo uploads are offered only when pages can be read.
+- Ollama (dev, offline) keeps the text path: section splitting, per-section calls, Malayalam
+  repair. The format rules there are a crutch for the 3B model, not syllabus content.
+- Parser version per file: `parserFor(readsDocuments, kind)`. Caches and "Read again" use it.
+- Cache order, before any AI call: (1) same file + parser version; (2) near-duplicate: MinHash
+  of word 5-shingles (`server/ai/fingerprint.ts`), similarity >= 0.9 against parses of the
+  same parser, the same post (from the heading) checked first; a match is copied into a new
+  SyllabusParse (`provider: cache`, `copiedFromId`) so the next identical file hits (1);
+  (3) text path only: `SectionCache`, keyed by parser version + hash of the normalised heading
+  and section text, so a section any earlier syllabus had (Simple Arithmetic, English
+  grammar) costs no AI call.
+- Not yet checked against the real hosted API: there was no key. Tests cover the request
+  shape and the pipeline with a fake page-reading model.

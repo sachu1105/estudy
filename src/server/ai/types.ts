@@ -12,6 +12,17 @@ export type AiRequest = {
   /** JSON Schema the reply must follow; providers that support it enforce it natively. */
   jsonSchema: Record<string, unknown>;
   maxOutputTokens: number;
+  /**
+   * The file itself, for providers that read pages (readsDocuments). The model sees the
+   * rendered page, so text a PDF stores badly (old Malayalam fonts) still reads right.
+   */
+  attachment?: AiAttachment;
+};
+
+export type AiAttachment = {
+  kind: "pdf" | "image";
+  mediaType: string;
+  base64: string;
 };
 
 export type AiResponse = {
@@ -27,6 +38,8 @@ export type AiResponse = {
 export interface AIProvider {
   readonly name: "ollama" | "hosted" | "fake";
   readonly model: string;
+  /** Can take a PDF or an image as an attachment and read its pages. */
+  readonly readsDocuments: boolean;
   generate(request: AiRequest): Promise<AiResponse>;
 }
 

@@ -1,8 +1,8 @@
 import type { EditableTree } from "@/lib/syllabus/tree";
-import { STRUCTURE_SYLLABUS_VERSION } from "@/server/ai/prompts/structure-syllabus";
 import { jobChannel, type JobEvent } from "@/server/realtime/types";
 
 import { failure, type Actor, type Result, type SyllabusDeps } from "./deps";
+import { parserFor } from "./parser-version";
 
 const NOT_FOUND = failure(
   "NOT_FOUND",
@@ -116,7 +116,9 @@ export function createReviewService(deps: SyllabusDeps) {
       if (!version) return NOT_FOUND;
       if (
         !version.parse ||
-        version.parse.promptVersion === STRUCTURE_SYLLABUS_VERSION
+        !version.sourceKind ||
+        version.parse.promptVersion ===
+          parserFor(deps.readsDocuments, version.sourceKind).version
       )
         return failure(
           "UP_TO_DATE",

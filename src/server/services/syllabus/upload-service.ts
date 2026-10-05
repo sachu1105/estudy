@@ -1,4 +1,3 @@
-import { STRUCTURE_SYLLABUS_VERSION } from "@/server/ai/prompts/structure-syllabus";
 import { normaliseText } from "@/server/ai/chunk";
 import { jobChannel, type JobEvent } from "@/server/realtime/types";
 
@@ -10,6 +9,7 @@ import {
   type SyllabusDeps,
 } from "./deps";
 import { MAX_TEXT_CHARS, sniffKind, type SourceKind } from "./extract";
+import { parserFor } from "./parser-version";
 
 export const UPLOAD_MAX_BYTES = 15 * 1024 * 1024;
 
@@ -72,7 +72,7 @@ export function createUploadService(deps: SyllabusDeps) {
 
     const existing = await deps.syllabuses.findParse(
       fileHash,
-      STRUCTURE_SYLLABUS_VERSION,
+      parserFor(deps.readsDocuments, file.kind).version,
     );
     if (existing) {
       await deps.syllabuses.attachParse(version.id, existing);

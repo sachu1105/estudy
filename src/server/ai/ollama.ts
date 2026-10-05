@@ -20,6 +20,8 @@ export function createOllamaProvider(config: OllamaConfig): AIProvider {
   return {
     name: "ollama",
     model: config.model,
+    // The dev models are text-only; files are read through their text layer instead.
+    readsDocuments: false,
     async generate(request) {
       const started = performance.now();
       let response: Response;

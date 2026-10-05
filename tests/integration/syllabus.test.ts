@@ -1,8 +1,11 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixedClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
-import type { AIProvider } from "@/server/ai/types";
+import type { AIProvider, AiRequest } from "@/server/ai/types";
 import { prisma } from "@/server/db";
 import { createEntitlements } from "@/server/entitlements/resolve";
 import type { ParseJobData } from "@/server/queue/types";
@@ -11,6 +14,7 @@ import { redis } from "@/server/redis";
 import { aiUsageRepository } from "@/server/repositories/ai-usage-repository";
 import { catalogueRepository } from "@/server/repositories/catalogue-repository";
 import { parseJobRepository } from "@/server/repositories/parse-job-repository";
+import { sectionCacheRepository } from "@/server/repositories/section-cache-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import type { SyllabusDeps } from "@/server/services/syllabus/deps";
 import { unavailableOcr } from "@/server/services/syllabus/extract";
@@ -52,12 +56,15 @@ function echoReply(prompt: string) {
 }
 
 function fakeAi(...replies: string[]) {
-  const ai: AIProvider & { calls: number } = {
+  const ai: AIProvider & { calls: number; prompts: AiRequest[] } = {
     name: "fake",
     model: "scripted",
+    readsDocuments: false,
     calls: 0,
+    prompts: [],
     async generate(request) {
       ai.calls++;
+      ai.prompts.push(request);
       return {
         text: replies.shift() ?? echoReply(request.prompt),
         inputTokens: 100,
@@ -76,6 +83,40 @@ const SUBJECTS = [
   "General English",
 ];
 
+/** A model that reads pages: answers the whole syllabus in one reply. */
+function pagesAi() {
+  const ai = fakeAi();
+  const reply = JSON.stringify({
+    subjects: SUBJECTS.map((name, i) => ({
+      name,
+      part: name,
+      partMarks: [50, 20, 10][i],
+      topics: [
+        {
+          name: `${name} topic`,
+          weight: 3,
+          difficulty: 3,
+          foundational: false,
+        },
+      ],
+    })),
+  });
+  return Object.assign(ai, {
+    readsDocuments: true,
+    async generate(request: AiRequest) {
+      ai.calls++;
+      ai.prompts.push(request);
+      return {
+        text: reply,
+        inputTokens: 900,
+        outputTokens: 300,
+        costMicros: 12,
+        durationMs: 5,
+      };
+    },
+  });
+}
+
 function build({ billingEnabled = false, ai = fakeAi() } = {}) {
   const { storage, objects } = createMemoryStorage();
   const queued: ParseJobData[] = [];
@@ -86,12 +127,14 @@ function build({ billingEnabled = false, ai = fakeAi() } = {}) {
     parseJobs: parseJobRepository,
     catalogue: catalogueRepository,
     aiUsage: aiUsageRepository,
+    sectionCache: sectionCacheRepository,
     storage,
     queue: { enqueue: async (data) => void queued.push(data) },
     publisher: { publish: async (_c, e) => void events.push(e as JobEvent) },
     entitlements: createEntitlements({ billingEnabled, clock }),
     clock,
     ids: randomIds,
+    readsDocuments: ai.readsDocuments,
   };
   const parser = createParseService({ ...deps, ai, ocr: unavailableOcr });
   return {
@@ -317,6 +360,90 @@ describe("syllabus upload and parse", () => {
       text: sampleSyllabus.join("\n"),
     });
     expect(text).toMatchObject({ ok: false, code: "LIMIT" });
+  });
+});
+
+describe("parse caches", () => {
+  const ldcText = readFileSync(
+    join(process.cwd(), "fixtures/syllabus/degree-level-ldc.txt"),
+    "utf8",
+  );
+  const submit = (
+    t: ReturnType<typeof build>,
+    user: { id: string },
+    text: string,
+  ) => t.upload.submitText(user as never, { title: "LDC", examId: null, text });
+
+  it("reuses a near-identical syllabus for another post with no AI call", async () => {
+    const t = build();
+    const first = await makeUser("a@example.com");
+    const second = await makeUser("b@example.com");
+    await submit(t, first, ldcText);
+    await t.drain();
+    const calls = t.ai.calls;
+    expect(calls).toBeGreaterThan(0);
+
+    // Same detailed syllabus, another post in the heading, one line reworded.
+    const otherPost = ldcText
+      .replace("LD CLERK [KWA]", "ASSISTANT GRADE II")
+      .replace("Foreign policy.", "Foreign policy and treaties.");
+    const created = await submit(t, second, otherPost);
+    await t.drain();
+    expect(t.ai.calls).toBe(calls);
+    const job = await prisma.parseJob.findFirstOrThrow({
+      where: {
+        syllabusVersionId: (created as { versionId: string }).versionId,
+      },
+    });
+    expect(job).toMatchObject({ status: "READY", reused: true });
+    const copy = await prisma.syllabusParse.findFirstOrThrow({
+      where: { provider: "cache" },
+    });
+    expect(copy.copiedFromId).not.toBeNull();
+    expect(copy.post).toMatch(/^ASSISTANT GRADE II/);
+  });
+
+  it("sends only the sections no earlier syllabus had", async () => {
+    const t = build();
+    const user = await makeUser();
+    const shared =
+      "Part II Simple Arithmetic (20 marks)\nNumbers, fractions, percentage, ratio, average";
+    await submit(
+      t,
+      user,
+      `Part I History (50 marks)\nKerala renaissance, freedom struggle\n${shared}`,
+    );
+    await t.drain();
+    expect(t.ai.calls).toBe(2);
+
+    await submit(
+      t,
+      user,
+      `Part I Geography (40 marks)\nRivers of Kerala, climate, soils\n${shared}`,
+    );
+    await t.drain();
+    expect(t.ai.calls).toBe(3); // Geography only; Simple Arithmetic came from the cache
+    expect(t.ai.prompts.at(-1)?.prompt).toContain("Section heading: Geography");
+  });
+
+  it("sends the PDF itself to a model that reads pages, even a scan with no text", async () => {
+    const ai = pagesAi();
+    const t = build({ ai });
+    const user = await makeUser();
+    const created = await uploadPdf(t, user, makePdf([])); // a scan: no text layer
+    await t.drain();
+    expect(ai.calls).toBe(1);
+    expect(ai.prompts[0].attachment).toMatchObject({
+      kind: "pdf",
+      mediaType: "application/pdf",
+    });
+    const version = await syllabusRepository.findOwned(
+      (created as { versionId: string }).versionId,
+      user.id,
+    );
+    expect(version!.subjects.map((s) => s.name)).toEqual(SUBJECTS);
+    expect(version!.subjects.map((s) => s.topics[0].weight)).toEqual([4, 3, 2]); // 50, 20, 10 marks around the median 20;
+    expect(version!.parse?.promptVersion).toBe("structure-document@1");
   });
 });
 

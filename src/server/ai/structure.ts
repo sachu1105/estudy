@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import type { z } from "zod";
 
 import { chunkText } from "./chunk";
@@ -6,6 +8,11 @@ import {
   structureSyllabusPrompt,
   structureSyllabusSystem,
 } from "./prompts/structure-syllabus";
+import {
+  STRUCTURE_DOCUMENT_VERSION,
+  structureDocumentPrompt,
+  structureDocumentSystem,
+} from "./prompts/structure-document";
 import { splitSections } from "./sections";
 import {
   aiChunkSchema,
@@ -16,6 +23,7 @@ import {
 } from "./syllabus-tree";
 import {
   AiOutputError,
+  type AiAttachment,
   type AIProvider,
   type AiRequest,
   type AiUsageEntry,
@@ -171,6 +179,26 @@ export function withMissingItems<T extends { name: string }>(
   ];
 }
 
+/** Subjects found in one section piece, without marks (those come from the syllabus). */
+export type CachedPiece = {
+  name: string;
+  topics: AiChunk["subjects"][0]["topics"];
+}[];
+
+export interface PieceCache {
+  get(key: string): Promise<CachedPiece | null>;
+  set(key: string, subjects: CachedPiece): Promise<void>;
+}
+
+/** Same heading and same words (ignoring case, spacing and punctuation) -> same key. */
+export function pieceKey(heading: string | null, chunk: string) {
+  const normal = `${heading ?? ""}\n${chunk}`
+    .toLowerCase()
+    .replace(/[^\p{L}\p{M}\p{N}]+/gu, " ")
+    .trim();
+  return `${STRUCTURE_SYLLABUS_VERSION}:${createHash("sha256").update(normal).digest("hex")}`;
+}
+
 type Piece = {
   chunk: string;
   heading: string | null;
@@ -191,6 +219,7 @@ export async function structureSyllabus(
   options: CallOptions & {
     title?: string | null;
     onProgress?: (done: number, total: number) => Promise<void>;
+    pieceCache?: PieceCache;
   },
 ): Promise<StructureResult> {
   const sections = splitSections(text);
@@ -260,6 +289,17 @@ export async function structureSyllabus(
         piece: index + 1,
         pieces: pieces.length,
       };
+      // Most PSC syllabuses share whole sections word for word (Simple Arithmetic, English
+      // grammar): one seen before in any syllabus is reused without an AI call.
+      const cacheKey = pieceKey(section.heading, chunk);
+      const cached = await options.pieceCache?.get(cacheKey);
+      if (cached) {
+        results.push({
+          subjects: cached.map((s) => ({ ...s, ...fromText })),
+        });
+        await options.onProgress?.(++done, total);
+        continue;
+      }
       const items = listedItems(chunk).length;
       let reply = await ask(piece);
       if (topicTotal(reply) < items * MIN_COVERAGE) {
@@ -291,18 +331,24 @@ export async function structureSyllabus(
               },
             ]
           : grounded;
-      if (subjects.length > 0) {
-        results.push({ subjects });
-      } else if (section.heading) {
-        results.push({
-          subjects: [
-            {
-              name: section.heading,
-              ...fromText,
-              topics: listedItems(chunk).map(plainTopic),
-            },
-          ],
-        });
+      const final =
+        subjects.length > 0
+          ? subjects
+          : section.heading
+            ? [
+                {
+                  name: section.heading,
+                  ...fromText,
+                  topics: listedItems(chunk).map(plainTopic),
+                },
+              ]
+            : [];
+      if (final.length > 0) {
+        results.push({ subjects: final });
+        await options.pieceCache?.set(
+          cacheKey,
+          final.map(({ name, topics }) => ({ name, topics })),
+        );
       }
       await options.onProgress?.(++done, total);
     }
@@ -311,5 +357,37 @@ export async function structureSyllabus(
     tree: mergeChunks(results),
     promptVersion: STRUCTURE_SYLLABUS_VERSION,
     chunks: total,
+  };
+}
+
+/**
+ * The hosted path: the model reads the file's pages (PDF or photo) in one validated call.
+ * No text-layer rules, so old Malayalam fonts and scans read right. Marks still become
+ * weights through mergeChunks.
+ */
+export async function structureDocument(
+  provider: AIProvider,
+  attachment: AiAttachment,
+  options: CallOptions & { title?: string | null },
+): Promise<StructureResult> {
+  const reply = await generateValidated(
+    provider,
+    {
+      purpose: "STRUCTURE_SYLLABUS",
+      promptVersion: STRUCTURE_DOCUMENT_VERSION,
+      system: structureDocumentSystem,
+      prompt: structureDocumentPrompt(options.title),
+      jsonSchema: chunkJsonSchema as unknown as Record<string, unknown>,
+      // A full Kerala PSC syllabus runs to several hundred topics.
+      maxOutputTokens: 20_000,
+      attachment,
+    },
+    aiChunkSchema,
+    options,
+  );
+  return {
+    tree: mergeChunks([reply]),
+    promptVersion: STRUCTURE_DOCUMENT_VERSION,
+    chunks: 1,
   };
 }

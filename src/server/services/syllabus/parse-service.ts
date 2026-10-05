@@ -1,11 +1,23 @@
+import {
+  minhash,
+  postOf,
+  SAME_SYLLABUS,
+  similarity,
+} from "@/server/ai/fingerprint";
 import { checkMalayalam, repairMalayalam } from "@/server/ai/malayalam";
-import { STRUCTURE_SYLLABUS_VERSION } from "@/server/ai/prompts/structure-syllabus";
-import { structureSyllabus } from "@/server/ai/structure";
-import { AiOutputError } from "@/server/ai/types";
+import { structureDocument, structureSyllabus } from "@/server/ai/structure";
+import type { SyllabusTree } from "@/server/ai/syllabus-tree";
+import { AiOutputError, type AiUsageEntry } from "@/server/ai/types";
 import { jobChannel, type JobEvent } from "@/server/realtime/types";
 
 import { sha256Hex, type ParseDeps } from "./deps";
-import { extractText, ParseInputError } from "./extract";
+import {
+  extractText,
+  imageMime,
+  ParseInputError,
+  type SourceKind,
+} from "./extract";
+import { parserFor } from "./parser-version";
 
 const MESSAGES = {
   noTree:
@@ -60,6 +72,47 @@ export function createParseService(deps: ParseDeps) {
       { finishedAt: deps.clock.now() },
     );
 
+  /**
+   * The text layer, cleaned. When the AI reads pages itself, a file with no usable text (a
+   * scan, a photo) is fine: the text only feeds the near-duplicate check and "Source text".
+   */
+  async function readText(kind: SourceKind, bytes: Uint8Array, pages: boolean) {
+    try {
+      const raw = await extractText(kind, bytes, deps.ocr);
+      // Old PSC fonts scramble Malayalam. Reading pages avoids the problem altogether;
+      // otherwise repair what can be, and tell the user to check the names.
+      const garbled = !pages && checkMalayalam(raw).garbled;
+      return {
+        text: pages ? raw : repairMalayalam(raw),
+        warnings: garbled ? ["MALAYALAM_GARBLED"] : [],
+      };
+    } catch (error) {
+      if (pages && error instanceof ParseInputError)
+        return { text: "", warnings: [] as string[] };
+      throw error;
+    }
+  }
+
+  /** An already parsed syllabus that is the same one (another post, a re-typeset copy). */
+  async function findTwin(
+    version: string,
+    fingerprint: number[],
+    post: string | null,
+  ) {
+    if (fingerprint.length === 0) return null;
+    const candidates = await deps.syllabuses.findSimilarCandidates(
+      version,
+      post,
+    );
+    let best: (typeof candidates)[number] | null = null;
+    let bestScore = 0;
+    for (const c of candidates) {
+      const score = similarity(fingerprint, c.minhash);
+      if (score > bestScore) [best, bestScore] = [c, score];
+    }
+    return best && bestScore >= SAME_SYLLABUS ? best : null;
+  }
+
   async function run(parseJobId: string, { attempt, maxAttempts }: Attempt) {
     const job = await deps.parseJobs.findById(parseJobId);
     if (!job || job.status === "READY" || job.status === "FAILED") return;
@@ -84,10 +137,12 @@ export function createParseService(deps: ParseDeps) {
       { startedAt: deps.clock.now() },
     );
     try {
-      // Someone may have uploaded the same file while this job waited in the queue.
+      const kind = version.sourceKind;
+      const parser = parserFor(deps.ai.readsDocuments, kind);
+      // 1. Someone may have uploaded the same file while this job waited in the queue.
       const existing = await deps.syllabuses.findParse(
         version.fileHash,
-        STRUCTURE_SYLLABUS_VERSION,
+        parser.version,
       );
       if (existing) {
         await deps.syllabuses.attachParse(version.id, existing);
@@ -97,30 +152,64 @@ export function createParseService(deps: ParseDeps) {
       const bytes = await deps.storage.getBytes(version.sourceFileKey);
       if ((await sha256Hex(bytes)) !== version.fileHash)
         return fail(job.id, MESSAGES.changed);
-      const raw = await extractText(version.sourceKind, bytes, deps.ocr);
-      // Old PSC fonts scramble Malayalam: repair what can be, and tell the user to check.
-      const warnings = checkMalayalam(raw).garbled ? ["MALAYALAM_GARBLED"] : [];
-      const text = repairMalayalam(raw);
+      const { text, warnings } = await readText(kind, bytes, parser.pages);
+      const fingerprint = text ? minhash(text) : [];
+      const post = text ? postOf(text) : null;
+      const save = (
+        tree: SyllabusTree,
+        extra: { provider: string; model: string; copiedFromId?: string },
+      ) =>
+        deps.syllabuses.saveParse({
+          fileHash: version.fileHash!,
+          sourceKind: kind,
+          extractedText: text,
+          tree,
+          promptVersion: parser.version,
+          warnings,
+          minhash: fingerprint,
+          post,
+          ...extra,
+        });
 
+      // 2. The same syllabus already read for another post or upload: no AI call at all.
+      const twin = await findTwin(parser.version, fingerprint, post);
+      if (twin) {
+        const parse = await save(twin.tree as SyllabusTree, {
+          provider: "cache",
+          model: "near-duplicate",
+          copiedFromId: twin.id,
+        });
+        await deps.syllabuses.attachParse(version.id, parse);
+        return ready(job.id, true);
+      }
+
+      // 3. Read it: the pages themselves when the AI can, else the text section by section,
+      //    reusing every section any earlier syllabus already had.
       await update(job.id, { stage: "STRUCTURING", progress: 5 });
-      const result = await structureSyllabus(deps.ai, text, {
-        title: version.title,
-        onUsage: (entry) =>
-          deps.aiUsage.record({ ...entry, userId: job.userId, refId: job.id }),
-        onProgress: (done, total) =>
-          update(job.id, { progress: 5 + Math.floor((90 * done) / total) }),
-      });
+      const onUsage = (entry: AiUsageEntry) =>
+        deps.aiUsage.record({ ...entry, userId: job.userId, refId: job.id });
+      const result = parser.pages
+        ? await structureDocument(
+            deps.ai,
+            {
+              kind: kind === "PDF" ? "pdf" : "image",
+              mediaType: kind === "PDF" ? "application/pdf" : imageMime(bytes),
+              base64: Buffer.from(bytes).toString("base64"),
+            },
+            { title: version.title, onUsage },
+          )
+        : await structureSyllabus(deps.ai, text, {
+            title: version.title,
+            onUsage,
+            pieceCache: deps.sectionCache,
+            onProgress: (done, total) =>
+              update(job.id, { progress: 5 + Math.floor((90 * done) / total) }),
+          });
       if (!result.tree) return fail(job.id, MESSAGES.noTree);
 
-      const parse = await deps.syllabuses.saveParse({
-        fileHash: version.fileHash,
-        sourceKind: version.sourceKind,
-        extractedText: text,
-        tree: result.tree,
+      const parse = await save(result.tree, {
         provider: deps.ai.name,
         model: deps.ai.model,
-        promptVersion: result.promptVersion,
-        warnings,
       });
       await deps.syllabuses.attachParse(version.id, parse);
       return ready(job.id, false);

@@ -12,7 +12,7 @@ import { syllabusState } from "@/features/syllabus/state";
 import { toEditableTree } from "@/features/syllabus/to-tree";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { PARSER_VERSION, reviewService } from "@/server/services/syllabus";
+import { canReadAgain, reviewService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Syllabus" };
 
@@ -66,7 +66,7 @@ export default async function SyllabusVersionPage({
           </div>
         }
       />
-      {version.parse && version.parse.promptVersion !== PARSER_VERSION ? (
+      {canReadAgain(version) ? (
         <div className="mb-5">
           <RereadNote versionId={version.id} />
         </div>

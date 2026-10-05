@@ -8,6 +8,7 @@ import type { Publisher } from "@/server/realtime/types";
 import type { AiUsageRepository } from "@/server/repositories/ai-usage-repository";
 import type { CatalogueRepository } from "@/server/repositories/catalogue-repository";
 import type { ParseJobRepository } from "@/server/repositories/parse-job-repository";
+import type { SectionCacheRepository } from "@/server/repositories/section-cache-repository";
 import type { SyllabusRepository } from "@/server/repositories/syllabus-repository";
 import type { ObjectStorage } from "@/server/storage/types";
 
@@ -18,6 +19,7 @@ export type SyllabusDeps = {
   parseJobs: ParseJobRepository;
   catalogue: CatalogueRepository;
   aiUsage: AiUsageRepository;
+  sectionCache: SectionCacheRepository;
   storage: ObjectStorage;
   queue: ParseQueue;
   publisher: Publisher;
@@ -27,6 +29,8 @@ export type SyllabusDeps = {
   };
   clock: Clock;
   ids: IdGenerator;
+  /** The configured AI reads PDF pages and photos itself (decides which cached parse fits). */
+  readsDocuments: boolean;
 };
 
 /** The worker additionally talks to the AI and OCR. */

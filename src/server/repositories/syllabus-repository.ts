@@ -95,6 +95,9 @@ export const syllabusRepository = {
     model: string;
     promptVersion: string;
     warnings: string[];
+    minhash: number[];
+    post: string | null;
+    copiedFromId?: string | null;
   }) {
     try {
       return await prisma.syllabusParse.create({ data });
@@ -113,6 +116,34 @@ export const syllabusRepository = {
         });
       throw error;
     }
+  },
+
+  /**
+   * Parses by the same parser that might be the same syllabus: the newest first, those for
+   * the same post ahead of the rest. Signatures are compared in the service.
+   */
+  findSimilarCandidates(promptVersion: string, post: string | null) {
+    return prisma.syllabusParse
+      .findMany({
+        where: { promptVersion, NOT: { minhash: { isEmpty: true } } },
+        select: {
+          id: true,
+          minhash: true,
+          post: true,
+          tree: true,
+          warnings: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 2000,
+      })
+      .then((rows) =>
+        post
+          ? [
+              ...rows.filter((r) => r.post === post),
+              ...rows.filter((r) => r.post !== post),
+            ]
+          : rows,
+      );
   },
 
   /** Links a version to a parse and copies the parse's tree in as the editable draft. */

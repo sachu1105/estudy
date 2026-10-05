@@ -207,12 +207,27 @@ model SyllabusParse {
   promptVersion String
   /// Problems the user should know about, e.g. MALAYALAM_GARBLED (old PDF fonts).
   warnings      String[] @default([])
+  /// MinHash of the text, for reusing a near-identical syllabus (another post, same syllabus).
+  minhash       Int[]    @default([])
+  /// The post from the heading ("LD CLERK [KWA]"), when the syllabus names one.
+  post          String?
+  /// Set when this parse is a copy of a near-identical one, not an AI result.
+  copiedFromId  String?  @db.Uuid
   createdAt     DateTime @default(now()) @db.Timestamptz(6)
 
   versions SyllabusVersion[]
 
   /// Once per file per parser version: a better parser reads a file again, once.
   @@unique([fileHash, promptVersion])
+}
+
+/// One structured syllabus section, reused by any later syllabus with the same section text
+/// (most PSC syllabuses share Simple Arithmetic, English grammar and so on word for word).
+model SectionCache {
+  /// Parser version + SHA-256 of the normalised heading and text.
+  key       String   @id
+  subjects  Json
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
 }
 
 model SyllabusVersion {

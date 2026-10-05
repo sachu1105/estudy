@@ -36,7 +36,31 @@ export function createHostedProvider(config: HostedConfig): AIProvider {
   return {
     name: "hosted",
     model: config.model,
+    readsDocuments: true,
     async generate(request) {
+      const a = request.attachment;
+      const content = a
+        ? [
+            a.kind === "pdf"
+              ? {
+                  type: "document",
+                  source: {
+                    type: "base64",
+                    media_type: a.mediaType,
+                    data: a.base64,
+                  },
+                }
+              : {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: a.mediaType,
+                    data: a.base64,
+                  },
+                },
+            { type: "text", text: request.prompt },
+          ]
+        : request.prompt;
       const started = performance.now();
       let response: Response;
       try {
@@ -47,13 +71,14 @@ export function createHostedProvider(config: HostedConfig): AIProvider {
             "x-api-key": config.apiKey,
             "anthropic-version": "2023-06-01",
           },
-          signal: AbortSignal.timeout(config.timeoutMs ?? 120_000),
+          // Reading a whole syllabus PDF and writing hundreds of topics takes a while.
+          signal: AbortSignal.timeout(config.timeoutMs ?? 300_000),
           body: JSON.stringify({
             model: config.model,
             max_tokens: request.maxOutputTokens,
             temperature: 0,
             system: `${request.system}\n\nReply with one JSON object that matches this JSON Schema, and nothing else:\n${JSON.stringify(request.jsonSchema)}`,
-            messages: [{ role: "user", content: request.prompt }],
+            messages: [{ role: "user", content }],
           }),
         });
       } catch (error) {

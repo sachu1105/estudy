@@ -56,6 +56,13 @@ export function sniffKind(
   return null;
 }
 
+/** The image's real type, for sending the photo itself to a model that reads pages. */
+export function imageMime(bytes: Uint8Array) {
+  if (startsWith(bytes, [0x89, 0x50, 0x4e, 0x47])) return "image/png";
+  if (startsWith(bytes, [0xff, 0xd8, 0xff])) return "image/jpeg";
+  return "image/webp";
+}
+
 async function rawText(kind: SourceKind, bytes: Uint8Array, ocr: OcrProvider) {
   switch (kind) {
     case "TEXT":

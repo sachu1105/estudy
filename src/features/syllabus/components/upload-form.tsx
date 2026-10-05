@@ -49,9 +49,12 @@ const titleFromFile = (name: string) =>
 export function UploadForm({
   exams,
   initialExamId = "",
+  photos = false,
 }: {
   exams: { id: string; name: string }[];
   initialExamId?: string;
+  /** Photos of the syllabus can be read. */
+  photos?: boolean;
 }) {
   const router = useRouter();
   const hydrated = useHydrated();
@@ -137,6 +140,7 @@ export function UploadForm({
 
       {mode === "file" ? (
         <FileDrop
+          photos={photos}
           file={file}
           onFile={chooseFile}
           disabled={pending}

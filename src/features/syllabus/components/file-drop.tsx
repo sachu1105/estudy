@@ -6,10 +6,11 @@ import { useId, useState, type DragEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 
-// Photos are accepted by the server, but OCR arrives in milestone 7.5, so the picker
-// doesn't offer them yet rather than lead to a guaranteed failure.
-export const ACCEPT =
+const DOCS =
   ".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const PHOTOS = ",.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp";
+/** Photos only where they can be read; offering them otherwise would only lead to a failure. */
+export const acceptFor = (photos: boolean) => (photos ? DOCS + PHOTOS : DOCS);
 
 export function formatBytes(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -21,10 +22,17 @@ type FileDropProps = {
   onFile: (file: File | null) => void;
   disabled?: boolean;
   invalid?: boolean;
+  photos?: boolean;
 };
 
 /** A tap target on phones (opens the file picker), a drop zone on desktop. */
-export function FileDrop({ file, onFile, disabled, invalid }: FileDropProps) {
+export function FileDrop({
+  file,
+  onFile,
+  disabled,
+  invalid,
+  photos = false,
+}: FileDropProps) {
   const id = useId();
   const [over, setOver] = useState(false);
 
@@ -81,12 +89,14 @@ export function FileDrop({ file, onFile, disabled, invalid }: FileDropProps) {
       <FileUp className="size-6 text-ink-muted" aria-hidden />
       <span className="font-heading text-h3 font-medium">Choose a file</span>
       <span className="max-w-xs text-small text-ink-muted">
-        PDF or Word (.docx), up to 15 MB. Drop it here on a computer.
+        {photos
+          ? "PDF, Word (.docx) or a clear photo of the syllabus, up to 15 MB."
+          : "PDF or Word (.docx), up to 15 MB. Drop it here on a computer."}
       </span>
       <input
         id={id}
         type="file"
-        accept={ACCEPT}
+        accept={acceptFor(photos)}
         className="sr-only"
         disabled={disabled}
         aria-invalid={invalid || undefined}

@@ -18,6 +18,7 @@ function scripted(...replies: string[]) {
   const provider: AIProvider = {
     name: "fake",
     model: "scripted",
+    readsDocuments: false,
     async generate(request) {
       calls.push(request.prompt);
       // The last reply repeats, so extra calls (coverage retries) get an answer too.
@@ -529,5 +530,43 @@ describe("providers", () => {
     expect(init.body as string).not.toContain("secret");
     expect(reply.costMicros).toBe(costMicros(1000, 500, 3, 15));
     expect(reply.costMicros).toBe(10_500);
+  });
+
+  it("the hosted provider sends a PDF as a document block before the prompt", async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({ content: [{ type: "text", text: valid }], usage: {} }),
+    );
+    const hosted = createHostedProvider({
+      apiKey: "k",
+      model: "m",
+      priceInputPerMTok: 0,
+      priceOutputPerMTok: 0,
+      fetch: fetchMock,
+    });
+    expect(hosted.readsDocuments).toBe(true);
+    await hosted.generate({
+      ...request,
+      attachment: {
+        kind: "pdf",
+        mediaType: "application/pdf",
+        base64: "JVBERi0=",
+      },
+    });
+    const [, init] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ];
+    const body = JSON.parse(init.body as string);
+    expect(body.messages[0].content).toEqual([
+      {
+        type: "document",
+        source: {
+          type: "base64",
+          media_type: "application/pdf",
+          data: "JVBERi0=",
+        },
+      },
+      { type: "text", text: "p" },
+    ]);
   });
 });
