@@ -1,0 +1,1228 @@
+{
+  "kind": "PLAN",
+  "startDate": "2026-10-05",
+  "endDate": "2026-11-03",
+  "timelineStartDate": "2026-10-05",
+  "horizonDays": 30,
+  "reviewStartDate": "2026-10-30",
+  "availableMinutes": 3240,
+  "requiredMinutes": 1105,
+  "plannedMinutes": 1345,
+  "coveragePercent": 100,
+  "droppedTouches": 0,
+  "days": [
+    {
+      "date": "2026-10-05",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-05",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-05",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-06",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-06",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "STUDY:english-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-07",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-07",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t2:3",
+          "type": "STUDY",
+          "date": "2026-10-08",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t2:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-08",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t2:4",
+          "type": "STUDY",
+          "date": "2026-10-09",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t2:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-09",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-10",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:english-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-10",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-10",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "STUDY:english-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-11",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-11",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-12",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-12",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-renaissance-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-12",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-12",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-13",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 45,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-13",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-14",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-14",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:english-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-14",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-14",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "STUDY:english-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-15",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-15",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t4:2",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-renaissance-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-16",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-16",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-renaissance-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-17",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 45,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-17",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-18",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-18",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:english-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-18",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-18",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "english",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t2:3",
+          "type": "REVISION",
+          "date": "2026-10-19",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:english-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-19",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:english-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-19",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-20",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-20",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-renaissance-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-20",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-20",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "kerala-renaissance",
+      "tasks": [
+        {
+          "id": "REVISION:english-t3:3",
+          "type": "REVISION",
+          "date": "2026-10-21",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-renaissance-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-21",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-renaissance-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-21",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t4:3",
+          "type": "REVISION",
+          "date": "2026-10-23",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:english",
+          "type": "SECTION_MOCK",
+          "date": "2026-10-23",
+          "subjectId": "english",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-24",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:english-t1:3",
+          "type": "REVISION",
+          "date": "2026-10-25",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:kerala-renaissance",
+          "type": "SECTION_MOCK",
+          "date": "2026-10-25",
+          "subjectId": "kerala-renaissance",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-10-27",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t1:3",
+          "type": "REVISION",
+          "date": "2026-10-27",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-10-29",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:english-t2:3",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t2:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-renaissance-t4:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-renaissance-t1:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t3:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t1:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:english-t2:4",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 105,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t3:3",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-renaissance-t2:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:kerala-renaissance-t4:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:kerala-renaissance-t1:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:english-t3:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "english",
+          "topicId": "english-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:english-t1:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "english",
+          "topicId": "english-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:english-t2:final",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "english",
+          "topicId": "english-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t3:4",
+          "type": "REVISION",
+          "date": "2026-11-01",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-renaissance-t3:final",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "kerala-renaissance",
+          "topicId": "kerala-renaissance-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:29",
+          "type": "FULL_MOCK",
+          "date": "2026-11-03",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    }
+  ]
+}

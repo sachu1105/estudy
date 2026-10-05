@@ -1,0 +1,113 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 45,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": false,
+    "subjects": [
+      {
+        "id": "indian-constitution",
+        "name": "indian constitution",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "indian-constitution-t1",
+            "name": "indian-constitution topic 1",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "indian-constitution-t2",
+            "name": "indian-constitution topic 2",
+            "weight": 3,
+            "difficulty": 4,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "indian-constitution-t3",
+            "name": "indian-constitution topic 3",
+            "weight": 5,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "indian-constitution-t4",
+            "name": "indian-constitution topic 4",
+            "weight": 2,
+            "difficulty": 5,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "indian-constitution-t5",
+            "name": "indian-constitution topic 5",
+            "weight": 4,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          },
+          {
+            "id": "indian-constitution-t6",
+            "name": "indian-constitution topic 6",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 5
+          },
+          {
+            "id": "indian-constitution-t7",
+            "name": "indian-constitution topic 7",
+            "weight": 3,
+            "difficulty": 4,
+            "foundational": false,
+            "order": 6
+          },
+          {
+            "id": "indian-constitution-t8",
+            "name": "indian-constitution topic 8",
+            "weight": 5,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 7
+          },
+          {
+            "id": "indian-constitution-t9",
+            "name": "indian-constitution topic 9",
+            "weight": 2,
+            "difficulty": 5,
+            "foundational": false,
+            "order": 8
+          },
+          {
+            "id": "indian-constitution-t10",
+            "name": "indian-constitution topic 10",
+            "weight": 4,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 9
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -17,7 +17,8 @@
     "db:migrate": "prisma migrate dev && prisma generate",
     "db:seed": "prisma db seed",
     "worker": "tsx watch --conditions=react-server src/worker/index.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "fixtures:plan": "tsx scripts/plan-fixtures.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

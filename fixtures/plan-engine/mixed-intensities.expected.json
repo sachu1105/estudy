@@ -1,0 +1,2291 @@
+{
+  "kind": "PLAN",
+  "startDate": "2026-10-05",
+  "endDate": "2027-01-02",
+  "timelineStartDate": "2026-10-05",
+  "horizonDays": 90,
+  "reviewStartDate": "2026-12-20",
+  "availableMinutes": 9720,
+  "requiredMinutes": 1680,
+  "plannedMinutes": 2250,
+  "coveragePercent": 100,
+  "droppedTouches": 0,
+  "days": [
+    {
+      "date": "2026-10-05",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "STUDY:light-subject-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-05",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-05",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "STUDY:light-subject-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-06",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-06",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "STUDY:steady-subject-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-07",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-07",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "STUDY:steady-subject-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-08",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-08",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-09",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:intense-subject-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-09",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-09",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-10",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-10",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-11",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:light-subject-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-11",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-11",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t1:3",
+          "type": "STUDY",
+          "date": "2026-10-12",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t1:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-12",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "STUDY:light-subject-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-13",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-13",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "STUDY:steady-subject-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-14",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-14",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-15",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:steady-subject-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-15",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-15",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:light-subject-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:intense-subject-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-16",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-16",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-17",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-17",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-18",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:steady-subject-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-18",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:light-subject-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-18",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-18",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t2:3",
+          "type": "STUDY",
+          "date": "2026-10-19",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t2:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-19",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "STUDY:light-subject-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "STUDY:steady-subject-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-21",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-21",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:intense-subject-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:steady-subject-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-22",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-22",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-23",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:light-subject-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-23",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:intense-subject-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-23",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-23",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-24",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-24",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-25",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:steady-subject-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-25",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:light-subject-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-25",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-25",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-26",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-26",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "light-subject",
+      "tasks": [
+        {
+          "id": "STUDY:light-subject-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-27",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:light-subject-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-27",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "STUDY:steady-subject-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-28",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-28",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": "steady-subject",
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:intense-subject-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:steady-subject-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-29",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:steady-subject-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-29",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:light-subject-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:intense-subject-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-30",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-30",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "STUDY:intense-subject-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-31",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-31",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "intense-subject",
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t3:2",
+          "type": "REVISION",
+          "date": "2026-11-01",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:steady-subject-t4:1",
+          "type": "REVISION",
+          "date": "2026-11-01",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:intense-subject-t4:3",
+          "type": "STUDY",
+          "date": "2026-11-01",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:intense-subject-t4:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-01",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-03",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-04",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 20,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t4:1",
+          "type": "REVISION",
+          "date": "2026-11-04",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-05",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:intense-subject-t3:2",
+          "type": "REVISION",
+          "date": "2026-11-05",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 10,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-06",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-07",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:light-subject",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-07",
+          "subjectId": "light-subject",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-08",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "SECTION_MOCK:steady-subject",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-09",
+          "subjectId": "steady-subject",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-11",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-11",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:intense-subject-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-11",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-12",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:intense-subject",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-12",
+          "subjectId": "intense-subject",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-13",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-14",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-14",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-16",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-17",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-18",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 20,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-18",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-19",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 10,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-19",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-20",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-21",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-21",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-22",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-23",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 20,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 10,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:steady-subject-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-28",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 20,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t4:3",
+          "type": "REVISION",
+          "date": "2026-12-01",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-07",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-08",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-09",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-10",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-11",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-12",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-13",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-14",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-15",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-16",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-17",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-18",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-19",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-20",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 100,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:light-subject-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:light-subject-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:light-subject-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:light-subject-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "light-subject",
+          "topicId": "light-subject-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:steady-subject-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t1",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:steady-subject-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:steady-subject-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:steady-subject-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "steady-subject",
+          "topicId": "steady-subject-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-21",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 80,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:intense-subject-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:intense-subject-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t2",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:intense-subject-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t3",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:intense-subject-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "intense-subject",
+          "topicId": "intense-subject-t4",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-22",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-23",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:79",
+          "type": "FULL_MOCK",
+          "date": "2026-12-23",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-24",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-25",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-26",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:82",
+          "type": "FULL_MOCK",
+          "date": "2026-12-26",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-27",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-28",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-29",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-30",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:86",
+          "type": "FULL_MOCK",
+          "date": "2026-12-30",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-31",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2027-01-01",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2027-01-02",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:89",
+          "type": "FULL_MOCK",
+          "date": "2027-01-02",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    }
+  ]
+}

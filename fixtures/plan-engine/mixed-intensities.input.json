@@ -1,0 +1,145 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 90,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": false,
+    "subjects": [
+      {
+        "id": "light-subject",
+        "name": "light subject",
+        "intensity": "LIGHT",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "light-subject-t1",
+            "name": "light-subject topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "light-subject-t2",
+            "name": "light-subject topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "light-subject-t3",
+            "name": "light-subject topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "light-subject-t4",
+            "name": "light-subject topic 4",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "steady-subject",
+        "name": "steady subject",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "steady-subject-t1",
+            "name": "steady-subject topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "steady-subject-t2",
+            "name": "steady-subject topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "steady-subject-t3",
+            "name": "steady-subject topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "steady-subject-t4",
+            "name": "steady-subject topic 4",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "intense-subject",
+        "name": "intense subject",
+        "intensity": "INTENSE",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "intense-subject-t1",
+            "name": "intense-subject topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "intense-subject-t2",
+            "name": "intense-subject topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "intense-subject-t3",
+            "name": "intense-subject topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "intense-subject-t4",
+            "name": "intense-subject topic 4",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      }
+    ]
+  }
+}

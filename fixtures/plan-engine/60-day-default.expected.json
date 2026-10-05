@@ -1,0 +1,2350 @@
+{
+  "kind": "PLAN",
+  "startDate": "2026-10-05",
+  "endDate": "2026-12-03",
+  "timelineStartDate": "2026-10-05",
+  "horizonDays": 60,
+  "reviewStartDate": "2026-11-25",
+  "availableMinutes": 6480,
+  "requiredMinutes": 2120,
+  "plannedMinutes": 2650,
+  "coveragePercent": 100,
+  "droppedTouches": 0,
+  "days": [
+    {
+      "date": "2026-10-05",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "STUDY:constitution-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-05",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-05",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "STUDY:geography-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-06",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-06",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "STUDY:aptitude-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-07",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-07",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-08",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-08",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-08",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-09",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-09",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-09",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-10",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-10",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-10",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "STUDY:aptitude-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-11",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-11",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-12",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-12",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-12",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "STUDY:geography-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-13",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-13",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-14",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-14",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-14",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-15",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-15",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-15",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:geography-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-16",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-16",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-17",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-17",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-17",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "STUDY:aptitude-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-18",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-18",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-19",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-19",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-19",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-20",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-20",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-20",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-21",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-21",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-21",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-22",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-22",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-23",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-23",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 3
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-23",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "STUDY:constitution-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-24",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 45,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-24",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "STUDY:aptitude-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-25",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-25",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-26",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 45,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-27",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:constitution-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-27",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-27",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-27",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "STUDY:geography-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-28",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 45,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-28",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t5:1",
+          "type": "STUDY",
+          "date": "2026-10-29",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-29",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "STUDY:constitution-t5:2",
+          "type": "STUDY",
+          "date": "2026-10-30",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-30",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t5:1",
+          "type": "STUDY",
+          "date": "2026-10-31",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-31",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "STUDY:aptitude-t5:2",
+          "type": "STUDY",
+          "date": "2026-11-01",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-01",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t5:1",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:geography-t3:2",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t5:1",
+          "type": "STUDY",
+          "date": "2026-11-02",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-02",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "geography",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-03",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:geography-t5:2",
+          "type": "STUDY",
+          "date": "2026-11-03",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:geography-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-03",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "constitution",
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-04",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t5:1",
+          "type": "REVISION",
+          "date": "2026-11-04",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:constitution-t6:1",
+          "type": "STUDY",
+          "date": "2026-11-04",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:constitution-t6:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-04",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "aptitude",
+      "tasks": [
+        {
+          "id": "REVISION:geography-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-05",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-05",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:aptitude-t6:1",
+          "type": "STUDY",
+          "date": "2026-11-05",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:aptitude-t6:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-05",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t5:1",
+          "type": "REVISION",
+          "date": "2026-11-06",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-06",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t6:1",
+          "type": "REVISION",
+          "date": "2026-11-07",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:geography-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-07",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-08",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t6:1",
+          "type": "REVISION",
+          "date": "2026-11-08",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t5:2",
+          "type": "REVISION",
+          "date": "2026-11-09",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-10",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-11",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t5:2",
+          "type": "REVISION",
+          "date": "2026-11-11",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-12",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-13",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t5:2",
+          "type": "REVISION",
+          "date": "2026-11-13",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-14",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t6:2",
+          "type": "REVISION",
+          "date": "2026-11-14",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:geography",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-14",
+          "subjectId": "geography",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t6:2",
+          "type": "REVISION",
+          "date": "2026-11-15",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:constitution",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-15",
+          "subjectId": "constitution",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-16",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-16",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:aptitude",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-16",
+          "subjectId": "aptitude",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-17",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-18",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-18",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-19",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-20",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-21",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-22",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-22",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-23",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-23",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 105,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:constitution-t6:3",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:aptitude-t6:3",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:constitution-t3:final",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "constitution",
+          "topicId": "constitution-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:geography-t3:final",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "geography",
+          "topicId": "geography-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:aptitude-t3:final",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t3",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:constitution-t2:final",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "constitution",
+          "topicId": "constitution-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:constitution-t1:final",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "constitution",
+          "topicId": "constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 100,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t2:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "geography",
+          "topicId": "geography-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:aptitude-t2:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t2",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:constitution-t4:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "constitution",
+          "topicId": "constitution-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:aptitude-t4:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:constitution-t6:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "constitution",
+          "topicId": "constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:geography-t1:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "geography",
+          "topicId": "geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:aptitude-t1:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:aptitude-t6:final",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-27",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "FULL_MOCK:53",
+          "type": "FULL_MOCK",
+          "date": "2026-11-27",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t4:final",
+          "type": "REVISION",
+          "date": "2026-11-28",
+          "subjectId": "geography",
+          "topicId": "geography-t4",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:constitution-t5:3",
+          "type": "REVISION",
+          "date": "2026-11-29",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:56",
+          "type": "FULL_MOCK",
+          "date": "2026-11-30",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:constitution-t5:final",
+          "type": "REVISION",
+          "date": "2026-11-30",
+          "subjectId": "constitution",
+          "topicId": "constitution-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t5:3",
+          "type": "REVISION",
+          "date": "2026-12-01",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 15,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:aptitude-t5:final",
+          "type": "REVISION",
+          "date": "2026-12-02",
+          "subjectId": "aptitude",
+          "topicId": "aptitude-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:geography-t5:3",
+          "type": "REVISION",
+          "date": "2026-12-03",
+          "subjectId": "geography",
+          "topicId": "geography-t5",
+          "minutes": 15,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "FULL_MOCK:59",
+          "type": "FULL_MOCK",
+          "date": "2026-12-03",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    }
+  ]
+}

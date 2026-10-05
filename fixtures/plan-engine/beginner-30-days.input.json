@@ -1,0 +1,97 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 30,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": true,
+    "subjects": [
+      {
+        "id": "kerala-renaissance",
+        "name": "kerala renaissance",
+        "intensity": "STEADY",
+        "confidence": 1,
+        "topics": [
+          {
+            "id": "kerala-renaissance-t1",
+            "name": "kerala-renaissance topic 1",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "kerala-renaissance-t2",
+            "name": "kerala-renaissance topic 2",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": true,
+            "order": 1
+          },
+          {
+            "id": "kerala-renaissance-t3",
+            "name": "kerala-renaissance topic 3",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "kerala-renaissance-t4",
+            "name": "kerala-renaissance topic 4",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": true,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "english",
+        "name": "english",
+        "intensity": "STEADY",
+        "confidence": 1,
+        "topics": [
+          {
+            "id": "english-t1",
+            "name": "english topic 1",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "english-t2",
+            "name": "english topic 2",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "english-t3",
+            "name": "english topic 3",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": true,
+            "order": 2
+          }
+        ]
+      }
+    ]
+  }
+}

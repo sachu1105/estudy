@@ -1,0 +1,206 @@
+{
+  "kind": "PLAN",
+  "startDate": "2026-10-05",
+  "endDate": "2026-10-09",
+  "timelineStartDate": "2026-10-05",
+  "horizonDays": 5,
+  "reviewStartDate": "2026-10-09",
+  "availableMinutes": 540,
+  "requiredMinutes": 130,
+  "plannedMinutes": 205,
+  "coveragePercent": 100,
+  "droppedTouches": 5,
+  "days": [
+    {
+      "date": "2026-10-05",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": "current-affairs",
+      "tasks": [
+        {
+          "id": "STUDY:current-affairs-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-05",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:current-affairs-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-05",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": "current-affairs",
+      "tasks": [
+        {
+          "id": "STUDY:current-affairs-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-06",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t2",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:current-affairs-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-06",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": "current-affairs",
+      "tasks": [
+        {
+          "id": "STUDY:current-affairs-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-07",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t3",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 1
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:current-affairs-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-07",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 10,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:current-affairs-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-08",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 105,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:current-affairs-t1:2",
+          "type": "REVISION",
+          "date": "2026-10-09",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:current-affairs-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-09",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:current-affairs-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-09",
+          "subjectId": "current-affairs",
+          "topicId": "current-affairs-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "FULL_MOCK:4",
+          "type": "FULL_MOCK",
+          "date": "2026-10-09",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    }
+  ]
+}

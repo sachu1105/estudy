@@ -1,0 +1,96 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 120,
+    "availability": {
+      "minutesByWeekday": [
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
+      "preferredWindows": [
+        "NIGHT"
+      ]
+    },
+    "beginnerMode": false,
+    "subjects": [
+      {
+        "id": "kerala-geography",
+        "name": "kerala geography",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "kerala-geography-t1",
+            "name": "kerala-geography topic 1",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "kerala-geography-t2",
+            "name": "kerala-geography topic 2",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "kerala-geography-t3",
+            "name": "kerala-geography topic 3",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "kerala-geography-t4",
+            "name": "kerala-geography topic 4",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "english",
+        "name": "english",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "english-t1",
+            "name": "english topic 1",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "english-t2",
+            "name": "english topic 2",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "english-t3",
+            "name": "english topic 3",
+            "weight": 2,
+            "difficulty": 2,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      }
+    ]
+  }
+}

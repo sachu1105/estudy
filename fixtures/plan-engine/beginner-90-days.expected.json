@@ -1,0 +1,3515 @@
+{
+  "kind": "PLAN",
+  "startDate": "2026-10-05",
+  "endDate": "2027-01-02",
+  "timelineStartDate": "2026-10-05",
+  "horizonDays": 90,
+  "reviewStartDate": "2026-12-20",
+  "availableMinutes": 9720,
+  "requiredMinutes": 3745,
+  "plannedMinutes": 4490,
+  "coveragePercent": 100,
+  "droppedTouches": 0,
+  "days": [
+    {
+      "date": "2026-10-05",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-05",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-05",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-06",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-06",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t3:1",
+          "type": "STUDY",
+          "date": "2026-10-07",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-07",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t2:3",
+          "type": "STUDY",
+          "date": "2026-10-08",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t2:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-08",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t2:4",
+          "type": "STUDY",
+          "date": "2026-10-09",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t2:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-09",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t3:2",
+          "type": "STUDY",
+          "date": "2026-10-10",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-10",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 35,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t2:5",
+          "type": "STUDY",
+          "date": "2026-10-11",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": {
+            "index": 5,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t2:5",
+          "type": "CHECK_TEST",
+          "date": "2026-10-11",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-12",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t3:3",
+          "type": "STUDY",
+          "date": "2026-10-12",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-12",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t3:4",
+          "type": "STUDY",
+          "date": "2026-10-13",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t3:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-13",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-14",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t2:1",
+          "type": "STUDY",
+          "date": "2026-10-14",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-14",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t3:5",
+          "type": "STUDY",
+          "date": "2026-10-15",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 5,
+            "total": 5
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t3:5",
+          "type": "CHECK_TEST",
+          "date": "2026-10-15",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t3:1",
+          "type": "REVISION",
+          "date": "2026-10-16",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t2:2",
+          "type": "STUDY",
+          "date": "2026-10-16",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-16",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "STUDY:general-science-t2:3",
+          "type": "STUDY",
+          "date": "2026-10-17",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t2:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-17",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t3:2",
+          "type": "REVISION",
+          "date": "2026-10-18",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-18",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-18",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 45,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "STUDY:general-science-t2:4",
+          "type": "STUDY",
+          "date": "2026-10-19",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t2:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-19",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t2:1",
+          "type": "REVISION",
+          "date": "2026-10-20",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t2:3",
+          "type": "REVISION",
+          "date": "2026-10-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t4:3",
+          "type": "STUDY",
+          "date": "2026-10-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t4:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t2:2",
+          "type": "REVISION",
+          "date": "2026-10-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t4:1",
+          "type": "STUDY",
+          "date": "2026-10-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t4:4",
+          "type": "STUDY",
+          "date": "2026-10-23",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t4:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-23",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-24",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t4:2",
+          "type": "STUDY",
+          "date": "2026-10-24",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-24",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t3:3",
+          "type": "REVISION",
+          "date": "2026-10-25",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t4:3",
+          "type": "STUDY",
+          "date": "2026-10-25",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t4:3",
+          "type": "CHECK_TEST",
+          "date": "2026-10-25",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t4:2",
+          "type": "REVISION",
+          "date": "2026-10-26",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t6:1",
+          "type": "STUDY",
+          "date": "2026-10-26",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t6:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-26",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "STUDY:general-science-t4:4",
+          "type": "STUDY",
+          "date": "2026-10-27",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t4:4",
+          "type": "CHECK_TEST",
+          "date": "2026-10-27",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t4:1",
+          "type": "REVISION",
+          "date": "2026-10-28",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t6:2",
+          "type": "STUDY",
+          "date": "2026-10-28",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t6:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-28",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t6:1",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t2:3",
+          "type": "REVISION",
+          "date": "2026-10-29",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-29",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-29",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t4:2",
+          "type": "REVISION",
+          "date": "2026-10-30",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t1:2",
+          "type": "STUDY",
+          "date": "2026-10-30",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-10-30",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t6:2",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t1:1",
+          "type": "REVISION",
+          "date": "2026-10-31",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t1:1",
+          "type": "STUDY",
+          "date": "2026-10-31",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-10-31",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "STUDY:general-science-t1:2",
+          "type": "STUDY",
+          "date": "2026-11-01",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-01",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 85,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t1:2",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t1:1",
+          "type": "REVISION",
+          "date": "2026-11-02",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t2:1",
+          "type": "STUDY",
+          "date": "2026-11-02",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t2:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-02",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t2:2",
+          "type": "STUDY",
+          "date": "2026-11-03",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t2:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-03",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t1:2",
+          "type": "REVISION",
+          "date": "2026-11-04",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t1:1",
+          "type": "STUDY",
+          "date": "2026-11-04",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t1:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-04",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 40,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t2:3",
+          "type": "STUDY",
+          "date": "2026-11-05",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t2:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-05",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-06",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t2:4",
+          "type": "STUDY",
+          "date": "2026-11-06",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 35,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t2:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-06",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t6:3",
+          "type": "REVISION",
+          "date": "2026-11-07",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t2:1",
+          "type": "REVISION",
+          "date": "2026-11-07",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t1:2",
+          "type": "STUDY",
+          "date": "2026-11-07",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 20,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 2
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t1:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-07",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t1:1",
+          "type": "REVISION",
+          "date": "2026-11-08",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t3:1",
+          "type": "STUDY",
+          "date": "2026-11-08",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-08",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-09",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t2:2",
+          "type": "REVISION",
+          "date": "2026-11-09",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t3:2",
+          "type": "STUDY",
+          "date": "2026-11-09",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-09",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t2:4",
+          "type": "REVISION",
+          "date": "2026-11-10",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:indian-constitution-t1:2",
+          "type": "REVISION",
+          "date": "2026-11-10",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t4:1",
+          "type": "STUDY",
+          "date": "2026-11-10",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t4:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-10",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-11",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-11",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t3:3",
+          "type": "STUDY",
+          "date": "2026-11-11",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-11",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "STUDY:general-science-t3:4",
+          "type": "STUDY",
+          "date": "2026-11-12",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t3:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-12",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-13",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t3:1",
+          "type": "REVISION",
+          "date": "2026-11-13",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t4:2",
+          "type": "STUDY",
+          "date": "2026-11-13",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t4:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-13",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-14",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t3:4",
+          "type": "REVISION",
+          "date": "2026-11-14",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t4:3",
+          "type": "STUDY",
+          "date": "2026-11-14",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t4:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-14",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t3:2",
+          "type": "REVISION",
+          "date": "2026-11-15",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t3:1",
+          "type": "STUDY",
+          "date": "2026-11-15",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t3:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-15",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-16",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t2:3",
+          "type": "REVISION",
+          "date": "2026-11-16",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t4:4",
+          "type": "STUDY",
+          "date": "2026-11-16",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t4:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-16",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-17",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t1:3",
+          "type": "REVISION",
+          "date": "2026-11-17",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t4:1",
+          "type": "REVISION",
+          "date": "2026-11-17",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t3:2",
+          "type": "STUDY",
+          "date": "2026-11-17",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t3:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-17",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-18",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t2:4",
+          "type": "REVISION",
+          "date": "2026-11-18",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t3:3",
+          "type": "STUDY",
+          "date": "2026-11-18",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t3:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-18",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-19",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t4:2",
+          "type": "REVISION",
+          "date": "2026-11-19",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t5:1",
+          "type": "STUDY",
+          "date": "2026-11-19",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-19",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-20",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 60,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "STUDY:indian-constitution-t3:4",
+          "type": "STUDY",
+          "date": "2026-11-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 50,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t3:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-21",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t3:1",
+          "type": "REVISION",
+          "date": "2026-11-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t5:2",
+          "type": "STUDY",
+          "date": "2026-11-21",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-21",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-22",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 95,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t4:4",
+          "type": "REVISION",
+          "date": "2026-11-22",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:kerala-geography-t5:3",
+          "type": "STUDY",
+          "date": "2026-11-22",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t5:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-22",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-23",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t3:2",
+          "type": "REVISION",
+          "date": "2026-11-23",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t5:1",
+          "type": "STUDY",
+          "date": "2026-11-23",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-23",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-24",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": "kerala-geography",
+      "tasks": [
+        {
+          "id": "STUDY:kerala-geography-t5:4",
+          "type": "STUDY",
+          "date": "2026-11-24",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:kerala-geography-t5:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-24",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-25",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 65,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t5:1",
+          "type": "REVISION",
+          "date": "2026-11-25",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t5:2",
+          "type": "STUDY",
+          "date": "2026-11-25",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-25",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-26",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 90,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t4:3",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t4:4",
+          "type": "REVISION",
+          "date": "2026-11-26",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t5:3",
+          "type": "STUDY",
+          "date": "2026-11-26",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t5:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-26",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t6:4",
+          "type": "REVISION",
+          "date": "2026-11-27",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t5:2",
+          "type": "REVISION",
+          "date": "2026-11-27",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t5:1",
+          "type": "STUDY",
+          "date": "2026-11-27",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 1,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t5:1",
+          "type": "CHECK_TEST",
+          "date": "2026-11-27",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 80,
+      "leadSubjectId": "general-science",
+      "tasks": [
+        {
+          "id": "SECTION_MOCK:kerala-geography",
+          "type": "SECTION_MOCK",
+          "date": "2026-11-28",
+          "subjectId": "kerala-geography",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:general-science-t5:4",
+          "type": "STUDY",
+          "date": "2026-11-28",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:general-science-t5:4",
+          "type": "CHECK_TEST",
+          "date": "2026-11-28",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t1:4",
+          "type": "REVISION",
+          "date": "2026-11-29",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t5:1",
+          "type": "REVISION",
+          "date": "2026-11-29",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t5:2",
+          "type": "STUDY",
+          "date": "2026-11-29",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 2,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t5:2",
+          "type": "CHECK_TEST",
+          "date": "2026-11-29",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-11-30",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 70,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t3:3",
+          "type": "REVISION",
+          "date": "2026-11-30",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t5:3",
+          "type": "STUDY",
+          "date": "2026-11-30",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": {
+            "index": 3,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t5:3",
+          "type": "CHECK_TEST",
+          "date": "2026-11-30",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-01",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 85,
+      "leadSubjectId": "indian-constitution",
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t1:4",
+          "type": "REVISION",
+          "date": "2026-12-01",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:general-science-t5:2",
+          "type": "REVISION",
+          "date": "2026-12-01",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "STUDY:indian-constitution-t5:4",
+          "type": "STUDY",
+          "date": "2026-12-01",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 40,
+          "window": "MORNING",
+          "part": {
+            "index": 4,
+            "total": 4
+          },
+          "touch": null,
+          "finalReview": false
+        },
+        {
+          "id": "CHECK_TEST:indian-constitution-t5:4",
+          "type": "CHECK_TEST",
+          "date": "2026-12-01",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-02",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 55,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t5:1",
+          "type": "REVISION",
+          "date": "2026-12-02",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 1,
+          "finalReview": false
+        },
+        {
+          "id": "SECTION_MOCK:general-science",
+          "type": "SECTION_MOCK",
+          "date": "2026-12-02",
+          "subjectId": "general-science",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-03",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-04",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 50,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t5:2",
+          "type": "REVISION",
+          "date": "2026-12-04",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 2,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t5:3",
+          "type": "REVISION",
+          "date": "2026-12-04",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-05",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "SECTION_MOCK:indian-constitution",
+          "type": "SECTION_MOCK",
+          "date": "2026-12-05",
+          "subjectId": "indian-constitution",
+          "topicId": null,
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-06",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t2:4",
+          "type": "REVISION",
+          "date": "2026-12-06",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-07",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 10,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t1:4",
+          "type": "REVISION",
+          "date": "2026-12-07",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-08",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t5:3",
+          "type": "REVISION",
+          "date": "2026-12-08",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-09",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-10",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-11",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t5:3",
+          "type": "REVISION",
+          "date": "2026-12-11",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 3,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-12",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 30,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t3:4",
+          "type": "REVISION",
+          "date": "2026-12-12",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-13",
+      "weekday": 0,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-14",
+      "weekday": 1,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-15",
+      "weekday": 2,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-16",
+      "weekday": 3,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t4:4",
+          "type": "REVISION",
+          "date": "2026-12-16",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-17",
+      "weekday": 4,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-18",
+      "weekday": 5,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-19",
+      "weekday": 6,
+      "phase": "LEARN",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-20",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 100,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t3:4",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        },
+        {
+          "id": "REVISION:kerala-geography-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:general-science-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "general-science",
+          "topicId": "general-science-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:indian-constitution-t6:final",
+          "type": "REVISION",
+          "date": "2026-12-20",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t6",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-21",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 105,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t3:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t3",
+          "minutes": 30,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:indian-constitution-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:kerala-geography-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:general-science-t2:final",
+          "type": "REVISION",
+          "date": "2026-12-21",
+          "subjectId": "general-science",
+          "topicId": "general-science-t2",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-22",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 105,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:kerala-geography-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:general-science-t4:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t4",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:indian-constitution-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:kerala-geography-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        },
+        {
+          "id": "REVISION:general-science-t1:final",
+          "type": "REVISION",
+          "date": "2026-12-22",
+          "subjectId": "general-science",
+          "topicId": "general-science-t1",
+          "minutes": 10,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-23",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:79",
+          "type": "FULL_MOCK",
+          "date": "2026-12-23",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-24",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t5:4",
+          "type": "REVISION",
+          "date": "2026-12-24",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-25",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:kerala-geography-t5:final",
+          "type": "REVISION",
+          "date": "2026-12-25",
+          "subjectId": "kerala-geography",
+          "topicId": "kerala-geography-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-26",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:82",
+          "type": "FULL_MOCK",
+          "date": "2026-12-26",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-27",
+      "weekday": 0,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 0,
+      "leadSubjectId": null,
+      "tasks": []
+    },
+    {
+      "date": "2026-12-28",
+      "weekday": 1,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t5:4",
+          "type": "REVISION",
+          "date": "2026-12-28",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-29",
+      "weekday": 2,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:general-science-t5:final",
+          "type": "REVISION",
+          "date": "2026-12-29",
+          "subjectId": "general-science",
+          "topicId": "general-science-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2026-12-30",
+      "weekday": 3,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:86",
+          "type": "FULL_MOCK",
+          "date": "2026-12-30",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2026-12-31",
+      "weekday": 4,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t5:4",
+          "type": "REVISION",
+          "date": "2026-12-31",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": 4,
+          "finalReview": false
+        }
+      ]
+    },
+    {
+      "date": "2027-01-01",
+      "weekday": 5,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 25,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "REVISION:indian-constitution-t5:final",
+          "type": "REVISION",
+          "date": "2027-01-01",
+          "subjectId": "indian-constitution",
+          "topicId": "indian-constitution-t5",
+          "minutes": 25,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": true
+        }
+      ]
+    },
+    {
+      "date": "2027-01-02",
+      "weekday": 6,
+      "phase": "REVIEW",
+      "capacityMinutes": 108,
+      "plannedMinutes": 75,
+      "leadSubjectId": null,
+      "tasks": [
+        {
+          "id": "FULL_MOCK:89",
+          "type": "FULL_MOCK",
+          "date": "2027-01-02",
+          "subjectId": null,
+          "topicId": null,
+          "minutes": 75,
+          "window": "MORNING",
+          "part": null,
+          "touch": null,
+          "finalReview": false
+        }
+      ]
+    }
+  ]
+}

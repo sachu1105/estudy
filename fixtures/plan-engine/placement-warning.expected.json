@@ -1,0 +1,11 @@
+{
+  "kind": "COVERAGE_WARNING",
+  "reason": "PLACEMENT",
+  "startDate": "2026-10-05",
+  "endDate": "2026-12-18",
+  "horizonDays": 75,
+  "availableMinutes": 4455,
+  "requiredMinutes": 3870,
+  "projectedCoveragePercent": 85,
+  "extraMinutesPerDay": 5
+}

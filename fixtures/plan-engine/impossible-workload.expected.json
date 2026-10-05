@@ -1,0 +1,11 @@
+{
+  "kind": "COVERAGE_WARNING",
+  "reason": "WORKLOAD",
+  "startDate": "2026-10-05",
+  "endDate": "2026-10-24",
+  "horizonDays": 20,
+  "availableMinutes": 800,
+  "requiredMinutes": 5955,
+  "projectedCoveragePercent": 13,
+  "extraMinutesPerDay": 287
+}

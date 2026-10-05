@@ -149,3 +149,61 @@ Read after `CLAUDE.md` at the start of every session. Append, don't rewrite.
 - E2E against `next dev`: at most 4 workers locally and a 10s expect timeout. More workers
   starve the on-demand compiler and look like random auth failures. Retry keyboard shortcuts
   with `expect(...).toPass()` because listeners attach on hydration.
+
+## Milestone 3 — the plan engine (2026-10-05)
+
+`src/lib/plan-engine`: pure TypeScript. No clock, no randomness, and no next, react, server
+or prisma imports (checked by ESLint and by grep). Entry points: `generatePlan(input)` and
+`replan(input & { history, previousPlan? })`, exported from `index.ts`.
+
+### Decisions (where the spec left room)
+- Dates are integer day numbers (`dates.ts`, Hinnant's algorithms); minutes use integer
+  percentages rounded to 5. No floating point, so output is byte-identical everywhere.
+- Horizon: today through min(examDate - 1, today + targetDays - 1). Day capacity is
+  floor(minutes x 90%). The review window is the last 15% of the *timeline*, measured from
+  `timelineStart` (the original plan start), so it doesn't move on every replan.
+- Study minutes = (30 + 12(weight-1) + 8(difficulty-1)) x intensity x confidence, rounded
+  to 5 (minimum 15). A revision touch is 20% of that (minimum 10). Check test 10 min,
+  section mock 30, full mock 75.
+- Topics longer than a block (60 min, or 25 in beginner week one) split into parts. **Each
+  part is followed by its own CHECK_TEST**, matching the "test after every task" product rule.
+- "Led by" = the subject of the day's first STUDY block. The no-3-days rule is relaxed only
+  when no other subject has study left. `recentLeads` carries the two days before a replan.
+- Revision touches at +3/+10/+30 days (plus +1 for confidence 1-2, and +6 for a weak topic).
+  Touches past the horizon clamp to its last day; duplicates collapse and are counted in
+  `droppedTouches`. Clamped touches may be pulled earlier into free review days.
+- Pacing: study is spread over the learning phase (25% headroom) and aims to finish ~11
+  days before review starts, leaving room for second revisions and section mocks.
+- Section mock: the day after every topic in a subject has STUDY + 2 revisions, learning
+  phase only, and never in a beginner's first week. Full mocks: one per 3 review days.
+- Final-review revisions (`finalReview: true`) fill spare review time. They are optional
+  and not counted in `requiredMinutes`.
+- Weak topics (confidence 1-2) get the earliest preferred window (by time of day); everything
+  else gets the first-listed preference.
+- Beginner mode: foundational topics first within each subject, preferred across subjects
+  when interleaving allows, 25-min blocks in week one, no section mock in week one. The engine
+  does not force confidence to 1; onboarding pre-fills it.
+- CoverageWarning has two reasons. WORKLOAD: the up-front estimate exceeds total capacity,
+  or study exceeds learning capacity. PLACEMENT: the minutes exist but the scheduler couldn't
+  place everything. Never a compressed plan.
+- replan: accuracy >= 85% raises confidence by 1. < 60% lowers it by 1 and adds a touch.
+  Doing fewer than half of the due revisions lowers it by 1. **Persist the returned
+  `adjustments`** and pass them back next week. Partly studied topics continue first with
+  only the remaining minutes.
+- Diff coverage = study minutes done or still planned / total study minutes. Before uses the
+  old plan; after is 100 for a plan, or the warning's projection.
+
+### Fixtures
+- `pnpm fixtures:plan` regenerates all 30 pairs in `fixtures/plan-engine` from
+  `scripts/plan-fixtures.ts`. The fixtures test compares byte-for-byte and runs
+  `assertPlanInvariants` on every plan. An expected file changing in a diff means engine
+  output changed, so review it deliberately. Fixtures are excluded from Prettier.
+
+### Gotchas
+- A short day (27 usable min) plus the 30-minute "new topic" minimum used to deadlock.
+  Minimums are now capped by what a day can hold, and an unavoidable short tail is allowed.
+- A replan computing pace from *remaining* totals drifted the schedule even when the user was
+  on track (11 "moved" topics). Subject share now uses full totals, partly done topics start
+  in progress, and recent leads carry over: an on-track replan now moves 0 topics.
+- zod 4: `.extend()` on a refined object throws, so the refinement is a shared function
+  applied to both `planInputSchema` and `replanInputSchema`.

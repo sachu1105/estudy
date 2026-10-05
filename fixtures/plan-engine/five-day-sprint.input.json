@@ -1,0 +1,57 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 5,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": false,
+    "subjects": [
+      {
+        "id": "current-affairs",
+        "name": "current affairs",
+        "intensity": "STEADY",
+        "confidence": 4,
+        "topics": [
+          {
+            "id": "current-affairs-t1",
+            "name": "current-affairs topic 1",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "current-affairs-t2",
+            "name": "current-affairs topic 2",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "current-affairs-t3",
+            "name": "current-affairs topic 3",
+            "weight": 1,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      }
+    ]
+  }
+}

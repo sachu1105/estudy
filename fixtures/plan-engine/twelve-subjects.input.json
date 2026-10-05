@@ -1,0 +1,505 @@
+{
+  "fn": "generatePlan",
+  "input": {
+    "today": "2026-10-05",
+    "targetDays": 150,
+    "availability": {
+      "minutesByWeekday": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "preferredWindows": [
+        "MORNING",
+        "EVENING"
+      ]
+    },
+    "beginnerMode": false,
+    "subjects": [
+      {
+        "id": "indian-constitution",
+        "name": "indian constitution",
+        "intensity": "LIGHT",
+        "confidence": 1,
+        "topics": [
+          {
+            "id": "indian-constitution-t1",
+            "name": "indian-constitution topic 1",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "indian-constitution-t2",
+            "name": "indian-constitution topic 2",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "indian-constitution-t3",
+            "name": "indian-constitution topic 3",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "id": "indian-history",
+        "name": "indian history",
+        "intensity": "STEADY",
+        "confidence": 2,
+        "topics": [
+          {
+            "id": "indian-history-t1",
+            "name": "indian-history topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "indian-history-t2",
+            "name": "indian-history topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "indian-history-t3",
+            "name": "indian-history topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "indian-history-t4",
+            "name": "indian-history topic 4",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "kerala-history",
+        "name": "kerala history",
+        "intensity": "INTENSE",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "kerala-history-t1",
+            "name": "kerala-history topic 1",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "kerala-history-t2",
+            "name": "kerala-history topic 2",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "kerala-history-t3",
+            "name": "kerala-history topic 3",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "kerala-history-t4",
+            "name": "kerala-history topic 4",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "kerala-history-t5",
+            "name": "kerala-history topic 5",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 4
+          }
+        ]
+      },
+      {
+        "id": "kerala-renaissance",
+        "name": "kerala renaissance",
+        "intensity": "LIGHT",
+        "confidence": 4,
+        "topics": [
+          {
+            "id": "kerala-renaissance-t1",
+            "name": "kerala-renaissance topic 1",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "kerala-renaissance-t2",
+            "name": "kerala-renaissance topic 2",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "kerala-renaissance-t3",
+            "name": "kerala-renaissance topic 3",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "id": "indian-geography",
+        "name": "indian geography",
+        "intensity": "STEADY",
+        "confidence": 5,
+        "topics": [
+          {
+            "id": "indian-geography-t1",
+            "name": "indian-geography topic 1",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "indian-geography-t2",
+            "name": "indian-geography topic 2",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "indian-geography-t3",
+            "name": "indian-geography topic 3",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "indian-geography-t4",
+            "name": "indian-geography topic 4",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "kerala-geography",
+        "name": "kerala geography",
+        "intensity": "INTENSE",
+        "confidence": 1,
+        "topics": [
+          {
+            "id": "kerala-geography-t1",
+            "name": "kerala-geography topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "kerala-geography-t2",
+            "name": "kerala-geography topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "kerala-geography-t3",
+            "name": "kerala-geography topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "kerala-geography-t4",
+            "name": "kerala-geography topic 4",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "kerala-geography-t5",
+            "name": "kerala-geography topic 5",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          }
+        ]
+      },
+      {
+        "id": "general-science",
+        "name": "general science",
+        "intensity": "LIGHT",
+        "confidence": 2,
+        "topics": [
+          {
+            "id": "general-science-t1",
+            "name": "general-science topic 1",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "general-science-t2",
+            "name": "general-science topic 2",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "general-science-t3",
+            "name": "general-science topic 3",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "id": "current-affairs",
+        "name": "current affairs",
+        "intensity": "STEADY",
+        "confidence": 3,
+        "topics": [
+          {
+            "id": "current-affairs-t1",
+            "name": "current-affairs topic 1",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "current-affairs-t2",
+            "name": "current-affairs topic 2",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "current-affairs-t3",
+            "name": "current-affairs topic 3",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "current-affairs-t4",
+            "name": "current-affairs topic 4",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "quantitative-aptitude",
+        "name": "quantitative aptitude",
+        "intensity": "INTENSE",
+        "confidence": 4,
+        "topics": [
+          {
+            "id": "quantitative-aptitude-t1",
+            "name": "quantitative-aptitude topic 1",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "quantitative-aptitude-t2",
+            "name": "quantitative-aptitude topic 2",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "quantitative-aptitude-t3",
+            "name": "quantitative-aptitude topic 3",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "quantitative-aptitude-t4",
+            "name": "quantitative-aptitude topic 4",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "quantitative-aptitude-t5",
+            "name": "quantitative-aptitude topic 5",
+            "weight": 2,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 4
+          }
+        ]
+      },
+      {
+        "id": "mental-ability",
+        "name": "mental ability",
+        "intensity": "LIGHT",
+        "confidence": 5,
+        "topics": [
+          {
+            "id": "mental-ability-t1",
+            "name": "mental-ability topic 1",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "mental-ability-t2",
+            "name": "mental-ability topic 2",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "mental-ability-t3",
+            "name": "mental-ability topic 3",
+            "weight": 3,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "id": "english",
+        "name": "english",
+        "intensity": "STEADY",
+        "confidence": 1,
+        "topics": [
+          {
+            "id": "english-t1",
+            "name": "english topic 1",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "english-t2",
+            "name": "english topic 2",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "english-t3",
+            "name": "english topic 3",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "english-t4",
+            "name": "english topic 4",
+            "weight": 4,
+            "difficulty": 1,
+            "foundational": false,
+            "order": 3
+          }
+        ]
+      },
+      {
+        "id": "malayalam",
+        "name": "malayalam",
+        "intensity": "INTENSE",
+        "confidence": 2,
+        "topics": [
+          {
+            "id": "malayalam-t1",
+            "name": "malayalam topic 1",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 0
+          },
+          {
+            "id": "malayalam-t2",
+            "name": "malayalam topic 2",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 1
+          },
+          {
+            "id": "malayalam-t3",
+            "name": "malayalam topic 3",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 2
+          },
+          {
+            "id": "malayalam-t4",
+            "name": "malayalam topic 4",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 3
+          },
+          {
+            "id": "malayalam-t5",
+            "name": "malayalam topic 5",
+            "weight": 5,
+            "difficulty": 3,
+            "foundational": false,
+            "order": 4
+          }
+        ]
+      }
+    ]
+  }
+}
