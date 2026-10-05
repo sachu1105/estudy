@@ -21,7 +21,7 @@ export function SelectTrigger({
     <SelectPrimitive.Trigger
       className={cn(
         fieldClasses,
-        "flex h-10 cursor-pointer items-center justify-between gap-2 text-left data-placeholder:text-ink-subtle",
+        "flex h-11 cursor-pointer items-center justify-between gap-2 text-left data-placeholder:text-ink-subtle md:h-10",
         className,
       )}
       {...props}

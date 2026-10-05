@@ -140,6 +140,13 @@ Run test, lint and typecheck before declaring any task done.
 
 13. Rate-limit auth, uploads, AI-triggering actions and test submissions with Redis.
 
+14. MOBILE FIRST, EVERY SCREEN. Most users study on a phone. Every page, dialog, form,
+    table and admin screen is designed at 360px wide first, then scaled up. No horizontal
+    scroll at 360px, tap targets at least 44x44px, text never below 13px, inputs 16px on
+    mobile (no iOS zoom), safe-area insets respected, nothing hidden behind the bottom tab
+    bar. A feature is not done until it is checked at 360px, 390px and 1366px, and its
+    Playwright tests run on both the desktop and mobile projects.
+
 ## Plans and entitlements
 
 Three plans. At launch BILLING_ENABLED=false and everyone gets ELITE. Payments arrive
@@ -270,6 +277,14 @@ Max three animated elements on screen at once. Respect prefers-reduced-motion.
 Sentence case, active voice, same verb through a flow ("Start session" ->
 "Session started"). Errors say what happened and how to fix it; never apologise.
 Empty states are invitations: "No groups yet. Create one and invite a friend."
+
+### Mobile
+
+Design at 360px first. Single column under 768px; grids collapse, never shrink.
+Sheets from the bottom replace popovers and side panels on phones. Primary actions sit
+within thumb reach (bottom of the screen) on long forms and focus views. Tables become
+stacked cards on mobile. Use dvh, not vh. Test with a real phone before calling a
+milestone done.
 
 ### Accessibility floor
 

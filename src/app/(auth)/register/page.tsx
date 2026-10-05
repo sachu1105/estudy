@@ -1,17 +1,29 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
+import { AuthCard } from "@/features/auth/components/auth-card";
+import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const metadata: Metadata = { title: "Create account" };
 
 export default function RegisterPage() {
   return (
-    <div className="flex flex-col gap-2 text-center">
-      <h1>Create account</h1>
-      <p className="text-ink-muted">
-        Create an account to build your study plan.
-      </p>
-      <p className="text-small text-ink-subtle">
-        This form is built in milestone 2.
-      </p>
-    </div>
+    <AuthCard
+      title="Create your account"
+      description="Free during launch. No card needed."
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-accent hover:underline"
+          >
+            Log in
+          </Link>
+        </>
+      }
+    >
+      <RegisterForm />
+    </AuthCard>
   );
 }

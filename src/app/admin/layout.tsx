@@ -4,9 +4,15 @@ import type { ReactNode } from "react";
 
 import { LogoMark } from "@/components/shell/logo";
 import { Badge } from "@/components/ui/badge";
+import { requireRole } from "@/server/auth/session";
 
-// Role gating (requireRole) arrives with auth in milestone 2; the panel is milestone 12.
-export default function AdminLayout({ children }: { children: ReactNode }) {
+// The panel itself is milestone 12. MODERATOR+ may enter; pages narrow further.
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  await requireRole("MODERATOR", "ADMIN", "SUPER_ADMIN");
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex h-14 items-center gap-3 border-b border-border bg-surface px-4 md:px-6">

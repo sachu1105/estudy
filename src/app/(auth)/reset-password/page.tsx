@@ -1,15 +1,50 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
+import { requestPasswordResetAction } from "@/features/auth/actions";
+import { AuthCard } from "@/features/auth/components/auth-card";
+import { EmailRequestForm } from "@/features/auth/components/email-request-form";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export const metadata: Metadata = { title: "Reset password" };
 
-export default function ResetPasswordPage() {
+function first(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function ResetPasswordPage({
+  searchParams,
+}: PageProps<"/reset-password">) {
+  const token = first((await searchParams).token);
+  const footer = (
+    <Link href="/login" className="font-medium text-accent hover:underline">
+      Back to log in
+    </Link>
+  );
+
+  if (token) {
+    return (
+      <AuthCard
+        title="Choose a new password"
+        description="This signs you out on every other device."
+        footer={footer}
+      >
+        <ResetPasswordForm token={token} />
+      </AuthCard>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-2 text-center">
-      <h1>Reset password</h1>
-      <p className="text-ink-muted">Choose a new password for your account.</p>
-      <p className="text-small text-ink-subtle">
-        This form is built in milestone 2.
-      </p>
-    </div>
+    <AuthCard
+      title="Reset your password"
+      description="Enter your account email and we'll send you a reset link."
+      footer={footer}
+    >
+      <EmailRequestForm
+        action={requestPasswordResetAction}
+        submitLabel="Send reset link"
+        pendingLabel="Sending…"
+      />
+    </AuthCard>
   );
 }

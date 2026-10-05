@@ -2,13 +2,15 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Logo } from "@/components/shell/logo";
+import { requireUser } from "@/server/auth/session";
 
 // Onboarding runs outside the app shell: one focused column, no navigation to wander off to.
-export default function OnboardingLayout({
+export default async function OnboardingLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  await requireUser();
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex h-16 items-center px-4 md:px-8">

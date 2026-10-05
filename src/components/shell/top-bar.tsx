@@ -32,10 +32,15 @@ import { LogoMark } from "./logo";
 import { primaryNav, secondaryNav } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 
-// Placeholder identity until auth lands in milestone 2.
-const viewer = { name: "Aspirant", email: "you@example.com" };
+export type Viewer = { name: string; email: string; avatarUrl: string | null };
 
-export function TopBar() {
+type TopBarProps = {
+  viewer: Viewer;
+  /** Server action passed down by the layout, so the shell stays free of feature imports. */
+  logout: () => Promise<void>;
+};
+
+export function TopBar({ viewer, logout }: TopBarProps) {
   const router = useRouter();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
@@ -99,7 +104,7 @@ export function TopBar() {
             aria-label="Account menu"
             className="cursor-pointer rounded-full"
           >
-            <Avatar name={viewer.name} />
+            <Avatar name={viewer.name} src={viewer.avatarUrl} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>
@@ -114,7 +119,7 @@ export function TopBar() {
               <Settings aria-hidden /> Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
+            <DropdownMenuItem onSelect={() => void logout()}>
               <LogOut aria-hidden /> Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

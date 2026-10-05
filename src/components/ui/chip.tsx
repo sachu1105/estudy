@@ -16,7 +16,7 @@ export function Chip({
       type={type}
       aria-pressed={selected}
       className={cn(
-        "inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-chip border px-3 text-small font-medium whitespace-nowrap",
+        "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-chip border px-3 text-small font-medium whitespace-nowrap md:h-8",
         "transition-colors duration-[120ms] ease-out active:scale-[0.98] [&_svg]:size-3.5",
         selected
           ? "border-transparent bg-accent-soft text-accent-ink"

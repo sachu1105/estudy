@@ -21,10 +21,10 @@ export const buttonVariants = cva(
         danger: "bg-danger-soft text-danger-ink hover:bg-danger-soft/70",
       },
       size: {
-        sm: "h-8 px-3 text-small",
-        md: "h-10 px-4 text-body",
+        sm: "h-9 px-3 text-small md:h-8",
+        md: "h-11 px-4 text-body md:h-10",
         lg: "h-12 px-5 text-body",
-        icon: "size-10",
+        icon: "size-11 md:size-10",
         "icon-sm": "size-8",
       },
     },

@@ -55,7 +55,9 @@ export function SegmentedControl<T extends string>({
             className={cn(
               "relative flex cursor-pointer items-center justify-center gap-1.5 rounded-[9px] font-heading font-medium",
               "transition-colors duration-[120ms] [&_svg]:size-4",
-              size === "sm" ? "h-7 px-2.5 text-small" : "h-8 px-3.5 text-small",
+              size === "sm"
+                ? "h-8 px-2.5 text-small md:h-7"
+                : "h-10 px-3.5 text-small md:h-8",
               active ? "text-ink" : "text-ink-muted hover:text-ink",
             )}
           >

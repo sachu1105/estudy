@@ -3,8 +3,21 @@ import type { ReactNode } from "react";
 import { BottomTabs } from "@/components/shell/bottom-tabs";
 import { Sidebar } from "@/components/shell/sidebar";
 import { TopBar } from "@/components/shell/top-bar";
+import { logoutAction } from "@/features/auth/actions";
+import { requireUser } from "@/server/auth/session";
 
-export default function ShellLayout({ children }: { children: ReactNode }) {
+export default async function ShellLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const user = await requireUser();
+  const viewer = {
+    name: user.name,
+    email: user.email,
+    avatarUrl: user.avatarUrl,
+  };
+
   return (
     <div className="flex min-h-dvh">
       <a
@@ -15,7 +28,7 @@ export default function ShellLayout({ children }: { children: ReactNode }) {
       </a>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar />
+        <TopBar viewer={viewer} logout={logoutAction} />
         <main
           id="main"
           className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12"

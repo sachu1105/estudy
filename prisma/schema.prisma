@@ -1,5 +1,5 @@
-// Models arrive milestone by milestone. Conventions (CLAUDE.md rule 12):
-// ids are uuid strings, timestamps are timestamptz.
+// Conventions (CLAUDE.md rule 12): ids are uuid strings, timestamps are timestamptz.
+// Append-only tables (rule 6) are protected by triggers in the migration SQL.
 
 generator client {
   provider = "prisma-client"
@@ -8,4 +8,131 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum Plan {
+  FREE
+  PRO
+  ELITE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum SubscriptionSource {
+  DEFAULT
+  ADMIN_GRANT
+  RAZORPAY
+}
+
+model User {
+  id                 String     @id @default(uuid()) @db.Uuid
+  email              String     @unique
+  emailVerifiedAt    DateTime?  @db.Timestamptz(6)
+  passwordHash       String
+  name               String
+  displayName        String
+  avatarUrl          String?
+  role               Role       @default(USER)
+  timezone           String     @default("Asia/Kolkata")
+  beginnerMode       Boolean    @default(false)
+  hideFromGlobalRank Boolean    @default(false)
+  status             UserStatus @default(ACTIVE)
+  createdAt          DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime   @updatedAt @db.Timestamptz(6)
+
+  refreshTokens      RefreshToken[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+  subscriptions      Subscription[]
+  auditLogs          AuditLog[]
+}
+
+model RefreshToken {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the opaque token. The token itself is never stored.
+  tokenHash   String    @unique
+  /// Every rotation stays in one family; reuse of a rotated token revokes the family.
+  familyId    String    @db.Uuid
+  expiresAt   DateTime  @db.Timestamptz(6)
+  revokedAt   DateTime? @db.Timestamptz(6)
+  replacedBy  String?   @db.Uuid
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  userAgent   String?
+  ip          String?
+
+  @@index([familyId])
+  @@index([userId])
+}
+
+model EmailVerification {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  expiresAt  DateTime  @db.Timestamptz(6)
+  usedAt     DateTime? @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+}
+
+model PasswordReset {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  expiresAt  DateTime  @db.Timestamptz(6)
+  usedAt     DateTime? @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+}
+
+model Subscription {
+  id        String             @id @default(uuid()) @db.Uuid
+  userId    String             @db.Uuid
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      Plan
+  status    SubscriptionStatus @default(ACTIVE)
+  periodEnd DateTime?          @db.Timestamptz(6)
+  source    SubscriptionSource @default(DEFAULT)
+  createdAt DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime           @updatedAt @db.Timestamptz(6)
+
+  @@index([userId, status])
+}
+
+/// Append-only (rule 6): UPDATE and DELETE are rejected by a database trigger.
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  actorId   String?  @db.Uuid
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  action    String
+  targetId  String?  @db.Uuid
+  metadata  Json     @default("{}")
+  ip        String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
 }
