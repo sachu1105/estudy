@@ -92,6 +92,11 @@ export async function schedulePodMaintenance() {
     { pattern: "0 4 * * 0", tz: "Asia/Kolkata" },
     { name: "replan-week", data: { kind: "replan-week" } },
   );
+  await bullPodQueue().upsertJobScheduler(
+    "rebuild-ranks-nightly",
+    { pattern: "30 2 * * *", tz: "Asia/Kolkata" },
+    { name: "rebuild-ranks", data: { kind: "rebuild-ranks" } },
+  );
 }
 
 // ---- Admin view of the queues (milestone 15) ----------------------------------------

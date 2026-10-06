@@ -58,3 +58,15 @@ export function computeStreak(
     freezeLeft: !usedThisWeek,
   };
 }
+
+/** The longest run ever, by the same rules (freezes included), for "best streak". */
+export function bestStreak(activeDays: Iterable<string>) {
+  const days = [...new Set(activeDays)].sort();
+  let best = 0;
+  // Every run ends on an active day; measure the run ending on each.
+  for (const end of days) {
+    const upTo = days.filter((d) => d <= end);
+    best = Math.max(best, computeStreak(upTo, end).current);
+  }
+  return best;
+}

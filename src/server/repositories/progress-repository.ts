@@ -4,6 +4,7 @@ import { prisma } from "@/server/db";
 import type { PlanTaskType, XpKind } from "@/server/db/generated/prisma/client";
 
 import { fromDbDate, toDbDate } from "./plan-repository";
+import { recordXp } from "@/server/rank";
 
 export type TaskLogRow = {
   userId: string;
@@ -95,6 +96,87 @@ export const progressRepository = {
         ORDER BY "taskId", "createdAt" DESC, id DESC
       ) latest WHERE done GROUP BY "localDate"`;
     return new Map(rows.map((r) => [fromDbDate(r.day), Number(r.count)]));
+  },
+
+  /**
+   * Minutes per day since `from`: timed sessions, and ticked tasks' planned minutes. The
+   * page shows the larger of the two for each day, so nothing is counted twice.
+   */
+  async minutesByDay(userId: string, from: string) {
+    const [sessions, ticked] = await Promise.all([
+      prisma.$queryRaw<{ day: Date; minutes: number }[]>`
+        SELECT "localDate" AS day, SUM("activeMinutes")::int AS minutes
+        FROM "StudySession"
+        WHERE "userId" = ${userId}::uuid AND "localDate" >= ${toDbDate(from)}
+        GROUP BY "localDate"`,
+      prisma.$queryRaw<{ day: Date; minutes: number }[]>`
+        SELECT "localDate" AS day, SUM(minutes)::int AS minutes FROM (
+          SELECT DISTINCT ON ("taskId") "localDate", minutes, done, type
+          FROM "TaskCompletion"
+          WHERE "userId" = ${userId}::uuid AND "localDate" >= ${toDbDate(from)}
+          ORDER BY "taskId", "createdAt" DESC, id DESC
+        ) latest WHERE done AND type IN ('STUDY', 'REVISION', 'CUSTOM')
+        GROUP BY "localDate"`,
+    ]);
+    const days = new Map<string, number>();
+    for (const r of [...sessions, ...ticked]) {
+      const day = fromDbDate(r.day);
+      days.set(day, Math.max(days.get(day) ?? 0, r.minutes));
+    }
+    return days;
+  },
+
+  /** The last tests, oldest first, for the accuracy trend. */
+  async recentAttempts(userId: string, take: number) {
+    const rows = await prisma.testAttempt.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take,
+      select: { id: true, type: true, accuracy: true, localDate: true },
+    });
+    return rows
+      .reverse()
+      .map((r) => ({ ...r, localDate: fromDbDate(r.localDate) }));
+  },
+
+  /** Accuracy per topic over every test answer, for the topics with enough answers. */
+  topicAccuracy(userId: string, minAnswers: number) {
+    return prisma.$queryRaw<
+      { topicKey: string; answers: number; accuracy: number }[]
+    >`
+      SELECT a."topicKey", COUNT(*)::int AS answers, AVG(a.correct::int)::float AS accuracy
+      FROM "AttemptAnswer" a JOIN "TestAttempt" t ON t.id = a."attemptId"
+      WHERE t."userId" = ${userId}::uuid
+      GROUP BY a."topicKey" HAVING COUNT(*) >= ${minAnswers}
+      ORDER BY accuracy ASC, answers DESC`;
+  },
+
+  /** Study minutes and test accuracy per subject. */
+  async subjectTotals(userId: string) {
+    const [minutes, tests] = await Promise.all([
+      prisma.studySession.groupBy({
+        by: ["subjectId"],
+        where: { userId, subjectId: { not: null } },
+        _sum: { activeMinutes: true },
+      }),
+      prisma.testAttempt.groupBy({
+        by: ["subjectId"],
+        where: { userId, subjectId: { not: null } },
+        _avg: { accuracy: true },
+        _count: true,
+      }),
+    ]);
+    return {
+      minutes: new Map(
+        minutes.map((m) => [m.subjectId!, m._sum.activeMinutes ?? 0]),
+      ),
+      accuracy: new Map(
+        tests.map((t) => [
+          t.subjectId!,
+          { avg: t._avg.accuracy ?? 0, count: t._count },
+        ]),
+      ),
+    };
   },
 
   /** A subject's totals from the logs: active minutes and tasks still ticked. */
@@ -272,16 +354,22 @@ export const progressRepository = {
     return sum._sum.amount ?? 0;
   },
 
-  addXp(entry: {
+  /**
+   * Appends XP and counts it on the leaderboards. The ranks are a cache: if Redis is
+   * down the XP still counts, and the nightly rebuild catches the boards up.
+   */
+  async addXp(entry: {
     userId: string;
     kind: XpKind;
     amount: number;
     refId: string | null;
     localDate: string;
   }) {
-    return prisma.xpLedger.create({
+    const row = await prisma.xpLedger.create({
       data: { ...entry, localDate: toDbDate(entry.localDate) },
     });
+    await recordXp(entry.userId, entry.amount, entry.localDate).catch(() => {});
+    return row;
   },
 };
 

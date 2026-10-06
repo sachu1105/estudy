@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { formatWhen } from "@/lib/admin/format";
 import { ADMIN_PAGE_SIZE } from "@/server/repositories/admin-repository";
 import { adminService, requireAdmin } from "@/server/services/admin";
+import { ABUSE_LIMITS, rankService } from "@/server/services/rank";
 
 export const metadata: Metadata = { title: "Users · Admin" };
 
@@ -19,7 +20,10 @@ export default async function AdminUsers({
   const query = await searchParams;
   const q = typeof query.q === "string" ? query.q.slice(0, 100) : "";
   const page = Math.max(0, Number(query.page) || 0);
-  const [users, total] = await adminService.searchUsers(q, page);
+  const [[users, total], flagged] = await Promise.all([
+    adminService.searchUsers(q, page),
+    rankService.flagged(),
+  ]);
   const pages = Math.ceil(total / ADMIN_PAGE_SIZE);
   const href = (p: number) =>
     `/admin/users?${new URLSearchParams({ ...(q ? { q } : {}), page: String(p) })}`;
@@ -42,6 +46,41 @@ export default async function AdminUsers({
           <Search aria-hidden /> Search
         </Button>
       </form>
+      {flagged.length > 0 && !q ? (
+        <section aria-labelledby="flagged" className="mb-8 flex flex-col gap-2">
+          <h2 id="flagged" className="text-h3">
+            Needs a look
+          </h2>
+          <p className="text-small text-ink-muted">
+            In the last 14 days: over {ABUSE_LIMITS.maxXp} XP,{" "}
+            {ABUSE_LIMITS.maxTests} tests or {ABUSE_LIMITS.maxMinutes} study
+            minutes in a single day.
+          </p>
+          <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+            {flagged.map((f) => (
+              <li key={`${f.userId}-${f.reason}-${f.day.toISOString()}`}>
+                <Link
+                  href={`/admin/users/${f.userId}`}
+                  className="flex min-h-12 items-center gap-3 px-4 py-2 hover:bg-surface-muted"
+                >
+                  <span className="min-w-0 flex-1 truncate text-body">
+                    {f.email}
+                  </span>
+                  <span className="text-small text-ink-muted">
+                    {f.amount}{" "}
+                    {f.reason === "xp"
+                      ? "XP"
+                      : f.reason === "tests"
+                        ? "tests"
+                        : "minutes"}{" "}
+                    on {f.day.toISOString().slice(0, 10)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       {users.length === 0 ? (
         <p className="text-body text-ink-muted">No users match that.</p>
       ) : (

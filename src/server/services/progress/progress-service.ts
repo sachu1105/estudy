@@ -1,6 +1,12 @@
 import { toLocalDate, today as todayIn, type Clock } from "@/lib/clock";
 import { addDays, toDay, type PlanInput } from "@/lib/plan-engine";
-import { computeStreak, STREAK_MINUTES } from "@/lib/progress/streak";
+import { levelOf } from "@/lib/progress/level";
+import {
+  bestStreak,
+  computeStreak,
+  STREAK_MINUTES,
+} from "@/lib/progress/streak";
+import { topicKey } from "@/lib/questions/questions";
 import { streakXp, TASK_XP } from "@/lib/progress/xp";
 import { fromDbDate } from "@/server/repositories/plan-repository";
 import type { PlanRepository } from "@/server/repositories/plan-repository";
@@ -192,6 +198,73 @@ export function createProgressService(deps: ProgressDeps) {
         subjectName:
           (task.subjectId && names.subjects.get(task.subjectId)) || null,
         topicName: (task.topicId && names.topics.get(task.topicId)) || null,
+      };
+    },
+
+    /** The Progress page: everything derived from the logs (milestone 12). */
+    async progressView(user: User) {
+      const today = todayFor(user);
+      const from30 = addDays(today, -29);
+      const plans = await deps.plans.listActiveWithInputs(user.id);
+      const subjects = plans.flatMap((p) => (p.inputs as PlanInput).subjects);
+      const allTopics = [
+        ...new Set(subjects.flatMap((s) => s.topics.map((t) => t.id))),
+      ];
+      const nameByKey = new Map(
+        subjects.flatMap((s) =>
+          s.topics.map(
+            (t) =>
+              [
+                topicKey(t.name),
+                { topic: t.name, subject: s.name, id: t.id },
+              ] as const,
+          ),
+        ),
+      );
+      const [streak, activeDays, xp, minutes, attempts, weak, totals, done] =
+        await Promise.all([
+          streakOf(user, today),
+          deps.progress.activeDays(
+            user.id,
+            addDays(today, -STREAK_WINDOW),
+            STREAK_MINUTES,
+          ),
+          deps.progress.xpTotal(user.id),
+          deps.progress.minutesByDay(user.id, from30),
+          deps.progress.recentAttempts(user.id, 12),
+          deps.progress.topicAccuracy(user.id, 3),
+          deps.progress.subjectTotals(user.id),
+          deps.completions.doneAmong(user.id, allTopics),
+        ]);
+      return {
+        today,
+        streak: {
+          current: streak.current,
+          best: Math.max(streak.current, bestStreak(activeDays)),
+        },
+        xp: { total: xp, ...levelOf(xp) },
+        minutes: Array.from({ length: 30 }, (_, i) => {
+          const day = addDays(from30, i);
+          return { day, minutes: minutes.get(day) ?? 0 };
+        }),
+        coverage: { done: done.size, total: allTopics.length },
+        attempts,
+        weakest: weak.slice(0, 5).map((w) => ({
+          ...w,
+          ...(nameByKey.get(w.topicKey) ?? {
+            topic: w.topicKey,
+            subject: null,
+            id: null,
+          }),
+        })),
+        subjects: subjects.map((s) => ({
+          id: s.id,
+          name: s.name,
+          topics: s.topics.length,
+          done: s.topics.filter((t) => done.has(t.id)).length,
+          minutes: totals.minutes.get(s.id) ?? 0,
+          accuracy: totals.accuracy.get(s.id) ?? null,
+        })),
       };
     },
 

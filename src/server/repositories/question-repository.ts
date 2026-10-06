@@ -231,7 +231,9 @@ export const questionRepository = {
         title: true,
         subjects: {
           orderBy: { order: "asc" },
-          select: { topics: { select: { id: true, name: true, weight: true } } },
+          select: {
+            topics: { select: { id: true, name: true, weight: true } },
+          },
         },
       },
     });

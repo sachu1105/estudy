@@ -8,12 +8,17 @@ import {
   type PodJob,
 } from "@/server/queue";
 import { planService } from "@/server/services/plans";
+import { rankService } from "@/server/services/rank";
 import { flagOn } from "@/server/settings";
 import { fileService, itemService } from "@/server/services/pods";
 
 /** Pod material in the background: link previews, file text, the daily trash purge. */
 export async function startPodWorker() {
   await schedulePodMaintenance();
+  // Boards are a cache: start from the truth, then keep up with each new XP entry.
+  void rankService
+    .rebuild()
+    .catch((e) => console.warn(`[worker] rank rebuild failed: ${String(e)}`));
   const worker = new Worker<PodJob>(
     POD_QUEUE,
     async (job) => {
@@ -27,6 +32,11 @@ export async function startPodWorker() {
           const purged = await itemService.purgeTrash();
           if (purged)
             console.log(`[worker] purged ${purged} trashed pod items`);
+          return;
+        }
+        case "rebuild-ranks": {
+          const users = await rankService.rebuild();
+          console.log(`[worker] ranks rebuilt for ${users} users`);
           return;
         }
         case "replan-week": {

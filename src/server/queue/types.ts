@@ -26,6 +26,8 @@ export const podJobSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("purge-trash") }),
   // Sunday: every active study plan is re-made from that day (milestone 7).
   z.object({ kind: z.literal("replan-week") }),
+  // Nightly: leaderboards rebuilt from the XP log, the source of truth (milestone 12).
+  z.object({ kind: z.literal("rebuild-ranks") }),
 ]);
 export type PodJob = z.infer<typeof podJobSchema>;
 

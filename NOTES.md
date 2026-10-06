@@ -723,3 +723,33 @@ generation and "mock tests from my material" (paidOnly; a calm card says so).
   - "Practice 5 questions" on topic pages.
 - e2e `tests.spec.ts` seeds questions (`seedQuestions`) and its own users.
 
+## Milestone 12 — progress and the global rank (2026-10-10)
+
+- Progress page (bento), all derived from the logs:
+  - Streak and best streak (`bestStreak`, same freeze rules).
+  - Level from XP (`levelOf`: 100, 150, 200... per level).
+  - Minutes per day for 30 days: single-colour bars, no gridlines, plus a screen-reader
+    table. Each day is the larger of timed sessions and ticked tasks, so nothing counts
+    twice.
+  - Coverage; the test-accuracy trend with the 60% line.
+  - Weakest five topics (at least 3 answers each), with Practice.
+  - Subject breakdown.
+- Ranks: Redis sorted sets, keyed `rank:global|exam:<id>` plus `:all`, `:w:<monday>` or
+  `:m:<yyyy-mm>` (`lib/progress/rank-keys`).
+  - `progressRepository.addXp` counts every XP entry on the global boards and the user's
+    exam boards. Exams come from active plans whose syllabus has a catalogue exam.
+  - Redis failures are swallowed: the boards are a cache. The worker rebuilds them from
+    XpLedger at start and nightly at 02:30 IST (`rebuild-ranks`).
+  - Tests prefix keys with `test:`, so they never touch the dev boards.
+- Rank page: week, month and all time; filters by exam and by district
+  (`User.district`, set in Settings).
+  - The district filter works over the top 2000 for now.
+  - Top 100, with the viewer's own place pinned below when outside it.
+  - "Anonymous aspirant" for hidden users, except to themselves. Display names only.
+- Anti-abuse: in the last 14 days, a day over 900 XP, 40 tests or 900 study minutes
+  flags the account.
+  - It shows on the admin Users page ("Needs a look") and as a dashboard tile.
+  - Admins then reset the streak or suspend.
+- Settings: a privacy card (hide from rank, district), through a `profileService`
+  (layering).
+

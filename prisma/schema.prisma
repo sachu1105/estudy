@@ -54,6 +54,8 @@ model User {
   timezone           String     @default("Asia/Kolkata")
   beginnerMode       Boolean    @default(false)
   hideFromGlobalRank Boolean    @default(false)
+  /// Optional, for the rank's district filter (milestone 12).
+  district           String?
   /// An admin reset the streak (abuse): streaks only count days after this.
   streakResetAt      DateTime?  @db.Timestamptz(6)
   status             UserStatus @default(ACTIVE)

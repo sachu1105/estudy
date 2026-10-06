@@ -5,6 +5,7 @@ import {
   CalendarCheck,
   Clock,
   Inbox,
+  ShieldAlert,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { formatUsd } from "@/lib/admin/format";
 import { formatMinutes } from "@/lib/plans/format";
 import { adminQueues } from "@/server/queue";
 import { adminService, requireAdmin } from "@/server/services/admin";
+import { rankService } from "@/server/services/rank";
 
 export const metadata: Metadata = { title: "Admin" };
 
@@ -48,7 +50,10 @@ export default async function AdminDashboard() {
       </>
     );
 
-  const queues = await adminQueues.overview().catch(() => []);
+  const [queues, flagged] = await Promise.all([
+    adminQueues.overview().catch(() => []),
+    rankService.flagged(),
+  ]);
   const waiting = queues.reduce(
     (n, q) => n + (q.counts.waiting ?? 0) + (q.counts.active ?? 0),
     0,
@@ -88,6 +93,19 @@ export default async function AdminDashboard() {
           value={stats.activePlans}
         />
         {reviews}
+        <Link
+          href="/admin/users"
+          className="block rounded-card focus-visible:outline-2 focus-visible:outline-accent"
+        >
+          <StatTile
+            label="Flagged accounts"
+            icon={ShieldAlert}
+            numeral="mono"
+            value={new Set(flagged.map((f) => f.userId)).size}
+            hint="XP faster than a person could, in 14 days"
+            className="h-full hover:shadow-md"
+          />
+        </Link>
         <StatTile
           label="AI cost today"
           icon={Bot}

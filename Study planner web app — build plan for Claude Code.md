@@ -813,7 +813,7 @@ groups and ranks are built.
 
 ## Part B — Milestones 12–17: ranks, groups, admin and launch
 
-### Milestone 12 — progress and the global rank
+### Milestone 12 — progress and the global rank (done)
 
 ```
 Read CLAUDE.md. Milestones 1-11 are committed.
