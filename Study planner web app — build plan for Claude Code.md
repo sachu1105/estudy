@@ -736,7 +736,7 @@ Read CLAUDE.md. Milestones 1-6 are committed.
 9. Empty, loading (skeletons) and error states everywhere.
 ```
 
-### Milestone 8 — mock tests: pool, check tests and tests from my material
+### Milestone 8 — mock tests: pool, check tests and tests from my material (done without the AI parts)
 
 ```
 Read CLAUDE.md. Milestones 1-7 are committed.

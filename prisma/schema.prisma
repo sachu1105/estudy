@@ -80,6 +80,10 @@ model User {
   activeSession      ActiveSession?
   xpLedger           XpLedger[]
   planOverrides      PlanOverride[]
+  questionsCreated   Question[]          @relation("QuestionAuthor")
+  questionReports    QuestionReport[]
+  mockTests          MockTest[]
+  testAttempts       TestAttempt[]
 }
 
 model RefreshToken {
@@ -309,7 +313,8 @@ model Topic {
   order        Int
   createdAt    DateTime @default(now()) @db.Timestamptz(6)
 
-  items PodItemTopic[]
+  items     PodItemTopic[]
+  questions Question[]
 
   @@index([subjectId, order])
 }
@@ -626,6 +631,7 @@ enum XpKind {
   STUDY
   TASK
   STREAK
+  TEST
 }
 
 enum OverrideKind {
@@ -651,6 +657,8 @@ model TaskCompletion {
   /// The user's calendar day when it happened.
   localDate DateTime     @db.Date
   done      Boolean
+  /// CHECK_TEST and mocks: fraction correct (0-1), for the re-plan.
+  accuracy  Float?
   createdAt DateTime     @default(now()) @db.Timestamptz(6)
 
   @@index([userId, taskId, createdAt])
@@ -729,4 +737,158 @@ model AppSetting {
   value       Json
   updatedById String?  @db.Uuid
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+}
+
+// ---------------------------------------------------------------------------------------
+// Mock tests (milestone 8). Practice questions, not official ones. Every question passes a
+// human gate before anyone else sees it (rule 5).
+
+enum QuestionStatus {
+  PENDING
+  VERIFIED
+  SUPPRESSED
+}
+
+enum QuestionSource {
+  AI
+  PYQ
+  ADMIN
+  USER
+  MATERIAL
+}
+
+enum QuestionLanguage {
+  EN
+  ML
+}
+
+enum ReportReason {
+  WRONG_ANSWER
+  UNCLEAR
+  TYPO
+  OTHER
+}
+
+enum MockTestType {
+  CHECK
+  SECTION
+  FULL
+  CUSTOM
+  MATERIAL
+}
+
+model Question {
+  id           String           @id @default(uuid()) @db.Uuid
+  /// The catalogue topic it was written for, if any.
+  topicId      String?          @db.Uuid
+  topic        Topic?           @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  /// Normalised topic name: the same topic in another syllabus finds these questions too.
+  topicKey     String
+  difficulty   Int
+  language     QuestionLanguage @default(EN)
+  body         String
+  /// Exactly four options.
+  options      String[]
+  correctIndex Int
+  explanation  String?
+  status       QuestionStatus   @default(PENDING)
+  source       QuestionSource
+  /// Where it came from: a paper and year, a note, a book.
+  sourceRef    String?
+  reportCount  Int              @default(0)
+  createdById  String?          @db.Uuid
+  createdBy    User?            @relation("QuestionAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  verifiedById String?          @db.Uuid
+  verifiedAt   DateTime?        @db.Timestamptz(6)
+  createdAt    DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime         @updatedAt @db.Timestamptz(6)
+
+  reports QuestionReport[]
+
+  @@index([topicKey, status])
+  @@index([topicId, status])
+  @@index([status, reportCount])
+}
+
+model QuestionReport {
+  id         String       @id @default(uuid()) @db.Uuid
+  questionId String       @db.Uuid
+  question   Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userId     String       @db.Uuid
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason     ReportReason
+  note       String?
+  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
+  resolvedAt DateTime?    @db.Timestamptz(6)
+
+  @@unique([questionId, userId])
+}
+
+/// A test made for one user: the questions picked, in order. Picked once, never reshuffled.
+model MockTest {
+  id                String       @id @default(uuid()) @db.Uuid
+  userId            String       @db.Uuid
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              MockTestType
+  title             String
+  syllabusVersionId String?      @db.Uuid
+  subjectId         String?      @db.Uuid
+  topicId           String?      @db.Uuid
+  /// The plan task it belongs to (a check test, section mock or full mock).
+  planTaskId        String?      @db.Uuid
+  questionIds       String[]     @db.Uuid
+  /// null: untimed.
+  durationSec       Int?
+  /// PSC style: a third of a mark off for each wrong answer.
+  negativeMarking   Boolean      @default(false)
+  /// Set when the user first opens it; the timer counts from here.
+  startedAt         DateTime?    @db.Timestamptz(6)
+  createdAt         DateTime     @default(now()) @db.Timestamptz(6)
+
+  attempts TestAttempt[]
+
+  @@index([userId, createdAt])
+  @@index([userId, planTaskId])
+}
+
+/// A submitted test, scored on the server. Append-only (rule 6).
+model TestAttempt {
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  mockTestId  String       @db.Uuid
+  mockTest    MockTest     @relation(fields: [mockTestId], references: [id], onDelete: Restrict)
+  type        MockTestType
+  subjectId   String?      @db.Uuid
+  topicId     String?      @db.Uuid
+  total       Int
+  correct     Int
+  wrong       Int
+  skipped     Int
+  /// Marks after any negative marking.
+  score       Float
+  /// correct / total, 0-1.
+  accuracy    Float
+  durationSec Int
+  localDate   DateTime     @db.Date
+  createdAt   DateTime     @default(now()) @db.Timestamptz(6)
+
+  answers AttemptAnswer[]
+
+  @@index([userId, createdAt])
+  @@index([userId, topicId])
+}
+
+model AttemptAnswer {
+  id          String      @id @default(uuid()) @db.Uuid
+  attemptId   String      @db.Uuid
+  attempt     TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Restrict)
+  questionId  String      @db.Uuid
+  topicKey    String
+  position    Int
+  chosenIndex Int?
+  correct     Boolean
+  flagged     Boolean     @default(false)
+
+  @@index([attemptId, position])
 }

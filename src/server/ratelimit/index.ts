@@ -26,6 +26,8 @@ export const rules = {
   // Plan setup autosaves, and runs of the plan engine (CPU, not AI, but not free).
   planDraftPerUser: { limit: 240, windowMs: 5 * MINUTE },
   planGeneratePerUser: { limit: 30, windowMs: 10 * MINUTE },
+  // Starting and submitting tests, and reporting questions (rule 13).
+  testPerUser: { limit: 60, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

@@ -29,6 +29,7 @@ const PROTECTED = [
   "/settings",
   "/onboarding",
   "/study",
+  "/test",
   "/admin",
 ];
 const SIGNED_OUT_ONLY = ["/login", "/register"];

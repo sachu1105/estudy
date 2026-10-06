@@ -20,6 +20,7 @@ import { progressService } from "@/server/services/progress";
 export const metadata: Metadata = { title: "Today" };
 
 const TIMED = new Set(["STUDY", "REVISION", "CUSTOM"]);
+const TESTS = new Set(["CHECK_TEST", "SECTION_MOCK", "FULL_MOCK"]);
 
 export default async function TodayPage() {
   const user = await requireUser();
@@ -58,6 +59,7 @@ export default async function TodayPage() {
     done: t.done,
     topicId: t.topicId,
     timed: TIMED.has(t.type),
+    test: TESTS.has(t.type),
   }));
   const next = tasks.find((t) => t.timed && !t.done);
   const coverage = view.coverage.total

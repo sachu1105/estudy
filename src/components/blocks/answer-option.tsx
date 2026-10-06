@@ -12,7 +12,10 @@ type AnswerOptionProps = {
   text: string;
   state: AnswerState;
   disabled?: boolean;
-  onSelect: () => void;
+  /** While answering: says whether this option is the chosen one. */
+  pressed?: boolean;
+  /** Left out when showing results: the options are then read-only. */
+  onSelect?: () => void;
 };
 
 const styles: Record<AnswerState, string> = {
@@ -29,6 +32,7 @@ export function AnswerOption({
   text,
   state,
   disabled,
+  pressed,
   onSelect,
 }: AnswerOptionProps) {
   const reduceMotion = useReducedMotionConfig();
@@ -38,6 +42,7 @@ export function AnswerOption({
     <motion.button
       type="button"
       disabled={disabled}
+      aria-pressed={pressed}
       onClick={onSelect}
       animate={
         state === "selected" && !reduceMotion

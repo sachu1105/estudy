@@ -64,6 +64,8 @@ export function createProgressService(deps: ProgressDeps) {
       user: User,
       taskId: string,
       done: boolean,
+      /** A test's score (0-1): logged for the re-plan, and it re-ticks a done task. */
+      accuracy: number | null = null,
     ): Promise<Result<{ streak: number }>> {
       const task = await deps.progress.findTask(taskId, user.id);
       if (!task) return failure("NOT_FOUND", "That task isn't in your plan.");
@@ -74,7 +76,9 @@ export function createProgressService(deps: ProgressDeps) {
         );
       const today = todayFor(user);
       const states = await deps.progress.taskStates(user.id, [taskId]);
-      if ((states.get(taskId) ?? false) === done) {
+      const changed = (states.get(taskId) ?? false) !== done;
+      // Same state again: nothing to log, unless a test brings a new score.
+      if (!changed && accuracy === null) {
         return { ok: true, streak: (await streakOf(user, today)).current };
       }
       const before = await streakOf(user, today);
@@ -90,14 +94,16 @@ export function createProgressService(deps: ProgressDeps) {
         minutes: task.minutes,
         localDate: today,
         done,
+        accuracy,
       });
-      await deps.progress.addXp({
-        userId: user.id,
-        kind: "TASK",
-        amount: done ? TASK_XP : -TASK_XP,
-        refId: task.id,
-        localDate: today,
-      });
+      if (changed)
+        await deps.progress.addXp({
+          userId: user.id,
+          kind: "TASK",
+          amount: done ? TASK_XP : -TASK_XP,
+          refId: task.id,
+          localDate: today,
+        });
 
       const after = await streakOf(user, today);
       if (done && !before.todayDone && after.todayDone) {

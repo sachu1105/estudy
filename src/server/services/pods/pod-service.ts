@@ -71,6 +71,7 @@ export function createPodService(deps: PodDeps) {
           id: p.id,
           name: p.name,
           kind: p.kind,
+          subjectId: p.subjectId,
           stage: p.stage,
           stageOrder: p.stageOrder,
           order: p.order,

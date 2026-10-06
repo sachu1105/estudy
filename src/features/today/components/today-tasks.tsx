@@ -1,11 +1,14 @@
 "use client";
 
-import { FolderOpen, Play } from "lucide-react";
+import { ClipboardCheck, FolderOpen, Play } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 
 import { TaskList } from "@/components/blocks/task-list";
 import { toast } from "@/components/ui/toast";
+
+import { startTaskTestAction } from "@/features/tests/actions";
 
 import { setTaskDoneAction } from "../actions";
 
@@ -16,8 +19,10 @@ export type TodayTask = {
   minutes: number;
   done: boolean;
   topicId: string | null;
-  /** Study and revision run as a timed session; tests come with milestone 8. */
+  /** Study and revision run as a timed session. */
   timed: boolean;
+  /** Check tests and mocks open the test player. */
+  test: boolean;
 };
 
 const icon =
@@ -25,7 +30,15 @@ const icon =
 
 /** Today's tasks. A tick shows at once and rolls back if saving fails. */
 export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
+  const router = useRouter();
   const [, start] = useTransition();
+  const [opening, startOpening] = useTransition();
+  const openTest = (id: string) =>
+    startOpening(async () => {
+      const result = await startTaskTestAction({ id });
+      if (!result.ok) return void toast.error(result.error);
+      router.push(`/test/${result.testId}`);
+    });
   const [shown, setShown] = useOptimistic(
     tasks,
     (state, change: { id: string; done: boolean }) =>
@@ -46,6 +59,17 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
         ...t,
         actions: (
           <span className="flex">
+            {t.test && !t.done ? (
+              <button
+                type="button"
+                className={icon}
+                disabled={opening}
+                aria-label={`Start ${t.title}`}
+                onClick={() => openTest(t.id)}
+              >
+                <ClipboardCheck className="size-4" aria-hidden />
+              </button>
+            ) : null}
             {t.timed && !t.done ? (
               <Link
                 href={`/study/${t.id}`}

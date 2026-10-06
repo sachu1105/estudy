@@ -222,10 +222,15 @@ export function createPlanService(deps: PlanDeps) {
       .flatMap((r) =>
         r.success && !doneKeys.has(r.data.taskId) ? [r.data] : [],
       );
-    const withPins = {
-      ...input,
-      overrides: [...(input.overrides ?? []), ...pins],
-    };
+    // A topic finished by studying it in the plan is ticked in its pod too, but it still
+    // needs its spaced revisions. Only a topic ticked without studying counts as known.
+    const studied = new Set(
+      done.flatMap((d) => (d.type === "STUDY" && d.topicId ? [d.topicId] : [])),
+    );
+    const known = (input.overrides ?? []).filter(
+      (o) => o.kind !== "TOPIC_DONE" || !studied.has(o.topicId),
+    );
+    const withPins = { ...input, overrides: [...known, ...pins] };
     if (!existing)
       return { plan: generatePlan(withPins), adjustments: [], diff: null };
 
@@ -235,7 +240,7 @@ export function createPlanService(deps: PlanDeps) {
       subjectId: d.subjectId,
       topicId: d.topicId,
       minutes: d.minutes,
-      accuracy: null,
+      accuracy: d.accuracy,
     }));
     return replan({
       ...withPins,

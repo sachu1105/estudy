@@ -158,3 +158,30 @@ export async function seedVerifiedUser(
     );
   });
 }
+
+/**
+ * Verified practice questions for these topic names (the right answer is always the
+ * first option), so check tests and mocks have a pool.
+ */
+export async function seedQuestions(topics: string[], perTopic = 5) {
+  await withDb(async (db) => {
+    for (const topic of topics) {
+      const key = topic
+        .toLowerCase()
+        .replace(/[^\p{L}\p{M}\p{N}]+/gu, " ")
+        .trim();
+      for (let i = 1; i <= perTopic; i++)
+        await db.query(
+          `INSERT INTO "Question" (id, "topicKey", difficulty, language, body, options, "correctIndex", explanation, status, source, "sourceRef", "updatedAt")
+           VALUES ($1, $2, 2, 'EN', $3, $4, 0, $5, 'VERIFIED', 'ADMIN', 'e2e', now())`,
+          [
+            randomUUID(),
+            key,
+            `${topic}: practice question ${i} (${randomUUID().slice(0, 6)})?`,
+            [`Right answer ${i}`, `Wrong ${i}a`, `Wrong ${i}b`, `Wrong ${i}c`],
+            `Explained: answer ${i} is right.`,
+          ],
+        );
+    }
+  });
+}

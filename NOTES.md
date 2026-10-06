@@ -671,3 +671,55 @@ Milestones 8 (mock tests) and 12 (rank) weren't mentioned; ask before starting t
 - The syllabus paste e2e test now accepts both outcomes (still reading, or already read
   by a fast worker). That was the old flake.
 
+## Milestone 8 — mock tests, without the AI parts (2026-10-09)
+
+The user confirmed: 8 without AI, then 12, then 13, 14 and 16. Left for later: AI pool
+generation and "mock tests from my material" (paidOnly; a calm card says so).
+
+- Data (`20261009090000_mock_tests`, `20261009091000_xp_test`):
+  - Question, QuestionReport, MockTest, and the append-only TestAttempt and
+    AttemptAnswer (with triggers).
+  - A CHECK constraint: four options, and an answer that is one of them.
+  - `TaskCompletion.accuracy`, and an XpKind `TEST`.
+- One pool across syllabuses: `topicKey` (`lib/questions`) normalises topic names,
+  Malayalam included, so your own syllabus's "Preamble" uses the catalogue's Preamble
+  questions.
+- Tests (`services/tests`):
+  - Check: 5 questions, untimed.
+  - Section: 25 questions, 45 s each, negative marking.
+  - Full: 100 questions, 75 min, negative marking.
+  - Mocks are spread by topic weight (`spreadQuestions`), least seen first.
+  - A plan task's test is resumed if one is already open.
+  - Limits: `afterTaskMocksPerDay` and `sectionMocksPerWeek` are rolling 24 h and 7 days.
+  - A thin pool gives an honest message.
+- The player (/test/[id], focus view):
+  - One question per screen; keys 1-4, arrows and F; a flag; a palette sheet.
+  - A server-anchored timer that auto-submits.
+  - Answers kept in localStorage through `useSyncExternalStore` (no hydration
+    mismatch).
+  - The player never receives answers.
+- Scoring happens only on the server, once per test.
+  - Every right answer gives 2 XP.
+  - A plan task's test ticks the task with its accuracy. `setTaskDone` only moves task
+    XP on a state change.
+  - Results (/tests/[id]) show a check or cross on every option, the explanation and
+    the source, plus a report button.
+- Reports: the third suppresses a question in the same transaction. Admin then
+  verifies, edits or deletes it, and that resolves the reports.
+- Re-plan: CompletedWork carries accuracy.
+  - Fix: a topic finished by studying it in the plan is ticked in its pod, and that
+    tick used to become TOPIC_DONE, which wiped its revisions.
+  - Now TOPIC_DONE only applies to topics with no STUDY history.
+  - Tested: 20% gets more revision minutes than 90%.
+- Admin /admin/questions (moderators too):
+  - To-check, verified and reported tabs, with a topic filter.
+  - Add and edit (an admin's question is verified as it's saved).
+  - CSV/JSON import, pending unless ticked as checked. "Verify all" on a page.
+  - Topics that need questions (fewer than 5).
+- Entry points:
+  - A start button on Today's test tasks.
+  - The Tests page: full mock per exam, section mock per subject, recent results.
+  - The pod's Tests tab.
+  - "Practice 5 questions" on topic pages.
+- e2e `tests.spec.ts` seeds questions (`seedQuestions`) and its own users.
+

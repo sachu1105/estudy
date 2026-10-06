@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { MaterialPanel } from "@/features/pods/components/material-panel";
 import { TopicDoneToggle } from "@/features/pods/components/topic-done-toggle";
 import { TopicPlan } from "@/features/plans/components/topic-plan";
+import { StartTestButton } from "@/features/tests/components/start-test-button";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { itemService, podService } from "@/server/services/pods";
@@ -43,6 +44,11 @@ export default async function TopicPage({
         <Badge tone="outline">Weight {topic.weight}</Badge>
         <Badge tone="outline">Difficulty {topic.difficulty}</Badge>
         {topic.foundational ? <Badge tone="accent">Foundation</Badge> : null}
+        <StartTestButton
+          kind="topic"
+          id={topic.id}
+          label="Practice 5 questions"
+        />
       </div>
       <TopicPlan tasks={planned} topic={topic.name} subject={pod.name} />
       <MaterialPanel podId={pod.id} items={items} topicIds={[topic.id]} />

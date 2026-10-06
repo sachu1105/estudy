@@ -7,12 +7,21 @@ import { systemClock } from "@/lib/clock";
 import { requestMeta, requireRole } from "@/server/auth/session";
 import { adminRepository } from "@/server/repositories/admin-repository";
 import { auditLogRepository } from "@/server/repositories/audit-log-repository";
+import { questionRepository } from "@/server/repositories/question-repository";
 import { refreshTokenRepository } from "@/server/repositories/refresh-token-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 
 import { createAdminService } from "./admin-service";
+import { createQuestionAdmin } from "./question-admin";
 
 export type { Admin } from "./admin-service";
+export { THIN_BELOW } from "./question-admin";
+
+export const questionAdmin = createQuestionAdmin({
+  questions: questionRepository,
+  audit: auditLogRepository,
+  clock: systemClock,
+});
 
 export const adminService = createAdminService({
   admin: adminRepository,

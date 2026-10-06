@@ -11,7 +11,12 @@ import {
   featureFlagsSchema,
   maintenanceSchema,
 } from "@/lib/settings/schemas";
-import { adminService, requireAdmin } from "@/server/services/admin";
+import { questionInputSchema } from "@/lib/questions/questions";
+import {
+  adminService,
+  questionAdmin,
+  requireAdmin,
+} from "@/server/services/admin";
 import { saveSetting } from "@/server/settings";
 
 // Every action: the staff role and area first (rule 9), zod on input (rule 11), and an
@@ -220,5 +225,59 @@ export async function jobAction(input: unknown): Promise<AdminResult> {
   if (!ok) return { ok: false, error: "That job is gone already." };
   await adminService.logJob(by, action, queue, jobId);
   revalidatePath("/admin/jobs");
+  return { ok: true };
+}
+
+// ---- Question pool (milestone 8) -------------------------------------------------
+
+export async function saveQuestionAction(input: unknown): Promise<AdminResult> {
+  const by = await requireAdmin("questions");
+  const parsed = z
+    .object({ id: z.uuid().nullable(), question: questionInputSchema })
+    .safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  const { id, question } = parsed.data;
+  const result = id
+    ? await questionAdmin.edit(by, id, question)
+    : await questionAdmin.add(by, question);
+  return done(result, "/admin/questions");
+}
+
+export async function importQuestionsAction(
+  input: unknown,
+): Promise<
+  AdminResult<{ added: number; errors: { line: number; message: string }[] }>
+> {
+  const by = await requireAdmin("questions");
+  const parsed = z
+    .object({ raw: z.string().min(1).max(500_000), verified: z.boolean() })
+    .safeParse(input);
+  if (!parsed.success) return invalid;
+  const result = await questionAdmin.import(
+    by,
+    parsed.data.raw,
+    parsed.data.verified,
+  );
+  revalidatePath("/admin/questions");
+  return { ok: true, ...result };
+}
+
+export async function decideQuestionsAction(
+  input: unknown,
+): Promise<AdminResult> {
+  const by = await requireAdmin("questions");
+  const parsed = z
+    .object({
+      ids: z.array(z.uuid()).min(1).max(100),
+      decision: z.enum(["VERIFIED", "SUPPRESSED", "DELETE"]),
+    })
+    .safeParse(input);
+  if (!parsed.success) return invalid;
+  await questionAdmin.decide(by, parsed.data.ids, parsed.data.decision);
+  revalidatePath("/admin/questions");
   return { ok: true };
 }

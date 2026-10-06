@@ -16,6 +16,8 @@ export type TaskLogRow = {
   minutes: number;
   localDate: string;
   done: boolean;
+  /** Tests: fraction correct, for the re-plan. */
+  accuracy?: number | null;
 };
 
 /** The progress logs (rule 6): only ever appended to, read back as derived state. */
@@ -162,11 +164,12 @@ export const progressRepository = {
         topicId: string | null;
         minutes: number;
         localDate: Date;
+        accuracy: number | null;
       }[]
     >`
-      SELECT "taskKey", type, "subjectId", "topicId", minutes, "localDate" FROM (
+      SELECT "taskKey", type, "subjectId", "topicId", minutes, "localDate", accuracy FROM (
         SELECT DISTINCT ON ("taskId") "taskKey", type, "subjectId", "topicId",
-               minutes, "localDate", done
+               minutes, "localDate", done, accuracy
         FROM "TaskCompletion"
         WHERE "userId" = ${userId}::uuid AND "planId" = ANY(${planIds}::uuid[])
         ORDER BY "taskId", "createdAt" DESC, id DESC
