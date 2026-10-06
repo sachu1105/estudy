@@ -67,6 +67,10 @@ model User {
   approvedSyllabuses SyllabusVersion[] @relation("SyllabusApprover")
   parseJobs          ParseJob[]
   aiUsage            AiUsage[]
+  pods               Pod[]
+  podItems           PodItem[]
+  podFiles           PodFile[]
+  topicCompletions   TopicCompletion[]
 }
 
 model RefreshToken {
@@ -255,6 +259,7 @@ model SyllabusVersion {
 
   subjects  Subject[]
   parseJobs ParseJob[]
+  pods      Pod[]
 
   @@index([ownerId, deletedAt])
   @@index([visibility, status])
@@ -270,6 +275,7 @@ model Subject {
   createdAt         DateTime        @default(now()) @db.Timestamptz(6)
 
   topics Topic[]
+  pods   Pod[]
 
   @@index([syllabusVersionId, order])
 }
@@ -287,6 +293,8 @@ model Topic {
   foundational Boolean  @default(false)
   order        Int
   createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  items PodItemTopic[]
 
   @@index([subjectId, order])
 }
@@ -337,4 +345,124 @@ model AiUsage {
 
   @@index([userId, createdAt])
   @@index([purpose, createdAt])
+}
+
+// --- Milestone 5: subject pods --------------------------------------------------
+
+enum PodKind {
+  SUBJECT
+  CUSTOM
+}
+
+enum PodItemType {
+  NOTE
+  LINK
+  FILE
+  IMAGE
+}
+
+/// For links: fetching title and description. For files: reading the text layer.
+enum ItemStatus {
+  NONE
+  PENDING
+  DONE
+  FAILED
+}
+
+/// A subject's home: its topics, the user's material mapped to them, tests and progress.
+/// One per user per syllabus subject, plus CUSTOM pods the user makes.
+model Pod {
+  id                String           @id @default(uuid()) @db.Uuid
+  ownerId           String           @db.Uuid
+  owner             User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  kind              PodKind
+  name              String
+  syllabusVersionId String?          @db.Uuid
+  syllabusVersion   SyllabusVersion? @relation(fields: [syllabusVersionId], references: [id], onDelete: SetNull)
+  /// Removing the subject from the syllabus keeps the pod and its material; it turns custom.
+  subjectId         String?          @db.Uuid
+  subject           Subject?         @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  order             Int              @default(0)
+  createdAt         DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt         DateTime?        @db.Timestamptz(6)
+
+  items PodItem[]
+
+  @@unique([ownerId, subjectId])
+  @@index([ownerId, deletedAt])
+}
+
+model PodItem {
+  id              String         @id @default(uuid()) @db.Uuid
+  podId           String         @db.Uuid
+  pod             Pod            @relation(fields: [podId], references: [id], onDelete: Cascade)
+  ownerId         String         @db.Uuid
+  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  type            PodItemType
+  title           String
+  /// NOTE: the editor document, and its plain text for search.
+  noteJson        Json?
+  noteText        String?
+  /// LINK
+  url             String?
+  linkDescription String?
+  faviconUrl      String?
+  /// FILE and IMAGE: total of the files; the text layer once read.
+  sizeBytes       Int            @default(0)
+  pageCount       Int?
+  extractedText   String?
+  status          ItemStatus     @default(NONE)
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  /// In the trash: restorable for 30 days, then purged with its files.
+  deletedAt       DateTime?      @db.Timestamptz(6)
+
+  files  PodFile[]
+  topics PodItemTopic[]
+
+  @@index([podId, deletedAt, createdAt])
+  @@index([ownerId, deletedAt])
+}
+
+/// A stored file: the PDF of a FILE item, each page photo of an IMAGE item, or an image
+/// placed inside a NOTE. Served only through /api/pods/files/[id] (ownership + signed URL).
+model PodFile {
+  id         String   @id @default(uuid()) @db.Uuid
+  itemId     String   @db.Uuid
+  item       PodItem  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  ownerId    String   @db.Uuid
+  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  order      Int      @default(0)
+  storageKey String   @unique
+  mimeType   String
+  sizeBytes  Int
+  sha256     String
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([itemId, order])
+}
+
+/// Which topics an item covers. One item can cover several topics.
+model PodItemTopic {
+  itemId  String  @db.Uuid
+  item    PodItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  topicId String  @db.Uuid
+  topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, topicId])
+  @@index([topicId])
+}
+
+/// Append-only (rule 6): each tick or untick of a topic. The latest row is the state.
+/// topicId has no foreign key, so history outlives a topic removed from the syllabus.
+model TopicCompletion {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  topicId   String   @db.Uuid
+  done      Boolean
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, topicId, createdAt])
 }

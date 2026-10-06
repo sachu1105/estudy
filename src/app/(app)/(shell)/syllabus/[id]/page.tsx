@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
+import { BackLink } from "@/features/pods/components/back-link";
 import { ParseStatus } from "@/features/syllabus/components/parse-status";
 import { RereadNote } from "@/features/syllabus/components/reread-note";
 import { SubjectsBoard } from "@/features/syllabus/components/subjects-board";
@@ -35,6 +36,7 @@ export default async function SyllabusVersionPage({
   if ((state === "reading" || state === "failed") && job) {
     return (
       <div className="mx-auto max-w-xl">
+        <BackLink href="/pods" label="Pods" />
         <PageHeader title={version.title} description={subtitle} />
         <ParseStatus
           versionId={version.id}
@@ -55,17 +57,20 @@ export default async function SyllabusVersionPage({
   const confirmed = state === "confirmed";
   return (
     <>
+      {confirmed ? (
+        <BackLink href={`/pods/exam/${version.id}`} label={version.title} />
+      ) : (
+        <BackLink href="/pods" label="Pods" />
+      )}
       <PageHeader
-        title={version.title}
+        title={confirmed ? "Edit syllabus" : version.title}
         description={subtitle}
         actions={
           <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <DeleteSyllabusButton versionId={version.id} />
             {confirmed ? (
               <Button asChild variant="primary">
-                <Link href={`/onboarding?syllabus=${version.id}`}>
-                  Create study plan
-                </Link>
+                <Link href={`/pods/exam/${version.id}`}>Open exam pod</Link>
               </Button>
             ) : null}
           </div>

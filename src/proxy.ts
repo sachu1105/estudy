@@ -21,6 +21,7 @@ const PROTECTED = [
   "/plan",
   "/calendar",
   "/syllabus",
+  "/pods",
   "/tests",
   "/groups",
   "/rank",
@@ -84,6 +85,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Pages only: skip API routes, Next internals and static files.
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)"],
+  // Pages, plus pod files: a note's images are plain <img> requests that can't refresh an
+  // expired access token themselves. Other API routes, Next internals and static files
+  // are skipped.
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)",
+    "/api/pods/files/:path*",
+  ],
 };

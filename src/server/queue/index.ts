@@ -5,7 +5,14 @@ import { Redis } from "ioredis";
 
 import { env } from "@/server/env";
 
-import { PARSE_QUEUE, type ParseJobData, type ParseQueue } from "./types";
+import {
+  PARSE_QUEUE,
+  POD_QUEUE,
+  type ParseJobData,
+  type ParseQueue,
+  type PodJob,
+  type PodQueue,
+} from "./types";
 
 export * from "./types";
 
@@ -16,6 +23,7 @@ export function queueConnection() {
 
 const globalForQueue = globalThis as unknown as {
   parseQueue?: Queue<ParseJobData>;
+  podQueue?: Queue<PodJob>;
 };
 
 function bullQueue() {
@@ -49,3 +57,31 @@ export const parseQueue: ParseQueue = {
     return (await bullQueue().getWorkersCount()) > 0;
   },
 };
+
+function bullPodQueue() {
+  globalForQueue.podQueue ??= new Queue<PodJob>(POD_QUEUE, {
+    connection: queueConnection(),
+  });
+  return globalForQueue.podQueue;
+}
+
+export const podQueue: PodQueue = {
+  async enqueue(job) {
+    await bullPodQueue().add(job.kind, job, {
+      jobId: "itemId" in job ? `${job.kind}-${job.itemId}` : undefined,
+      attempts: 3,
+      backoff: { type: "exponential", delay: 10_000 },
+      removeOnComplete: { age: 24 * 3600, count: 1000 },
+      removeOnFail: { age: 7 * 24 * 3600 },
+    });
+  },
+};
+
+/** Empties trash older than 30 days, once a day. Safe to call at every worker start. */
+export async function schedulePodMaintenance() {
+  await bullPodQueue().upsertJobScheduler(
+    "purge-trash-daily",
+    { pattern: "30 3 * * *", tz: "Asia/Kolkata" },
+    { name: "purge-trash", data: { kind: "purge-trash" } },
+  );
+}

@@ -16,6 +16,9 @@ export function createMemoryStorage() {
         ? { size: object.body.byteLength, contentType: object.contentType }
         : null;
     },
+    async signDownload(key) {
+      return `memory://download/${key}`;
+    },
     async getBytes(key) {
       const object = objects.get(key);
       if (!object) throw new Error(`No object ${key}`);

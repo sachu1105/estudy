@@ -15,6 +15,14 @@ export interface ObjectStorage {
     key: string,
   ): Promise<{ size: number; contentType: string | null } | null>;
   getBytes(key: string): Promise<Uint8Array>;
+  /**
+   * A short-lived GET URL. The response type is forced to `contentType` and shown inline
+   * (only sniffed PDF and raster image types are ever stored for viewing).
+   */
+  signDownload(
+    key: string,
+    options: { contentType: string; expiresInSeconds: number },
+  ): Promise<string>;
   put(key: string, body: Uint8Array, contentType: string): Promise<void>;
   delete(key: string): Promise<void>;
 }

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
+import { podService } from "@/server/services/pods";
 import { reviewService, uploadService } from "@/server/services/syllabus";
 
 import {
@@ -56,7 +57,10 @@ export async function saveDraftAction(input: unknown): Promise<ActionResult> {
     parsed.data.tree,
   );
   if (!result.ok) return { ok: false, error: result.message };
+  // A confirmed syllabus keeps its pods in step with every subject change.
+  await podService.syncFromSyllabus(user, parsed.data.versionId);
   revalidatePath(`/syllabus/${parsed.data.versionId}`, "layout");
+  revalidatePath("/pods", "layout");
   return { ok: true };
 }
 
@@ -72,7 +76,10 @@ export async function confirmSyllabusAction(
     parsed.data.tree,
   );
   if (!result.ok) return { ok: false, error: result.message };
+  // Confirming turns every subject into a pod.
+  await podService.syncFromSyllabus(user, parsed.data.versionId);
   revalidatePath("/syllabus");
+  revalidatePath("/pods", "layout");
   return { ok: true };
 }
 

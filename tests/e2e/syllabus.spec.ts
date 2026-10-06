@@ -35,7 +35,7 @@ test.describe("syllabus", () => {
     // A way out: stop the reading and delete the upload.
     await page.getByRole("button", { name: "Stop and delete" }).click();
     await page.getByRole("button", { name: "Delete syllabus" }).click();
-    await expect(page).toHaveURL(/\/syllabus$/);
+    await expect(page).toHaveURL(/\/pods$/);
     await expect(
       page.getByRole("link", {
         name: new RegExp(`Pasted ${test.info().project.name}`),
@@ -102,9 +102,6 @@ test.describe("syllabus", () => {
     await expect(page.getByRole("status").getByText("Saved")).toBeVisible();
     await page.getByRole("button", { name: "Done editing" }).click();
 
-    await page.getByRole("tab", { name: "Materials" }).click();
-    await expect(page.getByText("Your notes and files go here")).toBeVisible();
-
     await page.reload(); // autosaved: nothing lost
     await expect(
       page.getByText("Fundamental rights, Directive principles"),
@@ -112,17 +109,18 @@ test.describe("syllabus", () => {
 
     await page.getByRole("link", { name: title }).click();
     await page.getByRole("button", { name: "Confirm syllabus" }).click();
+    // Confirmed: it's an exam pod now, with a pod per subject.
+    await expect(page).toHaveURL(/\/pods\/exam\/[0-9a-f-]{36}$/);
     await expect(
-      page.getByRole("link", { name: "Create study plan" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Geography of Kerala" }),
+      page.getByRole("link", { name: /Geography of Kerala/ }),
     ).toBeVisible();
 
     await page.goto("/syllabus");
     await expect(
-      page.getByRole("link", { name: new RegExp(title) }),
-    ).toContainText("Confirmed");
+      page
+        .getByRole("region", { name: "Your exams" })
+        .getByRole("link", { name: new RegExp(title) }),
+    ).toBeVisible();
   });
 
   test("the catalogue lists the seeded exams and invites an upload", async ({

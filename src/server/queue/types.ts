@@ -16,3 +16,17 @@ export interface ParseQueue {
   /** Whether any worker is connected and able to pick up parse jobs. */
   readerOnline(): Promise<boolean>;
 }
+
+export const POD_QUEUE = "pods";
+
+/** Background work for pod material. Payloads are zod-parsed in the worker (rule 11). */
+export const podJobSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("link-meta"), itemId: z.uuid() }),
+  z.object({ kind: z.literal("extract-file"), itemId: z.uuid() }),
+  z.object({ kind: z.literal("purge-trash") }),
+]);
+export type PodJob = z.infer<typeof podJobSchema>;
+
+export interface PodQueue {
+  enqueue(job: PodJob): Promise<void>;
+}

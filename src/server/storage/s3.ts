@@ -59,6 +59,20 @@ export function createS3Storage(config: S3Config): ObjectStorage {
       return { url, headers: { "Content-Type": contentType } };
     },
 
+    async signDownload(key, { contentType, expiresInSeconds }) {
+      return getSignedUrl(
+        signer,
+        new GetObjectCommand({
+          Bucket,
+          Key: key,
+          ResponseContentType: contentType,
+          ResponseContentDisposition: "inline",
+          ResponseCacheControl: "private, max-age=300",
+        }),
+        { expiresIn: expiresInSeconds },
+      );
+    },
+
     async head(key) {
       try {
         const result = await s3.send(

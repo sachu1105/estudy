@@ -4,10 +4,16 @@ import "dotenv/config";
 import { env } from "@/server/env";
 
 import { startParseWorker } from "./jobs/parse-syllabus";
+import { startPodWorker } from "./jobs/pods";
 
 console.log(`[worker] started (${env.NODE_ENV}, ai=${env.AI_PROVIDER}).`);
 
-const workers = [startParseWorker()];
+async function main() {
+  workers.push(startParseWorker(), await startPodWorker());
+}
+
+const workers: { close(): Promise<void> }[] = [];
+void main();
 
 async function shutdown(signal: string) {
   console.log(`[worker] ${signal} received, finishing current jobs.`);

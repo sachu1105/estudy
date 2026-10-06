@@ -21,6 +21,8 @@ export const rules = {
   parsePerUser: { limit: 10, windowMs: 60 * MINUTE },
   /** Review autosave runs every couple of seconds while editing. */
   syllabusSavePerUser: { limit: 120, windowMs: 5 * MINUTE },
+  /** Ticking topics, adding notes and links, mapping material: generous but bounded. */
+  podWritePerUser: { limit: 300, windowMs: 5 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

@@ -16,28 +16,70 @@ const treeInclude = {
   },
 };
 
+/**
+ * Saves the tree in place: rows that exist are updated, new ones created, removed ones
+ * deleted. Ids stay stable, so pods, material mappings and plans that point at a subject
+ * or topic survive every autosave. Only ids already in this version are ever updated; an
+ * unknown id is created, and one that belongs elsewhere fails the transaction instead of
+ * touching another syllabus.
+ */
 async function writeTree(tx: Tx, versionId: string, tree: EditableTree) {
-  await tx.subject.deleteMany({ where: { syllabusVersionId: versionId } });
-  await tx.subject.createMany({
-    data: tree.subjects.map((s, order) => ({
-      id: s.id,
-      syllabusVersionId: versionId,
-      name: s.name,
-      order,
-    })),
+  const existingSubjects = await tx.subject.findMany({
+    where: { syllabusVersionId: versionId },
+    include: { topics: true },
   });
-  await tx.topic.createMany({
-    data: tree.subjects.flatMap((s) =>
-      s.topics.map((t, order) => ({
-        id: t.id,
+  const subjects = new Map(existingSubjects.map((s) => [s.id, s]));
+  const topics = new Map(
+    existingSubjects.flatMap((s) => s.topics.map((t) => [t.id, t] as const)),
+  );
+  const keepSubjects = new Set(tree.subjects.map((s) => s.id));
+  const keepTopics = new Set(
+    tree.subjects.flatMap((s) => s.topics.map((t) => t.id)),
+  );
+
+  for (const [order, s] of tree.subjects.entries()) {
+    const before = subjects.get(s.id);
+    if (before) {
+      if (before.name !== s.name || before.order !== order)
+        await tx.subject.update({
+          where: { id: s.id },
+          data: { name: s.name, order },
+        });
+    } else
+      await tx.subject.create({
+        data: { id: s.id, syllabusVersionId: versionId, name: s.name, order },
+      });
+    for (const [topicOrder, t] of s.topics.entries()) {
+      const data = {
         subjectId: s.id,
         name: t.name,
         weight: t.weight,
         difficulty: t.difficulty,
         foundational: t.foundational,
-        order,
-      })),
-    ),
+        order: topicOrder,
+      };
+      const was = topics.get(t.id);
+      if (!was) await tx.topic.create({ data: { id: t.id, ...data } });
+      else if (
+        was.subjectId !== data.subjectId ||
+        was.name !== data.name ||
+        was.weight !== data.weight ||
+        was.difficulty !== data.difficulty ||
+        was.foundational !== data.foundational ||
+        was.order !== data.order
+      )
+        await tx.topic.update({ where: { id: t.id }, data });
+    }
+  }
+  // Removals last, so a topic moved out of a removed subject is never lost on the way.
+  await tx.topic.deleteMany({
+    where: {
+      subject: { syllabusVersionId: versionId },
+      id: { notIn: [...keepTopics] },
+    },
+  });
+  await tx.subject.deleteMany({
+    where: { syllabusVersionId: versionId, id: { notIn: [...keepSubjects] } },
   });
 }
 

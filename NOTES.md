@@ -413,3 +413,66 @@ rule 16. `inkSubtle` is still kept off readable text (WCAG AA floor), timestamps
   built after milestone 4.
 - Entitlement keys in code keep their names (vaultStorageBytes, vaultMocksPerMonth,
   pagesPerVaultMock); the docs call them pod storage and mock tests from my material.
+
+## Milestone 5 — subject pods (2026-10-06)
+
+### Data
+- Pod (SUBJECT per syllabus subject, or CUSTOM), PodItem (NOTE, LINK, FILE, IMAGE), PodFile
+  (a PDF, each page photo, or an image inside a note), PodItemTopic (an item covers any
+  number of topics of its pod), TopicCompletion (append-only, latest row wins; no FK on
+  topicId so history outlives a removed topic).
+- The syllabus tree now saves in place (update changed rows, create new, delete removed,
+  removals last) instead of delete-and-recreate, so topic ids stay stable and mappings,
+  ticks and plans survive autosaves. Unchanged rows are skipped (461-topic syllabuses).
+- Pods follow the syllabus: confirming creates them, every later save syncs them (new
+  subject -> new pod, rename -> rename, removed subject -> pod deleted if empty, else it
+  becomes the user's own pod so material is never lost). A catalogue syllabus is adopted
+  with "Use this syllabus".
+- Full-text search: a GIN expression index on to_tsvector('simple', title, note text, url,
+  link description, PDF text); queries are prefix matches built from letters/digits only,
+  so Malayalam works word by word and nothing typed can break the syntax.
+
+### Behaviour
+- /pods groups subject pods by syllabus, own pods last; Pods replaced Syllabus in the nav
+  (syllabus pages highlight Pods). Mobile tabs: Today, Pods, Plan, Tests, More.
+- Pod page: progress ring, Topics (optimistic ticks), Material (add bar; "Not linked to a
+  topic" section), Tests and Progress (placeholders until milestones 7-8). Topic page:
+  done toggle, its material, add bar that links new material to the topic. Board cards of
+  a confirmed syllabus open its pods (/pods/subject/[id] resolves or creates the pod).
+- Notes: Tiptap 3 (StarterKit incl. link, highlight, task list, table, image, placeholder),
+  autosave 2 s. The server cleans each document: images only from /api/pods/files/<id>,
+  links only http/https/mailto; plain text stored for search.
+- Links: added at once after an SSRF check, title/description/icon fetched by the worker
+  (private and reserved ranges blocked per DNS answer and per redirect hop, 5 s, 1 MB).
+  A title the user changed first is kept. DNS rebinding between check and connect is not
+  covered yet (would need a pinned lookup in the HTTP agent; milestone 17 security pass).
+- Files: PDFs and photos (25 MB each), presigned PUT, then the server sniffs real types,
+  hashes and creates items; photos can be saved as one multi-page document (camera sheet).
+  Photos are shrunk to 2000 px JPEG in the browser with EXIF rotation applied. Storage
+  counts every PodFile, trash included, against limit(user, 'vaultStorageBytes').
+- Viewing: /api/pods/files/[id] checks ownership and redirects to a 5-minute signed URL
+  with a forced content type. proxy.ts now also runs on that route so note images keep
+  loading after the 15-minute access token expires. Phones get "Open PDF" (no inline PDF).
+- Text: the worker reads a PDF's text layer (unpdf) for search. Photos and scans are not
+  OCR'd here: rule 17 keeps AI to four jobs, so page reading happens when a mock test is
+  made from them (milestone 8).
+- Trash: soft delete with undo toast and a trash page; a BullMQ scheduler purges items
+  older than 30 days daily at 03:30 IST, deleting their files from storage.
+- Settings shows pod storage used of the plan's limit.
+
+### Exam pods (2026-10-06)
+
+The user found two places (Syllabus and Pods) confusing and asked for a master pod per
+syllabus with the subject pods inside it.
+
+- `/pods/exam/[syllabusId]` is the exam pod. Nothing new is stored: `podService.exams()`
+  groups the subject pods by syllabus and totals topics, ticks and material. It shows
+  progress, the study plan card (what the plan will ask for; the plan arrives in
+  milestone 6, so there is no dead button) and full mock tests (milestone 8).
+- The pods home lists exam pods, then syllabuses still being read or checked ("Being
+  set up"), then the user's own pods. `/syllabus` redirects there.
+- Confirming a syllabus or adopting a catalogue one opens its exam pod. A subject pod's
+  back link goes to its exam pod. A confirmed syllabus page is now "Edit syllabus".
+- Fixed: BullMQ job ids can't contain ":", so adding a link failed at enqueue. Pod job
+  ids are now `link-meta-<itemId>`. The integration tests use a fake queue, so only the
+  e2e run caught it.

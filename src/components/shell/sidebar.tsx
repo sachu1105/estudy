@@ -75,7 +75,7 @@ export function Sidebar() {
           <SidebarLink
             key={item.href}
             item={item}
-            active={isActive(pathname, item.href)}
+            active={isActive(pathname, item.href, item.also)}
           />
         ))}
       </nav>
@@ -85,7 +85,7 @@ export function Sidebar() {
           <SidebarLink
             key={item.href}
             item={item}
-            active={isActive(pathname, item.href)}
+            active={isActive(pathname, item.href, item.also)}
           />
         ))}
         <button

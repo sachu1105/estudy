@@ -6,7 +6,8 @@ test.describe("app shell", () => {
       ["/today", "Today"],
       ["/plan", "Plan"],
       ["/calendar", "Calendar"],
-      ["/syllabus", "Syllabus"],
+      ["/pods", "Pods"],
+      ["/syllabus", "Pods"], // the list moved into the pods home
       ["/tests", "Tests"],
       ["/groups", "Groups"],
       ["/rank", "Rank"],

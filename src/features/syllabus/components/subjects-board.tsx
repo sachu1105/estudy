@@ -68,7 +68,7 @@ export function SubjectsBoard({
       const result = await confirmSyllabusAction({ versionId, tree });
       if (!result.ok) return void toast.error(result.error);
       toast.success("Syllabus confirmed");
-      router.refresh();
+      router.push(`/pods/exam/${versionId}`);
     });
 
   const topics = topicCount(tree);
@@ -122,9 +122,15 @@ export function SubjectsBoard({
         {tree.subjects.map((subject, i) => (
           <SubjectCard
             key={subject.id}
-            href={`/syllabus/${versionId}/subjects/${subject.id}`}
+            // Confirmed: the subject's pod. Before that: its topics, to check them.
+            href={
+              confirmed
+                ? `/pods/subject/${subject.id}`
+                : `/syllabus/${versionId}/subjects/${subject.id}`
+            }
             name={subject.name}
             topics={subject.topics}
+            cta={confirmed ? "Open pod" : "Check topics"}
             menu={
               <SubjectMenu
                 name={subject.name}

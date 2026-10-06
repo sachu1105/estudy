@@ -37,7 +37,7 @@ export function DeleteSyllabusButton({
       const result = await deleteSyllabusAction({ versionId });
       if (!result.ok) return void toast.error(result.error);
       toast.success("Syllabus deleted");
-      router.push("/syllabus");
+      router.push("/pods");
     });
 
   return (

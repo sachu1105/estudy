@@ -18,6 +18,12 @@ our catalogue) and every subject in it becomes a pod. A pod holds:
 - progress: topics done, material collected, test scores, time studied
 Users can also make pods of their own for anything outside the syllabus.
 
+Pods are two levels deep. Each syllabus is an exam pod (for example "LDC 2026"), and
+its subjects are the subject pods inside it. The exam pod shows progress across the
+whole syllabus, the study plan for that exam and its full mock tests. The pods home
+lists exam pods, syllabuses still being set up, and the user's own pods. The plan does
+not replace pods: it is built from them.
+
 The study plan is built from the pods: days left to the exam, the time the user has each
 day, and for each subject how well they already know it (confidence 1-5) and how hard
 they want to push it (intensity). It gives a day-by-day plan and tracks progress at every

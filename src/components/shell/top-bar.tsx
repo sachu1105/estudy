@@ -127,6 +127,11 @@ export function TopBar({ viewer, logout }: TopBarProps) {
       </div>
 
       <CommandPalette
+        search={{
+          label: "Search pods for",
+          onSearch: (q) =>
+            router.push(`/pods/search?q=${encodeURIComponent(q)}`),
+        }}
         open={paletteOpen}
         onOpenChange={setPaletteOpen}
         groups={groups}

@@ -27,7 +27,9 @@ export function BottomTabs() {
     ...primaryNav.filter((item) => !item.mobileTab),
     ...secondaryNav,
   ];
-  const moreActive = more.some((item) => isActive(pathname, item.href));
+  const moreActive = more.some((item) =>
+    isActive(pathname, item.href, item.also),
+  );
 
   return (
     <nav
@@ -35,7 +37,7 @@ export function BottomTabs() {
       className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       {tabs.map((item) => {
-        const active = isActive(pathname, item.href);
+        const active = isActive(pathname, item.href, item.also);
         return (
           <Link
             key={item.href}
@@ -74,7 +76,7 @@ export function BottomTabs() {
                 href={item.href}
                 onClick={() => setMoreOpen(false)}
                 aria-current={
-                  isActive(pathname, item.href) ? "page" : undefined
+                  isActive(pathname, item.href, item.also) ? "page" : undefined
                 }
                 className="flex flex-col items-center gap-2 rounded-control border border-border p-4 text-small font-medium text-ink aria-[current=page]:border-transparent aria-[current=page]:bg-accent-soft aria-[current=page]:text-accent-ink"
               >

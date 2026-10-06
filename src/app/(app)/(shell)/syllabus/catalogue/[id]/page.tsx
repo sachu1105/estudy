@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/shell/page-header";
-import { Button } from "@/components/ui/button";
+import { UseSyllabusButton } from "@/features/pods/components/use-syllabus-button";
 import { SyllabusTreeView } from "@/features/syllabus/components/syllabus-tree-view";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
@@ -23,13 +22,7 @@ export default async function CatalogueSyllabusPage({
       <PageHeader
         title={version.title}
         description={version.exam?.name}
-        actions={
-          <Button asChild variant="primary" className="w-full sm:w-auto">
-            <Link href={`/onboarding?syllabus=${version.id}`}>
-              Use this syllabus
-            </Link>
-          </Button>
-        }
+        actions={<UseSyllabusButton versionId={version.id} />}
       />
       <SyllabusTreeView subjects={version.subjects} />
     </>

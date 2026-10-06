@@ -12,6 +12,8 @@ type SubjectCardProps = {
   topics: { id: string; name: string }[];
   /** A menu button, shown top right when the subject can be edited. */
   menu?: ReactNode;
+  /** The link's call to action, e.g. "Open pod". */
+  cta?: string;
   className?: string;
 };
 
@@ -21,6 +23,7 @@ export function SubjectCard({
   name,
   topics,
   menu,
+  cta = "Open folder",
   className,
 }: SubjectCardProps) {
   const rest = topics.length - PREVIEW;
@@ -58,7 +61,8 @@ export function SubjectCard({
           ))}
         </ul>
         <span className="mt-auto flex items-center gap-1 text-small font-medium text-accent-ink">
-          {rest > 0 ? `${rest} more · ` : ""}Open folder
+          {rest > 0 ? `${rest} more · ` : ""}
+          {cta}
           <ChevronRight className="size-4" aria-hidden />
         </span>
       </Link>
