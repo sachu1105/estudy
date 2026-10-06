@@ -51,7 +51,7 @@ export function tokenFromLastEmail(
 export async function resetDatabase() {
   // TRUNCATE is not blocked by the append-only row triggers.
   await prisma.$executeRawUnsafe(
-    'TRUNCATE "PlanTask", "PlanDay", "StudyPlan", "PlanDraft", "TopicCompletion", "PodItemTopic", "PodFile", "PodItem", "Pod", "SectionCache", "AiUsage", "ParseJob", "Topic", "Subject", "SyllabusVersion", "SyllabusParse", "Exam", "AuditLog", "RefreshToken", "EmailVerification", "PasswordReset", "Subscription", "User" CASCADE',
+    'TRUNCATE "PlanOverride", "ActiveSession", "XpLedger", "StudySession", "TaskCompletion", "PlanTask", "PlanDay", "StudyPlan", "PlanDraft", "TopicCompletion", "PodItemTopic", "PodFile", "PodItem", "Pod", "SectionCache", "AiUsage", "ParseJob", "Topic", "Subject", "SyllabusVersion", "SyllabusParse", "Exam", "AuditLog", "RefreshToken", "EmailVerification", "PasswordReset", "Subscription", "User" CASCADE',
   );
 }
 

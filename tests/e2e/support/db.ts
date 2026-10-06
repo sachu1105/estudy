@@ -128,3 +128,29 @@ export function seedParsedDraft(
     return versionId;
   });
 }
+
+/**
+ * A verified user straight in the database, for specs that need a user of their own.
+ * Registering through the form is rate limited per IP; logging in is not as tight.
+ */
+export async function seedVerifiedUser(email: string, password: string) {
+  const { hash } = await import("@node-rs/argon2");
+  const passwordHash = await hash(password, {
+    memoryCost: 19_456,
+    timeCost: 2,
+    parallelism: 1,
+  });
+  await withDb(async (db) => {
+    const id = randomUUID();
+    await db.query(
+      `INSERT INTO "User" (id, email, "emailVerifiedAt", "passwordHash", name, "displayName", "updatedAt")
+       VALUES ($1, $2, now(), $3, 'Test Aspirant', 'Test Aspirant', now())`,
+      [id, email, passwordHash],
+    );
+    await db.query(
+      `INSERT INTO "Subscription" (id, "userId", plan, status, source, "updatedAt")
+       VALUES ($1, $2, 'FREE', 'ACTIVE', 'DEFAULT', now())`,
+      [randomUUID(), id],
+    );
+  });
+}

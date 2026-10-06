@@ -73,6 +73,11 @@ model User {
   topicCompletions   TopicCompletion[]
   planDrafts         PlanDraft[]
   studyPlans         StudyPlan[]
+  taskCompletions    TaskCompletion[]
+  studySessions      StudySession[]
+  activeSession      ActiveSession?
+  xpLedger           XpLedger[]
+  planOverrides      PlanOverride[]
 }
 
 model RefreshToken {
@@ -546,6 +551,13 @@ model StudyPlan {
   availableMinutes  Int
   requiredMinutes   Int
   plannedMinutes    Int
+  /// Per-topic confidence changes from the last re-plan, fed into the next one.
+  adjustments       Json             @default("[]")
+  /// What the re-plan that made this plan changed; shown once as a card.
+  replanDiff        Json?
+  diffSeenAt        DateTime?        @db.Timestamptz(6)
+  /// Set when a re-plan found the rest no longer fits; the plan itself is kept.
+  replanWarning     Json?
   createdAt         DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime         @updatedAt @db.Timestamptz(6)
 
@@ -598,4 +610,105 @@ model PlanTask {
 
   @@unique([planId, key])
   @@index([planId, date])
+}
+
+// ---------------------------------------------------------------------------------------
+// Progress (milestone 7). The four logs are append-only (rule 6); streaks, XP totals and
+// progress are derived from them.
+
+enum XpKind {
+  STUDY
+  TASK
+  STREAK
+}
+
+enum OverrideKind {
+  MOVE
+  RESIZE
+  LOCK
+  CUSTOM
+}
+
+/// A task ticked (done) or unticked (not done). The latest row per task wins.
+model TaskCompletion {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Snapshot references: plans are re-made weekly, the log outlives them.
+  planId    String       @db.Uuid
+  taskId    String       @db.Uuid
+  taskKey   String
+  type      PlanTaskType
+  subjectId String?      @db.Uuid
+  topicId   String?      @db.Uuid
+  minutes   Int
+  /// The user's calendar day when it happened.
+  localDate DateTime     @db.Date
+  done      Boolean
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, taskId, createdAt])
+  @@index([userId, localDate])
+}
+
+/// A finished stretch of focused study. Only active minutes count (heartbeats).
+model StudySession {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  user          User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  planId        String?  @db.Uuid
+  taskId        String?  @db.Uuid
+  subjectId     String?  @db.Uuid
+  topicId       String?  @db.Uuid
+  startedAt     DateTime @db.Timestamptz(6)
+  endedAt       DateTime @db.Timestamptz(6)
+  activeMinutes Int
+  localDate     DateTime @db.Date
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, localDate])
+}
+
+/// The timer that's running now, one per user. Live state, not a log.
+model ActiveSession {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @db.Uuid
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId        String   @db.Uuid
+  taskId        String   @db.Uuid
+  startedAt     DateTime @db.Timestamptz(6)
+  lastBeatAt    DateTime @db.Timestamptz(6)
+  activeSeconds Int      @default(0)
+  paused        Boolean  @default(false)
+}
+
+model XpLedger {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  kind      XpKind
+  amount    Int
+  /// The task or session it came from.
+  refId     String?  @db.Uuid
+  localDate DateTime @db.Date
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, localDate])
+}
+
+/// A hand edit to a plan (rule 14), kept per exam so every re-plan respects it.
+/// "Reset to suggested" removes it.
+model PlanOverride {
+  id                String       @id @default(uuid()) @db.Uuid
+  userId            String       @db.Uuid
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  syllabusVersionId String       @db.Uuid
+  taskKey           String
+  kind              OverrideKind
+  /// A pin override as the plan engine reads it (pinOverrideSchema).
+  data              Json
+  createdAt         DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime     @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, syllabusVersionId, taskKey])
 }

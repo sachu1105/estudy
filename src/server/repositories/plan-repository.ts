@@ -115,6 +115,15 @@ export const planRepository = {
     });
   },
 
+  /** Active plans with their input snapshot, for names and topic totals. */
+  listActiveWithInputs(userId: string) {
+    return prisma.studyPlan.findMany({
+      where: { userId, status: "ACTIVE" },
+      orderBy: { createdAt: "asc" },
+      select: { ...planSummary, inputs: true },
+    });
+  },
+
   findOwned(id: string, userId: string) {
     return prisma.studyPlan.findFirst({
       where: { id, userId },

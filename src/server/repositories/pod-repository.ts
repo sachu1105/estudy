@@ -127,6 +127,13 @@ export const podRepository = {
     });
   },
 
+  topicSubject(topicId: string) {
+    return prisma.topic.findUnique({
+      where: { id: topicId },
+      select: { subjectId: true },
+    });
+  },
+
   subjectVersion(subjectId: string) {
     return prisma.subject.findUnique({
       where: { id: subjectId },

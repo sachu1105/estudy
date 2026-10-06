@@ -1,7 +1,7 @@
 "use client";
 
 import { Clock } from "lucide-react";
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils/cn";
@@ -12,6 +12,8 @@ export type TopicRowProps = {
   minutes: number;
   done: boolean;
   onDoneChange: (done: boolean) => void;
+  /** Small buttons at the end of the row, e.g. start or open. */
+  actions?: ReactNode;
   className?: string;
 };
 
@@ -21,6 +23,7 @@ export function TopicRow({
   minutes,
   done,
   onDoneChange,
+  actions,
   className,
 }: TopicRowProps) {
   const id = useId();
@@ -46,7 +49,7 @@ export function TopicRow({
       >
         <span
           className={cn(
-            "truncate text-body font-medium transition-colors duration-[200ms]",
+            "line-clamp-2 text-body font-medium break-words transition-colors duration-[200ms]",
             done ? "text-ink-muted line-through" : "text-ink",
           )}
         >
@@ -54,10 +57,11 @@ export function TopicRow({
         </span>
         <span className="truncate text-small text-ink-muted">{subject}</span>
       </label>
-      <span className="flex items-center gap-1 font-mono text-small text-ink-muted tabular-nums">
-        <Clock className="size-3.5" aria-hidden />
+      <span className="flex shrink-0 items-center gap-1 font-mono text-small text-ink-muted tabular-nums">
+        <Clock className="hidden size-3.5 sm:block" aria-hidden />
         {minutes}m
       </span>
+      {actions}
     </div>
   );
 }

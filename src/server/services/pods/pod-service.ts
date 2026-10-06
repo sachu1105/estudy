@@ -198,6 +198,12 @@ export function createPodService(deps: PodDeps) {
       return (await deps.pods.findBySubject(user.id, subjectId))?.id ?? null;
     },
 
+    /** The user's pod holding a topic, for "Open pod" on a task. */
+    async podIdForTopic(user: User, topicId: string) {
+      const topic = await deps.pods.topicSubject(topicId);
+      return topic ? this.podIdForSubject(user, topic.subjectId) : null;
+    },
+
     async createCustom(user: User, name: string) {
       const pod = await deps.pods.createCustom(user.id, name);
       return { ok: true as const, podId: pod.id };

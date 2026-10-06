@@ -6,7 +6,7 @@ import {
   motion,
   useReducedMotionConfig,
 } from "motion/react";
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 
 import { TopicRow } from "./topic-row";
 
@@ -16,6 +16,7 @@ export type TaskListItem = {
   subject: string;
   minutes: number;
   done: boolean;
+  actions?: ReactNode;
 };
 
 type TaskListProps = {
@@ -70,6 +71,7 @@ export function TaskList({ tasks, onDoneChange }: TaskListProps) {
                       subject={task.subject}
                       minutes={task.minutes}
                       done={task.done}
+                      actions={task.actions}
                       onDoneChange={(done) => onDoneChange(task.id, done)}
                     />
                   </motion.div>

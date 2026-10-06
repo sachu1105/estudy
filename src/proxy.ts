@@ -28,6 +28,7 @@ const PROTECTED = [
   "/progress",
   "/settings",
   "/onboarding",
+  "/study",
   "/admin",
 ];
 const SIGNED_OUT_ONLY = ["/login", "/register"];
