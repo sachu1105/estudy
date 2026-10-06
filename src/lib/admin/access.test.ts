@@ -8,6 +8,7 @@ describe("admin access", () => {
       "dashboard",
       "catalogue",
       "questions",
+      "reports",
     ]);
     expect(canAdmin("ADMIN", "users")).toBe(true);
     expect(canAdmin("ADMIN", "plans")).toBe(false);

@@ -97,3 +97,29 @@ export function docImageIds(node: DocNode): string[] {
       : [];
   return [...own, ...(node.content ?? []).flatMap(docImageIds)];
 }
+
+/**
+ * A copy of the note with its images pointing elsewhere: when a note is shared to a group,
+ * its images are copied too and must stop pointing at the sharer's private files.
+ * Images without a new home are dropped.
+ */
+export function rewriteImages(
+  node: DocNode,
+  newSrc: Map<string, string>,
+): DocNode | null {
+  if (node.type === "image") {
+    const id =
+      String(node.attrs?.src ?? "")
+        .split("/")
+        .pop() ?? "";
+    const src = newSrc.get(id);
+    return src ? { ...node, attrs: { ...node.attrs, src } } : null;
+  }
+  if (!node.content) return node;
+  return {
+    ...node,
+    content: node.content
+      .map((n) => rewriteImages(n, newSrc))
+      .filter((n): n is DocNode => n !== null),
+  };
+}

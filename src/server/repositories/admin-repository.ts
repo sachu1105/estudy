@@ -355,6 +355,95 @@ export const adminRepository = {
     });
   },
 
+  // ---- Reports (milestone 13) -------------------------------------------------------
+
+  openReports() {
+    return prisma.report.findMany({
+      where: { status: "OPEN" },
+      orderBy: { createdAt: "asc" },
+      take: 100,
+      include: { reporter: { select: { email: true } } },
+    });
+  },
+
+  /** What a report points at, in a few words, for the queue. */
+  async reportTarget(type: string, id: string) {
+    if (type === "GROUP") {
+      const g = await prisma.group.findUnique({
+        where: { id },
+        select: { name: true, hiddenAt: true },
+      });
+      return g
+        ? {
+            label: `Group: ${g.name}`,
+            hidden: !!g.hiddenAt,
+            href: `/groups/${id}`,
+          }
+        : null;
+    }
+    if (type === "GROUP_ITEM") {
+      const i = await prisma.groupItem.findUnique({
+        where: { id },
+        select: { title: true, groupId: true, hiddenAt: true },
+      });
+      return i
+        ? {
+            label: `Shared item: ${i.title}`,
+            hidden: !!i.hiddenAt,
+            href: `/groups/${i.groupId}/items/${id}`,
+          }
+        : null;
+    }
+    if (type === "GROUP_TEST") {
+      const t = await prisma.groupTest.findUnique({
+        where: { id },
+        select: { title: true, groupId: true, hiddenAt: true },
+      });
+      return t
+        ? {
+            label: `Shared test: ${t.title}`,
+            hidden: !!t.hiddenAt,
+            href: `/groups/${t.groupId}/tests`,
+          }
+        : null;
+    }
+    const u = await prisma.user.findUnique({
+      where: { id },
+      select: { email: true },
+    });
+    return u
+      ? {
+          label: `Person: ${u.email}`,
+          hidden: false,
+          href: `/admin/users/${id}`,
+        }
+      : null;
+  },
+
+  /** Takes reported content out of sight (it stays in the database for the record). */
+  hideTarget(type: string, id: string, at: Date) {
+    if (type === "GROUP")
+      return prisma.group.update({ where: { id }, data: { hiddenAt: at } });
+    if (type === "GROUP_ITEM")
+      return prisma.groupItem.update({ where: { id }, data: { hiddenAt: at } });
+    if (type === "GROUP_TEST")
+      return prisma.groupTest.update({ where: { id }, data: { hiddenAt: at } });
+    return Promise.resolve(null);
+  },
+
+  closeReports(
+    type: string,
+    id: string,
+    status: "RESOLVED" | "DISMISSED",
+    by: string,
+    at: Date,
+  ) {
+    return prisma.report.updateMany({
+      where: { targetType: type as never, targetId: id, status: "OPEN" },
+      data: { status, resolvedById: by, resolvedAt: at },
+    });
+  },
+
   // ---- AI usage and the audit log -------------------------------------------------
 
   aiUsageSince(since: Date) {

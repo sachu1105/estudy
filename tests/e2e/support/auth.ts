@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 
-import { seedVerifiedUser } from "./db";
+import { resetLoginLimits, seedVerifiedUser } from "./db";
 import { tokenFromEmail, uniqueEmail } from "./mailpit";
 
 export const PASSWORD = "e2e password 123";
@@ -39,6 +39,7 @@ export async function seedAndLogin(
 ) {
   const email = uniqueEmail(label);
   await seedVerifiedUser(email, PASSWORD, role);
+  await resetLoginLimits();
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);

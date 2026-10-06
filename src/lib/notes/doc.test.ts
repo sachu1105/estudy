@@ -56,3 +56,26 @@ describe("note documents", () => {
     ]);
   });
 });
+
+describe("rewriting a shared note's images", () => {
+  it("points images at their copies and drops any without one", async () => {
+    const { rewriteImages } = await import("./doc");
+    const a = "11111111-1111-4111-8111-111111111111";
+    const b = "22222222-2222-4222-8222-222222222222";
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "image", attrs: { src: `/api/pods/files/${a}`, alt: "map" } },
+        {
+          type: "paragraph",
+          content: [{ type: "image", attrs: { src: `/api/pods/files/${b}` } }],
+        },
+      ],
+    };
+    const out = rewriteImages(doc, new Map([[a, "/api/groups/files/x"]]))!;
+    expect(out.content![0]).toMatchObject({
+      attrs: { src: "/api/groups/files/x", alt: "map" },
+    });
+    expect(out.content![1]!.content).toEqual([]);
+  });
+});

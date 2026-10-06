@@ -261,6 +261,56 @@ export function createAdminService(deps: AdminDeps) {
       return { ok: true };
     },
 
+    // ---- Reports ---------------------------------------------------------------
+
+    /** Open reports, grouped by what they point at, with a short description of it. */
+    async reports() {
+      const open = await deps.admin.openReports();
+      const byTarget = new Map<string, typeof open>();
+      for (const r of open) {
+        const key = `${r.targetType}:${r.targetId}`;
+        byTarget.set(key, [...(byTarget.get(key) ?? []), r]);
+      }
+      return Promise.all(
+        [...byTarget.values()].map(async (reports) => ({
+          type: reports[0]!.targetType,
+          id: reports[0]!.targetId,
+          target: await deps.admin.reportTarget(
+            reports[0]!.targetType,
+            reports[0]!.targetId,
+          ),
+          reports: reports.map((r) => ({
+            reason: r.reason,
+            note: r.note,
+            by: r.reporter.email,
+            at: r.createdAt,
+          })),
+        })),
+      );
+    },
+
+    /** Hide the content (and close its reports), or dismiss the reports as unfounded. */
+    async decideReport(
+      by: Admin,
+      type: string,
+      id: string,
+      hide: boolean,
+    ): Promise<Result<object>> {
+      const at = deps.clock.now();
+      if (hide) await deps.admin.hideTarget(type, id, at);
+      await deps.admin.closeReports(
+        type,
+        id,
+        hide ? "RESOLVED" : "DISMISSED",
+        by.id,
+        at,
+      );
+      await log(by, hide ? "admin.report.hide" : "admin.report.dismiss", id, {
+        type,
+      });
+      return { ok: true };
+    },
+
     // ---- Settings, jobs and the log ------------------------------------------
 
     logSetting: (by: Admin, key: string) =>

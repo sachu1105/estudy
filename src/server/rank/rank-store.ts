@@ -47,6 +47,15 @@ export const rankStore = {
       : { rank: rank + 1, xp: Math.round(Number(score)) };
   },
 
+  /** Scores of these users on one board (a group's members on the global week). */
+  async scores(key: string, userIds: string[]) {
+    if (userIds.length === 0) return new Map<string, number>();
+    const values = await redis.zmscore(k(key), ...userIds);
+    return new Map(
+      userIds.map((id, i) => [id, Math.round(Number(values[i] ?? 0))]),
+    );
+  },
+
   /** Replaces one board wholesale (the nightly rebuild). */
   async replace(
     key: string,

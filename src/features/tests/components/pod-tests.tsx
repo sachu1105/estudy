@@ -25,8 +25,9 @@ export function PodTests({
       {subjectId ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface p-4">
           <p className="min-w-0 flex-1 text-body text-ink-muted">
-            25 questions across this subject&apos;s topics, PSC timing, a third of a
-            mark off for a wrong answer. Practice a single topic from its page.
+            25 questions across this subject&apos;s topics, PSC timing, a third
+            of a mark off for a wrong answer. Practice a single topic from its
+            page.
           </p>
           <StartTestButton kind="subject" id={subjectId} label="Section mock" />
         </div>

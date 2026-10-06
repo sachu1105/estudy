@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { config } from "dotenv";
+import { Redis } from "ioredis";
 import { Client } from "pg";
 
 const env = config({ path: ".env", quiet: true }).parsed ?? {};
@@ -184,4 +185,18 @@ export async function seedQuestions(topics: string[], perTopic = 5) {
         );
     }
   });
+}
+
+/**
+ * Forgets the per-IP login counters. Every e2e login comes from one IP, so a full run
+ * would trip the real limit; the limit itself stays on and is tested on its own.
+ */
+export async function resetLoginLimits() {
+  const redis = new Redis(process.env.REDIS_URL ?? env.REDIS_URL);
+  try {
+    const keys = await redis.keys("rl:loginPerIp:*");
+    if (keys.length) await redis.del(...keys);
+  } finally {
+    redis.disconnect();
+  }
 }

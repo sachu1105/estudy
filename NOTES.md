@@ -753,3 +753,35 @@ generation and "mock tests from my material" (paidOnly; a calm card says so).
 - Settings: a privacy card (hide from rank, district), through a `profileService`
   (layering).
 
+
+## Milestone 13 — groups (2026-10-11)
+
+- Data (migration `20261011090000_groups`): Group (visibility PUBLIC | PRIVATE, optional
+  exam), Membership (OWNER | ADMIN | MEMBER, `mutedUntil`), GroupInvite (8-character
+  code without 0/O/1/I/L, expiry, max uses), JoinRequest, GroupItem + GroupItemFile,
+  GroupTest (MockTest gains `groupTestId`), Block, Report.
+- Every group action goes through `groupService.require(user, groupId, role)` on the
+  server (rule 9). Actions are also rate-limited per user (`groupPerUser`).
+- Joining: public groups directly; private groups by invite link or code, or by a join
+  request the owner or an admin decides. Owner/admin can remove, mute for a day, promote
+  and revoke invites. Muted members can read but not post.
+- Material: pod items are shared as copies (files and note images copied, the note doc
+  rewritten to the copies; rule 15 holds because the original stays private). Storage
+  counts against `limit(owner, 'groupStorage')`. Files are served through
+  `/api/groups/files/[fileId]`: membership check, then a short-lived signed redirect.
+  Notes render through a safe React renderer, never raw HTML.
+- Deviation: no direct file upload into a group. A file goes into the user's pod first
+  and is shared from there, so there is one upload path and one place it is scanned and
+  counted. Links can be added to a group directly.
+- Shared tests: share a test you took (same questions), or build one from the verified
+  pool (topics, 10/20/30 questions, timed or untimed). Each member gets their own
+  MockTest copy; the results page ranks members by score.
+- Deviation: the group rank does not keep a sorted set per group. It reads members'
+  scores from the global weekly board with `zmscore` and adds right answers from group
+  tests this week. Members are few, so this is cheap and there is nothing extra to
+  rebuild.
+- Reports on groups, items and tests go to `/admin/reports` (moderators and up). Admins
+  hide the target or dismiss; both are audited. Blocking hides a person's content from
+  the blocker.
+- e2e: seeded logins clear the per-IP login counters first (`resetLoginLimits`). A full
+  run logs in more than 30 times from one IP; the limit itself stays on in the app.

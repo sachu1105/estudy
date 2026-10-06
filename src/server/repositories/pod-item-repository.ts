@@ -92,6 +92,26 @@ export const podItemRepository = {
   },
 
   /** For the worker, which acts on behalf of the item's owner. */
+  /** The user's latest material across all pods, for "share from my pods". */
+  recent(ownerId: string, take = 50) {
+    return prisma.podItem.findMany({
+      where: { ownerId, deletedAt: null },
+      orderBy: { updatedAt: "desc" },
+      take,
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        pod: { select: { name: true } },
+      },
+    });
+  },
+
+  /** The user's own files among these ids: a note's images, when it's shared. */
+  filesOwned(ids: string[], ownerId: string) {
+    return prisma.podFile.findMany({ where: { id: { in: ids }, ownerId } });
+  },
+
   findById(id: string) {
     return prisma.podItem.findUnique({
       where: { id },

@@ -93,5 +93,6 @@ export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)",
     "/api/pods/files/:path*",
+    "/api/groups/files/:path*",
   ],
 };

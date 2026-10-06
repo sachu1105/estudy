@@ -281,3 +281,23 @@ export async function decideQuestionsAction(
   revalidatePath("/admin/questions");
   return { ok: true };
 }
+
+// ---- Reports (milestone 13) --------------------------------------------------------
+
+export async function decideReportAction(input: unknown): Promise<AdminResult> {
+  const by = await requireAdmin("reports");
+  const parsed = z
+    .object({
+      type: z.enum(["GROUP", "GROUP_ITEM", "GROUP_TEST", "USER"]),
+      id: z.uuid(),
+      hide: z.boolean(),
+    })
+    .safeParse(input);
+  if (!parsed.success) return invalid;
+  const { type, id, hide } = parsed.data;
+  return done(
+    await adminService.decideReport(by, type, id, hide),
+    "/admin/reports",
+    "/admin",
+  );
+}

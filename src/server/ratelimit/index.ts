@@ -28,6 +28,8 @@ export const rules = {
   planGeneratePerUser: { limit: 30, windowMs: 10 * MINUTE },
   // Starting and submitting tests, and reporting questions (rule 13).
   testPerUser: { limit: 60, windowMs: 10 * MINUTE },
+  // Group actions: joining, inviting, sharing, reporting (rule 13).
+  groupPerUser: { limit: 120, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

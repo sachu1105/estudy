@@ -86,6 +86,14 @@ model User {
   questionReports    QuestionReport[]
   mockTests          MockTest[]
   testAttempts       TestAttempt[]
+  groupsOwned        Group[]             @relation("GroupOwner")
+  memberships        Membership[]
+  joinRequests       JoinRequest[]
+  groupItems         GroupItem[]
+  groupTests         GroupTest[]
+  blocks             Block[]             @relation("Blocker")
+  blockedBy          Block[]             @relation("Blocked")
+  reports            Report[]
 }
 
 model RefreshToken {
@@ -198,6 +206,7 @@ enum ParseStage {
 }
 
 model Exam {
+  groups      Group[]
   id          String   @id @default(uuid()) @db.Uuid
   slug        String   @unique
   name        String
@@ -845,6 +854,8 @@ model MockTest {
   negativeMarking   Boolean      @default(false)
   /// Set when the user first opens it; the timer counts from here.
   startedAt         DateTime?    @db.Timestamptz(6)
+  /// A member's copy of a test shared in a group (milestone 13).
+  groupTestId       String?      @db.Uuid
   createdAt         DateTime     @default(now()) @db.Timestamptz(6)
 
   attempts TestAttempt[]
@@ -893,4 +904,193 @@ model AttemptAnswer {
   flagged     Boolean     @default(false)
 
   @@index([attemptId, position])
+}
+
+// ---------------------------------------------------------------------------------------
+// Groups (milestone 13). Every action checks membership and group role (rule 9).
+
+enum GroupVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum GroupRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum JoinRequestStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+enum ReportTarget {
+  GROUP
+  GROUP_ITEM
+  GROUP_TEST
+  USER
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model Group {
+  id          String          @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  examId      String?         @db.Uuid
+  exam        Exam?           @relation(fields: [examId], references: [id], onDelete: SetNull)
+  visibility  GroupVisibility @default(PUBLIC)
+  ownerId     String          @db.Uuid
+  owner       User            @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  /// A site admin took it out of the directory (moderation).
+  hiddenAt    DateTime?       @db.Timestamptz(6)
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?       @db.Timestamptz(6)
+
+  members  Membership[]
+  invites  GroupInvite[]
+  requests JoinRequest[]
+  items    GroupItem[]
+  tests    GroupTest[]
+
+  @@index([visibility, deletedAt, examId])
+}
+
+model Membership {
+  id         String    @id @default(uuid()) @db.Uuid
+  groupId    String    @db.Uuid
+  group      Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       GroupRole @default(MEMBER)
+  /// Muted members read but can't share until this passes.
+  mutedUntil DateTime? @db.Timestamptz(6)
+  joinedAt   DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@unique([groupId, userId])
+  @@index([userId])
+}
+
+model GroupInvite {
+  id          String    @id @default(uuid()) @db.Uuid
+  groupId     String    @db.Uuid
+  group       Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  /// Typed in, or in a link: /groups/join/<code>.
+  code        String    @unique
+  createdById String    @db.Uuid
+  expiresAt   DateTime? @db.Timestamptz(6)
+  maxUses     Int?
+  uses        Int       @default(0)
+  revokedAt   DateTime? @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([groupId])
+}
+
+model JoinRequest {
+  id          String            @id @default(uuid()) @db.Uuid
+  groupId     String            @db.Uuid
+  group       Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId      String            @db.Uuid
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      JoinRequestStatus @default(PENDING)
+  decidedById String?           @db.Uuid
+  createdAt   DateTime          @default(now()) @db.Timestamptz(6)
+  decidedAt   DateTime?         @db.Timestamptz(6)
+
+  @@unique([groupId, userId])
+}
+
+/// Material shared into a group: a copy, so the sharer's pod stays private (rule 15).
+model GroupItem {
+  id              String      @id @default(uuid()) @db.Uuid
+  groupId         String      @db.Uuid
+  group           Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sharedById      String      @db.Uuid
+  sharedBy        User        @relation(fields: [sharedById], references: [id], onDelete: Cascade)
+  type            PodItemType
+  title           String
+  noteJson        Json?
+  noteText        String?
+  url             String?
+  linkDescription String?
+  /// Tags: the subject and topic it is for.
+  subjectName     String?
+  topicName       String?
+  sizeBytes       Int         @default(0)
+  /// A group admin or site admin took it down.
+  hiddenAt        DateTime?   @db.Timestamptz(6)
+  createdAt       DateTime    @default(now()) @db.Timestamptz(6)
+  deletedAt       DateTime?   @db.Timestamptz(6)
+
+  files GroupItemFile[]
+
+  @@index([groupId, deletedAt, createdAt])
+}
+
+model GroupItemFile {
+  id         String    @id @default(uuid()) @db.Uuid
+  itemId     String    @db.Uuid
+  item       GroupItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  order      Int       @default(0)
+  storageKey String    @unique
+  mimeType   String
+  sizeBytes  Int
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([itemId, order])
+}
+
+/// A test shared in a group. Each member who takes it gets their own MockTest copy.
+model GroupTest {
+  id              String    @id @default(uuid()) @db.Uuid
+  groupId         String    @db.Uuid
+  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sharedById      String    @db.Uuid
+  sharedBy        User      @relation(fields: [sharedById], references: [id], onDelete: Cascade)
+  title           String
+  questionIds     String[]  @db.Uuid
+  durationSec     Int?
+  negativeMarking Boolean   @default(false)
+  hiddenAt        DateTime? @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([groupId, createdAt])
+}
+
+model Block {
+  id        String   @id @default(uuid()) @db.Uuid
+  blockerId String   @db.Uuid
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId String   @db.Uuid
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([blockerId, blockedId])
+}
+
+/// A report on user content, for the site admins' queue.
+model Report {
+  id           String       @id @default(uuid()) @db.Uuid
+  reporterId   String       @db.Uuid
+  reporter     User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType   ReportTarget
+  targetId     String       @db.Uuid
+  groupId      String?      @db.Uuid
+  reason       String
+  note         String?
+  status       ReportStatus @default(OPEN)
+  resolvedById String?      @db.Uuid
+  createdAt    DateTime     @default(now()) @db.Timestamptz(6)
+  resolvedAt   DateTime?    @db.Timestamptz(6)
+
+  @@unique([reporterId, targetType, targetId])
+  @@index([status, createdAt])
 }

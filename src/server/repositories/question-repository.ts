@@ -252,6 +252,7 @@ export const questionRepository = {
     questionIds: string[];
     durationSec: number | null;
     negativeMarking: boolean;
+    groupTestId?: string | null;
   }) {
     return prisma.mockTest.create({ data });
   },

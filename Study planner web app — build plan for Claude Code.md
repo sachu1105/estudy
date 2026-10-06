@@ -832,7 +832,7 @@ Read CLAUDE.md. Milestones 1-11 are committed.
 6. Anti-abuse: flag accounts gaining XP faster than humanly possible for admin review.
 ```
 
-### Milestone 13 — groups: membership, shared pods and tests
+### Milestone 13 — groups: membership, shared pods and tests (done)
 
 ```
 Read CLAUDE.md. Milestones 1-12 are committed.
