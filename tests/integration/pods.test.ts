@@ -101,6 +101,46 @@ describe("subject pods", () => {
     expect(await pods.exam(other, versionId)).toBeNull();
   });
 
+  it("saves the exam board, and refuses a board that doesn't match the user's pods", async () => {
+    const user = await makeUser();
+    const other = await makeUser("b@example.com");
+    const { versionId } = await confirmedSyllabus(user.id);
+    await pods.syncFromSyllabus(user, versionId);
+    const [history, english] = await pods.list(user);
+    const board = {
+      TO_STUDY: [],
+      STUDYING: [english!.id],
+      REVISING: [],
+      DONE: [history!.id],
+    };
+
+    expect(await pods.arrangeBoard(user, versionId, board)).toEqual({
+      ok: true,
+    });
+    const after = await pods.list(user);
+    expect(after.map((p) => [p.name, p.stage, p.stageOrder])).toEqual([
+      ["History", "DONE", 0],
+      ["English", "STUDYING", 0],
+    ]);
+
+    // A pod missing, a pod twice, or someone else's board: nothing changes.
+    for (const bad of [
+      { ...board, DONE: [] },
+      { ...board, TO_STUDY: [english!.id] },
+    ])
+      expect(await pods.arrangeBoard(user, versionId, bad)).toMatchObject({
+        ok: false,
+        code: "STALE_BOARD",
+      });
+    expect(await pods.arrangeBoard(other, versionId, board)).toMatchObject({
+      ok: false,
+    });
+    expect((await pods.list(user)).map((p) => p.stage)).toEqual([
+      "DONE",
+      "STUDYING",
+    ]);
+  });
+
   it("refuses a syllabus that isn't confirmed or isn't the user's", async () => {
     const owner = await makeUser("a@example.com");
     const other = await makeUser("b@example.com");

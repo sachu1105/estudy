@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { BackLink } from "@/features/pods/components/back-link";
 import { PlanCard } from "@/features/pods/components/plan-card";
-import { PodCard } from "@/features/pods/components/pod-card";
+import { PodBoard } from "@/features/pods/components/pod-board";
 import { isId } from "@/lib/ids";
+import { toBoard, POD_STAGES, type Board } from "@/lib/pods/stages";
 import { requireUser } from "@/server/auth/session";
 import { podService } from "@/server/services/pods";
 
@@ -30,6 +31,10 @@ export default async function ExamPodPage({
     ? Math.round((exam.topicsDone / exam.topics) * 100)
     : 0;
   const subjects = exam.pods.length;
+  const columns = toBoard(exam.pods);
+  const board = Object.fromEntries(
+    POD_STAGES.map((s) => [s, columns[s].map((p) => p.id)]),
+  ) as Board;
 
   return (
     <>
@@ -80,24 +85,21 @@ export default async function ExamPodPage({
               Subjects
             </h2>
             <p className="text-body text-ink-muted">
-              Each subject is a pod: its topics, your notes and files, and its
-              tests.
+              Each subject is a pod. Drag them into the order you want to study
+              them; your plan follows the board.
             </p>
           </div>
-          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {exam.pods.map((p) => (
-              <li key={p.id} className="flex">
-                <PodCard
-                  id={p.id}
-                  name={p.name}
-                  kind={p.kind}
-                  topics={p.topics.length}
-                  topicsDone={p.topicsDone}
-                  items={p.items}
-                />
-              </li>
-            ))}
-          </ul>
+          <PodBoard
+            syllabusId={exam.id}
+            pods={exam.pods.map((p) => ({
+              id: p.id,
+              name: p.name,
+              topics: p.topics.length,
+              topicsDone: p.topicsDone,
+              items: p.items,
+            }))}
+            initialBoard={board}
+          />
         </section>
 
         <section

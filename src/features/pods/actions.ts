@@ -10,6 +10,7 @@ import { itemService, podService } from "@/server/services/pods";
 import {
   addLinkSchema,
   addNoteSchema,
+  arrangeBoardSchema,
   itemIdSchema,
   itemTopicsSchema,
   newPodSchema,
@@ -46,6 +47,22 @@ export async function setTopicDoneAction(
   if (blocked) return blocked;
   const { podId, topicId, done } = parsed.data;
   const result = await podService.setTopicDone(user, podId, topicId, done);
+  if (!result.ok) return { ok: false, error: result.message };
+  revalidatePath("/pods", "layout");
+  return { ok: true };
+}
+
+/** A drag on the exam board: saves every column's order in one go. */
+export async function arrangeBoardAction(
+  input: unknown,
+): Promise<ActionResult> {
+  const user = await requireUser();
+  const parsed = arrangeBoardSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const { syllabusId, board } = parsed.data;
+  const result = await podService.arrangeBoard(user, syllabusId, board);
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/pods", "layout");
   return { ok: true };

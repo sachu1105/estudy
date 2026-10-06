@@ -59,12 +59,54 @@ test.describe("pods", () => {
     await page.getByRole("link", { name: title }).first().click();
     await expect(page).toHaveURL(new RegExp(`/pods/exam/${id}$`));
     await expect(page.getByText("1 of 4 topics done")).toBeVisible();
+    const column = (name: string) => page.getByRole("region", { name });
     await expect(
-      page.getByRole("link", { name: /Indian Constitution/ }),
-    ).toContainText("1 of 3 topics done");
+      column("To study")
+        .getByRole("article")
+        .filter({ hasText: "Indian Constitution" }),
+    ).toContainText("1 of 3 topics");
+
+    // The board: move a subject with its menu, and it stays moved.
+    await page.getByRole("button", { name: "Move Kerala geography" }).click();
+    const saved = page.waitForResponse((r) => r.request().method() === "POST");
+    await page.getByRole("menuitem", { name: "Studying" }).click();
+    await saved;
     await expect(
-      page.getByRole("link", { name: /Kerala geography/ }),
+      column("Studying").getByRole("link", { name: "Kerala geography" }),
     ).toBeVisible();
+    await page.reload();
+    await expect(
+      column("Studying").getByRole("link", { name: "Kerala geography" }),
+    ).toBeVisible();
+
+    // And by dragging, on desktop (a phone drags with a long press).
+    if (!test.info().project.name.includes("mobile")) {
+      const card = column("To study")
+        .getByRole("article")
+        .filter({ hasText: "Indian Constitution" });
+      const target = column("Done").getByText("Drop a subject here");
+      const from = (await card.boundingBox())!;
+      const to = (await target.boundingBox())!;
+      await page.mouse.move(from.x + from.width / 2, from.y + 50);
+      await page.mouse.down();
+      await page.mouse.move(from.x + from.width / 2 + 10, from.y + 60);
+      await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+        steps: 12,
+      });
+      const dropped = page.waitForResponse(
+        (r) => r.request().method() === "POST",
+      );
+      await page.mouse.up();
+      await dropped;
+      await expect(
+        column("Done").getByRole("link", { name: "Indian Constitution" }),
+      ).toBeVisible();
+      await page.reload();
+      await expect(
+        column("Done").getByRole("link", { name: "Indian Constitution" }),
+      ).toBeVisible();
+    }
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
     // The pods home lists the exam.
     await page.getByRole("link", { name: "Pods", exact: true }).first().click();

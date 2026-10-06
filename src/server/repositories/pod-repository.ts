@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/server/db";
+import type { PodStage } from "@/server/db/generated/prisma/client";
 
 export const podRepository = {
   /**
@@ -25,6 +26,7 @@ export const podRepository = {
             subjectId: s.id,
             syllabusVersionId,
             order: s.order,
+            stageOrder: s.order,
           },
           update: { name: s.name, order: s.order, deletedAt: null },
         });
@@ -43,6 +45,30 @@ export const podRepository = {
         data: { kind: "CUSTOM", syllabusVersionId: null },
       });
     });
+  },
+
+  /** Ids of the user's subject pods for one syllabus: the cards on its board. */
+  async boardPodIds(ownerId: string, syllabusVersionId: string) {
+    const pods = await prisma.pod.findMany({
+      where: { ownerId, syllabusVersionId, kind: "SUBJECT", deletedAt: null },
+      select: { id: true },
+    });
+    return pods.map((p) => p.id);
+  },
+
+  /** Saves the whole board at once: each pod's column and its place in it. */
+  async arrangeBoard(
+    ownerId: string,
+    placements: { id: string; stage: PodStage; stageOrder: number }[],
+  ) {
+    await prisma.$transaction(
+      placements.map((p) =>
+        prisma.pod.updateMany({
+          where: { id: p.id, ownerId },
+          data: { stage: p.stage, stageOrder: p.stageOrder },
+        }),
+      ),
+    );
   },
 
   listOwned(ownerId: string) {

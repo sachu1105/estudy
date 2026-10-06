@@ -22,6 +22,16 @@ export const renamePodSchema = z.object({
   podId: z.uuid(),
   name: podNameSchema,
 });
+const column = z.array(z.uuid()).max(100);
+export const arrangeBoardSchema = z.object({
+  syllabusId: z.uuid(),
+  board: z.object({
+    TO_STUDY: column,
+    STUDYING: column,
+    REVISING: column,
+    DONE: column,
+  }),
+});
 export const adoptSyllabusSchema = z.object({ versionId: z.uuid() });
 
 export type ActionResult<T = object> =

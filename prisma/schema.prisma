@@ -371,6 +371,14 @@ enum ItemStatus {
 
 /// A subject's home: its topics, the user's material mapped to them, tests and progress.
 /// One per user per syllabus subject, plus CUSTOM pods the user makes.
+/// A subject's column on the exam board.
+enum PodStage {
+  TO_STUDY
+  STUDYING
+  REVISING
+  DONE
+}
+
 model Pod {
   id                String           @id @default(uuid()) @db.Uuid
   ownerId           String           @db.Uuid
@@ -383,6 +391,10 @@ model Pod {
   subjectId         String?          @db.Uuid
   subject           Subject?         @relation(fields: [subjectId], references: [id], onDelete: SetNull)
   order             Int              @default(0)
+  /// Where the user put it on the exam's board; the plan reads it (rule 14 override).
+  stage             PodStage         @default(TO_STUDY)
+  /// Position within its board column, top first.
+  stageOrder        Int              @default(0)
   createdAt         DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime         @updatedAt @db.Timestamptz(6)
   deletedAt         DateTime?        @db.Timestamptz(6)

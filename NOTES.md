@@ -476,3 +476,30 @@ syllabus with the subject pods inside it.
 - Fixed: BullMQ job ids can't contain ":", so adding a link failed at enqueue. Pod job
   ids are now `link-meta-<itemId>`. The integration tests use a fake queue, so only the
   e2e run caught it.
+
+### Exam board (2026-10-06)
+
+The user asked for a kanban board like a task app's, to drag subject pods into the
+order they'll study them, before the plan.
+
+- The exam pod's Subjects section is a board with four columns: To study, Studying,
+  Revising, Done. They're stored on Pod as `stage` and `stageOrder`
+  (migration `20261006120000_pod_board`). Each column's hint says what it tells the plan.
+  Milestone 6 reads it: Studying gets time first, To study is introduced top first,
+  Revising gets revision touches only, and Done gets a light revision now and then.
+- dnd-kit (core and sortable). Mouse drags the whole card (6 px threshold, so a click
+  still opens the pod). Touch drags after a 250 ms long press, so the page still
+  scrolls. The keyboard drags from the grip handle, with spoken announcements. Every
+  card also has a "Move to" menu, the easy way on a phone.
+- Under 1024px the columns stack, so nothing scrolls sideways. At 1024px and wider
+  they sit side by side.
+- A move saves the whole board in one action (`arrangeBoard`). The server checks that
+  the columns hold exactly the user's subject pods for that syllabus, each once; a
+  stale board is refused and the UI rolls back.
+- Cards stay neutral (the design system's 90% rule) instead of the pastel cards in the
+  reference. Topic progress shows as ten dots.
+- Dev fix: the Prisma client cached on globalThis is keyed by its generated class, so
+  `prisma generate` after a migration no longer leaves the dev server on a stale
+  client. Route modules already in memory can still be stale after big changes:
+  restart `pnpm dev` if an API route behaves like old code.
+

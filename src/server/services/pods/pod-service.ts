@@ -1,4 +1,5 @@
 import type { Clock } from "@/lib/clock";
+import { POD_STAGES, type Board } from "@/lib/pods/stages";
 import type { PodRepository } from "@/server/repositories/pod-repository";
 import type { SyllabusRepository } from "@/server/repositories/syllabus-repository";
 import type { TopicCompletionRepository } from "@/server/repositories/topic-completion-repository";
@@ -70,6 +71,9 @@ export function createPodService(deps: PodDeps) {
           id: p.id,
           name: p.name,
           kind: p.kind,
+          stage: p.stage,
+          stageOrder: p.stageOrder,
+          order: p.order,
           syllabus: p.syllabusVersion,
           topics,
           topicsDone: topics.filter((t) => done.has(t.id)).length,
@@ -107,6 +111,35 @@ export function createPodService(deps: PodDeps) {
       if (!exam) return null;
       const own = await deps.syllabuses.findOwned(syllabusId, user.id);
       return { ...exam, editable: Boolean(own) };
+    },
+
+    /**
+     * Saves the exam board after a drag. The columns must hold exactly the user's subject
+     * pods for that syllabus, each once; anything else is refused, not half-applied.
+     */
+    async arrangeBoard(
+      user: User,
+      syllabusId: string,
+      board: Board,
+    ): Promise<Result<object>> {
+      const ids = await deps.pods.boardPodIds(user.id, syllabusId);
+      const placed = POD_STAGES.flatMap((s) => board[s]);
+      const same =
+        placed.length === ids.length &&
+        new Set(placed).size === placed.length &&
+        placed.every((id) => ids.includes(id));
+      if (!same)
+        return failure(
+          "STALE_BOARD",
+          "The board changed in another tab. Reload to see it.",
+        );
+      await deps.pods.arrangeBoard(
+        user.id,
+        POD_STAGES.flatMap((stage) =>
+          board[stage].map((id, stageOrder) => ({ id, stage, stageOrder })),
+        ),
+      );
+      return { ok: true };
     },
 
     async get(user: User, podId: string) {
