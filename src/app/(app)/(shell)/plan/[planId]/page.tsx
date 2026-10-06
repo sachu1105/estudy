@@ -1,4 +1,9 @@
-import { PartyPopper, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  PartyPopper,
+  SlidersHorizontal,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -11,6 +16,7 @@ import { ReplanButton } from "@/features/plans/components/replan-button";
 import { ReplanCard } from "@/features/plans/components/replan-card";
 import { isId } from "@/lib/ids";
 import {
+  addDays,
   toDay,
   type CoverageWarning,
   type ReplanDiff,
@@ -27,8 +33,15 @@ export default async function PlanPage({
 }: PageProps<"/plan/[planId]">) {
   const user = await requireUser();
   const { planId } = await params;
-  const isNew = (await searchParams).new === "1";
-  const plan = isId(planId) ? await planService.get(user, planId) : null;
+  const query = await searchParams;
+  const isNew = query.new === "1";
+  const from =
+    typeof query.from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(query.from)
+      ? query.from
+      : undefined;
+  const plan = isId(planId)
+    ? await planService.get(user, planId, 7, from)
+    : null;
   if (!plan) notFound();
   // Edits and re-plans make a new plan; old links land on the current one.
   if (plan.status === "ARCHIVED" && plan.syllabusVersionId) {
@@ -130,6 +143,15 @@ export default async function PlanPage({
           ))}
         </dl>
 
+        <p className="-mt-4 text-small">
+          <Link
+            href={`/plan/${plan.id}/how`}
+            className="font-medium text-accent-ink hover:underline"
+          >
+            How your plan was built
+          </Link>
+        </p>
+
         {plan.leftOut.length > 0 ? (
           <details className="rounded-card border border-border bg-surface p-4">
             <summary className="cursor-pointer text-body font-medium">
@@ -152,9 +174,37 @@ export default async function PlanPage({
           aria-labelledby="days-heading"
           className="flex scroll-mt-20 flex-col gap-6"
         >
-          <h2 id="days-heading" className="text-h2">
-            The next 7 days
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 id="days-heading" className="text-h2">
+              {plan.from === plan.today
+                ? "The next 7 days"
+                : `From ${formatDay(plan.from, false)}`}
+            </h2>
+            <nav aria-label="Weeks" className="flex gap-2">
+              {plan.from !== plan.today ? (
+                <Button asChild variant="ghost">
+                  <Link
+                    href={`/plan/${plan.id}?from=${
+                      addDays(plan.from, -7) < plan.today
+                        ? plan.today
+                        : addDays(plan.from, -7)
+                    }#days`}
+                  >
+                    <ChevronLeft aria-hidden /> Earlier
+                  </Link>
+                </Button>
+              ) : null}
+              {addDays(plan.from, 7) <= plan.endDate ? (
+                <Button asChild variant="ghost">
+                  <Link
+                    href={`/plan/${plan.id}?from=${addDays(plan.from, 7)}#days`}
+                  >
+                    Later <ChevronRight aria-hidden />
+                  </Link>
+                </Button>
+              ) : null}
+            </nav>
+          </div>
           {plan.days.length === 0 ? (
             <p className="text-body text-ink-muted">
               This plan has finished. Make a new one from the exam pod.

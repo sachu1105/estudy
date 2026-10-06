@@ -712,7 +712,7 @@ autosaved draft, back never loses data.
 Playwright e2e: new user -> beginner -> catalogue exam -> 90 days -> plan exists.
 ```
 
-### Milestone 7 — today, progress tracking and the weekly re-plan
+### Milestone 7 — today, progress tracking and the weekly re-plan (done)
 
 ```
 Read CLAUDE.md. Milestones 1-6 are committed.

@@ -13,8 +13,10 @@ import { PodMenu } from "@/features/pods/components/pod-menu";
 import { PodTabs } from "@/features/pods/components/pod-tabs";
 import { TopicChecklist } from "@/features/pods/components/topic-checklist";
 import { isId } from "@/lib/ids";
+import { formatDay, formatMinutes } from "@/lib/plans/format";
 import { requireUser } from "@/server/auth/session";
 import { itemService, podService } from "@/server/services/pods";
+import { progressService } from "@/server/services/progress";
 
 export const metadata: Metadata = { title: "Pod" };
 
@@ -23,7 +25,12 @@ export default async function PodPage({ params }: PageProps<"/pods/[podId]">) {
   const { podId } = await params;
   const pod = isId(podId) ? await podService.get(user, podId) : null;
   if (!pod) notFound();
-  const items = await itemService.list(user, pod.id);
+  const [items, stats] = await Promise.all([
+    itemService.list(user, pod.id),
+    pod.subjectId
+      ? progressService.subjectStats(user, pod.subjectId)
+      : { minutes: 0, tasksDone: 0, lastStudied: null },
+  ]);
 
   const done = pod.topics.filter((t) => t.done).length;
   const total = pod.topics.length;
@@ -104,9 +111,17 @@ export default async function PodPage({ params }: PageProps<"/pods/[podId]">) {
           />
         }
         progress={
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ["Topics done", total ? `${done} of ${total}` : "No topics"],
+              ["Time studied", formatMinutes(stats.minutes)],
+              ["Plan tasks done", String(stats.tasksDone)],
+              [
+                "Last studied",
+                stats.lastStudied
+                  ? formatDay(stats.lastStudied, false)
+                  : "Not yet",
+              ],
               ["Material", String(pod.items)],
               ["Tests taken", "0"],
             ].map(([label, value]) => (

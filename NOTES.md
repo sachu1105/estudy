@@ -549,3 +549,66 @@ order they'll study them, before the plan.
   - Limits: activePlans via `limit()`; re-planning the same exam doesn't count again.
   - Rate limits: `planDraftPerUser` and `planGeneratePerUser`.
 
+## Milestone 7 — today, progress and the weekly re-plan (2026-10-07)
+
+- Logs (migration `20261007090000_progress`):
+  - TaskCompletion, StudySession and XpLedger are append-only, with triggers
+    (rule 6).
+  - ActiveSession is the live timer, one per user. PlanOverride stores hand edits
+    per exam.
+  - StudyPlan gains `adjustments`, `replanDiff`, `diffSeenAt` and `replanWarning`.
+- Ticking a task appends to the log and moves XP either way (±10).
+  - The streak bonus (2 XP per streak day, up to 20) comes once, on the day's first
+    activity.
+  - The topic is marked done in its pod when its last STUDY block is.
+- Streak (`lib/progress/streak.ts`, tested):
+  - A day counts with a finished task or 10 active minutes.
+  - Today stays open until midnight.
+  - One freeze per Monday-to-Sunday week covers a single missed day, but only when
+    it bridges to an earlier active day.
+- XP: 1 per study minute, capped at 300 a day, plus task and streak XP.
+- Today: a bento grid with tasks (optimistic, Start and Open pod on each), streak
+  (with "How your streak works"), minutes, days left, coverage, next mock, and one
+  accent action, "Start next task".
+- Focus view at /study/[taskId], outside the shell:
+  - The server holds the time. The browser beats every 60 s; a gap counts at most
+    90 s, and paused time never counts.
+  - Starting another task closes the running one and saves its minutes.
+  - Finish logs a StudySession plus capped study XP, and ticks the task.
+  - Material opens in a sheet: from the bottom on a phone, from the side on desktop.
+- One engine path, `engine()` in plan-service:
+  - A fresh plan, or `replan()` when the exam has an active plan.
+  - Re-plans feed in: history (still-ticked tasks of every plan of the exam), last
+    week's adjustments, pins (done ones dropped), the previous plan, and the
+    original timelineStart.
+  - The end date is kept (the remaining days). Left-out topics stay out.
+  - "Change plan" runs through it too, so progress survives.
+  - If the rest doesn't fit, the plan stays and `replanWarning` shows a card linking
+    to the setup's options.
+- Weekly re-plan: on the pods queue, Sundays at 04:00 IST (`replan-week`), plus
+  "Re-plan now".
+  - The diff card ("made fresh from today") shows once, on the plan and on Today.
+  - Re-plans make a new plan id, and old plan links redirect to the active one.
+  - Today keeps tasks ticked earlier the same day.
+- Hand edits: move, change minutes, keep on a day, and custom tasks, all PlanOverride
+  pins.
+  - "Reset to suggested" deletes the pin. Rows say "placed by you".
+  - Check tests can't be pinned (they travel with their study block), and nothing
+    can be dated before today.
+- Views:
+  - The plan pages by week (`?from=`, never before today).
+  - /calendar is a Monday-first month grid: planned time ahead, ticks behind, never
+    misses.
+  - Each pod's Progress tab shows time studied, tasks done and last studied.
+  - Topic pages show "In your plan" with "Why this?".
+  - /plan/[id]/how is "How your plan was built": every input plus the engine's real
+    constants.
+- Loading skeletons are only on Today and Calendar. A loading boundary streams a 200
+  before `notFound()` can run, which would turn other users' pages into soft 404s
+  (Next docs, loading.md "Status codes"). There's a shell error page and a not-found
+  page.
+- e2e: today.spec seeds its own user (`seedAndLogin`). There's one timer per user,
+  and registering through the form is limited to 5 per IP per hour.
+- Known flake: syllabus.spec "pasting a syllabus…" fails when a running worker
+  finishes the parse before the progress list renders. It passes on its own.
+

@@ -125,6 +125,48 @@ export function createProgressService(deps: ProgressDeps) {
       return { ok: true, streak: after.current };
     },
 
+    /**
+     * A month of the user's plans: minutes and tasks per day, and what got done. Past
+     * days show only what was done, never what wasn't (rule 7).
+     */
+    async calendar(user: User, month: string) {
+      const today = todayFor(user);
+      const first = `${month}-01`;
+      const [y, m] = month.split("-").map(Number);
+      const last = addDays(
+        `${String(m === 12 ? y! + 1 : y).padStart(4, "0")}-${String(m === 12 ? 1 : m! + 1).padStart(2, "0")}-01`,
+        -1,
+      );
+      const [days, done] = await Promise.all([
+        deps.progress.planDaysBetween(user.id, first, last),
+        deps.progress.doneCountsBetween(user.id, first, last),
+      ]);
+      const byDate = new Map<
+        string,
+        { planId: string; minutes: number; tasks: number }
+      >();
+      for (const d of days) {
+        const date = fromDbDate(d.date);
+        const seen = byDate.get(date);
+        byDate.set(date, {
+          planId: seen?.planId ?? d.planId,
+          minutes: (seen?.minutes ?? 0) + d.plannedMinutes,
+          tasks: (seen?.tasks ?? 0) + d._count.tasks,
+        });
+      }
+      return { today, first, last, days: byDate, done };
+    },
+
+    subjectStats: (user: User, subjectId: string) =>
+      deps.progress.subjectStats(user.id, subjectId),
+
+    /** "In your plan" on a topic: its next tasks and why each is there (rule 14). */
+    async topicPlan(user: User, topicId: string) {
+      const today = todayFor(user);
+      const tasks = await deps.progress.topicTasksFrom(user.id, topicId, today);
+      return tasks.map((t) => ({ ...t, date: fromDbDate(t.date) }));
+    },
+
     /** One task with its names and done state, for the focus view. */
     async task(user: User, taskId: string) {
       const task = await deps.progress.findTask(taskId, user.id);

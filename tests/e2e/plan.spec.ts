@@ -130,8 +130,34 @@ test.describe("study plan", () => {
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    // The exam pod now opens the plan.
+    // How the plan was built (rule 14).
+    await page.getByRole("link", { name: "How your plan was built" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "How your plan was built" }),
+    ).toBeVisible();
+    await expect(page.getByText("Indian Constitution").first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "The rules" }),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // The calendar: today links into the plan.
+    await page.goto("/calendar");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Calendar" }),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // The exam pod now opens the plan, and a topic says when it comes up.
     await page.goto(`/pods/exam/${examId}`);
     await expect(page.getByRole("link", { name: "Open plan" })).toBeVisible();
+    await page
+      .getByRole("link", { name: "Indian Constitution", exact: true })
+      .click();
+    await page.getByRole("link", { name: /^Preamble/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "In your plan" }),
+    ).toBeVisible();
+    await expect(page.getByText("Why this?").first()).toBeVisible();
   });
 });

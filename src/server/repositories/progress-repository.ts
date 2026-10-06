@@ -65,6 +65,73 @@ export const progressRepository = {
     });
   },
 
+  /** Days of the user's active plans between two dates, with their task counts. */
+  planDaysBetween(userId: string, from: string, to: string) {
+    return prisma.planDay.findMany({
+      where: {
+        date: { gte: toDbDate(from), lte: toDbDate(to) },
+        plan: { userId, status: "ACTIVE" },
+      },
+      orderBy: { date: "asc" },
+      select: {
+        date: true,
+        planId: true,
+        plannedMinutes: true,
+        _count: { select: { tasks: true } },
+      },
+    });
+  },
+
+  /** How many tasks are still ticked on each day between two dates. */
+  async doneCountsBetween(userId: string, from: string, to: string) {
+    const rows = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`
+      SELECT "localDate" AS day, COUNT(*) AS count FROM (
+        SELECT DISTINCT ON ("taskId") "localDate", done
+        FROM "TaskCompletion"
+        WHERE "userId" = ${userId}::uuid
+          AND "localDate" BETWEEN ${toDbDate(from)} AND ${toDbDate(to)}
+        ORDER BY "taskId", "createdAt" DESC, id DESC
+      ) latest WHERE done GROUP BY "localDate"`;
+    return new Map(rows.map((r) => [fromDbDate(r.day), Number(r.count)]));
+  },
+
+  /** A subject's totals from the logs: active minutes and tasks still ticked. */
+  async subjectStats(userId: string, subjectId: string) {
+    const [minutes, tasks] = await Promise.all([
+      prisma.studySession.aggregate({
+        where: { userId, subjectId },
+        _sum: { activeMinutes: true },
+        _max: { localDate: true },
+      }),
+      prisma.$queryRaw<{ count: bigint }[]>`
+        SELECT COUNT(*) AS count FROM (
+          SELECT DISTINCT ON ("taskId") done FROM "TaskCompletion"
+          WHERE "userId" = ${userId}::uuid AND "subjectId" = ${subjectId}::uuid
+          ORDER BY "taskId", "createdAt" DESC, id DESC
+        ) latest WHERE done`,
+    ]);
+    return {
+      minutes: minutes._sum.activeMinutes ?? 0,
+      lastStudied: minutes._max.localDate
+        ? fromDbDate(minutes._max.localDate)
+        : null,
+      tasksDone: Number(tasks[0]?.count ?? 0),
+    };
+  },
+
+  /** A topic's tasks in the user's active plans, from a day on. */
+  topicTasksFrom(userId: string, topicId: string, from: string) {
+    return prisma.planTask.findMany({
+      where: {
+        topicId,
+        date: { gte: toDbDate(from) },
+        plan: { userId, status: "ACTIVE" },
+      },
+      orderBy: [{ date: "asc" }, { position: "asc" }],
+      take: 6,
+    });
+  },
+
   /** STUDY tasks of a plan for one topic: when all are done, the topic is. */
   studyTasksOfTopic(planId: string, topicId: string) {
     return prisma.planTask.findMany({

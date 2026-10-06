@@ -7,9 +7,11 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { MaterialPanel } from "@/features/pods/components/material-panel";
 import { TopicDoneToggle } from "@/features/pods/components/topic-done-toggle";
+import { TopicPlan } from "@/features/plans/components/topic-plan";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { itemService, podService } from "@/server/services/pods";
+import { progressService } from "@/server/services/progress";
 
 export const metadata: Metadata = { title: "Topic" };
 
@@ -22,7 +24,10 @@ export default async function TopicPage({
   const pod = isId(podId) ? await podService.get(user, podId) : null;
   const topic = pod?.topics.find((t) => t.id === topicId);
   if (!pod || !topic) notFound();
-  const items = await itemService.listForTopic(user, topic.id);
+  const [items, planned] = await Promise.all([
+    itemService.listForTopic(user, topic.id),
+    progressService.topicPlan(user, topic.id),
+  ]);
 
   return (
     <>
@@ -39,6 +44,7 @@ export default async function TopicPage({
         <Badge tone="outline">Difficulty {topic.difficulty}</Badge>
         {topic.foundational ? <Badge tone="accent">Foundation</Badge> : null}
       </div>
+      <TopicPlan tasks={planned} topic={topic.name} subject={pod.name} />
       <MaterialPanel podId={pod.id} items={items} topicIds={[topic.id]} />
     </>
   );

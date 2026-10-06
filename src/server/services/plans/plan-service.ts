@@ -562,8 +562,24 @@ export function createPlanService(deps: PlanDeps) {
     draftFor: (user: PlanUser, syllabusId: string) =>
       deps.plans.findDraft(user.id, syllabusId),
 
+    /** Everything "How your plan was built" shows, from the plan's own snapshot. */
+    async explain(user: PlanUser, planId: string) {
+      const plan = await deps.plans.findOwned(planId, user.id);
+      if (!plan) return null;
+      const overrides = plan.syllabusVersionId
+        ? await deps.plans.listOverrides(user.id, plan.syllabusVersionId)
+        : [];
+      return {
+        ...withDays(plan),
+        input: plan.inputs as PlanInput,
+        adjustments: plan.adjustments as TopicAdjustment[],
+        leftOut: plan.leftOut as LeftOutTopic[],
+        edits: overrides.length,
+      };
+    },
+
     /** A plan with its next `days` days, names taken from the plan's own snapshot. */
-    async get(user: PlanUser, planId: string, days = 7) {
+    async get(user: PlanUser, planId: string, days = 7, from?: string) {
       const plan = await deps.plans.findOwned(planId, user.id);
       if (!plan) return null;
       const today = todayFor(user);
@@ -572,10 +588,13 @@ export function createPlanService(deps: PlanDeps) {
       const topicNames = new Map(
         input.subjects.flatMap((s) => s.topics.map((t) => [t.id, t.name])),
       );
-      const upcoming = await deps.plans.daysFrom(planId, today, days);
+      // Never earlier than today: past days aren't a backlog (rule 7).
+      const start = from && toDay(from) > toDay(today) ? from : today;
+      const upcoming = await deps.plans.daysFrom(planId, start, days);
       return {
         ...withDays(plan),
         today,
+        from: start,
         subjects: input.subjects.length,
         leftOut: plan.leftOut as LeftOutTopic[],
         subjectNames,
