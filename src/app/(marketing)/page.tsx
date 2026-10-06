@@ -12,6 +12,7 @@ import { ctaHref } from "@/features/marketing/components/section-heading";
 import { site } from "@/lib/site";
 import { hasSession } from "@/server/auth/session";
 import { billingEnabled } from "@/server/entitlements";
+import { loadSettings } from "@/server/settings";
 import { env } from "@/server/env";
 
 export const metadata: Metadata = {
@@ -57,6 +58,7 @@ export default async function LandingPage() {
   const signedIn = await hasSession();
   const href = ctaHref(signedIn);
 
+  await loadSettings();
   return (
     <>
       <JsonLd />
@@ -65,7 +67,7 @@ export default async function LandingPage() {
       <FeaturesBento />
       <HowItWorks />
       <GroupsSection />
-      <PricingTeaser billingEnabled={billingEnabled} ctaHref={href} />
+      <PricingTeaser billingEnabled={billingEnabled()} ctaHref={href} />
       <Faq />
       <FinalCta href={href} />
     </>

@@ -766,7 +766,7 @@ Read CLAUDE.md. Milestones 1-7 are committed.
 Test: a user scoring 20% on a topic gets more minutes after replan than one scoring 90%.
 ```
 
-### Milestone 9 — previous year questions
+### Milestone 9 — previous year questions (skipped for now: AI-heavy)
 
 ```
 Read CLAUDE.md. Milestones 1-8 are committed.
@@ -784,7 +784,7 @@ Read CLAUDE.md. Milestones 1-8 are committed.
 5. Year-wise full papers as timed mocks ("LDC 2019, as asked").
 ```
 
-### Milestone 10 — suggested notes and websites
+### Milestone 10 — suggested notes and websites (skipped for now: AI-heavy)
 
 ```
 Read CLAUDE.md. Milestones 1-9 are committed.
@@ -869,7 +869,7 @@ Read CLAUDE.md. Milestones 1-13 are committed.
 6. Moderation: group admins can hide posts; reported posts go to the admin queue.
 ```
 
-### Milestone 15 — super admin panel
+### Milestone 15 — super admin panel (done, ahead of 8-14)
 
 ```
 Read CLAUDE.md. Milestones 1-14 are committed.

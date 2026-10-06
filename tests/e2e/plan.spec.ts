@@ -24,6 +24,8 @@ test.describe("study plan", () => {
   test("from the exam pod through four steps to a plan that explains itself", async ({
     page,
   }) => {
+    // The longest flow in the suite: setup, edits, re-plans, calendar and a topic.
+    test.setTimeout(90_000);
     const title = `Plan ${test.info().project.name} ${Date.now()}`;
     const examId = await examPod(page, title);
 

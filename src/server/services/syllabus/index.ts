@@ -3,6 +3,7 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { can, limit } from "@/server/entitlements";
+import { flagOn } from "@/server/settings";
 import { env } from "@/server/env";
 import { parseQueue } from "@/server/queue";
 import { publisher } from "@/server/realtime";
@@ -32,6 +33,7 @@ export const syllabusDeps: SyllabusDeps = {
   queue: parseQueue,
   publisher,
   entitlements: { can, limit },
+  uploadsOpen: () => flagOn("syllabusUploads"),
   clock: systemClock,
   ids: randomIds,
   readsDocuments: env.AI_PROVIDER === "hosted",

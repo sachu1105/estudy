@@ -18,10 +18,61 @@ export type EntitlementSubject = {
   } | null;
 };
 
-type Options = { billingEnabled: boolean; clock: Clock };
+/** Admin changes over the built-in table (milestone 15); null limits mean unlimited. */
+export type EntitlementSettings = {
+  billingEnabled?: boolean;
+  overrides?: Partial<
+    Record<
+      PlanName,
+      {
+        limits?: Partial<Record<LimitFeature, number | null>>;
+        flags?: Partial<Record<FlagFeature, boolean>>;
+      }
+    >
+  >;
+};
+
+type Options = {
+  billingEnabled: boolean;
+  clock: Clock;
+  /** Read on every check, so admin edits apply without a restart. */
+  settings?: () => EntitlementSettings;
+};
+
+/** The plans table with the admin's changes laid over it. */
+export function effectivePlans(overrides: EntitlementSettings["overrides"]) {
+  if (!overrides) return planConfig;
+  const plans = structuredClone(planConfig);
+  for (const [plan, change] of Object.entries(overrides) as [
+    PlanName,
+    NonNullable<EntitlementSettings["overrides"]>[PlanName],
+  ][]) {
+    for (const [feature, value] of Object.entries(change?.limits ?? {}))
+      plans[plan].limits[feature as LimitFeature] = value ?? Infinity;
+    Object.assign(plans[plan].flags, change?.flags ?? {});
+  }
+  return plans;
+}
 
 // CLAUDE.md rule 8: the only place that decides what a plan grants.
-export function createEntitlements({ billingEnabled, clock }: Options) {
+export function createEntitlements({
+  billingEnabled: billingDefault,
+  clock,
+  settings,
+}: Options) {
+  let lastOverrides: EntitlementSettings["overrides"];
+  let plans = planConfig;
+  /** The current table, rebuilt only when the admin's changes do. */
+  function table() {
+    const overrides = settings?.().overrides;
+    if (overrides !== lastOverrides) {
+      lastOverrides = overrides;
+      plans = effectivePlans(overrides);
+    }
+    return plans;
+  }
+  const billingOn = () => settings?.().billingEnabled ?? billingDefault;
+
   /** The plan the user actually holds, ignoring the free-launch override. */
   function subscribedPlanOf(subject: EntitlementSubject): PlanName {
     const sub = subject.subscription;
@@ -35,14 +86,14 @@ export function createEntitlements({ billingEnabled, clock }: Options) {
   }
 
   function planOf(subject: EntitlementSubject): PlanName {
-    return billingEnabled ? subscribedPlanOf(subject) : "ELITE";
+    return billingOn() ? subscribedPlanOf(subject) : "ELITE";
   }
 
   function configFor(subject: EntitlementSubject, feature: Feature) {
     const plan = PAID_ONLY.has(feature)
       ? subscribedPlanOf(subject)
       : planOf(subject);
-    return planConfig[plan];
+    return table()[plan];
   }
 
   function limit(subject: EntitlementSubject, feature: LimitFeature): number {

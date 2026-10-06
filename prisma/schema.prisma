@@ -54,6 +54,8 @@ model User {
   timezone           String     @default("Asia/Kolkata")
   beginnerMode       Boolean    @default(false)
   hideFromGlobalRank Boolean    @default(false)
+  /// An admin reset the streak (abuse): streaks only count days after this.
+  streakResetAt      DateTime?  @db.Timestamptz(6)
   status             UserStatus @default(ACTIVE)
   createdAt          DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime   @updatedAt @db.Timestamptz(6)
@@ -242,27 +244,31 @@ model SectionCache {
 }
 
 model SyllabusVersion {
-  id            String             @id @default(uuid()) @db.Uuid
-  title         String
-  status        SyllabusStatus     @default(DRAFT)
-  visibility    SyllabusVisibility @default(PRIVATE)
-  examId        String?            @db.Uuid
-  exam          Exam?              @relation(fields: [examId], references: [id], onDelete: SetNull)
-  ownerId       String?            @db.Uuid
-  owner         User?              @relation("SyllabusOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  fileHash      String?
-  sourceFileKey String?
-  sourceKind    SourceKind?
-  sourceName    String?
-  sizeBytes     Int?
-  parseId       String?            @db.Uuid
-  parse         SyllabusParse?     @relation(fields: [parseId], references: [id], onDelete: SetNull)
-  approvedAt    DateTime?          @db.Timestamptz(6)
-  approvedById  String?            @db.Uuid
-  approvedBy    User?              @relation("SyllabusApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  createdAt     DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime           @updatedAt @db.Timestamptz(6)
-  deletedAt     DateTime?          @db.Timestamptz(6)
+  id             String             @id @default(uuid()) @db.Uuid
+  title          String
+  status         SyllabusStatus     @default(DRAFT)
+  visibility     SyllabusVisibility @default(PRIVATE)
+  examId         String?            @db.Uuid
+  exam           Exam?              @relation(fields: [examId], references: [id], onDelete: SetNull)
+  ownerId        String?            @db.Uuid
+  owner          User?              @relation("SyllabusOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  fileHash       String?
+  sourceFileKey  String?
+  sourceKind     SourceKind?
+  sourceName     String?
+  sizeBytes      Int?
+  parseId        String?            @db.Uuid
+  parse          SyllabusParse?     @relation(fields: [parseId], references: [id], onDelete: SetNull)
+  approvedAt     DateTime?          @db.Timestamptz(6)
+  /// Why an admin rejected it, shown with the syllabus.
+  reviewNote     String?
+  /// A catalogue copy made from a user's (or admin's) confirmed upload.
+  promotedFromId String?            @db.Uuid
+  approvedById   String?            @db.Uuid
+  approvedBy     User?              @relation("SyllabusApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdAt      DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime           @updatedAt @db.Timestamptz(6)
+  deletedAt      DateTime?          @db.Timestamptz(6)
 
   subjects   Subject[]
   parseJobs  ParseJob[]
@@ -711,4 +717,16 @@ model PlanOverride {
   updatedAt         DateTime     @updatedAt @db.Timestamptz(6)
 
   @@unique([userId, syllabusVersionId, taskKey])
+}
+
+// ---------------------------------------------------------------------------------------
+// Admin (milestone 15)
+
+/// Settings the admin changes at runtime: entitlement limits, billing switch,
+/// announcement banner, maintenance mode, feature flags. Each value is zod-parsed on read.
+model AppSetting {
+  key         String   @id
+  value       Json
+  updatedById String?  @db.Uuid
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 }

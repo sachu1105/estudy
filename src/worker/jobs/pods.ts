@@ -8,6 +8,7 @@ import {
   type PodJob,
 } from "@/server/queue";
 import { planService } from "@/server/services/plans";
+import { flagOn } from "@/server/settings";
 import { fileService, itemService } from "@/server/services/pods";
 
 /** Pod material in the background: link previews, file text, the daily trash purge. */
@@ -29,6 +30,10 @@ export async function startPodWorker() {
           return;
         }
         case "replan-week": {
+          if (!(await flagOn("weeklyReplan"))) {
+            console.log("[worker] weekly re-plan is switched off by an admin");
+            return;
+          }
           const remade = await planService.replanAll();
           console.log(`[worker] weekly re-plan: ${remade} plans re-made`);
           return;

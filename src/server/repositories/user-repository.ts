@@ -12,6 +12,7 @@ const sessionUserSelect = {
   role: true,
   timezone: true,
   beginnerMode: true,
+  streakResetAt: true,
   status: true,
   subscriptions: {
     where: { status: { not: "EXPIRED" as const } },

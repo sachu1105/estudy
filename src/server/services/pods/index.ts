@@ -10,6 +10,7 @@ import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { topicCompletionRepository } from "@/server/repositories/topic-completion-repository";
+import { flagOn } from "@/server/settings";
 import { storage } from "@/server/storage";
 
 import { createFileService } from "./file-service";
@@ -34,7 +35,12 @@ export const itemDeps: ItemDeps = {
   queue: podQueue,
   storage,
   clock: systemClock,
-  fetchLinkMeta: (url) => fetchLinkMeta(url),
+  // The admin can switch fetching off; the link is then kept without a preview.
+  fetchLinkMeta: async (url) => {
+    if (!(await flagOn("linkPreviews")))
+      throw new Error("Link previews are switched off");
+    return fetchLinkMeta(url);
+  },
 };
 
 export const itemService = createItemService(itemDeps);

@@ -1,4 +1,4 @@
-import { today as todayIn, type Clock } from "@/lib/clock";
+import { toLocalDate, today as todayIn, type Clock } from "@/lib/clock";
 import { addDays, toDay, type PlanInput } from "@/lib/plan-engine";
 import { computeStreak, STREAK_MINUTES } from "@/lib/progress/streak";
 import { streakXp, TASK_XP } from "@/lib/progress/xp";
@@ -16,7 +16,7 @@ export type ProgressDeps = {
   clock: Clock;
 };
 
-type User = { id: string; timezone: string };
+type User = { id: string; timezone: string; streakResetAt?: Date | null };
 
 /** How far back streaks look. A longer run still shows, capped at this many days. */
 const STREAK_WINDOW = 400;
@@ -26,9 +26,14 @@ export function createProgressService(deps: ProgressDeps) {
   const todayFor = (user: User) => todayIn(deps.clock, user.timezone);
 
   async function streakOf(user: User, today: string) {
+    // After an admin reset (abuse), only days from the reset on count.
+    const window = addDays(today, -STREAK_WINDOW);
+    const reset = user.streakResetAt
+      ? toLocalDate(user.streakResetAt, user.timezone)
+      : null;
     const days = await deps.progress.activeDays(
       user.id,
-      addDays(today, -STREAK_WINDOW),
+      reset && reset > window ? reset : window,
       STREAK_MINUTES,
     );
     return computeStreak(days, today);

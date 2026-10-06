@@ -36,6 +36,11 @@ export function createUploadService(deps: SyllabusDeps) {
     new RegExp(`^syllabus/${userId}/[0-9a-f-]{36}$`);
 
   async function underLimit(user: Actor) {
+    if (deps.uploadsOpen && !(await deps.uploadsOpen()))
+      return failure(
+        "PAUSED",
+        "New syllabus uploads are paused for a short while. Pick one from the catalogue, or try again later.",
+      );
     const used = await deps.syllabuses.countUploads(user.id);
     const max = deps.entitlements.limit(user, "syllabusUploads");
     return used < max

@@ -24,16 +24,22 @@ test.describe("syllabus", () => {
     await page.getByRole("button", { name: "Read syllabus" }).click();
 
     await expect(page).toHaveURL(/\/syllabus\/[0-9a-f-]{36}$/);
-    await expect(page.getByRole("list", { name: "Progress" })).toBeVisible();
-    // With a worker running it says it keeps going; without one, that the reader is offline.
-    await expect(
-      page
-        .getByText("You can leave this page")
-        .or(page.getByText("The syllabus reader is offline")),
-    ).toBeVisible();
-
-    // A way out: stop the reading and delete the upload.
-    await page.getByRole("button", { name: "Stop and delete" }).click();
+    // A running worker may finish before the page shows; both outcomes are honest.
+    const progress = page.getByRole("list", { name: "Progress" });
+    const review = page.getByRole("button", { name: "Confirm syllabus" });
+    await expect(progress.or(review)).toBeVisible();
+    if (await progress.isVisible()) {
+      // With a worker running it says it keeps going; without one, that the reader is offline.
+      await expect(
+        page
+          .getByText("You can leave this page")
+          .or(page.getByText("The syllabus reader is offline")),
+      ).toBeVisible();
+      // A way out: stop the reading and delete the upload.
+      await page.getByRole("button", { name: "Stop and delete" }).click();
+    } else {
+      await page.getByRole("button", { name: "Delete", exact: true }).click();
+    }
     await page.getByRole("button", { name: "Delete syllabus" }).click();
     await expect(page).toHaveURL(/\/pods$/);
     await expect(

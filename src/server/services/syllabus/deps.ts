@@ -31,6 +31,8 @@ export type SyllabusDeps = {
   ids: IdGenerator;
   /** The configured AI reads PDF pages and photos itself (decides which cached parse fits). */
   readsDocuments: boolean;
+  /** The admin's "new syllabus uploads" switch (milestone 15); on when left out. */
+  uploadsOpen?: () => Promise<boolean>;
 };
 
 /** The worker additionally talks to the AI and OCR. */

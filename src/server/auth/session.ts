@@ -6,6 +6,7 @@ import { cache } from "react";
 
 import { systemClock } from "@/lib/clock";
 import { env } from "@/server/env";
+import { loadSettings } from "@/server/settings";
 import {
   userRepository,
   type SessionUser,
@@ -30,7 +31,11 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
     systemClock.now(),
   );
   if (!claims) return null;
-  const user = await userRepository.findSessionUser(claims.sub);
+  // Admin settings (limits, billing switch) ride along with every signed-in request.
+  const [user] = await Promise.all([
+    userRepository.findSessionUser(claims.sub),
+    loadSettings(),
+  ]);
   if (!user || user.status !== "ACTIVE") return null;
   return user;
 });

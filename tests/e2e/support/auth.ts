@@ -32,9 +32,13 @@ export async function registerVerifyAndLogin(page: Page, label: string) {
 }
 
 /** A fresh, verified user logged in on this page, without the rate-limited sign-up. */
-export async function seedAndLogin(page: Page, label: string) {
+export async function seedAndLogin(
+  page: Page,
+  label: string,
+  role: "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN" = "USER",
+) {
   const email = uniqueEmail(label);
-  await seedVerifiedUser(email, PASSWORD);
+  await seedVerifiedUser(email, PASSWORD, role);
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);

@@ -612,3 +612,62 @@ order they'll study them, before the plan.
 - Known flake: syllabus.spec "pasting a syllabus…" fails when a running worker
   finishes the parse before the progress list renders. It passes on its own.
 
+## Order change (2026-10-08)
+
+The user asked to skip milestones 9 (previous year questions) and 10 (suggestions) for
+now, to keep AI to a minimum at first. The admin panel (15) comes next, because
+everything else is hard to verify without it, then 13, 14 and 16, then a polish pass.
+Milestones 8 (mock tests) and 12 (rank) weren't mentioned; ask before starting them.
+
+## Milestone 15 — admin panel (2026-10-08)
+
+- Access (`lib/admin/access.ts`, tested):
+  - MODERATOR: dashboard and catalogue review only.
+  - ADMIN: also users, adding exams and promoting uploads (`exams`), site settings,
+    jobs and the audit log.
+  - SUPER_ADMIN: also roles and plans/billing.
+  - `requireAdmin(area)` 404s anyone else (rule 9). The layout keeps requireRole.
+- AppSetting (key -> zod-parsed JSON) holds:
+  - `entitlements`: limit and flag overrides; null means unlimited.
+  - `billing`: overrides BILLING_ENABLED.
+  - `announcement`, `maintenance` and `flags`.
+  - `server/settings` caches it for 30 s per process, and refreshes at once on save.
+- Entitlements read the settings cache on every check (`createEntitlements({ settings })`),
+  so limit changes apply without a restart.
+  - `getCurrentUser` loads settings alongside the session user (cached, so cheap).
+  - `billingEnabled` is now a function.
+- Feature switches (default on):
+  - syllabusUploads: `uploadsOpen` in SyllabusDeps.
+  - weeklyReplan: the worker skips the Sunday job.
+  - linkPreviews: the link is kept, with no preview.
+- Maintenance mode blocks USER-role accounts in the shell, focus view and onboarding.
+  Staff are never blocked. The announcement banner sits under the top bar.
+- Users: search; a detail page with activity; and actions:
+  - Suspend or ban (revokes every refresh token), restore.
+  - Grant a plan (expires the old subscription; source ADMIN_GRANT).
+  - Reset the streak: `User.streakResetAt`, and streaks count from that day. The
+    logs are untouched.
+  - Change role (super admin only).
+  - Nobody acts on their own account, and only a super admin touches a super admin.
+  - Every reason goes to the audit log.
+- Catalogue:
+  - Pending, approved and rejected tabs.
+  - Side-by-side review: the extracted text next to the tree. Approve, or reject with a
+    required note (`SyllabusVersion.reviewNote`).
+  - Exams: create and edit.
+  - "Promote an upload": copies a confirmed private upload, with fresh subject and topic
+    ids, into a CATALOGUE PENDING version (`promotedFromId`). The usual approval follows
+    (rule 5).
+  - An official syllabus is added by uploading it as a normal user, then promoting it.
+- Jobs and AI: BullMQ counts and workers per queue, failed jobs with retry and discard,
+  and AI usage this month by purpose, provider, model and prompt version.
+- Audit log viewer: filter by action prefix, paged.
+- Not built yet, because the features don't exist:
+  - Question pool and PYQ review (8 and 9), suggestions (10), groups (13), official
+    mocks (8).
+  - Impersonation.
+- Dev: `devIndicators: false`. The floating Next.js button covered the bottom tab bar's
+  "More" on phones and swallowed taps (the mobile shell test caught it).
+- The syllabus paste e2e test now accepts both outcomes (still reading, or already read
+  by a fast worker). That was the old flake.
+

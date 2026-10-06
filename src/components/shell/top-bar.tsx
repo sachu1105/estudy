@@ -6,6 +6,7 @@ import {
   Moon,
   Search,
   Settings,
+  Shield,
   Sun,
   User,
 } from "lucide-react";
@@ -32,7 +33,13 @@ import { LogoMark } from "./logo";
 import { primaryNav, secondaryNav } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 
-export type Viewer = { name: string; email: string; avatarUrl: string | null };
+export type Viewer = {
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+  /** Moderators and admins get a way into the admin panel. */
+  staff?: boolean;
+};
 
 type TopBarProps = {
   viewer: Viewer;
@@ -118,6 +125,11 @@ export function TopBar({ viewer, logout }: TopBarProps) {
             <DropdownMenuItem onSelect={() => router.push("/settings")}>
               <Settings aria-hidden /> Settings
             </DropdownMenuItem>
+            {viewer.staff ? (
+              <DropdownMenuItem onSelect={() => router.push("/admin")}>
+                <Shield aria-hidden /> Admin panel
+              </DropdownMenuItem>
+            ) : null}
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => void logout()}>
               <LogOut aria-hidden /> Log out

@@ -93,3 +93,58 @@ export async function schedulePodMaintenance() {
     { name: "replan-week", data: { kind: "replan-week" } },
   );
 }
+
+// ---- Admin view of the queues (milestone 15) ----------------------------------------
+
+export const QUEUE_NAMES = [PARSE_QUEUE, POD_QUEUE] as const;
+export type QueueName = (typeof QUEUE_NAMES)[number];
+
+const queueOf = (name: QueueName): Queue =>
+  name === PARSE_QUEUE ? bullQueue() : bullPodQueue();
+
+export const adminQueues = {
+  /** Job counts and connected workers for each queue. */
+  async overview() {
+    return Promise.all(
+      QUEUE_NAMES.map(async (name) => {
+        const queue = queueOf(name);
+        const [counts, workers] = await Promise.all([
+          queue.getJobCounts(
+            "waiting",
+            "active",
+            "delayed",
+            "failed",
+            "completed",
+          ),
+          queue.getWorkersCount(),
+        ]);
+        return { name, counts, workers };
+      }),
+    );
+  },
+
+  async failed(name: QueueName, limit = 25) {
+    const jobs = await queueOf(name).getFailed(0, limit - 1);
+    return jobs.map((job) => ({
+      id: job.id ?? "",
+      name: job.name,
+      reason: job.failedReason ?? "",
+      attempts: job.attemptsMade,
+      at: job.finishedOn ? new Date(job.finishedOn) : null,
+    }));
+  },
+
+  async retry(name: QueueName, jobId: string) {
+    const job = await queueOf(name).getJob(jobId);
+    if (!job) return false;
+    await job.retry("failed");
+    return true;
+  },
+
+  async discard(name: QueueName, jobId: string) {
+    const job = await queueOf(name).getJob(jobId);
+    if (!job) return false;
+    await job.remove();
+    return true;
+  },
+};

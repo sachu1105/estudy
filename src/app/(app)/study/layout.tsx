@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Toaster } from "@/components/ui/toast";
+import { MaintenancePage } from "@/components/shell/maintenance-page";
 import { requireUser } from "@/server/auth/session";
+import { maintenanceFor } from "@/server/settings/maintenance";
 
 // The focus view: no navigation, one way out.
 export default async function StudyLayout({
@@ -11,7 +13,9 @@ export default async function StudyLayout({
 }: {
   children: ReactNode;
 }) {
-  await requireUser();
+  const user = await requireUser();
+  const maintenance = await maintenanceFor(user.role);
+  if (maintenance !== null) return <MaintenancePage message={maintenance} />;
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex h-16 items-center justify-end px-4 md:px-8">

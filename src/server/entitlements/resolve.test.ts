@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { fixedClock } from "@/lib/clock";
 
-import { createEntitlements, type EntitlementSubject } from "./resolve";
+import {
+  createEntitlements,
+  type EntitlementSettings,
+  type EntitlementSubject,
+} from "./resolve";
 
 const clock = fixedClock("2026-10-05T10:00:00Z");
 const free: EntitlementSubject = { subscription: null };
@@ -103,5 +107,45 @@ describe("entitlements with billing enabled", () => {
     expect(can(free, "vaultMocksPerMonth")).toBe(false);
     expect(limit(pro(), "vaultStorageBytes")).toBe(5 * 1024 ** 3);
     expect(limit(pro(), "vaultMocksPerMonth")).toBe(30);
+  });
+});
+
+describe("admin changes to the plans table (milestone 15)", () => {
+  it("applies limit and flag overrides, with null meaning unlimited", () => {
+    let settings: EntitlementSettings = {};
+    const { can, limit } = createEntitlements({
+      billingEnabled: true,
+      clock: fixedClock("2026-10-08T00:00:00Z"),
+      settings: () => settings,
+    });
+    const free: EntitlementSubject = { subscription: null };
+    expect(limit(free, "syllabusUploads")).toBe(1);
+
+    settings = {
+      overrides: {
+        FREE: {
+          limits: { syllabusUploads: 3, activePlans: null },
+          flags: { fullAnalytics: true },
+        },
+      },
+    };
+    expect(limit(free, "syllabusUploads")).toBe(3);
+    expect(limit(free, "activePlans")).toBe(Infinity);
+    expect(can(free, "fullAnalytics")).toBe(true);
+    // Anything not changed keeps its default.
+    expect(limit(free, "groupsJoined")).toBe(3);
+  });
+
+  it("lets the admin's billing switch win over the environment", () => {
+    let settings: EntitlementSettings = {};
+    const { planOf } = createEntitlements({
+      billingEnabled: false,
+      clock: fixedClock("2026-10-08T00:00:00Z"),
+      settings: () => settings,
+    });
+    const free: EntitlementSubject = { subscription: null };
+    expect(planOf(free)).toBe("ELITE");
+    settings = { billingEnabled: true };
+    expect(planOf(free)).toBe("FREE");
   });
 });
