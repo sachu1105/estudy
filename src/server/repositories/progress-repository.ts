@@ -50,6 +50,21 @@ export const progressRepository = {
     });
   },
 
+  /** Tasks ticked on a day and still ticked, from any plan (a re-plan replaces them). */
+  async doneTasksOn(userId: string, date: string) {
+    const rows = await prisma.$queryRaw<{ taskId: string }[]>`
+      SELECT "taskId" FROM (
+        SELECT DISTINCT ON ("taskId") "taskId", done, "localDate"
+        FROM "TaskCompletion"
+        WHERE "userId" = ${userId}::uuid
+        ORDER BY "taskId", "createdAt" DESC, id DESC
+      ) latest WHERE done AND "localDate" = ${toDbDate(date)}`;
+    if (rows.length === 0) return [];
+    return prisma.planTask.findMany({
+      where: { id: { in: rows.map((r) => r.taskId) } },
+    });
+  },
+
   /** STUDY tasks of a plan for one topic: when all are done, the topic is. */
   studyTasksOfTopic(planId: string, topicId: string) {
     return prisma.planTask.findMany({
@@ -67,6 +82,28 @@ export const progressRepository = {
       WHERE "userId" = ${userId}::uuid AND "taskId" = ANY(${taskIds}::uuid[])
       ORDER BY "taskId", "createdAt" DESC, id DESC`;
     return new Map(rows.map((r) => [r.taskId, r.done]));
+  },
+
+  /** Tasks still ticked on any of these plans: what was actually done. */
+  completedTasks(userId: string, planIds: string[]) {
+    if (planIds.length === 0) return Promise.resolve([]);
+    return prisma.$queryRaw<
+      {
+        taskKey: string;
+        type: PlanTaskType;
+        subjectId: string | null;
+        topicId: string | null;
+        minutes: number;
+        localDate: Date;
+      }[]
+    >`
+      SELECT "taskKey", type, "subjectId", "topicId", minutes, "localDate" FROM (
+        SELECT DISTINCT ON ("taskId") "taskKey", type, "subjectId", "topicId",
+               minutes, "localDate", done
+        FROM "TaskCompletion"
+        WHERE "userId" = ${userId}::uuid AND "planId" = ANY(${planIds}::uuid[])
+        ORDER BY "taskId", "createdAt" DESC, id DESC
+      ) latest WHERE done`;
   },
 
   recordTask(row: TaskLogRow) {

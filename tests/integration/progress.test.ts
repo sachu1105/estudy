@@ -23,7 +23,11 @@ const deps = {
   completions: topicCompletionRepository,
   clock,
 };
-const plans = createPlanService({ ...deps, activePlanLimit: () => 5 });
+const plans = createPlanService({
+  ...deps,
+  progress: progressRepository,
+  activePlanLimit: () => 5,
+});
 const pods = createPodService({
   ...deps,
   pods: podRepository,
@@ -279,5 +283,159 @@ describe("study sessions", () => {
       taskId: second!.id,
       seconds: 0,
     });
+  });
+});
+
+describe("re-planning", () => {
+  const tasksOf = (planId: string) =>
+    prisma.planTask.findMany({
+      where: { planId },
+      orderBy: [{ date: "asc" }, { position: "asc" }],
+    });
+  const activePlan = (userId: string) =>
+    prisma.studyPlan.findFirstOrThrow({ where: { userId, status: "ACTIVE" } });
+
+  it("re-makes the plan from today after a week, keeping the end date and the work done", async () => {
+    const { user, planId } = await userWithPlan();
+    const first = await prisma.studyPlan.findUniqueOrThrow({
+      where: { id: planId },
+    });
+    const todays = (await progress.todayView(user)).tasks;
+    for (const t of todays) await progress.setTaskDone(user, t.id, true);
+
+    clock.advance(7 * 86_400_000);
+    const result = await plans.replan(user, first.syllabusVersionId!);
+    expect(result).toMatchObject({ ok: true });
+    const next = await activePlan(user.id);
+    expect(next.id).not.toBe(planId);
+    expect(next.endDate).toEqual(first.endDate);
+    expect(
+      (await prisma.studyPlan.findUniqueOrThrow({ where: { id: planId } }))
+        .status,
+    ).toBe("ARCHIVED");
+    // Nothing before today: no overdue anywhere (rule 7).
+    const tasks = await tasksOf(next.id);
+    expect(tasks.every((t) => t.date >= new Date("2026-10-14T00:00:00Z"))).toBe(
+      true,
+    );
+    expect(next.replanDiff).toMatchObject({ minutesDone: expect.any(Number) });
+    expect(
+      (next.replanDiff as { minutesDone: number }).minutesDone,
+    ).toBeGreaterThan(0);
+  });
+
+  it("gives a valid plan after a fully missed week", async () => {
+    const { user, planId } = await userWithPlan();
+    const first = await prisma.studyPlan.findUniqueOrThrow({
+      where: { id: planId },
+    });
+    clock.advance(7 * 86_400_000);
+    expect(await plans.replan(user, first.syllabusVersionId!)).toMatchObject({
+      ok: true,
+    });
+    const tasks = await tasksOf((await activePlan(user.id)).id);
+    expect(tasks.some((t) => t.type === "STUDY")).toBe(true);
+    expect(tasks.every((t) => t.date >= new Date("2026-10-14T00:00:00Z"))).toBe(
+      true,
+    );
+  });
+
+  it("keeps a moved or resized task where the user put it, until reset", async () => {
+    const { user, planId } = await userWithPlan();
+    const study = (await tasksOf(planId)).find((t) => t.type === "STUDY")!;
+
+    expect(
+      await plans.editTask(user, study.id, {
+        kind: "MOVE",
+        date: "2026-10-20",
+      }),
+    ).toMatchObject({
+      ok: true,
+    });
+    let plan = await activePlan(user.id);
+    let moved = (await tasksOf(plan.id)).find((t) => t.key === study.key)!;
+    expect(moved).toMatchObject({
+      pinned: true,
+      date: new Date("2026-10-20T00:00:00Z"),
+    });
+
+    // A later re-plan respects it.
+    clock.advance(86_400_000);
+    await plans.replan(user, plan.syllabusVersionId!);
+    plan = await activePlan(user.id);
+    moved = (await tasksOf(plan.id)).find((t) => t.key === study.key)!;
+    expect(moved.date).toEqual(new Date("2026-10-20T00:00:00Z"));
+
+    await plans.editTask(user, moved.id, { kind: "RESIZE", minutes: 45 });
+    plan = await activePlan(user.id);
+    expect(
+      (await tasksOf(plan.id)).find((t) => t.key === study.key)!.minutes,
+    ).toBe(45);
+
+    const pinned = (await tasksOf(plan.id)).find((t) => t.key === study.key)!;
+    await plans.resetTask(user, pinned.id);
+    plan = await activePlan(user.id);
+    expect((await tasksOf(plan.id)).every((t) => !t.pinned)).toBe(true);
+    expect(await prisma.planOverride.count()).toBe(0);
+
+    // Past days and check tests can't be pinned.
+    const check = (await tasksOf(plan.id)).find(
+      (t) => t.type === "CHECK_TEST",
+    )!;
+    expect(
+      await plans.editTask(user, check.id, { kind: "LOCK" }),
+    ).toMatchObject({ ok: false });
+    const any = (await tasksOf(plan.id)).find((t) => t.type === "STUDY")!;
+    expect(
+      await plans.editTask(user, any.id, { kind: "MOVE", date: "2026-10-01" }),
+    ).toMatchObject({
+      ok: false,
+      code: "BAD_DATE",
+    });
+  });
+
+  it("adds a task of the user's own", async () => {
+    const { user, planId } = await userWithPlan();
+    const { syllabusVersionId } = await prisma.studyPlan.findUniqueOrThrow({
+      where: { id: planId },
+    });
+    expect(
+      await plans.addCustomTask(user, syllabusVersionId!, {
+        date: "2026-10-09",
+        minutes: 30,
+        title: "Old question paper",
+      }),
+    ).toMatchObject({ ok: true });
+    const tasks = await tasksOf((await activePlan(user.id)).id);
+    expect(tasks.find((t) => t.type === "CUSTOM")).toMatchObject({
+      title: "Old question paper",
+      date: new Date("2026-10-09T00:00:00Z"),
+      minutes: 30,
+    });
+  });
+
+  it("keeps work done when the plan's settings change", async () => {
+    const { user, draftId, planId } = await userWithPlan();
+    const study = (await progress.todayView(user)).tasks.filter(
+      (t) => t.type === "STUDY",
+    );
+    for (const t of study) await progress.setTaskDone(user, t.id, true);
+    const topicId = study[0]!.topicId!;
+    const studyMinutes = async (id: string) =>
+      (await tasksOf(id))
+        .filter((t) => t.type === "STUDY" && t.topicId === topicId)
+        .reduce((n, t) => n + t.minutes, 0);
+    const before = await studyMinutes(planId);
+
+    // Same daily time, so only the work done changes the topic's study.
+    const draft = (await plans.getDraft(user, draftId))!;
+    await plans.saveDraft(user, draftId, { ...draft.data });
+    clock.advance(86_400_000);
+    expect(await plans.generate(user, draftId, "ALL")).toMatchObject({
+      ok: true,
+      outcome: "PLAN",
+    });
+    const after = await studyMinutes((await activePlan(user.id)).id);
+    expect(after).toBeLessThan(before);
   });
 });

@@ -146,12 +146,25 @@ export function createProgressService(deps: ProgressDeps) {
     async todayView(user: User) {
       const today = todayFor(user);
       const plans = await deps.plans.listActiveWithInputs(user.id);
-      const tasks = await deps.progress.tasksOn(user.id, today);
+      const planned = await deps.progress.tasksOn(user.id, today);
+      // Ticked today on a plan that a re-plan has since replaced: still today's work.
+      const earlier = (await deps.progress.doneTasksOn(user.id, today)).filter(
+        (t) => !planned.some((p) => p.id === t.id),
+      );
+      const tasks = [...planned, ...earlier];
       const states = await deps.progress.taskStates(
         user.id,
         tasks.map((t) => t.id),
       );
       const names = new Map(plans.map((p) => [p.id, namesOf(p.inputs)]));
+      // Replaced plans keep the same names; borrow them from the exam's active plan.
+      const byExam = new Map(plans.map((p) => [p.syllabusVersionId, p.id]));
+      for (const t of tasks)
+        if (!names.has(t.planId)) {
+          const owner = await deps.plans.findOwned(t.planId, user.id);
+          const active = owner && byExam.get(owner.syllabusVersionId);
+          if (active) names.set(t.planId, names.get(active)!);
+        }
       const allTopics = [
         ...new Set(plans.flatMap((p) => names.get(p.id)!.topicIds)),
       ];
@@ -177,7 +190,11 @@ export function createProgressService(deps: ProgressDeps) {
       return {
         today,
         hasPlan: plans.length > 0,
-        plans: plans.map((p) => ({ id: p.id, title: p.title })),
+        plans: plans.map((p) => ({
+          id: p.id,
+          title: p.title,
+          diff: p.replanDiff && !p.diffSeenAt ? p.replanDiff : null,
+        })),
         tasks: rows,
         minutesPlanned: rows.reduce((n, t) => n + t.minutes, 0),
         minutesDone: rows

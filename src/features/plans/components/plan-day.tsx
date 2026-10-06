@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { addDays } from "@/lib/plan-engine";
 import { formatDay, formatMinutes } from "@/lib/plans/format";
 
+import { AddTaskButton } from "./add-task-button";
 import { PlanTaskRow, type RowTask } from "./plan-task-row";
 
 /** A day of the plan. Rest days say so; nothing is ever shown as overdue (rule 7). */
@@ -13,6 +14,7 @@ export function PlanDay({
   tasks,
   subjectNames,
   topicNames,
+  editing = null,
 }: {
   date: string;
   today: string;
@@ -21,6 +23,8 @@ export function PlanDay({
   tasks: (RowTask & { subjectId: string | null; topicId: string | null })[];
   subjectNames: Map<string, string>;
   topicNames: Map<string, string>;
+  /** On an active plan, from today on: hand edits and tasks of the user's own. */
+  editing?: { syllabusId: string; end: string } | null;
 }) {
   const label =
     date === today
@@ -28,6 +32,7 @@ export function PlanDay({
       : date === addDays(today, 1)
         ? "Tomorrow"
         : formatDay(date, false);
+  const canEdit = editing !== null && date >= today;
   return (
     <section aria-label={label} className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -56,6 +61,9 @@ export function PlanDay({
               subject={
                 (t.subjectId && subjectNames.get(t.subjectId)) || "Subject"
               }
+              editing={
+                canEdit && editing ? { date, today, end: editing.end } : null
+              }
             />
           ))}
         </ol>
@@ -64,6 +72,19 @@ export function PlanDay({
           Nothing planned. Rest, or read ahead in a pod.
         </p>
       )}
+      {canEdit && editing ? (
+        <div className="-mt-1">
+          <AddTaskButton
+            syllabusId={editing.syllabusId}
+            date={date}
+            dayLabel={
+              label === "Today" || label === "Tomorrow"
+                ? label.toLowerCase()
+                : label
+            }
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

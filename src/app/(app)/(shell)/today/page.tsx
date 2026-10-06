@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ProgressRing } from "@/components/ui/progress-ring";
+import { ReplanCard } from "@/features/plans/components/replan-card";
 import { taskTitle } from "@/features/plans/task-text";
 import { StreakTile } from "@/features/today/components/streak-tile";
 import { TodayTasks } from "@/features/today/components/today-tasks";
+import type { ReplanDiff } from "@/lib/plan-engine";
 import { formatDay } from "@/lib/plans/format";
 import { requireUser } from "@/server/auth/session";
 import { progressService } from "@/server/services/progress";
@@ -75,6 +77,13 @@ export default async function TodayPage() {
           ) : null
         }
       />
+      {view.plans
+        .filter((p) => p.diff)
+        .map((p) => (
+          <div key={p.id} className="mb-4">
+            <ReplanCard planId={p.id} diff={p.diff as ReplanDiff} />
+          </div>
+        ))}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card className="flex flex-col gap-3 p-4 md:col-span-2 md:p-5 lg:row-span-2">
           <div className="flex items-baseline justify-between gap-2">

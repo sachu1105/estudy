@@ -81,6 +81,55 @@ test.describe("study plan", () => {
     await expect(today.getByText(/min in all: /).first()).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
+    // Hand edits (rule 14): move a task, see it marked, then reset it.
+    const tomorrow = page.getByRole("region", { name: "Tomorrow" });
+    const firstTask = today
+      .getByRole("button", { name: /^Change Study / })
+      .first();
+    await firstTask.click();
+    await page.getByRole("menuitem", { name: "Move to another day" }).click();
+    const target = await page
+      .getByLabel("Day", { exact: true })
+      .getAttribute("min");
+    const next = new Date(`${target}T00:00:00Z`);
+    next.setUTCDate(next.getUTCDate() + 1);
+    await page
+      .getByLabel("Day", { exact: true })
+      .fill(next.toISOString().slice(0, 10));
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByText("Task moved")).toBeVisible();
+    await expect(tomorrow.getByText(/placed by you/).first()).toBeVisible();
+    // Part numbers follow the order on screen, so find the moved block by its mark.
+    await tomorrow
+      .getByRole("listitem")
+      .filter({ hasText: "placed by you" })
+      .getByRole("button", { name: /^Change Study / })
+      .first()
+      .click();
+    await page.getByRole("menuitem", { name: "Reset to suggested" }).click();
+    await expect(page.getByText("Back to the suggested plan")).toBeVisible();
+    await expect(page.getByText(/placed by you/)).toHaveCount(0);
+
+    // A task of the user's own.
+    await today.getByRole("button", { name: "Add a task on today" }).click();
+    await page.getByLabel("What").fill("Solve the 2023 paper");
+    await page.getByRole("button", { name: "Add task" }).click();
+    await expect(
+      page
+        .getByRole("region", { name: "Today" })
+        .getByText("Solve the 2023 paper"),
+    ).toBeVisible();
+
+    // Re-plan on demand keeps it.
+    await page.getByRole("button", { name: "Re-plan now" }).click();
+    await expect(page.getByText("Plan re-made from today")).toBeVisible();
+    await expect(
+      page
+        .getByRole("region", { name: "Today" })
+        .getByText("Solve the 2023 paper"),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
     // The exam pod now opens the plan.
     await page.goto(`/pods/exam/${examId}`);
     await expect(page.getByRole("link", { name: "Open plan" })).toBeVisible();

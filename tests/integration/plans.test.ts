@@ -6,6 +6,7 @@ import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
 import { planRepository } from "@/server/repositories/plan-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
+import { progressRepository } from "@/server/repositories/progress-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { topicCompletionRepository } from "@/server/repositories/topic-completion-repository";
 import { createPlanService } from "@/server/services/plans/plan-service";
@@ -17,6 +18,7 @@ const clock = fixedClock("2026-10-06T04:30:00Z");
 let planLimit = 3;
 const plans = createPlanService({
   plans: planRepository,
+  progress: progressRepository,
   completions: topicCompletionRepository,
   clock,
   activePlanLimit: () => planLimit,

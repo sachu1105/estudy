@@ -1,10 +1,17 @@
 import { today as todayIn, type Clock } from "@/lib/clock";
 import {
   generatePlan,
+  pinOverrideSchema,
   planInputSchema,
+  replan,
+  toDay,
+  type CompletedWork,
   type CoverageWarning,
+  type PinOverride,
   type PlanInput,
+  type PlanOutput,
   type SubjectStage,
+  type TopicAdjustment,
 } from "@/lib/plan-engine";
 import {
   daysLeft,
@@ -17,6 +24,7 @@ import {
   fromDbDate,
   type PlanRepository,
 } from "@/server/repositories/plan-repository";
+import type { ProgressRepository } from "@/server/repositories/progress-repository";
 import type { TopicCompletionRepository } from "@/server/repositories/topic-completion-repository";
 
 import { failure, type Result } from "../syllabus/deps";
@@ -24,6 +32,7 @@ import { leaveOutToFit, type LeftOutTopic } from "./fit";
 
 export type PlanDeps = {
   plans: PlanRepository;
+  progress: ProgressRepository;
   completions: TopicCompletionRepository;
   clock: Clock;
   activePlanLimit: (user: Actor) => number;
@@ -53,6 +62,22 @@ function withDays<
 }
 
 const NO_DRAFT = failure("NOT_FOUND", "That plan setup doesn't exist.");
+const NO_PLAN = failure("NOT_FOUND", "There's no active plan for that exam.");
+
+/** A hand edit to one task (rule 14). */
+export type TaskEdit =
+  | { kind: "MOVE"; date: string }
+  | { kind: "RESIZE"; minutes: number }
+  | { kind: "LOCK" };
+
+/** Check tests travel with their study block, so they're never pinned on their own. */
+const PINNABLE = new Set([
+  "STUDY",
+  "REVISION",
+  "SECTION_MOCK",
+  "FULL_MOCK",
+  "CUSTOM",
+]);
 
 export type GenerateOutcome =
   | { outcome: "PLAN"; planId: string }
@@ -164,6 +189,133 @@ export function createPlanService(deps: PlanDeps) {
     };
   }
 
+  type ActivePlan = NonNullable<
+    Awaited<ReturnType<PlanRepository["findOwned"]>>
+  >;
+
+  const timelineStartOf = (plan: ActivePlan) => {
+    const inputs = plan.inputs as PlanInput;
+    return inputs.timelineStart ?? inputs.today;
+  };
+
+  /**
+   * The one way a plan is made. With an active plan for the exam it's a re-plan: work
+   * already done, last week's adjustments and the user's pinned edits carry over, and the
+   * review window keeps measuring from the first day. Without one, a fresh plan.
+   */
+  async function engine(
+    user: PlanUser,
+    syllabusId: string,
+    input: PlanInput,
+    existing: ActivePlan | null,
+  ): Promise<{
+    plan: PlanOutput | CoverageWarning;
+    adjustments: TopicAdjustment[];
+    diff: unknown;
+  }> {
+    const planIds = await deps.plans.planIdsForExam(user.id, syllabusId);
+    const done = await deps.progress.completedTasks(user.id, planIds);
+    const doneKeys = new Set(done.map((d) => d.taskKey));
+    // A pinned task that's already done would otherwise be planned twice.
+    const pins = (await deps.plans.listOverrides(user.id, syllabusId))
+      .map((o) => pinOverrideSchema.safeParse(o.data))
+      .flatMap((r) =>
+        r.success && !doneKeys.has(r.data.taskId) ? [r.data] : [],
+      );
+    const withPins = {
+      ...input,
+      overrides: [...(input.overrides ?? []), ...pins],
+    };
+    if (!existing)
+      return { plan: generatePlan(withPins), adjustments: [], diff: null };
+
+    const history: CompletedWork[] = done.map((d) => ({
+      date: fromDbDate(d.localDate),
+      type: d.type,
+      subjectId: d.subjectId,
+      topicId: d.topicId,
+      minutes: d.minutes,
+      accuracy: null,
+    }));
+    return replan({
+      ...withPins,
+      timelineStart: timelineStartOf(existing),
+      adjustments: existing.adjustments as TopicAdjustment[],
+      history,
+      previousPlan: await deps.plans.loadOutput(existing.id),
+    });
+  }
+
+  /** The same topics left out as before, so a re-plan never quietly brings them back. */
+  function withoutLeftOut(input: PlanInput, leftOut: LeftOutTopic[]) {
+    const out = new Set(leftOut.map((t) => t.topicId));
+    if (out.size === 0) return input;
+    return {
+      ...input,
+      subjects: input.subjects
+        .map((s) => ({ ...s, topics: s.topics.filter((t) => !out.has(t.id)) }))
+        .filter((s) => s.topics.length > 0),
+    };
+  }
+
+  /**
+   * Re-plans an exam from today with its current settings, board and progress, keeping
+   * the end date. If the rest no longer fits, the plan stays and says so.
+   */
+  async function replanExam(
+    user: PlanUser,
+    syllabusId: string,
+  ): Promise<Result<{ planId: string } | { warning: CoverageWarning }>> {
+    const summary = await deps.plans.activeFor(user.id, syllabusId);
+    if (!summary) return NO_PLAN;
+    const existing = (await deps.plans.findOwned(summary.id, user.id))!;
+    const draftRow = await deps.plans.findDraft(user.id, syllabusId);
+    const parsed = planDraftSchema.safeParse(draftRow?.data);
+    if (!parsed.success) return NO_DRAFT;
+    const today = todayFor(user);
+    const end = fromDbDate(existing.endDate);
+    if (toDay(end) < toDay(today))
+      return failure(
+        "ENDED",
+        "This plan has ended. Make a new one from the exam pod.",
+      );
+    const subjects = await examSubjects(user, syllabusId);
+    const leftOut = existing.leftOut as LeftOutTopic[];
+    const input = withoutLeftOut(
+      {
+        ...buildInput(reconcile(parsed.data, subjects), subjects, today),
+        // Keep the end date: the days that remain, not "N days from now" again.
+        examDate: undefined,
+        targetDays: toDay(end) - toDay(today) + 1,
+      },
+      leftOut,
+    );
+    const result = await engine(user, syllabusId, input, existing);
+    if (result.plan.kind === "COVERAGE_WARNING") {
+      await deps.plans.setReplanWarning(existing.id, result.plan);
+      return { ok: true, warning: result.plan };
+    }
+    const plan = await deps.plans.create({
+      userId: user.id,
+      syllabusVersionId: syllabusId,
+      title: existing.title,
+      inputs: { ...input, timelineStart: timelineStartOf(existing) },
+      leftOut,
+      output: result.plan,
+      adjustments: result.adjustments,
+      replanDiff: result.diff,
+    });
+    return { ok: true, planId: plan.id };
+  }
+
+  /** A task of the user's active plan that may be pinned by hand, or null. */
+  async function editableTask(user: PlanUser, taskId: string) {
+    const task = await deps.plans.findTask(taskId, user.id);
+    if (!task || task.plan.status !== "ACTIVE" || !task.plan.syllabusVersionId)
+      return null;
+    return PINNABLE.has(task.type) ? task : null;
+  }
+
   return {
     today: todayFor,
 
@@ -236,15 +388,20 @@ export function createPlanService(deps: PlanDeps) {
       if (daysLeft(loaded.data, today) === 0)
         return failure("NO_TIME", "Pick an exam date after today.");
 
-      let input = buildInput(loaded.data, loaded.subjects, today);
+      let input: PlanInput = buildInput(loaded.data, loaded.subjects, today);
       if (!planInputSchema.safeParse(input).success)
         return failure(
           "TOO_BIG",
           "This syllabus is bigger than one plan can hold (40 subjects, 300 topics each).",
         );
+      // Changing an active plan's settings keeps everything already done.
+      const active = await deps.plans.activeFor(user.id, syllabusId);
+      const existing = active
+        ? await deps.plans.findOwned(active.id, user.id)
+        : null;
       let leftOut: LeftOutTopic[] = [];
-      let result = generatePlan(input);
-      if (result.kind === "COVERAGE_WARNING" && fit === "PARTIAL") {
+      let run = await engine(user, syllabusId, input, existing);
+      if (run.plan.kind === "COVERAGE_WARNING" && fit === "PARTIAL") {
         const fitted = leaveOutToFit(input);
         if (!fitted)
           return failure(
@@ -252,8 +409,9 @@ export function createPlanService(deps: PlanDeps) {
             "Even the most important topics don't fit. Add time or move the date.",
           );
         ({ input, leftOut } = fitted);
-        result = generatePlan(input);
+        run = await engine(user, syllabusId, input, existing);
       }
+      const result = run.plan;
       if (result.kind === "COVERAGE_WARNING") {
         const ratio =
           result.requiredMinutes / Math.max(1, result.availableMinutes);
@@ -271,12 +429,129 @@ export function createPlanService(deps: PlanDeps) {
         userId: user.id,
         syllabusVersionId: syllabusId,
         title: loaded.row.syllabusVersion.title,
-        inputs: input,
+        inputs: existing
+          ? { ...input, timelineStart: timelineStartOf(existing) }
+          : input,
         leftOut,
         output: result,
+        adjustments: run.adjustments,
+        replanDiff: run.diff,
       });
       return { ok: true, outcome: "PLAN", planId: plan.id };
     },
+
+    replan: replanExam,
+
+    /** The Sunday job: every active plan of every user, one at a time. */
+    async replanAll() {
+      let remade = 0;
+      for (const p of await deps.plans.allActive()) {
+        const { subscriptions, ...rest } = p.user;
+        const user = { ...rest, subscription: subscriptions[0] ?? null };
+        const result = await replanExam(user, p.syllabusVersionId!).catch(
+          () => null,
+        );
+        if (result?.ok && "planId" in result) remade++;
+      }
+      return remade;
+    },
+
+    /** Move, resize or lock a task: stored as an override, then the plan is re-made. */
+    async editTask(user: PlanUser, taskId: string, edit: TaskEdit) {
+      const task = await editableTask(user, taskId);
+      if (!task)
+        return failure("NOT_EDITABLE", "That task can't be changed by hand.");
+      const today = todayFor(user);
+      const date = edit.kind === "MOVE" ? edit.date : fromDbDate(task.date);
+      if (
+        toDay(date) < toDay(today) ||
+        toDay(date) > toDay(fromDbDate(task.plan.endDate))
+      )
+        return failure(
+          "BAD_DATE",
+          "Pick a day between today and the end of your plan.",
+        );
+      const pin = pinOverrideSchema.safeParse({
+        kind: edit.kind,
+        taskId: task.key,
+        type: task.type as PinOverride["type"],
+        date,
+        minutes: edit.kind === "RESIZE" ? edit.minutes : task.minutes,
+        window: task.window,
+        subjectId: task.subjectId,
+        topicId: task.topicId,
+        touch: task.type === "REVISION" ? task.touch : null,
+        title: task.title,
+      } satisfies PinOverride);
+      if (!pin.success)
+        return failure("BAD_EDIT", "That change isn't possible for this task.");
+      await deps.plans.saveOverride({
+        userId: user.id,
+        syllabusVersionId: task.plan.syllabusVersionId!,
+        taskKey: task.key,
+        kind: edit.kind,
+        data: pin.data,
+      });
+      return replanExam(user, task.plan.syllabusVersionId!);
+    },
+
+    /** "Reset to suggested": drops the user's edit and the plan places the task again. */
+    async resetTask(user: PlanUser, taskId: string) {
+      const task = await deps.plans.findTask(taskId, user.id);
+      if (
+        !task ||
+        task.plan.status !== "ACTIVE" ||
+        !task.plan.syllabusVersionId
+      )
+        return failure("NOT_FOUND", "That task isn't in your current plan.");
+      await deps.plans.removeOverride(
+        user.id,
+        task.plan.syllabusVersionId,
+        task.key,
+      );
+      return replanExam(user, task.plan.syllabusVersionId);
+    },
+
+    /** A task of the user's own on a day of the plan. */
+    async addCustomTask(
+      user: PlanUser,
+      syllabusId: string,
+      task: { date: string; minutes: number; title: string },
+    ) {
+      const active = await deps.plans.activeFor(user.id, syllabusId);
+      if (!active) return NO_PLAN;
+      const today = todayFor(user);
+      if (
+        toDay(task.date) < toDay(today) ||
+        toDay(task.date) > toDay(fromDbDate(active.endDate))
+      )
+        return failure(
+          "BAD_DATE",
+          "Pick a day between today and the end of your plan.",
+        );
+      const key = `CUSTOM:${crypto.randomUUID()}`;
+      await deps.plans.saveOverride({
+        userId: user.id,
+        syllabusVersionId: syllabusId,
+        taskKey: key,
+        kind: "CUSTOM",
+        data: {
+          kind: "CUSTOM",
+          taskId: key,
+          type: "CUSTOM",
+          date: task.date,
+          minutes: task.minutes,
+          subjectId: null,
+          topicId: null,
+          touch: null,
+          title: task.title,
+        } satisfies PinOverride,
+      });
+      return replanExam(user, syllabusId);
+    },
+
+    dismissDiff: (user: PlanUser, planId: string) =>
+      deps.plans.markDiffSeen(planId, user.id, deps.clock.now()),
 
     async activeFor(user: PlanUser, syllabusId: string) {
       const plan = await deps.plans.activeFor(user.id, syllabusId);

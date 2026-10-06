@@ -77,11 +77,19 @@ export const podQueue: PodQueue = {
   },
 };
 
-/** Empties trash older than 30 days, once a day. Safe to call at every worker start. */
+/**
+ * Daily trash purge (30 days) and the Sunday re-plan at 04:00 IST. Safe to call at every
+ * worker start.
+ */
 export async function schedulePodMaintenance() {
   await bullPodQueue().upsertJobScheduler(
     "purge-trash-daily",
     { pattern: "30 3 * * *", tz: "Asia/Kolkata" },
     { name: "purge-trash", data: { kind: "purge-trash" } },
+  );
+  await bullPodQueue().upsertJobScheduler(
+    "replan-weekly",
+    { pattern: "0 4 * * 0", tz: "Asia/Kolkata" },
+    { name: "replan-week", data: { kind: "replan-week" } },
   );
 }
