@@ -398,3 +398,18 @@ rule 16. `inkSubtle` is still kept off readable text (WCAG AA floor), timestamps
   grammar) costs no AI call.
 - Not yet checked against the real hosted API: there was no key. Tests cover the request
   shape and the pipeline with a fake page-reading model.
+
+## Direction change — a study space built on subject pods (2026-10-06)
+- The owner repositioned the app: a personal study space where each syllabus subject is a
+  pod (topics with completion, material mapped to topics, mock tests, suggestions,
+  progress). CLAUDE.md and the build plan were rewritten to match; Part A and CLAUDE.md
+  are identical again (Mobile section and the inkSubtle contrast note included).
+- New rule 17: AI has four jobs only (syllabus extraction on a cache miss, mock test
+  questions, previous year paper parsing, topic suggestions). Rule 4 now states the cache
+  order. Rule 15 is about pod material. TopicCompletion joins the append-only logs.
+- Milestones renumbered: 5 pods, 6 plan from pods, 7 today/progress/re-plan, 8 mock tests
+  (including from my material), 9 previous year questions, 10 suggestions, 11 use it
+  yourself, 12-17 rank, groups, discussion, admin, billing, launch. 4.5 records what was
+  built after milestone 4.
+- Entitlement keys in code keep their names (vaultStorageBytes, vaultMocksPerMonth,
+  pagesPerVaultMock); the docs call them pod storage and mock tests from my material.

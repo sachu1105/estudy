@@ -4,7 +4,7 @@ Oct 5, 2026 · @ssk
 
 ## How to use this file
 
-The project is now a web-first study planner for Kerala PSC and other Indian competitive exams, built entirely in Next.js with Postgres, Redis and a background worker. Paste Part A into `CLAUDE.md` at the repo root, then feed Claude Code one milestone from Part B per session.
+The project is a personal study space for Kerala PSC and other Indian competitive exams, organised around subject pods, built entirely in Next.js with Postgres, Redis and a background worker. Paste Part A into `CLAUDE.md` at the repo root, then feed Claude Code one milestone from Part B per session.
 
 1. Create an empty repo and add `CLAUDE.md` with the content of Part A.
 2. Start Claude Code, switch to plan mode, and paste one milestone prompt.
@@ -21,29 +21,43 @@ Copy everything inside the block below into `CLAUDE.md`. It is the contract ever
 ```markdown
 # Study planner (web)
 
-A web app for Indian competitive exam aspirants, starting with Kerala PSC (LDC, LGS,
-Degree level, High Court Assistant) and extending to SSC, RRB and banking.
+A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
+(LDC, LGS, Degree level, High Court Assistant) and extending to SSC, RRB and banking.
+Everything one student needs for an exam lives in one place, organised around their
+syllabus.
 
-Core loop: the user uploads their syllabus (or picks one from our catalogue). AI turns it
-into a subject -> topic tree. The user sets an intensity and a confidence level for each
-subject, picks an exam date or a number of days to finish, and gets a day-by-day study
-plan. Every finished task unlocks a short mock test. Test results change next week's
-plan. A daily streak keeps them coming back. Groups let them share material, share mock
-tests, discuss, ask questions and compete on a group rank. A global rank shows every user.
+Subject pods are the heart of the app. The user uploads their syllabus (or picks one from
+our catalogue) and every subject in it becomes a pod. A pod holds:
+- the subject's topics, straight from the syllabus, each one markable as complete
+- the user's own material, each piece mapped to the topics it covers: notes, website
+  links, PDFs, images and photos of notebook pages
+- mock tests for the subject, built from the question pool, previous year questions and
+  the user's own material
+- suggested notes and websites for each topic, which the user can save into the pod
+- progress: topics done, material collected, test scores, time studied
+Users can also make pods of their own for anything outside the syllabus.
+
+The study plan is built from the pods: days left to the exam, the time the user has each
+day, and for each subject how well they already know it (confidence 1-5) and how hard
+they want to push it (intensity). It gives a day-by-day plan and tracks progress at every
+step. Completed topics and test results change next week's plan. A daily streak keeps
+them coming back. Groups let them share material and mock tests, discuss, ask questions
+and compete on a group rank. A global rank shows every user.
+
+Previous year question papers are parsed once into questions tagged to syllabus topics,
+then reused for practice and mock tests by everyone preparing for the same exam.
+
+AI does four jobs and nothing else: reading a syllabus that isn't already cached, writing
+mock test questions, parsing previous year papers, and suggesting notes and websites for
+a topic. The plan, progress, streaks and ranks are plain algorithms.
 
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
 
 The user is never asked to blindly trust the AI. Every AI decision is visible and
 editable: the parsed syllabus, the minutes given to each topic and why, the order of
-tasks, how the streak is counted, why a topic got an extra revision. Users can override
-any of it by hand.
-
-Study vault: every subject and topic gets its own folder, created automatically from
-the syllabus. Users keep their own notes, website links, PDFs and photos of pages
-(camera capture or upload from device) in those folders, plus custom folders of their
-own. On the paid plans, they can turn the material in any folder into a mock test: the
-AI reads their notes, PDFs and scanned pages and writes questions from them.
+tasks, how the streak is counted, why a topic got an extra revision, where a question or
+a suggestion came from. Users can override any of it by hand.
 
 ## Stack
 
@@ -78,7 +92,7 @@ studyplanner/
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
       (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, vault, settings, onboarding
+                       progress, pods, settings, onboarding
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
@@ -127,20 +141,23 @@ Run test, lint and typecheck before declaring any task done.
    src/lib/plan-engine, is pure, takes `today` as a parameter, and the same input
    always produces byte-identical output. It is tested against fixtures/plan-engine.
 
-4. PARSE EACH SYLLABUS ONCE. Hash every uploaded file (SHA-256). If the hash exists,
-   reuse the existing parse. Catalogue syllabuses are parsed once, ever, for all users.
+4. PARSE EACH SYLLABUS ONCE, AND CALL AI ONLY ON A CACHE MISS. Hash every uploaded
+   file (SHA-256). Before any AI call, reuse in this order: the same file, a
+   near-identical syllabus (the same syllabus for another post, matched by a text
+   fingerprint), and every section an earlier syllabus already had. Catalogue
+   syllabuses and previous year papers are parsed once, ever, for all users.
 
 5. AI OUTPUT PASSES A HUMAN GATE.
-   - Catalogue syllabuses and question-pool questions enter PENDING and need admin
-     approval before anyone else sees them.
+   - Catalogue syllabuses, question-pool questions and shared previous year questions
+     enter PENDING and need admin approval before anyone else sees them.
    - A user's own upload goes to a review screen where the user edits and confirms the
      tree before a plan is generated. It stays private. Admin may promote it to the
      catalogue, which puts it through the admin gate.
    - Every AI response is validated with zod. Invalid output is retried once, then the
      job fails visibly. Never save unvalidated AI output.
 
-6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TestAttempt, AttemptAnswer,
-   XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
+6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TopicCompletion, TestAttempt,
+   AttemptAnswer, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
    coverage and ranks are derived from them. Redis rank caches are rebuildable from
    Postgres at any time.
 
@@ -178,10 +195,24 @@ Run test, lint and typecheck before declaring any task done.
     (minutes, day, order, locked task) is stored as an override that the re-plan
     respects. AI-written questions always show their source.
 
-15. VAULT MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
+15. POD MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
     them unless they explicitly share an item to a group. Questions generated from
     their material never enter the public question pool. Files are served only
     through short-lived signed URLs after an ownership check.
+
+16. MOBILE FIRST, EVERY SCREEN. Most users study on a phone. Every page, dialog, form,
+    table and admin screen is designed at 360px wide first, then scaled up. No horizontal
+    scroll at 360px, tap targets at least 44x44px, text never below 13px, inputs 16px on
+    mobile (no iOS zoom), safe-area insets respected, nothing hidden behind the bottom tab
+    bar. A feature is not done until it is checked at 360px, 390px and 1366px, and its
+    Playwright tests run on both the desktop and mobile projects.
+
+17. AI HAS FOUR JOBS ONLY: syllabus extraction on a cache miss, mock test questions,
+    previous year paper parsing, and topic suggestions. Each runs as a BullMQ job (rule
+    2), logs its cost in AiUsage, and caches its result so the same request never pays
+    twice. Suggested links are fetched server-side before they are shown (SSRF-safe,
+    dead links dropped), are labelled as suggestions with where they came from, and
+    enter a pod only when the user saves them.
 
 ## Plans and entitlements
 
@@ -199,12 +230,13 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   group file storage         50 MB       1 GB         5 GB
   analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
-  study vault storage        200 MB      5 GB         20 GB
-  vault folders and notes    unlimited   unlimited    unlimited
-  mock tests from my vault   no          30 / month   100 / month   (paidOnly)
-  pages per vault mock       -           40           150
+  pod storage                200 MB      5 GB         20 GB
+  pods, notes and links      unlimited   unlimited    unlimited
+  mock tests from my material no         30 / month   100 / month   (paidOnly)
+  pages per material mock    -           40           150
 
-"Mock tests from my vault" is the core paid feature. It is paidOnly: it stays locked
+"Mock tests from my material" (questions written from what the user saved in a pod)
+is the core paid feature. It is paidOnly: it stays locked
 during the free launch period and opens only with a PRO or ELITE subscription or an
 admin grant. Locked users see what it does and a calm upgrade card, never a dead button.
 
@@ -221,6 +253,12 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   pool. Below 60% adds an extra revision touch at the next re-plan.
 - Section complete: a section mock (20-30 questions). Final 15% of the timeline: full
   mock tests and revision only.
+- Topic completion: a topic is complete when the user marks it or finishes its study
+  tasks, and can be unmarked. Completion feeds pod progress and the next re-plan.
+- Material maps to topics: one item can cover several topics, and a topic shows every
+  item mapped to it, across the pod.
+- Previous year questions keep their exam, post and year. Answers come from the official
+  answer key when one is uploaded; otherwise they are marked unverified until checked.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   Ranks use XP. Users can hide from the global rank and appear as "Anonymous aspirant".
 
@@ -237,7 +275,7 @@ neutral; the accent marks the one thing that matters.
   border        #E6E6E1   1px borders and dividers
   ink           #16161A   headings and body text
   inkMuted      #5F5F6B   secondary text, labels
-  inkSubtle     #9A9AA3   placeholders, disabled, timestamps
+  inkSubtle     #9A9AA3   placeholders, disabled, decorative icons. Below AA: never for readable text
   accent        #3B5BFD   primary button, active nav, links, focus ring, progress
   accentSoft    #EBEEFF   selected rows, active chips
   accentInk     #2238C9   text on accentSoft
@@ -322,6 +360,14 @@ Sentence case, active voice, same verb through a flow ("Start session" ->
 "Session started"). Errors say what happened and how to fix it; never apologise.
 Empty states are invitations: "No groups yet. Create one and invite a friend."
 
+### Mobile
+
+Design at 360px first. Single column under 768px; grids collapse, never shrink.
+Sheets from the bottom replace popovers and side panels on phones. Primary actions sit
+within thumb reach (bottom of the screen) on long forms and focus views. Tables become
+stacked cards on mobile. Use dvh, not vh. Test with a real phone before calling a
+milestone done.
+
 ### Accessibility floor
 
 WCAG AA contrast. Visible accent focus ring. Full keyboard navigation. Works at 200%
@@ -334,11 +380,11 @@ Selling question banks as exam-accurate content. Live payments before the billin
 milestone.
 ```
 
-## Part B — Milestones 1–6: foundation to daily loop
+## Part B — Milestones 1–11: foundation to the study space
 
 One per session, plan mode first, every time.
 
-### Milestone 1 — scaffold, Docker and the design system
+### Milestone 1 — scaffold, Docker and the design system (done)
 
 ```
 Read CLAUDE.md.
@@ -368,7 +414,7 @@ Set up the project skeleton and the design system. No product features yet.
 Run lint, typecheck and tests. Do not build auth, AI or any feature.
 ```
 
-### Milestone 2 — auth, roles and entitlements
+### Milestone 2 — auth, roles and entitlements (done)
 
 ```
 Read CLAUDE.md. Milestone 1 is committed.
@@ -397,7 +443,7 @@ Read CLAUDE.md. Milestone 1 is committed.
 Do not build any study feature.
 ```
 
-### Milestone 2.5 — public landing page
+### Milestone 2.5 — public landing page (done)
 
 ```
 Read CLAUDE.md. Milestones 1-2 are committed.
@@ -483,7 +529,7 @@ Playwright: landing loads, every nav anchor scrolls, "Create your study plan" re
 register when logged out and onboarding when logged in, mobile menu opens and closes.
 ```
 
-### Milestone 3 — the plan engine
+### Milestone 3 — the plan engine (done)
 
 ```
 Read CLAUDE.md. Milestones 1-2 are committed.
@@ -547,7 +593,7 @@ beginner mode, mixed intensities, and replans after several slippage patterns.
 No UI, no database, no API in this milestone.
 ```
 
-### Milestone 4 — catalogue, syllabus upload and AI parsing
+### Milestone 4 — catalogue, syllabus upload and AI parsing (done)
 
 ```
 Read CLAUDE.md. Milestones 1-3 are committed.
@@ -581,194 +627,172 @@ Read CLAUDE.md. Milestones 1-3 are committed.
 Verify end to end with a real Kerala PSC PDF through Ollama.
 ```
 
-### Milestone 5 — onboarding to a generated plan
+### Milestone 4.5 — subject board, parse cache and page reading (done)
+
+Built after milestone 4 at the owner's request: subjects shown as folder cards (the
+start of pods), the per-topic review replaced by editing inside each folder, parsing
+tuned on real Kerala PSC PDFs, hosted page reading (AI_PROVIDER=hosted reads PDFs and
+photos, fixing old Malayalam fonts), the three-level parse cache from rule 4, "Read
+again" after a parser upgrade, and "Stop and delete" with an honest offline status.
+
+### Milestone 5 — subject pods: the study space
 
 ```
-Read CLAUDE.md. Milestones 1-4 are committed.
+Read CLAUDE.md. Milestones 1-4 are committed (the subject board and folder pages from
+milestone 4 become pods here).
 
-Build the flow from first login to a live plan. Each step its own route, a stepper on
-top, autosaved draft, back never loses data.
+Build pods at /pods and make them the home of each subject. Absorbs the old vault plan.
 
-1. Welcome: "I'm new to PSC" vs "I've prepared before". New sets beginnerMode.
-2. Exam: pick from catalogue or upload a syllabus (reuses milestone 4 flow).
-3. Timeline: exam date OR "finish in N days" (slider 14-365 with presets 30/60/90/180).
-4. Availability: minutes per weekday and preferred time windows (morning, afternoon,
-   evening, night). Quick presets: "2 hours every day", "weekends heavy".
-5. Subjects: one row per subject with an intensity segmented control (light, steady,
-   intense) and a 1-5 confidence control. Beginner mode pre-fills confidence 1 and shows
-   a one-line hint per subject. Show live estimated total hours as they change.
-6. Generate: run the plan engine server-side, persist Plan, PlanDay, PlanTask.
-7. CoverageWarning screen: honest numbers, three choices - add time, accept partial
-   coverage, move the date. Matter-of-fact tone. Never proceed silently.
-8. Done screen: a short summary (days, hours, subjects, first task) and one accent
-   button "Start today's plan".
-9. Enforce limit(user, 'activePlans').
+1. Prisma: Pod (ownerId, syllabusVersionId?, subjectId?, name, kind SUBJECT | CUSTOM,
+   order), PodItem (podId, ownerId, type NOTE | LINK | FILE | IMAGE, title, sizeBytes,
+   sha256, storageKey, mimeType, pageCount, extractedText, extractStatus, deletedAt for
+   trash), PodItemTopic (itemId, topicId) for mapping, TopicCompletion (append-only:
+   userId, topicId, done true/false, at). Note body stored as editor JSON plus plain
+   text for search.
+2. Confirming a syllabus creates one SUBJECT pod per subject. Users add CUSTOM pods for
+   anything else. Pod home: topics list with completion checkboxes (optimistic tick),
+   progress ring (topics done / total), material count, tests, and the tabs from
+   milestone 4 (Topics, Material, Tests, Progress).
+3. Topic view inside a pod: everything mapped to that topic, plus "Add note / link /
+   file / photo" right there, mapped automatically.
+4. Notes: rich text editor (Tiptap) with headings, lists, bold, highlight, tables,
+   checklists and inline images; autosave with a quiet "Saved".
+5. Links: paste a URL; the worker fetches title, description and favicon server-side
+   (SSRF-safe: block private ranges, 5s timeout, 1 MB cap). Shown as a link card.
+6. Files and photos: upload PDFs and images (drag and drop, multi-select) or capture
+   with the phone camera; compress images to 2000px, fix rotation; several photos can
+   be saved as one document. Presigned uploads; enforce limit(user, 'vaultStorage').
+7. Mapping: any item can be mapped to one or more topics of its pod (multi-select
+   sheet), and remapped later. Unmapped items show under "Not linked to a topic".
+8. Extraction job per file: PDF text layer, and pages read by the hosted model when the
+   text layer is missing or broken (scans, old Malayalam fonts). Stored for search and
+   for material mocks. Status shown on each item.
+9. Viewer: PDF viewer and image lightbox with zoom and page navigation.
+10. Search across all pods (Postgres full-text on titles, notes and extracted text),
+    filters by pod, topic and type. Ctrl+K searches pods too.
+11. Trash with 30-day restore; storage meter in settings.
+12. Security: ownership check on every read, 5-minute signed URLs, MIME sniffing, never
+    render uploaded HTML or SVG inline.
 
-Playwright e2e: new user -> beginner -> catalogue exam -> 90 days -> plan exists.
+Empty topic: "Nothing here yet. Add a note, a link or a photo of your notebook."
 ```
 
-### Milestone 6 — today, plan, streak and the weekly re-plan
+### Milestone 6 — the study plan from pods
 
 ```
 Read CLAUDE.md. Milestones 1-5 are committed.
 
-1. Today: bento grid - streak tile (streak colour), today's tasks list with checkboxes,
-   minutes planned vs done, days left, coverage ring, next mock test. One accent action:
-   "Start next task".
-2. Study session: focus view with topic name, countdown in JetBrains Mono, progress
-   ring, pause and finish. Timer survives refresh (startedAt + duration persisted,
-   remaining computed on load). Optional "keep screen awake" via Wake Lock API.
-   Heartbeat every 60s so only genuinely active minutes count toward XP.
-3. Completing a task: optimistic tick animation, append TaskCompletion and StudySession,
-   append XpLedger, update streak. If the task is STUDY, offer the check test (built in
-   milestone 7; show a placeholder card for now).
-4. Streak: derived from logs in the user's timezone. One automatic freeze per week. A
-   one-time flicker animation on the first completion of the day.
-5. Plan view: day-by-day list grouped by week, current day pinned. Calendar view: month
-   grid with per-day intensity dots, click a day for its tasks.
-6. Syllabus view: subject -> topic tree with coverage state per topic (not started,
-   studied, revised, mastered) and filters.
-7. Weekly re-plan: BullMQ repeatable job on Sundays, staggered per user, runs replan()
-   and writes ReplanLog. Also runs on demand from settings. Today shows the diff as a
-   card: "You studied 6 hours of a planned 14. Indian Constitution moved to Tuesday,
-   one revision on Kerala geography dropped. You're on track for 84% coverage."
-   No overdue items anywhere.
-8. Empty, loading (skeletons) and error states for every screen per the copy rules.
+From a confirmed syllabus to a live plan. Each step its own route, a stepper on top,
+autosaved draft, back never loses data.
 
-9. Transparency (CLAUDE.md rule 14): a "Why this?" panel on every task and topic
-   showing the minutes breakdown, revision schedule and reason for any extra touch.
-   A "How your plan was built" page showing the full inputs (horizon, availability,
-   intensities, confidences) and totals. A "How your streak works" panel showing
-   which days counted, freezes used and why.
-10. Manual control: drag a task to another day, change its minutes, lock it, add a
-    custom task, or mark a topic as already done. Store each as a PlanOverride the
-    re-plan respects. A "Reset to suggested" action per task.
+1. Start from a syllabus's pods ("Create study plan"), or from onboarding: welcome
+   ("I'm new to PSC" sets beginnerMode), then exam from catalogue or upload.
+2. Timeline: exam date OR "finish in N days" (presets 30/60/90/180). Days left shown.
+3. Availability: minutes per weekday and preferred time windows; presets.
+4. Subjects: the pod cards, each with "How well do you know this?" (1-5) and an
+   intensity control (light, steady, intense). Beginner mode pre-fills confidence 1.
+   Topics already marked complete in a pod count as already done (overrides).
+   Live estimate of total hours.
+5. Generate: run the plan engine server-side; persist Plan, PlanDay, PlanTask, and the
+   inputs snapshot (the tree is copied so later pod edits never rewrite a plan).
+6. CoverageWarning screen: honest numbers, three choices - add time, accept partial
+   coverage, move the date.
+7. Done: days, hours, subjects, first task; one accent button "Start today's plan".
+8. Enforce limit(user, 'activePlans').
 
-Run all tests. Then commit and stop.
+Playwright e2e: new user -> beginner -> catalogue exam -> 90 days -> plan exists.
 ```
 
-## Part B — Milestones 7–14: tests, ranks, groups, admin and launch
-
-### Milestone 7 — question pool and mock tests
+### Milestone 7 — today, progress tracking and the weekly re-plan
 
 ```
 Read CLAUDE.md. Milestones 1-6 are committed.
 
-1. Prisma: Question (topicId, difficulty, language, body, options[4], correctIndex,
-   explanation, status PENDING | VERIFIED | SUPPRESSED, source AI | ADMIN | USER,
-   reportCount), QuestionReport, MockTest (type CHECK | SECTION | FULL | CUSTOM,
-   questionIds, durationSec, negativeMarking, createdBy, groupId nullable),
-   TestAttempt and AttemptAnswer (both append-only).
-2. Generation job: for a topic + difficulty, generate 40 questions via AIProvider,
-   zod-validate, dedupe by normalised text, save PENDING. Once per topic + difficulty,
-   ever - never per user. A seeding script enqueues topics with < 40 verified questions.
-3. Check test after each STUDY task: 5 verified questions on that topic, no timer
-   pressure, explanation after each answer. Result feeds the next replan.
-4. Section mock: 20-30 questions across a subject, timed. Full mock: whole syllabus,
-   PSC-style 100 questions / 75 min, optional negative marking (1/3).
-5. Test player: one question per screen, question text in Inter 17/28, options as large
-   tap targets, keyboard 1-4 to answer, flag for review, palette of question numbers,
-   timer in JetBrains Mono. Answer reveal micro-interaction from CLAUDE.md.
-6. Scoring on the server only, from server timestamps. Never trust client scores.
-7. Result screen: score, accuracy per topic, time per question, weakest topics, and
-   "These topics get extra revision next week" when relevant.
-8. Users can report a question; three reports auto-suppress it into the admin queue.
-9. Label the pool honestly as practice questions, not official exam questions.
-10. Enforce limits for check tests and mocks via entitlements.
-
-Test: a user scoring 20% on a topic gets more scheduled minutes on it after replan than
-a user scoring 90%.
+1. Today: bento grid - streak, today's tasks with checkboxes, minutes planned vs done,
+   days left, coverage ring, next mock test. "Open pod" on every task puts the topic's
+   material one tap away. One accent action: "Start next task".
+2. Study session: focus view with timer that survives refresh, pause and finish, the
+   topic's pod material in a side sheet. Heartbeat every 60s so only active minutes
+   count.
+3. Completing a task appends TaskCompletion and StudySession, updates the topic's
+   completion and the pod's progress, appends XpLedger, updates the streak.
+4. Streak from logs in the user's timezone, one automatic freeze per week.
+5. Plan and calendar views; pod progress page per subject.
+6. Weekly re-plan (Sunday job, also on demand): runs replan() with completions, test
+   results and stored overrides; shows the diff as a card. No overdue items anywhere.
+7. Transparency (rule 14): "Why this?" on every task and topic, "How your plan was
+   built", "How your streak works".
+8. Manual control: move, resize, lock, add a custom task, mark a topic done; stored as
+   PlanOverride; "Reset to suggested" per task.
+9. Empty, loading (skeletons) and error states everywhere.
 ```
 
-### Milestone 7.5 — study vault: folders, notes, links and files
+### Milestone 8 — mock tests: pool, check tests and tests from my material
 
 ```
 Read CLAUDE.md. Milestones 1-7 are committed.
 
-Build the study vault at /vault and inside every subject and topic page.
+1. Prisma: Question (topicId, difficulty, language, body, options[4], correctIndex,
+   explanation, status PENDING | VERIFIED | SUPPRESSED, source AI | PYQ | ADMIN | USER |
+   MATERIAL, sourceRef, reportCount), QuestionReport, MockTest (type CHECK | SECTION |
+   FULL | CUSTOM | MATERIAL, podId?, questionIds, durationSec, negativeMarking),
+   TestAttempt and AttemptAnswer (append-only).
+2. Pool generation job per topic + difficulty, once ever (not per user), zod-validated,
+   deduped, saved PENDING; seeding script for thin topics.
+3. Check test after each study task (5 questions), section mock per pod, full mock
+   (PSC style, 100 questions / 75 min, optional negative marking).
+4. Mock tests from my material (paidOnly, can(user, 'vaultMocks')): "Create mock test"
+   on a pod, a topic or selected items. Setup sheet: count, difficulty, style, language,
+   timed. Job reads the items' extracted text, writes questions each with a source
+   reference, drops any answer not supported by its source (second AI pass), caches by
+   source hashes + settings. The user reviews and edits before taking (rule 5).
+5. Test player: one question per screen, big tap targets, keys 1-4, flag, palette,
+   timer in JetBrains Mono. "See in your notes" for material questions.
+6. Scoring on the server only. Results feed topic proficiency, pod progress and the
+   re-plan; listed in the pod's Tests tab.
+7. Reports: three reports suppress a question into the admin queue. Pool labelled as
+   practice questions, not official ones. Locked state for FREE users is a calm upgrade
+   card, never a dead button.
 
-1. Prisma: Folder (ownerId, parentId, subjectId?, topicId?, name, kind SYSTEM |
-   CUSTOM, order), VaultItem (folderId, ownerId, type NOTE | LINK | FILE | IMAGE,
-   title, tags[], pinned, sizeBytes, sha256, storageKey, mimeType, pageCount,
-   extractedText, extractStatus, createdAt, deletedAt for trash), Note body stored as
-   JSON (editor document) plus plain text for search.
-2. Auto folders: when a plan is created, create one SYSTEM folder per subject and one
-   per topic under it, mirroring the syllabus tree. Users can add CUSTOM folders and
-   sub-folders anywhere, rename, reorder and move items by drag and drop. SYSTEM
-   folders can be renamed but not deleted.
-3. Notes: rich text editor (Tiptap) with headings, lists, bold, highlight, tables,
-   checklists and inline images. Autosave every 2s with a quiet "Saved" indicator.
-4. Links: paste a URL; the worker fetches title, description and favicon server-side
-   (SSRF-safe: block private IP ranges, 5s timeout, 1 MB cap). Show as a link card.
-5. Files: upload PDFs and images from device (drag and drop, multi-select) or capture
-   a page with the phone camera (<input accept="image/*" capture="environment">).
-   Client-side compress images to max 2000px, auto-rotate from EXIF. Multi-page
-   capture: take several photos and save them as one document. Presigned uploads to
-   S3; enforce limit(user, 'vaultStorage') before signing.
-6. Extraction job per file: PDF text via unpdf; images and scanned PDFs via OCR
-   (OcrProvider interface - Tesseract in the worker for dev, a hosted vision model in
-   production; English and Malayalam). Store extractedText for search and for vault
-   mocks. Show extraction status on each item.
-7. Viewer: in-app PDF viewer and image lightbox, with zoom and page navigation.
-8. Search across the whole vault (Postgres full-text on titles, notes and extracted
-   text) with filters by subject, type and tag. Cmd/Ctrl+K can search the vault.
-9. Topic page integration: every topic page shows its folder - notes, links and files
-   - next to the plan tasks, with a quick "Add note / link / file" bar.
-10. Today and the session screen: "Open topic folder" so materials are one click away
-    while studying.
-11. Share to group: any single item can be shared into a group the user belongs to
-    (copy, not a live link). Unsharing removes the group copy.
-12. Trash with 30-day restore. Storage usage meter in settings.
-13. Security: ownership check on every read, signed URLs that expire in 5 minutes,
-    MIME sniffing on upload, never render uploaded HTML or SVG inline.
-
-Empty state for a new topic folder: "Nothing here yet. Add a note, a link or a photo
-of your notebook."
+Test: a user scoring 20% on a topic gets more minutes after replan than one scoring 90%.
 ```
 
-### Milestone 7.6 — mock tests from your own material (paid)
+### Milestone 9 — previous year questions
 
 ```
-Read CLAUDE.md. Milestones 1-7.5 are committed.
+Read CLAUDE.md. Milestones 1-8 are committed.
 
-The core paid feature: turn what the user collected into a mock test. Gated by
-can(user, 'vaultMocks'), which is paidOnly.
-
-1. Entry points: "Create mock test" button on any folder, on a multi-selection of
-   items, and on a single file or note.
-2. Setup sheet: chosen sources listed with page counts; question count (10, 20, 30,
-   50), difficulty (easy, mixed, hard), question style (factual, conceptual, PSC
-   style), language (English, Malayalam), timed or untimed, negative marking toggle.
-   Show the page limit for their plan and how many vault mocks remain this month.
-3. Generation job: gather extractedText from the selected items (wait for any pending
-   OCR), chunk by page, generate questions with AIProvider. Each question must carry a
-   source reference (item id + page or note section). zod-validate, dedupe, drop any
-   question whose answer is not supported by its source chunk (second AI check pass).
-4. Progress via SSE: reading material -> writing questions -> checking answers ->
-   ready. The user can leave and get an in-app notification when it is done.
-5. Review before taking (CLAUDE.md rule 5 - the user is the gate for their own
-   material): list of questions with source snippets; edit, delete, regenerate one,
-   or approve all. Saved as a private MockTest with source = VAULT.
-6. Taking the test reuses the milestone 7 test player. After each answer, "See in
-   your notes" opens the exact source page or note section.
-7. Results feed proficiency and the weekly re-plan like any other test, and are
-   listed inside the folder they came from ("Tests from this folder").
-8. Retake options: same questions shuffled, only the ones I got wrong, or generate a
-   fresh set (counts against the monthly limit).
-9. Locked state for FREE users: the button stays visible, opens a short explanation
-   with a sample of what a vault mock looks like and an upgrade card. No dead clicks.
-10. Costs: log every generation in AiUsage with page count and tokens; hard cap pages
-    per request by plan; cache results by (source hashes + settings) so an identical
-    request never pays twice.
-11. Vault mocks can be shared to a group as a test (questions only, never the source
-    files unless the user also shares them).
-
-Tests: a FREE user with BILLING_ENABLED=false is still blocked; a PRO user over the
-monthly limit is blocked with a clear message; every generated question has a valid
-source reference; deleting a source file does not break past attempts.
+1. Prisma: PyqPaper (exam, post, year, sourceFileKey, fileHash, status, visibility
+   PRIVATE | CATALOGUE), PyqQuestion links to Question with source PYQ, paper, number,
+   official answer if keyed.
+2. Upload a question paper (PDF or photos) and optionally its answer key. Parse once per
+   file hash (rule 4) with the hosted model reading the pages: questions, options,
+   answers from the key; AI-proposed answers marked unverified.
+3. Tag each question to syllabus topics (AI suggests, user or admin confirms). Shared
+   papers go through the admin gate before reaching other users (rule 5).
+4. In a pod: "Asked before" on each topic (how often, which years), a PYQ practice set
+   per topic, and PYQ-only mocks per pod or exam.
+5. Year-wise full papers as timed mocks ("LDC 2019, as asked").
 ```
 
-### Milestone 8 — use it yourself
+### Milestone 10 — suggested notes and websites
+
+```
+Read CLAUDE.md. Milestones 1-9 are committed.
+
+1. Per topic, a "Suggested" section in the pod: notes and websites to study from.
+   Sources: an admin-curated list per exam and topic, plus AI suggestions.
+2. AI job per topic (not per user): proposes resources with a one-line reason; every
+   URL is fetched server-side (SSRF-safe, status, title, no redirects to other hosts),
+   dead or off-topic links dropped; results cached per topic and parser version.
+3. Each suggestion shows where it came from and is labelled a suggestion. "Save to pod"
+   copies it into the user's pod mapped to the topic; "Not useful" hides it and counts
+   toward its ranking.
+4. Short AI study notes per topic (optional, labelled as AI-written, with the material
+   they were drawn from), saved into the pod only on request.
+```
+
+### Milestone 11 — use it yourself
 
 ```
 No code this milestone.
@@ -778,10 +802,12 @@ annoyance, slow screen and confusing word. Paste the list back and we fix it bef
 groups and ranks are built.
 ```
 
-### Milestone 9 — progress and the global rank
+## Part B — Milestones 12–17: ranks, groups, admin and launch
+
+### Milestone 12 — progress and the global rank
 
 ```
-Read CLAUDE.md. Milestones 1-8 are committed.
+Read CLAUDE.md. Milestones 1-11 are committed.
 
 1. Progress page (bento): streak and best streak, XP and level, minutes per day for the
    last 30 days (single-colour bars, no gridlines), coverage %, test accuracy trend,
@@ -797,19 +823,19 @@ Read CLAUDE.md. Milestones 1-8 are committed.
 6. Anti-abuse: flag accounts gaining XP faster than humanly possible for admin review.
 ```
 
-### Milestone 10 — groups: membership, materials and shared tests
+### Milestone 13 — groups: membership, shared pods and tests
 
 ```
-Read CLAUDE.md. Milestones 1-9 are committed.
+Read CLAUDE.md. Milestones 1-12 are committed.
 
 1. Prisma: Group (name, description, exam, visibility PUBLIC | PRIVATE, avatar),
    Membership (role OWNER | ADMIN | MEMBER, mutedUntil), Invite (code, link, expiry,
    maxUses), Block, Report.
 2. Create group, join by code or link, request-to-join for private groups, public group
    directory filtered by exam. Owner/admin can remove, mute, promote and revoke invites.
-3. Study material: upload PDFs, images and notes to the group (S3, presigned), with
-   title, subject and topic tags. Preview in-app. Storage counted against
-   limit(owner, 'groupStorage').
+3. Study material: share pod items (notes, links, files) into the group as copies,
+   or upload directly, tagged with subject and topic. Preview in-app. Storage counted
+   against limit(owner, 'groupStorage').
 4. Shared mock tests: any member can share a MockTest to the group or build a custom one
    from the verified pool (pick topics, count, duration). Group test results page.
 5. Group rank: weekly XP and group-test scores among members, Redis sorted set per
@@ -818,10 +844,10 @@ Read CLAUDE.md. Milestones 1-9 are committed.
 7. Every group action checks membership and group role server-side.
 ```
 
-### Milestone 11 — group discussion and questions
+### Milestone 14 — group discussion and questions
 
 ```
-Read CLAUDE.md. Milestones 1-10 are committed.
+Read CLAUDE.md. Milestones 1-13 are committed.
 
 1. Discussion: threads per group with replies, mentions, reactions, and pinned posts.
    Markdown subset with sanitisation (no raw HTML).
@@ -834,10 +860,10 @@ Read CLAUDE.md. Milestones 1-10 are committed.
 6. Moderation: group admins can hide posts; reported posts go to the admin queue.
 ```
 
-### Milestone 12 — super admin panel
+### Milestone 15 — super admin panel
 
 ```
-Read CLAUDE.md. Milestones 1-11 are committed.
+Read CLAUDE.md. Milestones 1-14 are committed.
 
 /admin, role-gated (MODERATOR sees moderation only, ADMIN everything except roles and
 billing, SUPER_ADMIN everything). Same design system, denser tables.
@@ -849,7 +875,9 @@ billing, SUPER_ADMIN everything). Same design system, denser tables.
 3. Exams and catalogue: create exams, upload official syllabuses, review queue with
    side-by-side text and tree, approve, reject with note, promote user uploads.
 4. Question pool: batch review, edit, verify, delete; thin-pool report per topic;
-   generate-more button; suppressed-question queue.
+   generate-more button; suppressed-question queue. Previous year papers: review
+   parsed questions, answer keys and topic tags before they are shared.
+   Suggestions: curate links per exam and topic, remove bad AI suggestions.
 5. Mock tests: build official full mocks, schedule them, see attempts.
 6. Groups: list, inspect, feature, hide, delete; reports queue for posts and materials.
 7. Plans and entitlements: edit limits per plan, toggle BILLING_ENABLED, grant plans.
@@ -858,10 +886,10 @@ billing, SUPER_ADMIN everything). Same design system, denser tables.
 10. Audit log viewer. Every admin action writes AuditLog.
 ```
 
-### Milestone 13 — plans, billing and notifications
+### Milestone 16 — plans, billing and notifications
 
 ```
-Read CLAUDE.md. Milestones 1-12 are committed.
+Read CLAUDE.md. Milestones 1-15 are committed.
 
 1. Pricing page with FREE, PRO, ELITE from the entitlements config. While billing is
    off, show "All features free during launch".
@@ -875,10 +903,10 @@ Read CLAUDE.md. Milestones 1-12 are committed.
 5. Make the app an installable PWA with an offline page and cached Today view.
 ```
 
-### Milestone 14 — hardening and launch
+### Milestone 17 — hardening and launch
 
 ```
-Read CLAUDE.md. Milestones 1-13 are committed.
+Read CLAUDE.md. Milestones 1-16 are committed.
 
 1. Security pass: headers (CSP, HSTS), rate limits everywhere in rule 13, upload
    validation, SSRF-safe fetches, dependency audit, secrets only in env.

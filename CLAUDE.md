@@ -2,29 +2,43 @@
 
 # Study planner (web)
 
-A web app for Indian competitive exam aspirants, starting with Kerala PSC (LDC, LGS,
-Degree level, High Court Assistant) and extending to SSC, RRB and banking.
+A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
+(LDC, LGS, Degree level, High Court Assistant) and extending to SSC, RRB and banking.
+Everything one student needs for an exam lives in one place, organised around their
+syllabus.
 
-Core loop: the user uploads their syllabus (or picks one from our catalogue). AI turns it
-into a subject -> topic tree. The user sets an intensity and a confidence level for each
-subject, picks an exam date or a number of days to finish, and gets a day-by-day study
-plan. Every finished task unlocks a short mock test. Test results change next week's
-plan. A daily streak keeps them coming back. Groups let them share material, share mock
-tests, discuss, ask questions and compete on a group rank. A global rank shows every user.
+Subject pods are the heart of the app. The user uploads their syllabus (or picks one from
+our catalogue) and every subject in it becomes a pod. A pod holds:
+- the subject's topics, straight from the syllabus, each one markable as complete
+- the user's own material, each piece mapped to the topics it covers: notes, website
+  links, PDFs, images and photos of notebook pages
+- mock tests for the subject, built from the question pool, previous year questions and
+  the user's own material
+- suggested notes and websites for each topic, which the user can save into the pod
+- progress: topics done, material collected, test scores, time studied
+Users can also make pods of their own for anything outside the syllabus.
+
+The study plan is built from the pods: days left to the exam, the time the user has each
+day, and for each subject how well they already know it (confidence 1-5) and how hard
+they want to push it (intensity). It gives a day-by-day plan and tracks progress at every
+step. Completed topics and test results change next week's plan. A daily streak keeps
+them coming back. Groups let them share material and mock tests, discuss, ask questions
+and compete on a group rank. A global rank shows every user.
+
+Previous year question papers are parsed once into questions tagged to syllabus topics,
+then reused for practice and mock tests by everyone preparing for the same exam.
+
+AI does four jobs and nothing else: reading a syllabus that isn't already cached, writing
+mock test questions, parsing previous year papers, and suggesting notes and websites for
+a topic. The plan, progress, streaks and ranks are plain algorithms.
 
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
 
 The user is never asked to blindly trust the AI. Every AI decision is visible and
 editable: the parsed syllabus, the minutes given to each topic and why, the order of
-tasks, how the streak is counted, why a topic got an extra revision. Users can override
-any of it by hand.
-
-Study vault: every subject and topic gets its own folder, created automatically from
-the syllabus. Users keep their own notes, website links, PDFs and photos of pages
-(camera capture or upload from device) in those folders, plus custom folders of their
-own. On the paid plans, they can turn the material in any folder into a mock test: the
-AI reads their notes, PDFs and scanned pages and writes questions from them.
+tasks, how the streak is counted, why a topic got an extra revision, where a question or
+a suggestion came from. Users can override any of it by hand.
 
 ## Stack
 
@@ -59,7 +73,7 @@ studyplanner/
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
       (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, vault, settings, onboarding
+                       progress, pods, settings, onboarding
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
@@ -108,20 +122,23 @@ Run test, lint and typecheck before declaring any task done.
    src/lib/plan-engine, is pure, takes `today` as a parameter, and the same input
    always produces byte-identical output. It is tested against fixtures/plan-engine.
 
-4. PARSE EACH SYLLABUS ONCE. Hash every uploaded file (SHA-256). If the hash exists,
-   reuse the existing parse. Catalogue syllabuses are parsed once, ever, for all users.
+4. PARSE EACH SYLLABUS ONCE, AND CALL AI ONLY ON A CACHE MISS. Hash every uploaded
+   file (SHA-256). Before any AI call, reuse in this order: the same file, a
+   near-identical syllabus (the same syllabus for another post, matched by a text
+   fingerprint), and every section an earlier syllabus already had. Catalogue
+   syllabuses and previous year papers are parsed once, ever, for all users.
 
 5. AI OUTPUT PASSES A HUMAN GATE.
-   - Catalogue syllabuses and question-pool questions enter PENDING and need admin
-     approval before anyone else sees them.
+   - Catalogue syllabuses, question-pool questions and shared previous year questions
+     enter PENDING and need admin approval before anyone else sees them.
    - A user's own upload goes to a review screen where the user edits and confirms the
      tree before a plan is generated. It stays private. Admin may promote it to the
      catalogue, which puts it through the admin gate.
    - Every AI response is validated with zod. Invalid output is retried once, then the
      job fails visibly. Never save unvalidated AI output.
 
-6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TestAttempt, AttemptAnswer,
-   XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
+6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TopicCompletion, TestAttempt,
+   AttemptAnswer, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
    coverage and ranks are derived from them. Redis rank caches are rebuildable from
    Postgres at any time.
 
@@ -159,7 +176,7 @@ Run test, lint and typecheck before declaring any task done.
     (minutes, day, order, locked task) is stored as an override that the re-plan
     respects. AI-written questions always show their source.
 
-15. VAULT MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
+15. POD MATERIAL IS PRIVATE. A user's files, notes and links are visible only to
     them unless they explicitly share an item to a group. Questions generated from
     their material never enter the public question pool. Files are served only
     through short-lived signed URLs after an ownership check.
@@ -170,6 +187,13 @@ Run test, lint and typecheck before declaring any task done.
     mobile (no iOS zoom), safe-area insets respected, nothing hidden behind the bottom tab
     bar. A feature is not done until it is checked at 360px, 390px and 1366px, and its
     Playwright tests run on both the desktop and mobile projects.
+
+17. AI HAS FOUR JOBS ONLY: syllabus extraction on a cache miss, mock test questions,
+    previous year paper parsing, and topic suggestions. Each runs as a BullMQ job (rule
+    2), logs its cost in AiUsage, and caches its result so the same request never pays
+    twice. Suggested links are fetched server-side before they are shown (SSRF-safe,
+    dead links dropped), are labelled as suggestions with where they came from, and
+    enter a pod only when the user saves them.
 
 ## Plans and entitlements
 
@@ -187,12 +211,13 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   group file storage         50 MB       1 GB         5 GB
   analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
-  study vault storage        200 MB      5 GB         20 GB
-  vault folders and notes    unlimited   unlimited    unlimited
-  mock tests from my vault   no          30 / month   100 / month   (paidOnly)
-  pages per vault mock       -           40           150
+  pod storage                200 MB      5 GB         20 GB
+  pods, notes and links      unlimited   unlimited    unlimited
+  mock tests from my material no         30 / month   100 / month   (paidOnly)
+  pages per material mock    -           40           150
 
-"Mock tests from my vault" is the core paid feature. It is paidOnly: it stays locked
+"Mock tests from my material" (questions written from what the user saved in a pod)
+is the core paid feature. It is paidOnly: it stays locked
 during the free launch period and opens only with a PRO or ELITE subscription or an
 admin grant. Locked users see what it does and a calm upgrade card, never a dead button.
 
@@ -209,6 +234,12 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   pool. Below 60% adds an extra revision touch at the next re-plan.
 - Section complete: a section mock (20-30 questions). Final 15% of the timeline: full
   mock tests and revision only.
+- Topic completion: a topic is complete when the user marks it or finishes its study
+  tasks, and can be unmarked. Completion feeds pod progress and the next re-plan.
+- Material maps to topics: one item can cover several topics, and a topic shows every
+  item mapped to it, across the pod.
+- Previous year questions keep their exam, post and year. Answers come from the official
+  answer key when one is uploaded; otherwise they are marked unverified until checked.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   Ranks use XP. Users can hide from the global rank and appear as "Anonymous aspirant".
 
