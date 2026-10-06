@@ -25,7 +25,22 @@ test.describe("syllabus", () => {
 
     await expect(page).toHaveURL(/\/syllabus\/[0-9a-f-]{36}$/);
     await expect(page.getByRole("list", { name: "Progress" })).toBeVisible();
-    await expect(page.getByText("You can leave this page")).toBeVisible();
+    // With a worker running it says it keeps going; without one, that the reader is offline.
+    await expect(
+      page
+        .getByText("You can leave this page")
+        .or(page.getByText("The syllabus reader is offline")),
+    ).toBeVisible();
+
+    // A way out: stop the reading and delete the upload.
+    await page.getByRole("button", { name: "Stop and delete" }).click();
+    await page.getByRole("button", { name: "Delete syllabus" }).click();
+    await expect(page).toHaveURL(/\/syllabus$/);
+    await expect(
+      page.getByRole("link", {
+        name: new RegExp(`Pasted ${test.info().project.name}`),
+      }),
+    ).toHaveCount(0);
   });
 
   test("a file over 15 MB is refused before uploading", async ({ page }) => {

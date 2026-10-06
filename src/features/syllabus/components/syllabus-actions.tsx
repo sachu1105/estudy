@@ -20,7 +20,14 @@ import { toast } from "@/components/ui/toast";
 import { deleteSyllabusAction } from "../actions";
 
 /** Delete, with a confirm step, for the user's own syllabus. */
-export function DeleteSyllabusButton({ versionId }: { versionId: string }) {
+export function DeleteSyllabusButton({
+  versionId,
+  stopping = false,
+}: {
+  versionId: string;
+  /** Still being read: the button stops the reading as well. */
+  stopping?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
@@ -37,15 +44,17 @@ export function DeleteSyllabusButton({ versionId }: { versionId: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <Trash2 aria-hidden /> Delete
+          <Trash2 aria-hidden /> {stopping ? "Stop and delete" : "Delete"}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete this syllabus?</DialogTitle>
+          <DialogTitle>
+            {stopping ? "Stop reading and delete?" : "Delete this syllabus?"}
+          </DialogTitle>
           <DialogDescription>
-            The file and its subjects are removed, and it no longer counts
-            toward your uploads.
+            {stopping ? "Reading stops, and the" : "The"} file and its subjects
+            are removed. It no longer counts toward your uploads.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

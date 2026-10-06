@@ -129,7 +129,14 @@ function build({ billingEnabled = false, ai = fakeAi() } = {}) {
     aiUsage: aiUsageRepository,
     sectionCache: sectionCacheRepository,
     storage,
-    queue: { enqueue: async (data) => void queued.push(data) },
+    queue: {
+      enqueue: async (data) => void queued.push(data),
+      cancel: async (id) => {
+        const i = queued.findIndex((q) => q.parseJobId === id);
+        if (i >= 0) queued.splice(i, 1);
+      },
+      readerOnline: async () => true,
+    },
     publisher: { publish: async (_c, e) => void events.push(e as JobEvent) },
     entitlements: createEntitlements({ billingEnabled, clock }),
     clock,
@@ -531,6 +538,43 @@ describe("review", () => {
     const fresh = (await t.review.get(user as never, versionId))!;
     expect(fresh.subjects.map((s) => s.name)).toEqual(SUBJECTS);
     expect(await prisma.syllabusParse.count()).toBe(2); // old parse kept, new one added
+  });
+
+  it("deleting a syllabus still waiting to be read takes its job off the queue", async () => {
+    const t = build();
+    const user = await makeUser();
+    const created = await uploadPdf(t, user);
+    const versionId = (created as { versionId: string }).versionId;
+    expect(t.queued).toHaveLength(1);
+
+    expect(await t.review.remove(user as never, versionId)).toEqual({
+      ok: true,
+    });
+    expect(t.queued).toHaveLength(0);
+    const job = await prisma.parseJob.findFirstOrThrow({
+      where: { syllabusVersionId: versionId },
+    });
+    expect(job).toMatchObject({
+      status: "FAILED",
+      error: "Stopped and deleted.",
+    });
+    expect(t.ai.calls).toBe(0);
+  });
+
+  it("a job already picked up stops when its syllabus is deleted", async () => {
+    const t = build();
+    const user = await makeUser();
+    const created = await uploadPdf(t, user);
+    const versionId = (created as { versionId: string }).versionId;
+    const queued = [...t.queued];
+    await prisma.syllabusVersion.update({
+      where: { id: versionId },
+      data: { deletedAt: new Date("2026-10-05T05:00:00Z") },
+    });
+    t.queued.push(...queued.splice(0)); // the worker had already taken it
+    await t.drain();
+    expect(t.ai.calls).toBe(0);
+    expect(await prisma.syllabusParse.count()).toBe(0);
   });
 
   it("retries a failed parse with a fresh job", async () => {

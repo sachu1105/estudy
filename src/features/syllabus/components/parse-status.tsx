@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils/cn";
 import type { JobEvent } from "@/server/realtime/types";
 
 import { retryParseAction } from "../actions";
+import { ParseStatusFooter } from "./parse-status-footer";
+import { DeleteSyllabusButton } from "./syllabus-actions";
 import { useJobStatus } from "../use-job-status";
 
 const STEPS = [
@@ -35,9 +37,11 @@ const STEPS = [
 export function ParseStatus({
   versionId,
   job,
+  readerOnline,
 }: {
   versionId: string;
   job: JobEvent;
+  readerOnline: boolean;
 }) {
   const router = useRouter();
   const event = useJobStatus(job);
@@ -82,6 +86,7 @@ export function ParseStatus({
           <Button asChild variant="secondary">
             <Link href="/syllabus/new">Upload or paste instead</Link>
           </Button>
+          <DeleteSyllabusButton versionId={versionId} />
         </div>
       </Card>
     );
@@ -146,10 +151,10 @@ export function ParseStatus({
           />
         </div>
       ) : null}
-      <p className="text-small text-ink-muted">
-        This can take a few minutes for a long syllabus. You can leave this
-        page; it keeps going and will be here when you come back.
-      </p>
+      <ParseStatusFooter
+        versionId={versionId}
+        offline={!readerOnline && event.stage === "QUEUED"}
+      />
     </Card>
   );
 }

@@ -11,4 +11,8 @@ export interface ParseQueue {
     data: ParseJobData,
     options: { priority: "normal" | "high" },
   ): Promise<void>;
+  /** Takes a waiting job off the queue. A job already running is left to stop by itself. */
+  cancel(parseJobId: string): Promise<void>;
+  /** Whether any worker is connected and able to pick up parse jobs. */
+  readerOnline(): Promise<boolean>;
 }

@@ -12,7 +12,11 @@ import { syllabusState } from "@/features/syllabus/state";
 import { toEditableTree } from "@/features/syllabus/to-tree";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { canReadAgain, reviewService } from "@/server/services/syllabus";
+import {
+  canReadAgain,
+  jobService,
+  reviewService,
+} from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Syllabus" };
 
@@ -34,6 +38,7 @@ export default async function SyllabusVersionPage({
         <PageHeader title={version.title} description={subtitle} />
         <ParseStatus
           versionId={version.id}
+          readerOnline={await jobService.readerOnline()}
           job={{
             id: job.id,
             status: job.status,

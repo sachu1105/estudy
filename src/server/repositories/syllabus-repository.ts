@@ -228,6 +228,15 @@ export const syllabusRepository = {
     });
   },
 
+  /** True once the user deleted it (or it never existed): a running parse stops. */
+  async isDeleted(versionId: string) {
+    const row = await prisma.syllabusVersion.findUnique({
+      where: { id: versionId },
+      select: { deletedAt: true },
+    });
+    return !row || row.deletedAt !== null;
+  },
+
   softDelete(versionId: string, at: Date) {
     return prisma.syllabusVersion.update({
       where: { id: versionId },

@@ -132,6 +132,17 @@ export function createReviewService(deps: SyllabusDeps) {
     async remove(user: Actor, id: string): Promise<Result<object>> {
       const version = await owned(user, id);
       if (!version) return NOT_FOUND;
+      // Stop a parse still waiting or running: no point reading a file that is going away.
+      const job = version.parseJobs[0];
+      if (job && (job.status === "QUEUED" || job.status === "RUNNING")) {
+        await deps.queue.cancel(job.id);
+        await deps.parseJobs.update(job.id, {
+          status: "FAILED",
+          stage: "FAILED",
+          error: "Stopped and deleted.",
+          finishedAt: deps.clock.now(),
+        });
+      }
       await deps.syllabuses.softDelete(id, deps.clock.now());
       if (version.sourceFileKey)
         await deps.storage.delete(version.sourceFileKey);

@@ -69,4 +69,6 @@ export const jobService = {
   /** Only the job's own user may read it (rule 9). */
   findForUser: (id: string, userId: string) =>
     parseJobRepository.findForUser(id, userId),
+  /** Whether a worker is running to read queued syllabuses. */
+  readerOnline: () => parseQueue.readerOnline().catch(() => false),
 };

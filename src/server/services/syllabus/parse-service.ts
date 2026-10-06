@@ -29,6 +29,9 @@ const MESSAGES = {
   changed: "The uploaded file changed after it was checked. Upload it again.",
 };
 
+/** The user deleted the syllabus while it was being read. */
+class StoppedError extends Error {}
+
 type Attempt = { attempt: number; maxAttempts: number };
 
 /**
@@ -117,12 +120,8 @@ export function createParseService(deps: ParseDeps) {
     const job = await deps.parseJobs.findById(parseJobId);
     if (!job || job.status === "READY" || job.status === "FAILED") return;
     const version = job.syllabusVersion;
-    if (
-      version.deletedAt ||
-      !version.fileHash ||
-      !version.sourceFileKey ||
-      !version.sourceKind
-    )
+    if (version.deletedAt) return; // deleted while queued
+    if (!version.fileHash || !version.sourceFileKey || !version.sourceKind)
       return fail(job.id, MESSAGES.changed);
 
     await update(
@@ -184,7 +183,9 @@ export function createParseService(deps: ParseDeps) {
       }
 
       // 3. Read it: the pages themselves when the AI can, else the text section by section,
-      //    reusing every section any earlier syllabus already had.
+      //    reusing every section any earlier syllabus already had. The user may delete it
+      //    meanwhile: checked before the AI starts and after every section.
+      if (await deps.syllabuses.isDeleted(version.id)) throw new StoppedError();
       await update(job.id, { stage: "STRUCTURING", progress: 5 });
       const onUsage = (entry: AiUsageEntry) =>
         deps.aiUsage.record({ ...entry, userId: job.userId, refId: job.id });
@@ -202,9 +203,15 @@ export function createParseService(deps: ParseDeps) {
             title: version.title,
             onUsage,
             pieceCache: deps.sectionCache,
-            onProgress: (done, total) =>
-              update(job.id, { progress: 5 + Math.floor((90 * done) / total) }),
+            onProgress: async (done, total) => {
+              if (await deps.syllabuses.isDeleted(version.id))
+                throw new StoppedError();
+              await update(job.id, {
+                progress: 5 + Math.floor((90 * done) / total),
+              });
+            },
           });
+      if (await deps.syllabuses.isDeleted(version.id)) throw new StoppedError();
       if (!result.tree) return fail(job.id, MESSAGES.noTree);
 
       const parse = await save(result.tree, {
@@ -214,6 +221,7 @@ export function createParseService(deps: ParseDeps) {
       await deps.syllabuses.attachParse(version.id, parse);
       return ready(job.id, false);
     } catch (error) {
+      if (error instanceof StoppedError) return; // deleted; the delete already closed the job
       if (error instanceof ParseInputError) return fail(job.id, error.message);
       if (error instanceof AiOutputError)
         return fail(job.id, MESSAGES.badOutput);

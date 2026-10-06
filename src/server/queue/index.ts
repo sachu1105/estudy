@@ -38,4 +38,14 @@ export const parseQueue: ParseQueue = {
       removeOnFail: { age: 7 * 24 * 3600 },
     });
   },
+
+  async cancel(parseJobId) {
+    const job = await bullQueue().getJob(parseJobId);
+    // remove() refuses a job a worker holds; that one checks for deletion and stops.
+    await job?.remove().catch(() => {});
+  },
+
+  async readerOnline() {
+    return (await bullQueue().getWorkersCount()) > 0;
+  },
 };
