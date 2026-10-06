@@ -503,3 +503,49 @@ order they'll study them, before the plan.
   client. Route modules already in memory can still be stale after big changes:
   restart `pnpm dev` if an API route behaves like old code.
 
+## Milestone 6 — the study plan from pods (2026-10-06)
+
+- Plan engine: subjects take an optional `stage` from the exam board, defaulting to
+  TO_STUDY, so every existing fixture is byte-identical.
+  - STUDYING subjects win the study pick over TO_STUDY. TO_STUDY ties already break by
+    input order, which is board order.
+  - REVISING and DONE topics count as studied the day before the timeline began. That
+    anchor is fixed, so weekly re-plans keep the spacing.
+  - DONE starts at revision 3 (the first two count as done) and gets no section mock.
+  - Their revision reasons carry `fromBoard`, so "Why this?" says why instead of
+    showing a made-up study date.
+  - Tests: `board.test.ts`.
+- Data (migration `20261006140000_study_plans`):
+  - PlanDraft (one per user and exam) holds the setup steps.
+  - StudyPlan keeps a copy of the engine input with every name, so later pod edits
+    never rewrite a plan.
+  - PlanDay and PlanTask carry the engine's task key and its reason JSON. Task
+    subject and topic ids are snapshot ids with no foreign keys.
+  - A partial unique index allows one ACTIVE plan per user and exam; a new plan
+    archives the old one in the same transaction.
+- Setup at /plan/new/[draftId]/{timeline,time,subjects,review}:
+  - One route per step, with a stepper. `usePlanDraft` autosaves after 700 ms, and
+    Back and Next save first, so nothing is lost.
+  - The "I'm new to PSC" switch sets every subject's confidence to 1.
+  - The subjects step lists subjects in board order with confidence 1-5 and
+    intensity. Its live hours estimate uses the engine's own minute rules
+    (`lib/plans/draft.ts`).
+- Coverage warning: nothing is saved. It shows honest numbers and three choices:
+  - Add time: the extra minutes spread over study days.
+  - Leave out the least important topics: `leaveOutToFit`, a deterministic binary
+    search over a fixed removal order. Lowest weight goes first, then lower on the
+    board, then later in the syllabus. The plan lists what it left out.
+  - Move the date: about N more days.
+- Plan page /plan/[planId]:
+  - Summary tiles, a "Your plan is ready" panel, and the next 7 days.
+  - Every task has a "Why this?" built from the engine's reason
+    (`features/plans/task-text.ts`).
+  - The Plan tab opens the plan straight away when there is only one.
+  - Today and the full calendar are milestone 7.
+- Elsewhere:
+  - The exam pod's plan card shows the state: Create, Continue setting up, or
+    Open plan plus Change.
+  - Onboarding lists the user's exams with "Plan this exam".
+  - Limits: activePlans via `limit()`; re-planning the same exam doesn't count again.
+  - Rate limits: `planDraftPerUser` and `planGeneratePerUser`.
+

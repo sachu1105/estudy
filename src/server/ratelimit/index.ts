@@ -23,6 +23,9 @@ export const rules = {
   syllabusSavePerUser: { limit: 120, windowMs: 5 * MINUTE },
   /** Ticking topics, adding notes and links, mapping material: generous but bounded. */
   podWritePerUser: { limit: 300, windowMs: 5 * MINUTE },
+  // Plan setup autosaves, and runs of the plan engine (CPU, not AI, but not free).
+  planDraftPerUser: { limit: 240, windowMs: 5 * MINUTE },
+  planGeneratePerUser: { limit: 30, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

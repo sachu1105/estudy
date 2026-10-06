@@ -7,11 +7,15 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { BackLink } from "@/features/pods/components/back-link";
-import { PlanCard } from "@/features/pods/components/plan-card";
+import {
+  PlanCard,
+  type ExamPlanState,
+} from "@/features/pods/components/plan-card";
 import { PodBoard } from "@/features/pods/components/pod-board";
 import { isId } from "@/lib/ids";
 import { toBoard, POD_STAGES, type Board } from "@/lib/pods/stages";
 import { requireUser } from "@/server/auth/session";
+import { planService } from "@/server/services/plans";
 import { podService } from "@/server/services/pods";
 
 export const metadata: Metadata = { title: "Exam" };
@@ -26,6 +30,20 @@ export default async function ExamPodPage({
     ? await podService.exam(user, syllabusId)
     : null;
   if (!exam) notFound();
+  const [active, draft] = await Promise.all([
+    planService.activeFor(user, exam.id),
+    planService.draftFor(user, exam.id),
+  ]);
+  const planState: ExamPlanState = active
+    ? {
+        kind: "active",
+        planId: active.id,
+        endDate: active.endDate,
+        plannedMinutes: active.plannedMinutes,
+      }
+    : draft
+      ? { kind: "draft" }
+      : { kind: "none" };
 
   const percent = exam.topics
     ? Math.round((exam.topicsDone / exam.topics) * 100)
@@ -76,7 +94,7 @@ export default async function ExamPodPage({
               </p>
             </div>
           </div>
-          <PlanCard />
+          <PlanCard syllabusId={exam.id} state={planState} />
         </div>
 
         <section aria-labelledby="subjects" className="flex flex-col gap-4">

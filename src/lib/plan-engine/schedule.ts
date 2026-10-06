@@ -221,6 +221,9 @@ export function schedule(model: Model): ScheduleResult {
       );
       if (foundational.length > 0) options = foundational;
     }
+    // The board: subjects the user is studying now get time before the rest.
+    const studying = options.filter((s) => s.stage === "STUDYING");
+    if (studying.length > 0) options = studying;
     const [subject] = [...options].sort(byRemainingShare);
     return queues.get(subject.id)!.shift()!;
   }
@@ -306,6 +309,7 @@ export function schedule(model: Model): ScheduleResult {
               studiedOn: fromDay(model.startDay + state.studiedDay!),
               extra: touch.extra,
               clampedToEnd: touch.pullable,
+              ...(t.fromBoard ? { fromBoard: t.fromBoard } : {}),
             },
           }),
         },

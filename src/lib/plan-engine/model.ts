@@ -21,6 +21,7 @@ import type {
   MinutesBreakdown,
   ParsedPlanInput,
   PinOverride,
+  SubjectStage,
   TaskReason,
   TaskType,
   TimeWindow,
@@ -64,6 +65,8 @@ export type ModelTopic = {
   breakdown: MinutesBreakdown;
   /** The user marked it as already known: nothing is scheduled for it. */
   skipped: boolean;
+  /** Its subject sits in Revising or Done on the board: no study, revisions only. */
+  fromBoard: "REVISING" | "DONE" | null;
   /** Minutes of STUDY the user pinned from today on, and the day of the last such pin. */
   pinnedStudyMinutes: number;
   pinnedStudyLastDay: number | null;
@@ -78,6 +81,7 @@ export type ModelTopic = {
 export type ModelSubject = {
   id: string;
   index: number;
+  stage: SubjectStage;
   window: TimeWindow;
   topics: ModelTopic[];
   sectionMockDone: boolean;
@@ -150,6 +154,7 @@ export function buildModel(input: ParsedPlanInput): Model {
     confidence <= 2 ? earliest : preferred[0];
 
   const progress = new Map(input.progress.map((p) => [p.topicId, p]));
+  const timelineStart = input.timelineStart ? toDay(input.timelineStart) : start;
   const adjustments = new Map(input.adjustments.map((a) => [a.topicId, a]));
   const relative = (iso: string | null) => (iso ? toDay(iso) - start : null);
 
@@ -212,7 +217,19 @@ export function buildModel(input: ParsedPlanInput): Model {
       const revisionPins = topicPins.filter((p) => p.type === "REVISION");
       const pinnedStudyMinutes = studyPins.reduce((n, p) => n + p.minutes, 0);
       const done = progress.get(topic.id);
-      const studiedDay = skipped ? null : relative(done?.studiedOn ?? null);
+      // Revising or Done on the board: studied before the plan began. The day before the
+      // timeline starts is a fixed anchor, so weekly re-plans keep the same spacing.
+      const fromBoard =
+        !skipped &&
+        !done?.studiedOn &&
+        (subject.stage === "REVISING" || subject.stage === "DONE")
+          ? subject.stage
+          : null;
+      const studiedDay = skipped
+        ? null
+        : fromBoard
+          ? timelineStart - start - 1
+          : relative(done?.studiedOn ?? null);
       let remaining =
         studiedDay === null && !skipped
           ? Math.max(
@@ -253,6 +270,7 @@ export function buildModel(input: ParsedPlanInput): Model {
           topicMinutes: total,
         },
         skipped,
+        fromBoard,
         pinnedStudyMinutes,
         pinnedStudyLastDay: studyPins.length
           ? Math.max(...studyPins.map((p) => toDay(p.date) - start))
@@ -263,7 +281,12 @@ export function buildModel(input: ParsedPlanInput): Model {
         pinnedRevisionDays: revisionPins
           .map((p) => toDay(p.date) - start)
           .sort((a, b) => a - b),
-        revisionsDone: done?.revisionsDone ?? 0,
+        // Done: the first two touches count as already done, so only the later, lighter
+        // ones are planned.
+        revisionsDone:
+          fromBoard === "DONE"
+            ? Math.max(2, done?.revisionsDone ?? 0)
+            : (done?.revisionsDone ?? 0),
         studiedDay,
         lastRevisedDay: relative(done?.lastRevisedOn ?? null),
       };
@@ -271,9 +294,11 @@ export function buildModel(input: ParsedPlanInput): Model {
     return {
       id: subject.id,
       index: subjectIndex,
+      stage: subject.stage,
       window: windowFor(subject.confidence),
       topics,
       sectionMockDone:
+        subject.stage === "DONE" ||
         input.completedSectionMocks.includes(subject.id) ||
         pins.some(
           (p) => p.type === "SECTION_MOCK" && p.subjectId === subject.id,

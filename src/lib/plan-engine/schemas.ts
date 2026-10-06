@@ -52,11 +52,24 @@ export const topicSchema = z.object({
   order: z.number().int().min(0),
 });
 
+/**
+ * Where the user put the subject on the exam board. STUDYING gets study time before
+ * TO_STUDY; TO_STUDY subjects start in the order given. REVISING has no study left, only
+ * revision touches. DONE gets only the later, lighter touches and no section mock.
+ */
+export const subjectStageSchema = z.enum([
+  "TO_STUDY",
+  "STUDYING",
+  "REVISING",
+  "DONE",
+]);
+
 export const subjectSchema = z.object({
   id,
   name: z.string().min(1).max(200),
   intensity: intensitySchema,
   confidence: level,
+  stage: subjectStageSchema.default("TO_STUDY"),
   topics: z.array(topicSchema).min(1).max(300),
 });
 
@@ -238,6 +251,11 @@ export const taskReasonSchema = z.object({
       extra: extraTouchSchema.nullable(),
       /** The gap ran past the end of the plan, so the touch moved inside it. */
       clampedToEnd: z.boolean(),
+      /**
+       * Set when the topic had no study in the plan because the user put its subject in
+       * Revising or Done on the board; the gap then counts from the day before the plan.
+       */
+      fromBoard: z.enum(["REVISING", "DONE"]).optional(),
     })
     .nullable(),
   /** Set when the user placed this task by hand. */
@@ -349,6 +367,7 @@ export type TimeWindow = z.infer<typeof timeWindowSchema>;
 export type TaskType = z.infer<typeof taskTypeSchema>;
 export type Topic = z.infer<typeof topicSchema>;
 export type Subject = z.infer<typeof subjectSchema>;
+export type SubjectStage = z.infer<typeof subjectStageSchema>;
 export type Availability = z.infer<typeof availabilitySchema>;
 export type TopicProgress = z.infer<typeof topicProgressSchema>;
 export type TopicAdjustment = z.infer<typeof topicAdjustmentSchema>;

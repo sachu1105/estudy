@@ -63,55 +63,57 @@ model User {
   passwordResets     PasswordReset[]
   subscriptions      Subscription[]
   auditLogs          AuditLog[]
-  syllabusVersions   SyllabusVersion[] @relation("SyllabusOwner")
-  approvedSyllabuses SyllabusVersion[] @relation("SyllabusApprover")
+  syllabusVersions   SyllabusVersion[]   @relation("SyllabusOwner")
+  approvedSyllabuses SyllabusVersion[]   @relation("SyllabusApprover")
   parseJobs          ParseJob[]
   aiUsage            AiUsage[]
   pods               Pod[]
   podItems           PodItem[]
   podFiles           PodFile[]
   topicCompletions   TopicCompletion[]
+  planDrafts         PlanDraft[]
+  studyPlans         StudyPlan[]
 }
 
 model RefreshToken {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @db.Uuid
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// SHA-256 of the opaque token. The token itself is never stored.
-  tokenHash   String    @unique
+  tokenHash  String    @unique
   /// Every rotation stays in one family; reuse of a rotated token revokes the family.
-  familyId    String    @db.Uuid
-  expiresAt   DateTime  @db.Timestamptz(6)
-  revokedAt   DateTime? @db.Timestamptz(6)
-  replacedBy  String?   @db.Uuid
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  userAgent   String?
-  ip          String?
+  familyId   String    @db.Uuid
+  expiresAt  DateTime  @db.Timestamptz(6)
+  revokedAt  DateTime? @db.Timestamptz(6)
+  replacedBy String?   @db.Uuid
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  userAgent  String?
+  ip         String?
 
   @@index([familyId])
   @@index([userId])
 }
 
 model EmailVerification {
-  id         String    @id @default(uuid()) @db.Uuid
-  userId     String    @db.Uuid
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash  String    @unique
-  expiresAt  DateTime  @db.Timestamptz(6)
-  usedAt     DateTime? @db.Timestamptz(6)
-  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime  @db.Timestamptz(6)
+  usedAt    DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
 
   @@index([userId])
 }
 
 model PasswordReset {
-  id         String    @id @default(uuid()) @db.Uuid
-  userId     String    @db.Uuid
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash  String    @unique
-  expiresAt  DateTime  @db.Timestamptz(6)
-  usedAt     DateTime? @db.Timestamptz(6)
-  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime  @db.Timestamptz(6)
+  usedAt    DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
 
   @@index([userId])
 }
@@ -199,7 +201,7 @@ model Exam {
 /// One AI parse per distinct file (CLAUDE.md rule 4), shared by every upload of the same
 /// bytes. Holds the raw validated AI tree; each upload gets its own editable copy.
 model SyllabusParse {
-  id            String   @id @default(uuid()) @db.Uuid
+  id            String     @id @default(uuid()) @db.Uuid
   /// SHA-256 (hex) of the uploaded bytes, computed on the server.
   fileHash      String
   sourceKind    SourceKind
@@ -210,14 +212,14 @@ model SyllabusParse {
   model         String
   promptVersion String
   /// Problems the user should know about, e.g. MALAYALAM_GARBLED (old PDF fonts).
-  warnings      String[] @default([])
+  warnings      String[]   @default([])
   /// MinHash of the text, for reusing a near-identical syllabus (another post, same syllabus).
-  minhash       Int[]    @default([])
+  minhash       Int[]      @default([])
   /// The post from the heading ("LD CLERK [KWA]"), when the syllabus names one.
   post          String?
   /// Set when this parse is a copy of a near-identical one, not an AI result.
-  copiedFromId  String?  @db.Uuid
-  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  copiedFromId  String?    @db.Uuid
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
 
   versions SyllabusVersion[]
 
@@ -257,9 +259,11 @@ model SyllabusVersion {
   updatedAt     DateTime           @updatedAt @db.Timestamptz(6)
   deletedAt     DateTime?          @db.Timestamptz(6)
 
-  subjects  Subject[]
-  parseJobs ParseJob[]
-  pods      Pod[]
+  subjects   Subject[]
+  parseJobs  ParseJob[]
+  pods       Pod[]
+  planDrafts PlanDraft[]
+  studyPlans StudyPlan[]
 
   @@index([ownerId, deletedAt])
   @@index([visibility, status])
@@ -406,11 +410,11 @@ model Pod {
 }
 
 model PodItem {
-  id              String         @id @default(uuid()) @db.Uuid
-  podId           String         @db.Uuid
-  pod             Pod            @relation(fields: [podId], references: [id], onDelete: Cascade)
-  ownerId         String         @db.Uuid
-  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  id              String      @id @default(uuid()) @db.Uuid
+  podId           String      @db.Uuid
+  pod             Pod         @relation(fields: [podId], references: [id], onDelete: Cascade)
+  ownerId         String      @db.Uuid
+  owner           User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   type            PodItemType
   title           String
   /// NOTE: the editor document, and its plain text for search.
@@ -421,14 +425,14 @@ model PodItem {
   linkDescription String?
   faviconUrl      String?
   /// FILE and IMAGE: total of the files; the text layer once read.
-  sizeBytes       Int            @default(0)
+  sizeBytes       Int         @default(0)
   pageCount       Int?
   extractedText   String?
-  status          ItemStatus     @default(NONE)
-  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  status          ItemStatus  @default(NONE)
+  createdAt       DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime    @updatedAt @db.Timestamptz(6)
   /// In the trash: restorable for 30 days, then purged with its files.
-  deletedAt       DateTime?      @db.Timestamptz(6)
+  deletedAt       DateTime?   @db.Timestamptz(6)
 
   files  PodFile[]
   topics PodItemTopic[]
@@ -477,4 +481,121 @@ model TopicCompletion {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([userId, topicId, createdAt])
+}
+
+// ---------------------------------------------------------------------------------------
+// Study plans (milestone 6). Built from an exam's pods by the deterministic plan engine.
+
+enum StudyPlanStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum PlanTaskType {
+  STUDY
+  REVISION
+  CHECK_TEST
+  SECTION_MOCK
+  FULL_MOCK
+  CUSTOM
+}
+
+enum TimeWindow {
+  MORNING
+  AFTERNOON
+  EVENING
+  NIGHT
+}
+
+enum PlanPhase {
+  LEARN
+  REVIEW
+}
+
+/// The plan's setup steps, autosaved so back never loses anything. One per exam.
+model PlanDraft {
+  id                String          @id @default(uuid()) @db.Uuid
+  userId            String          @db.Uuid
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  syllabusVersionId String          @db.Uuid
+  syllabusVersion   SyllabusVersion @relation(fields: [syllabusVersionId], references: [id], onDelete: Cascade)
+  /// Parsed with planDraftSchema on every read and write.
+  data              Json
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, syllabusVersionId])
+}
+
+model StudyPlan {
+  id                String           @id @default(uuid()) @db.Uuid
+  userId            String           @db.Uuid
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  syllabusVersionId String?          @db.Uuid
+  syllabusVersion   SyllabusVersion? @relation(fields: [syllabusVersionId], references: [id], onDelete: SetNull)
+  title             String
+  status            StudyPlanStatus  @default(ACTIVE)
+  startDate         DateTime         @db.Date
+  endDate           DateTime         @db.Date
+  reviewStartDate   DateTime?        @db.Date
+  /// The engine input exactly as run, with subject and topic names: later pod or syllabus
+  /// edits never rewrite a plan.
+  inputs            Json
+  /// Topics left out to fit the time ("accept partial coverage"), with names.
+  leftOut           Json             @default("[]")
+  availableMinutes  Int
+  requiredMinutes   Int
+  plannedMinutes    Int
+  createdAt         DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime         @updatedAt @db.Timestamptz(6)
+
+  days  PlanDay[]
+  tasks PlanTask[]
+
+  @@index([userId, status])
+}
+
+model PlanDay {
+  id              String    @id @default(uuid()) @db.Uuid
+  planId          String    @db.Uuid
+  plan            StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  date            DateTime  @db.Date
+  weekday         Int
+  phase           PlanPhase
+  capacityMinutes Int
+  plannedMinutes  Int
+  leadSubjectId   String?   @db.Uuid
+
+  tasks PlanTask[]
+
+  @@unique([planId, date])
+}
+
+model PlanTask {
+  id          String       @id @default(uuid()) @db.Uuid
+  planId      String       @db.Uuid
+  plan        StudyPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayId       String       @db.Uuid
+  day         PlanDay      @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  /// The engine's own id for the task; overrides refer to it.
+  key         String
+  position    Int
+  type        PlanTaskType
+  date        DateTime     @db.Date
+  /// Snapshot ids: no foreign keys, so a syllabus edit can't break a plan.
+  subjectId   String?      @db.Uuid
+  topicId     String?      @db.Uuid
+  minutes     Int
+  window      TimeWindow
+  partIndex   Int?
+  partTotal   Int?
+  touch       Int?
+  finalReview Boolean      @default(false)
+  pinned      Boolean      @default(false)
+  title       String?
+  /// "Why this?" (rule 14), as the engine returned it.
+  reason      Json
+
+  @@unique([planId, key])
+  @@index([planId, date])
 }

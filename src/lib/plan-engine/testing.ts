@@ -14,14 +14,17 @@ type SubjectSpec = {
   difficulty?: number;
   /** Every nth topic is foundational (1-based). */
   foundationalEvery?: number;
+  /** Left out unless given, so fixture inputs stay as they were. */
+  stage?: Subject["stage"];
 };
 
-export function makeSubject(spec: SubjectSpec): Subject {
+export function makeSubject(spec: SubjectSpec): PlanInput["subjects"][number] {
   return {
     id: spec.id,
     name: spec.id.replace(/-/g, " "),
     intensity: spec.intensity ?? "STEADY",
     confidence: spec.confidence ?? 3,
+    ...(spec.stage ? { stage: spec.stage } : {}),
     topics: Array.from({ length: spec.topics }, (_, i) => ({
       id: `${spec.id}-t${i + 1}`,
       name: `${spec.id} topic ${i + 1}`,

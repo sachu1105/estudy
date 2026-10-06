@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test.describe("app shell", () => {
   test("renders a placeholder page for every app route", async ({ page }) => {
-    for (const [path, title] of [
+    const routes: [string, string | RegExp][] = [
       ["/today", "Today"],
-      ["/plan", "Plan"],
+      ["/plan", /^(Plan|Study plan)$/],
       ["/calendar", "Calendar"],
       ["/pods", "Pods"],
       ["/syllabus", "Pods"], // the list moved into the pods home
@@ -13,7 +13,8 @@ test.describe("app shell", () => {
       ["/rank", "Rank"],
       ["/progress", "Progress"],
       ["/settings", "Settings"],
-    ]) {
+    ];
+    for (const [path, title] of routes) {
       await page.goto(path);
       await expect(
         page.getByRole("heading", { level: 1, name: title }),

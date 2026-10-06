@@ -250,6 +250,9 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
 
 - Plan horizon: the user gives an exam date OR "finish in N days". If both, the earlier
   wins.
+- Exam board: each subject pod sits in To study, Studying, Revising or Done. The plan
+  gives Studying subjects time first, starts To study subjects in board order, plans only
+  revision for Revising, and only the later, lighter revisions (no section mock) for Done.
 - Intensity per subject: light 0.75, steady 1.0, intense 1.3 (time multiplier).
   Confidence per subject: 1-5 (proficiency multiplier).
 - Beginner mode ("I'm new to PSC"): confidence starts at 1 everywhere, the first 7 days
@@ -683,7 +686,7 @@ Build pods at /pods and make them the home of each subject. Absorbs the old vaul
 Empty topic: "Nothing here yet. Add a note, a link or a photo of your notebook."
 ```
 
-### Milestone 6 — the study plan from pods
+### Milestone 6 — the study plan from pods (done)
 
 ```
 Read CLAUDE.md. Milestones 1-5 are committed.
