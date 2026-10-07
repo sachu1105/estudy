@@ -301,7 +301,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and
   pod covers: the grainy mesh gradient (or the user's image) on top of each pod card
-  (`lib/pods/covers`, `PodCover`, `PodTile`).
+  (`lib/pods/covers`, `PodCover`, `PodTile`). The landing page may reuse the same
+  cover art: a soft glow behind the hero window, and the top of the featured plan card
+  (the admin picks it under Plans and limits). Nothing else.
 
 ### Typography (next/font/google)
 

@@ -8,6 +8,7 @@ import {
   announcementSchema,
   billingSchema,
   entitlementOverridesSchema,
+  featuredPlanSchema,
   featureFlagsSchema,
   maintenanceSchema,
 } from "@/lib/settings/schemas";
@@ -196,6 +197,7 @@ const settings = {
   flags: { area: "settings", schema: featureFlagsSchema },
   entitlements: { area: "plans", schema: entitlementOverridesSchema },
   billing: { area: "plans", schema: billingSchema },
+  featuredPlan: { area: "plans", schema: featuredPlanSchema },
 } as const;
 
 export async function saveSettingAction(

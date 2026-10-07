@@ -1,4 +1,9 @@
-import { Check, ClipboardCheck, MessageCircle } from "lucide-react";
+import {
+  ClipboardCheck,
+  FolderOpen,
+  MessageCircle,
+  Trophy,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/ui/reveal";
@@ -93,6 +98,29 @@ function GroupPreview() {
   );
 }
 
+const features = [
+  {
+    icon: FolderOpen,
+    title: "Share from your pods",
+    body: "Send a note, PDF or link to the squad in one tap. Only what you share leaves your pod.",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Mock tests together",
+    body: "Build a test for the squad and see everyone's score when they finish.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Ask a doubt",
+    body: "Post a question, get answers live, and mark the one that helped.",
+  },
+  {
+    icon: Trophy,
+    title: "A weekly squad rank",
+    body: "Ranked by this week's study. It starts fresh every Monday.",
+  },
+];
+
 export function GroupsSection() {
   return (
     <section
@@ -100,36 +128,33 @@ export function GroupsSection() {
       aria-labelledby="groups-title"
       className="mx-auto max-w-content px-4 py-16 md:px-8 md:py-24"
     >
-      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <Reveal>
-          <SectionHeading
-            id="groups-title"
-            eyebrow="Squads"
-            title="Study together, stay accountable"
-            align="left"
-          >
-            Make a squad with friends or your coaching batch. Share notes and
-            mock tests, ask doubts, and see who studied the most this week.
-          </SectionHeading>
-          <ul className="mt-6 flex flex-col gap-3 text-body text-ink-muted">
-            {[
-              "Shared notes, PDFs and mock tests in one place",
-              "Ask a doubt, mark the answer that helped",
-              "A weekly squad rank that resets every Monday",
-            ].map((point) => (
-              <li key={point} className="flex items-start gap-3">
-                <Check
-                  className="mt-1 size-4 shrink-0 text-accent"
-                  aria-hidden
-                />
-                {point}
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-        <Reveal>
+      <Reveal>
+        <SectionHeading
+          id="groups-title"
+          eyebrow="Squads"
+          title="Study together, stay accountable"
+        >
+          Make a squad with friends or your coaching batch, or join an open one
+          for your exam with a code or a link.
+        </SectionHeading>
+      </Reveal>
+      <div className="mt-12 grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[1.15fr_1fr]">
+        <Reveal className="flex flex-col justify-center rounded-[24px] border border-border bg-surface-muted/60 p-3 sm:p-5">
           <GroupPreview />
         </Reveal>
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {features.map((f) => (
+            <li key={f.title}>
+              <Reveal className="flex h-full flex-col gap-3 rounded-[20px] border border-border bg-surface p-5">
+                <span className="grid size-10 place-items-center rounded-control bg-accent-soft text-accent-ink">
+                  <f.icon className="size-5" aria-hidden />
+                </span>
+                <h3>{f.title}</h3>
+                <p className="text-small text-ink-muted">{f.body}</p>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

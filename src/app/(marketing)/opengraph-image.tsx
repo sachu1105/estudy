@@ -8,6 +8,6 @@ export const contentType = ogContentType;
 export default function Image() {
   return renderOg(
     "Your syllabus, turned into a daily plan you can actually finish.",
-    "For Kerala PSC, SSC and RRB aspirants. Free during launch.",
+    "For Kerala PSC aspirants. Free during launch.",
   );
 }

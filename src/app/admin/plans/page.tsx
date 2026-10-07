@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { BillingForm } from "@/features/admin/components/billing-form";
+import { FeaturedPlanForm } from "@/features/admin/components/featured-plan-form";
 import {
   PlansForm,
   type PlanTable,
@@ -41,6 +42,7 @@ export default async function AdminPlans() {
       />
       <div className="flex flex-col gap-6">
         <BillingForm enabled={billingEnabled()} />
+        <FeaturedPlanForm initial={settings.featuredPlan?.plan ?? "PRO"} />
         <PlansForm
           initial={toTable(effectivePlans(settings.entitlements))}
           defaults={toTable(planConfig)}

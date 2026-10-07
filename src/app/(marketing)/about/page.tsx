@@ -25,9 +25,9 @@ export default function AboutPage() {
         actually are. There is no overdue list, ever.
       </p>
       <p>
-        We started with Kerala PSC (LDC, LGS, Degree level prelims and High
-        Court Assistant) and support SSC and RRB exams too. Beginner mode exists
-        for anyone sitting their first PSC exam.
+        We are built for Kerala PSC: LDC, LGS, Degree level prelims and Plus
+        two level prelims. Beginner mode exists for anyone sitting their first
+        PSC exam.
       </p>
       <h2>Who builds it</h2>
       <p>

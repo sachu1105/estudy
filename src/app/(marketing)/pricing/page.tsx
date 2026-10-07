@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PublicPlanCards } from "@/features/billing/components/public-plan-cards";
 import { billingEnabled } from "@/server/entitlements";
-import { planCards } from "@/server/services/billing/plan-cards";
+import { featuredPlan, planCards } from "@/server/services/billing/plan-cards";
 import { loadSettings } from "@/server/settings";
 
 export const metadata: Metadata = {
@@ -33,7 +33,12 @@ export default async function PricingPage() {
         </p>
       ) : null}
       <div className="mt-8">
-        <PublicPlanCards plans={planCards()} billingOn={on} />
+        <PublicPlanCards
+          plans={planCards()}
+          billingOn={on}
+          featured={featuredPlan()}
+          headingLevel={2}
+        />
       </div>
       <div className="mt-10 flex flex-col gap-3">
         <h2 className="text-h2">Questions</h2>

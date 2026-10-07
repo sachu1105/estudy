@@ -26,7 +26,7 @@ export default function TermsPage() {
       <h2>Practice questions</h2>
       <p>
         Questions in the app are practice questions matched to syllabus topics.
-        They are not official Kerala PSC, SSC or RRB questions, and we make no
+        They are not official Kerala PSC questions, and we make no
         claim that they will appear in any exam.
       </p>
       <h2>Your account</h2>

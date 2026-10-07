@@ -7,16 +7,18 @@ import { FinalCta } from "@/features/marketing/components/final-cta";
 import { GroupsSection } from "@/features/marketing/components/groups-section";
 import { Hero } from "@/features/marketing/components/hero";
 import { HowItWorks } from "@/features/marketing/components/how-it-works";
+import { Testimonials } from "@/features/marketing/components/testimonials";
 import { PricingTeaser } from "@/features/marketing/components/pricing-teaser";
 import { ctaHref } from "@/features/marketing/components/section-heading";
 import { site } from "@/lib/site";
+import { showTestimonials } from "@/lib/testimonials";
 import { hasSession } from "@/server/auth/session";
 import { billingEnabled } from "@/server/entitlements";
 import { loadSettings } from "@/server/settings";
 import { env } from "@/server/env";
 
 export const metadata: Metadata = {
-  title: { absolute: `${site.name}: daily plans for Kerala PSC, SSC and RRB` },
+  title: { absolute: `${site.name}: daily study plans for Kerala PSC` },
   description: site.description,
   alternates: { canonical: "/" },
 };
@@ -67,6 +69,9 @@ export default async function LandingPage() {
       <FeaturesBento />
       <HowItWorks />
       <GroupsSection />
+      {showTestimonials(process.env.NODE_ENV === "production") ? (
+        <Testimonials />
+      ) : null}
       <PricingTeaser billingEnabled={billingEnabled()} ctaHref={href} />
       <Faq />
       <FinalCta href={href} />

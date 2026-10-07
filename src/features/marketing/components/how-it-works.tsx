@@ -1,23 +1,35 @@
+import type { ReactNode } from "react";
+
 import { Reveal } from "@/components/ui/reveal";
 
+import {
+  PlanVisual,
+  RateVisual,
+  SquadVisual,
+  UploadVisual,
+} from "./how-it-works-visuals";
 import { SectionHeading } from "./section-heading";
 
-const steps = [
+const steps: { title: string; body: string; visual: ReactNode }[] = [
   {
-    title: "Upload syllabus",
-    body: "Drop in your PDF, or pick an exam from our catalogue.",
+    title: "Add your syllabus",
+    body: "Pick your exam from the catalogue, or upload the PDF. Every subject becomes a pod.",
+    visual: <UploadVisual />,
   },
   {
-    title: "Rate your subjects",
-    body: "Choose an intensity and how confident you are in each.",
+    title: "Say where you stand",
+    body: "Rate each subject from one to five stars and choose how hard to push it.",
+    visual: <RateVisual />,
   },
   {
-    title: "Get your daily plan",
-    body: "A day-by-day schedule that fits the hours you actually have.",
+    title: "Follow today's plan",
+    body: "A day-by-day plan that fits the hours you have. See why each task is there.",
+    visual: <PlanVisual />,
   },
   {
-    title: "Test and study with your squad",
-    body: "A short test after each task, and a squad rank that tracks your effort.",
+    title: "Test, then keep up",
+    body: "A short test after each task, and your squad's weekly rank to keep you going.",
+    visual: <SquadVisual />,
   },
 ];
 
@@ -34,31 +46,32 @@ export function HowItWorks() {
             id="how-title"
             eyebrow="How it works"
             title="From syllabus to a plan in minutes"
-          />
+          >
+            Four steps, and the plan keeps itself up to date: what you finish
+            and how your tests go shape next week.
+          </SectionHeading>
         </Reveal>
-        <Reveal className="relative mt-12">
-          {/* The connecting line draws in once the steps scroll into view. */}
-          <span
-            aria-hidden
-            className="absolute top-5 left-5 h-[calc(100%-40px)] w-px origin-top scale-y-0 bg-accent transition-transform delay-100 duration-[600ms] ease-out group-data-visible/reveal:scale-y-100 md:top-5 md:right-[12.5%] md:left-[12.5%] md:h-px md:w-auto md:origin-left md:scale-x-0 md:scale-y-100 md:group-data-visible/reveal:scale-x-100"
-          />
-          <ol className="relative grid gap-8 md:grid-cols-4 md:gap-6">
-            {steps.map((step, index) => (
-              <li
-                key={step.title}
-                className="flex gap-4 md:flex-col md:items-center md:text-center"
-              >
-                <span className="grid size-10 shrink-0 place-items-center rounded-full border border-accent bg-surface font-mono text-body font-medium text-accent-ink">
-                  {index + 1}
-                </span>
-                <div className="flex flex-col gap-1 pt-1.5 md:pt-0">
+        <ol className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, index) => (
+            <li key={step.title}>
+              <Reveal className="flex h-full flex-col overflow-hidden rounded-[20px] border border-border bg-bg">
+                <div
+                  aria-hidden
+                  className="flex min-h-40 items-center bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:14px_14px] p-4"
+                >
+                  {step.visual}
+                </div>
+                <div className="flex flex-1 flex-col gap-1.5 border-t border-border bg-surface p-5">
+                  <span className="font-mono text-small font-medium text-accent-ink">
+                    0{index + 1}
+                  </span>
                   <h3>{step.title}</h3>
                   <p className="text-small text-ink-muted">{step.body}</p>
                 </div>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

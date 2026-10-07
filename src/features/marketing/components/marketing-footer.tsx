@@ -42,8 +42,8 @@ export function MarketingFooter({ year }: { year: number }) {
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="max-w-xs text-small text-ink-muted">
-            A daily study plan for Kerala PSC, SSC and RRB aspirants, with a
-            mock test after every task.
+            A daily study plan for Kerala PSC aspirants, with a mock test after
+            every task.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:contents">

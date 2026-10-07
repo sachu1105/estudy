@@ -183,6 +183,7 @@
 
   --animate-fade-in: fade-in 200ms var(--ease-out);
   --animate-cover-drift: cover-drift 2.4s linear infinite;
+  --animate-marquee: marquee 45s linear infinite;
   --animate-fade-out: fade-out 200ms var(--ease-out);
   --animate-pop-in: pop-in 200ms var(--ease-out);
   --animate-pop-out: pop-out 120ms var(--ease-out);
@@ -192,6 +193,13 @@
   --animate-sheet-out-left: sheet-out-left 200ms var(--ease-out);
   --animate-sheet-in-bottom: sheet-in-bottom 300ms var(--ease-out);
   --animate-sheet-out-bottom: sheet-out-bottom 200ms var(--ease-out);
+}
+
+/* Landing marquees: the track holds its items twice, so -50% loops seamlessly. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* A syllabus being read: its placeholder cover drifts slowly (stops for reduced motion). */

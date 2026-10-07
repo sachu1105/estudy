@@ -28,7 +28,7 @@ export const faqs = [
   },
   {
     q: "Are the questions official PSC questions?",
-    a: "No. They are practice questions written to match each topic, checked before they reach you. They are not official PSC, SSC or RRB questions, and we don't claim they will appear in your exam.",
+    a: "No. They are practice questions written to match each topic, checked before they reach you. They are not official PSC questions, and we don't claim they will appear in your exam.",
   },
   {
     q: "Is my data private?",

@@ -17,3 +17,7 @@ export function planCards() {
     rows: featureRows(plans[plan]),
   }));
 }
+
+/** The plan the admin lifts up on the pricing cards (Plans and limits). */
+export const featuredPlan = (): PlanName =>
+  cachedSettings().featuredPlan?.plan ?? "PRO";

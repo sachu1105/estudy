@@ -48,6 +48,9 @@ export const entitlementOverridesSchema = z.partialRecord(
 
 export const billingSchema = z.object({ enabled: z.boolean() });
 
+/** The plan the pricing cards lift up as the one to pick. */
+export const featuredPlanSchema = z.object({ plan: z.enum(PLAN_NAMES) });
+
 export const announcementSchema = z.object({
   active: z.boolean(),
   text: z.string().trim().max(200),
@@ -75,6 +78,7 @@ export const featureFlagsSchema = z.partialRecord(
 export const settingSchemas = {
   entitlements: entitlementOverridesSchema,
   billing: billingSchema,
+  featuredPlan: featuredPlanSchema,
   announcement: announcementSchema,
   maintenance: maintenanceSchema,
   flags: featureFlagsSchema,

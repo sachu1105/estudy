@@ -1085,3 +1085,21 @@ ledge, some shine and a press.
   dialog at the upload step; the catalogue, onboarding and the failed-parse card link
   there. The exam is picked with chips (`ExamChips`, a radio group), not a select.
 - Dialogs now cap at the screen height and scroll inside (`DialogContent`).
+
+### Landing page redesign (2026-10-07)
+- Hero is centred: a pill eyebrow, the tagline with "daily plan" in accent, one primary
+  CTA, then a framed window (pods on the left, today's plan on the right) over a blurred
+  pod-cover glow.
+- Exams are a marquee (`ExamStrip`): the four exams and shared subjects, drifting, paused
+  on hover, still under reduced motion. Each half of a marquee track must be wider than
+  any screen, so items repeat.
+- How it works is four step cards with small pictures; Squads is the preview plus four
+  feature tiles that match what squads do (share from pods, squad tests, doubts, weekly
+  rank).
+- Testimonials (`lib/testimonials.ts`) are SAMPLES: `sample: true` shows them only in
+  development, with a note; production hides the section until real, consented quotes
+  replace them.
+- Pricing cards are one component (`PublicPlanCards`) on the landing page and /pricing.
+  The featured plan is a setting (`featuredPlan`, admin: Plans and limits, default PRO):
+  raised, with a pod-cover top and a "Best value" tag.
+- Copy is Kerala PSC only now (hero, metadata, OG image, footer, about, FAQ, terms).
