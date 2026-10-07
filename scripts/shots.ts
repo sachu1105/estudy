@@ -107,6 +107,8 @@ async function main() {
       `${route} -> ${file}${overflow > 0 ? `  !! side scroll ${overflow}px` : ""}`,
     );
   }
+  // Keep the refreshed session: tokens rotate, so a stale file would be revoked.
+  await context.storageState({ path: STATE });
   await browser.close();
 }
 

@@ -987,3 +987,22 @@ ledge, some shine and a press.
   indefinitely (groups.spec caught it on the test player's Next).
 - pod-material.spec runs a long flow and now has a 90 s budget, like the plan and test
   flows.
+
+### Syllabuses being set up, and the way to the catalogue (2026-10-07)
+- No more "Being set up" list. A syllabus still being read or checked is a `SetupTile`
+  in the "Your exams" grid, the same `PodTile` shape, with a striped placeholder cover
+  (`PodCover` kind "placeholder") that drifts while reading (`animate-cover-drift`; it
+  stops for reduced motion). The status is live and honest: Queued; N% reading the file
+  or finding subjects, through `useJobStatus` (SSE, falling back to polling); then
+  "N subjects found · Check them", "couldn't read it · See why", or "waiting for
+  approval". A finished read refreshes the page.
+- `PodTile` stats can be text ("45%", "…"). Over the pale placeholder, the cover tag uses
+  ink on surface instead of white on a dark wash.
+- "Browse the syllabus catalogue" at the foot of /pods is gone. "Add exam" (was "Add
+  exam syllabus") opens a chooser (`AddExamButton`): Pick from the catalogue first, then
+  Upload your syllabus. Upload usage shows there; at the limit, upload is greyed out and
+  the catalogue stays open, where before the whole button disappeared. The upload page
+  has an "Is your exam in the catalogue?" card at the top.
+- `SyllabusCard` was removed.
+- scripts/shots.ts saves the session after each run. Refresh tokens rotate, and a stale
+  saved file was being revoked by reuse detection.

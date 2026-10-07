@@ -178,6 +178,7 @@
   --container-content: 1120px;
 
   --animate-fade-in: fade-in 200ms var(--ease-out);
+  --animate-cover-drift: cover-drift 2.4s linear infinite;
   --animate-fade-out: fade-out 200ms var(--ease-out);
   --animate-pop-in: pop-in 200ms var(--ease-out);
   --animate-pop-out: pop-out 120ms var(--ease-out);
@@ -189,6 +190,12 @@
   --animate-sheet-out-bottom: sheet-out-bottom 200ms var(--ease-out);
 }
 
+/* A syllabus being read: its placeholder cover drifts slowly (stops for reduced motion). */
+@keyframes cover-drift {
+  to {
+    background-position: 48px 0;
+  }
+}
 @keyframes fade-in {
   from {
     opacity: 0;

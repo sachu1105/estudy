@@ -187,6 +187,36 @@ test.describe("pods", () => {
     expect(gone?.status()).toBe(404);
   });
 
+  test("a syllabus being set up sits with the exams, and Add exam offers the catalogue", async ({
+    page,
+  }) => {
+    const title = `Setup ${test.info().project.name} ${Date.now()}`;
+    await seedParsedDraft(await currentUserId(page), title);
+    await page.goto("/pods");
+    const tile = page
+      .getByRole("region", { name: "Your exams" })
+      .getByRole("link", { name: new RegExp(title) });
+    await expect(tile).toContainText("subjects found");
+    await expect(tile).toContainText("Ready to check");
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    await page.getByRole("button", { name: "Add exam" }).click();
+    const chooser = page.getByRole("dialog");
+    await expect(
+      chooser.getByRole("link", { name: /Upload your syllabus/ }),
+    ).toBeVisible();
+    await chooser
+      .getByRole("link", { name: /Pick from the catalogue/ })
+      .click();
+    await expect(page).toHaveURL(/\/syllabus\/catalogue$/);
+
+    // The upload page points to the catalogue too.
+    await page.goto("/syllabus/new");
+    await expect(
+      page.getByRole("link", { name: /Is your exam in the catalogue/ }),
+    ).toBeVisible();
+  });
+
   test("someone else's pod is a 404", async ({ page }) => {
     const response = await page.goto(
       "/pods/00000000-0000-4000-8000-000000000000",

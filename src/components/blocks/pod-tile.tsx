@@ -4,7 +4,9 @@ import type { ReactNode } from "react";
 
 import type { PodCover as Cover } from "@/lib/pods/covers";
 
-import { PodCover } from "./pod-cover";
+import { cn } from "@/lib/utils/cn";
+
+import { PodCover, type PlaceholderCover } from "./pod-cover";
 
 type PodTileProps = {
   href: string;
@@ -12,9 +14,9 @@ type PodTileProps = {
   subtitle?: string;
   /** A short tag on the cover, e.g. "Exam" or "Your pod". */
   tag: string;
-  cover: Cover;
-  /** The focal number at the bottom left, with the words that follow it. */
-  stat: { value: number; unit: string };
+  cover: Cover | PlaceholderCover;
+  /** The focal number (or a short word) at the bottom left, and the words after it. */
+  stat: { value: number | string; unit: string };
   /** A smaller fact at the bottom right. */
   aside?: ReactNode;
   /** 0-100: a hairline under the stats. */
@@ -44,7 +46,15 @@ export function PodTile({
         cover={cover}
         className="absolute inset-x-0 top-0 -z-10 h-32 transition-transform duration-[300ms] group-hover:scale-[1.03]"
       />
-      <span className="absolute top-3 right-3 rounded-full bg-black/30 px-2.5 py-0.5 text-small font-medium text-white backdrop-blur-sm">
+      <span
+        className={cn(
+          "absolute top-3 right-3 rounded-full px-2.5 py-0.5 text-small font-medium backdrop-blur-sm",
+          // White on a dark wash over art; ink on surface over the pale placeholder.
+          cover.kind === "placeholder"
+            ? "border border-border bg-surface/90 text-ink"
+            : "bg-black/30 text-white",
+        )}
+      >
         {tag}
       </span>
 
@@ -78,7 +88,9 @@ export function PodTile({
             <span className="flex items-end justify-between gap-3">
               <span className="flex min-w-0 items-end gap-2">
                 <span className="font-heading text-display font-semibold text-ink tabular-nums">
-                  {stat.value > 0 && stat.value < 10
+                  {typeof stat.value === "number" &&
+                  stat.value > 0 &&
+                  stat.value < 10
                     ? `0${stat.value}`
                     : stat.value}
                 </span>
