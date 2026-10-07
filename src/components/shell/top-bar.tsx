@@ -30,6 +30,7 @@ import {
 import { setThemePreference } from "@/lib/theme";
 
 import { LogoMark } from "./logo";
+import { NotificationBell } from "./notification-bell";
 import { primaryNav, secondaryNav } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -39,6 +40,8 @@ export type Viewer = {
   avatarUrl: string | null;
   /** Moderators and admins get a way into the admin panel. */
   staff?: boolean;
+  /** Unread notifications when the page was rendered. */
+  unread?: number;
 };
 
 type TopBarProps = {
@@ -104,8 +107,9 @@ export function TopBar({ viewer, logout }: TopBarProps) {
         </kbd>
       </button>
 
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-2 sm:gap-3">
         <ThemeToggle className="hidden sm:inline-flex" />
+        <NotificationBell initial={viewer.unread ?? 0} />
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Account menu"

@@ -8,6 +8,7 @@ import { TopBar } from "@/components/shell/top-bar";
 import { Toaster } from "@/components/ui/toast";
 import { logoutAction } from "@/features/auth/actions";
 import { requireUser } from "@/server/auth/session";
+import { notificationService } from "@/server/services/notifications";
 import { loadSettings } from "@/server/settings";
 import { maintenanceFor } from "@/server/settings/maintenance";
 
@@ -19,12 +20,16 @@ export default async function ShellLayout({
   const user = await requireUser();
   const maintenance = await maintenanceFor(user.role);
   if (maintenance !== null) return <MaintenancePage message={maintenance} />;
-  const { announcement } = await loadSettings();
+  const [{ announcement }, unread] = await Promise.all([
+    loadSettings(),
+    notificationService.unread(user),
+  ]);
   const viewer = {
     name: user.name,
     email: user.email,
     avatarUrl: user.avatarUrl,
     staff: user.role !== "USER",
+    unread,
   };
 
   return (

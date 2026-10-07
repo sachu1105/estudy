@@ -785,3 +785,39 @@ generation and "mock tests from my material" (paidOnly; a calm card says so).
   the blocker.
 - e2e: seeded logins clear the per-IP login counters first (`resetLoginLimits`). A full
   run logs in more than 30 times from one IP; the limit itself stays on in the app.
+
+## Milestone 14 — group discussion, questions and notifications (2026-10-12)
+
+- Data (migration `20261012090000_discussion`): Post (DISCUSSION | QUESTION, mentionIds,
+  acceptedReplyId, pinnedAt, hiddenAt, replyCount, lastActivityAt), Reply, Reaction
+  (LIKE | HELPFUL | THANKS), Notification. XpKind gains ANSWER; ReportTarget gains POST
+  and REPLY.
+- Markdown subset (`lib/markdown`): parsed to a tree that React renders node by node, so
+  there is no HTML string and no `dangerouslySetInnerHTML`. Raw HTML in a post shows as
+  text. Links are kept only when they are http(s). Bold, italic, inline code, fenced
+  code, lists, quotes, links and @mentions.
+- Mentions resolve to group members only, never to yourself, and are re-checked on the
+  server when the post is saved.
+- Questions: tagged with a topic, and the asker accepts one answer. The first acceptance
+  on a question pays the answerer 10 XP, capped at 30 XP a day; changing the pick later
+  pays nothing. The ledger row is written even when it pays 0, because the row is what
+  marks a question as already paid (append-only, rule 6).
+- Realtime: SSE at `/api/groups/[groupId]/stream`, members only. Events carry ids only,
+  so what each person may see is decided on the server when the page re-reads. Fan-out is
+  Redis pub/sub; each group also keeps a capped Redis stream (500 events, 24 h) whose ids
+  are the SSE event ids, so a reconnect with Last-Event-ID resumes, and a trimmed gap
+  sends `resync`. The client also re-reads once when the stream opens: anything posted
+  between the page being rendered and the stream connecting would otherwise be missed.
+- Optimistic posting, replying, reactions and accepting, each rolled back on error. Post
+  and reply drafts are kept in localStorage through `useSyncExternalStore`.
+- Notification centre at /notifications, with a bell in the top bar: mentions, replies,
+  accepted answers and tests shared in a group. One notification per person per event
+  (a mention wins over a reply), never to yourself, and never from someone you blocked.
+  The bell polls once a minute while the tab is visible rather than holding a stream.
+- Moderation: group admins pin, and hide posts or replies (reversible). A hidden reply
+  keeps its place so the thread still reads in order. Authors delete their own. Reports
+  on posts and replies join the same admin queue, which now shows an excerpt.
+- Deviation: no edit-after-posting. Delete and repost is the whole story for now; an
+  edit history is worth more than an in-place edit and belongs with its own milestone.
+- Fixed while building: SSE writes now survive a client that disappears mid-write (both
+  stream routes), instead of raising an unhandled rejection in the server log.

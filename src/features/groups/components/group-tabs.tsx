@@ -11,6 +11,7 @@ export function GroupTabs({ groupId }: { groupId: string }) {
   const base = `/groups/${groupId}`;
   const tabs = [
     { href: base, label: "Material" },
+    { href: `${base}/discuss`, label: "Discuss" },
     { href: `${base}/tests`, label: "Tests" },
     { href: `${base}/rank`, label: "Rank" },
     { href: `${base}/members`, label: "Members" },
@@ -21,7 +22,11 @@ export function GroupTabs({ groupId }: { groupId: string }) {
       className="mb-6 flex gap-1 overflow-x-auto border-b border-border"
     >
       {tabs.map((t) => {
-        const active = pathname === t.href;
+        // Material is the group's home; the other tabs own everything below them.
+        const active =
+          t.href === base
+            ? pathname === base || pathname.startsWith(`${base}/items`)
+            : pathname === t.href || pathname.startsWith(`${t.href}/`);
         return (
           <Link
             key={t.href}

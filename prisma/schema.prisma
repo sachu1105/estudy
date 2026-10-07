@@ -94,6 +94,11 @@ model User {
   blocks             Block[]             @relation("Blocker")
   blockedBy          Block[]             @relation("Blocked")
   reports            Report[]
+  posts              Post[]
+  replies            Reply[]
+  reactions          Reaction[]
+  notifications      Notification[]      @relation("NotificationFor")
+  notificationsSent  Notification[]      @relation("NotificationActor")
 }
 
 model RefreshToken {
@@ -643,6 +648,8 @@ enum XpKind {
   TASK
   STREAK
   TEST
+  /// An answer the asker accepted in a group (milestone 14).
+  ANSWER
 }
 
 enum OverrideKind {
@@ -931,6 +938,8 @@ enum ReportTarget {
   GROUP_ITEM
   GROUP_TEST
   USER
+  POST
+  REPLY
 }
 
 enum ReportStatus {
@@ -959,6 +968,7 @@ model Group {
   requests JoinRequest[]
   items    GroupItem[]
   tests    GroupTest[]
+  posts    Post[]
 
   @@index([visibility, deletedAt, examId])
 }
@@ -1093,4 +1103,105 @@ model Report {
 
   @@unique([reporterId, targetType, targetId])
   @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------------------
+// Group discussion and questions (milestone 14).
+
+enum PostKind {
+  DISCUSSION
+  QUESTION
+}
+
+enum ReactionKind {
+  LIKE
+  HELPFUL
+  THANKS
+}
+
+enum NotificationKind {
+  MENTION
+  REPLY
+  ACCEPTED
+  GROUP_TEST
+}
+
+/// A thread in a group: a discussion, or a question tagged with a topic.
+model Post {
+  id              String    @id @default(uuid()) @db.Uuid
+  groupId         String    @db.Uuid
+  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  authorId        String    @db.Uuid
+  author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  kind            PostKind  @default(DISCUSSION)
+  title           String
+  /// Markdown subset, rendered without HTML.
+  body            String
+  /// People named with @, checked to be members when posted.
+  mentionIds      String[]  @db.Uuid
+  subjectName     String?
+  topicName       String?
+  acceptedReplyId String?   @db.Uuid
+  pinnedAt        DateTime? @db.Timestamptz(6)
+  /// A group admin or site admin took it down.
+  hiddenAt        DateTime? @db.Timestamptz(6)
+  replyCount      Int       @default(0)
+  lastActivityAt  DateTime  @default(now()) @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt       DateTime? @db.Timestamptz(6)
+
+  replies Reply[]
+
+  @@index([groupId, deletedAt, lastActivityAt])
+}
+
+model Reply {
+  id         String    @id @default(uuid()) @db.Uuid
+  postId     String    @db.Uuid
+  post       Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId   String    @db.Uuid
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body       String
+  mentionIds String[]  @db.Uuid
+  hiddenAt   DateTime? @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt  DateTime? @db.Timestamptz(6)
+
+  @@index([postId, createdAt])
+}
+
+/// One person's reaction of one kind to a post or a reply.
+model Reaction {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// The post, or the reply's post: one lookup loads a whole thread's reactions.
+  postId    String       @db.Uuid
+  replyId   String?      @db.Uuid
+  /// postId for the post itself, else the replyId; makes the unique key work.
+  targetId  String       @db.Uuid
+  kind      ReactionKind
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+
+  @@unique([userId, targetId, kind])
+  @@index([postId])
+}
+
+/// The in-app notification centre.
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  user      User             @relation("NotificationFor", fields: [userId], references: [id], onDelete: Cascade)
+  actorId   String?          @db.Uuid
+  actor     User?            @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  kind      NotificationKind
+  groupId   String?          @db.Uuid
+  /// Where it leads, relative to the app.
+  href      String
+  /// A short line: the post title or test name.
+  subject   String
+  readAt    DateTime?        @db.Timestamptz(6)
+  createdAt DateTime         @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, readAt, createdAt])
 }

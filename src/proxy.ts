@@ -31,6 +31,7 @@ const PROTECTED = [
   "/study",
   "/test",
   "/admin",
+  "/notifications",
 ];
 const SIGNED_OUT_ONLY = ["/login", "/register"];
 
@@ -94,5 +95,9 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)",
     "/api/pods/files/:path*",
     "/api/groups/files/:path*",
+    // Long-lived pages reconnect their stream and poll the bell after the access token
+    // has expired; the refresh happens here, like for a page.
+    "/api/groups/:groupId/stream",
+    "/api/notifications/:path*",
   ],
 };

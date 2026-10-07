@@ -287,7 +287,7 @@ export function createGroupService(deps: GroupDeps) {
     report: (
       user: User,
       target: {
-        type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER";
+        type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY";
         id: string;
         groupId: string | null;
       },

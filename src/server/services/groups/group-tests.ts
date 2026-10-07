@@ -18,6 +18,12 @@ export type GroupTestDeps = {
   random: () => number;
   /** Weekly XP of these users from the global board (rank service). */
   weeklyXp: (userIds: string[]) => Promise<Map<string, number>>;
+  /** Tells the other members a test was shared (notification centre). */
+  announce?: (
+    groupId: string,
+    actorId: string,
+    test: { id: string; title: string },
+  ) => Promise<void>;
 };
 
 const MUTED = failure(
@@ -73,6 +79,7 @@ export function createGroupTests(deps: GroupTestDeps) {
         durationSec: test.durationSec,
         negativeMarking: test.negativeMarking,
       });
+      await deps.announce?.(groupId, user.id, shared);
       return { ok: true, id: shared.id };
     },
 
@@ -111,6 +118,7 @@ export function createGroupTests(deps: GroupTestDeps) {
         durationSec: input.minutes ? input.minutes * 60 : null,
         negativeMarking: false,
       });
+      await deps.announce?.(groupId, user.id, shared);
       return { ok: true, id: shared.id };
     },
 

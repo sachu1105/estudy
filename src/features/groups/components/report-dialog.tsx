@@ -30,7 +30,7 @@ export function ReportDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   target: {
-    type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER";
+    type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY";
     id: string;
     groupId: string | null;
   };

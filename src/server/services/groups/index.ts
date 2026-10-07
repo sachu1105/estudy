@@ -7,6 +7,10 @@ import { limit } from "@/server/entitlements";
 import { today } from "@/lib/clock";
 import { rankKey } from "@/lib/progress/rank-keys";
 import { rankStore } from "@/server/rank/rank-store";
+import { discussionRepository } from "@/server/repositories/discussion-repository";
+import { progressRepository } from "@/server/repositories/progress-repository";
+import { groupEvents } from "@/server/realtime/group-events";
+import { notificationService } from "@/server/services/notifications";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
@@ -15,6 +19,7 @@ import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { userRepository } from "@/server/repositories/user-repository";
 import { storage } from "@/server/storage";
 
+import { createDiscussionService } from "./discussion-service";
 import { createGroupService } from "./group-service";
 import { createGroupTests } from "./group-tests";
 import { createMaterialService } from "./material-service";
@@ -55,4 +60,20 @@ export const groupTests = createGroupTests({
   // The group rank reads the members' scores off the global weekly board.
   weeklyXp: (ids) =>
     rankStore.scores(rankKey("week", today(systemClock, "Asia/Kolkata")), ids),
+  announce: (groupId, actorId, test) =>
+    notificationService.notifyGroup(groupId, {
+      actorId,
+      kind: "GROUP_TEST",
+      href: `/groups/${groupId}/tests/${test.id}`,
+      subject: test.title,
+    }),
+});
+
+export const discussionService = createDiscussionService({
+  groups: groupService,
+  posts: discussionRepository,
+  clock: systemClock,
+  emit: groupEvents.emit,
+  notify: (rows) => notificationService.notify(rows),
+  addXp: (entry) => progressRepository.addXp(entry),
 });

@@ -407,6 +407,38 @@ export const adminRepository = {
           }
         : null;
     }
+    if (type === "POST") {
+      const p = await prisma.post.findUnique({
+        where: { id },
+        select: { title: true, body: true, groupId: true, hiddenAt: true },
+      });
+      return p
+        ? {
+            label: `Post: ${p.title}`,
+            excerpt: p.body.slice(0, 280),
+            hidden: !!p.hiddenAt,
+            href: `/groups/${p.groupId}/discuss/${id}`,
+          }
+        : null;
+    }
+    if (type === "REPLY") {
+      const r = await prisma.reply.findUnique({
+        where: { id },
+        select: {
+          body: true,
+          hiddenAt: true,
+          post: { select: { id: true, title: true, groupId: true } },
+        },
+      });
+      return r
+        ? {
+            label: `Reply in: ${r.post.title}`,
+            excerpt: r.body.slice(0, 280),
+            hidden: !!r.hiddenAt,
+            href: `/groups/${r.post.groupId}/discuss/${r.post.id}#reply-${id}`,
+          }
+        : null;
+    }
     const u = await prisma.user.findUnique({
       where: { id },
       select: { email: true },
@@ -428,6 +460,10 @@ export const adminRepository = {
       return prisma.groupItem.update({ where: { id }, data: { hiddenAt: at } });
     if (type === "GROUP_TEST")
       return prisma.groupTest.update({ where: { id }, data: { hiddenAt: at } });
+    if (type === "POST")
+      return prisma.post.update({ where: { id }, data: { hiddenAt: at } });
+    if (type === "REPLY")
+      return prisma.reply.update({ where: { id }, data: { hiddenAt: at } });
     return Promise.resolve(null);
   },
 

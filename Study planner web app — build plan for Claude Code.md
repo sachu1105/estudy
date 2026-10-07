@@ -853,7 +853,7 @@ Read CLAUDE.md. Milestones 1-12 are committed.
 7. Every group action checks membership and group role server-side.
 ```
 
-### Milestone 14 — group discussion and questions
+### Milestone 14 — group discussion and questions (done)
 
 ```
 Read CLAUDE.md. Milestones 1-13 are committed.

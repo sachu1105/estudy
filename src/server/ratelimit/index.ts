@@ -30,6 +30,9 @@ export const rules = {
   testPerUser: { limit: 60, windowMs: 10 * MINUTE },
   // Group actions: joining, inviting, sharing, reporting (rule 13).
   groupPerUser: { limit: 120, windowMs: 10 * MINUTE },
+  // Posts and replies; reactions and moderation are lighter (milestone 14).
+  postPerUser: { limit: 30, windowMs: 10 * MINUTE },
+  reactPerUser: { limit: 200, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

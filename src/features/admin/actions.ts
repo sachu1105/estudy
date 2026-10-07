@@ -288,7 +288,7 @@ export async function decideReportAction(input: unknown): Promise<AdminResult> {
   const by = await requireAdmin("reports");
   const parsed = z
     .object({
-      type: z.enum(["GROUP", "GROUP_ITEM", "GROUP_TEST", "USER"]),
+      type: z.enum(["GROUP", "GROUP_ITEM", "GROUP_TEST", "USER", "POST", "REPLY"]),
       id: z.uuid(),
       hide: z.boolean(),
     })

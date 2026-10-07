@@ -13,7 +13,7 @@ export function ReportButton({
   what,
 }: {
   target: {
-    type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER";
+    type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY";
     id: string;
     groupId: string | null;
   };

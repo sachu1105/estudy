@@ -25,7 +25,13 @@ export const GET = withUser<RouteContext<"/api/jobs/[id]/stream">>(
       async start(controller) {
         let closed = false;
         const send = (chunk: string) => {
-          if (!closed) controller.enqueue(encoder.encode(chunk));
+          if (closed) return;
+          try {
+            controller.enqueue(encoder.encode(chunk));
+          } catch {
+            // The client went away between the check and the write.
+            void close();
+          }
         };
         const close = async () => {
           if (closed) return;
@@ -33,7 +39,11 @@ export const GET = withUser<RouteContext<"/api/jobs/[id]/stream">>(
           clearInterval(heartbeat);
           clearTimeout(limit);
           await unsubscribe();
-          controller.close();
+          try {
+            controller.close();
+          } catch {
+            // Already closed by the runtime when the client disconnected.
+          }
         };
         const emit = (event: JobEvent) => {
           send(`event: job\ndata: ${JSON.stringify(event)}\n\n`);

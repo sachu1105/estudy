@@ -44,6 +44,11 @@ export default async function AdminReports() {
                   {q.reports.length} report{q.reports.length === 1 ? "" : "s"}
                 </span>
               </div>
+              {q.target && "excerpt" in q.target && q.target.excerpt ? (
+                <blockquote className="rounded-chip bg-surface-muted p-3 text-small wrap-break-word whitespace-pre-wrap">
+                  {q.target.excerpt}
+                </blockquote>
+              ) : null}
               <ul className="flex flex-col gap-1 text-small">
                 {q.reports.map((r, i) => (
                   <li key={i}>

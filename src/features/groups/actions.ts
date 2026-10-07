@@ -205,7 +205,14 @@ export async function reportAction(input: unknown): Promise<Result> {
   const g = await guard(
     input,
     z.object({
-      type: z.enum(["GROUP", "GROUP_ITEM", "GROUP_TEST", "USER"]),
+      type: z.enum([
+        "GROUP",
+        "GROUP_ITEM",
+        "GROUP_TEST",
+        "USER",
+        "POST",
+        "REPLY",
+      ]),
       targetId: id,
       groupId: id.nullable(),
       reason: z.enum(["spam", "abuse", "copyright", "wrong", "other"]),
