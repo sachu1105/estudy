@@ -13,24 +13,43 @@ import { ctaHref } from "./section-heading";
 export function Hero({ signedIn }: { signedIn: boolean }) {
   return (
     <section className="overflow-x-clip px-4 pt-12 pb-16 md:px-8 md:pt-20 md:pb-24">
-      <div className="mx-auto grid max-w-content grid-cols-1 gap-6 lg:grid-cols-[1.25fr_1fr] lg:items-end lg:gap-16">
-        <h1 className="text-[36px] leading-[44px] font-semibold tracking-[-0.03em] text-balance sm:text-[52px] sm:leading-[60px]">
-          Your syllabus, one pod at a time.
-        </h1>
-        <div className="flex flex-col items-start gap-5 lg:pb-2">
+      <div className="mx-auto grid max-w-content grid-cols-1 gap-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+        <div className="flex flex-col items-start gap-6">
+          <p className="text-small text-ink-muted">
+            For competitive exam aspirants
+          </p>
+          <h1 className="-mt-3 text-[36px] leading-[44px] font-semibold tracking-[-0.03em] text-balance sm:text-[52px] sm:leading-[60px]">
+            Your syllabus, one pod at a time.
+          </h1>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <Button
+              asChild
+              variant="primary"
+              size="lg"
+              className="w-full sm:w-auto"
+            >
+              <Link href={ctaHref(signedIn)}>Get started free</Link>
+            </Button>
+            <Button
+              asChild
+              variant="secondary"
+              size="lg"
+              className="w-full sm:w-auto"
+            >
+              <a href="#how-it-works">See how it works</a>
+            </Button>
+          </div>
+        </div>
+        {/* What it does, beside the headline (under it on a phone). */}
+        <div className="flex flex-col gap-3 lg:pt-12">
           <p className="text-body text-pretty text-ink-muted sm:text-[17px] sm:leading-7">
             Every subject becomes a pod. Tick off topics as you go, keep your
             notes, PDFs and links where they belong, and watch your progress
             grow. On Pro, AI writes mock tests from your own notes.
           </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <Button asChild variant="primary" size="lg">
-              <Link href={ctaHref(signedIn)}>Get started free</Link>
-            </Button>
-            <span className="text-small text-ink-muted">
-              Free during launch. No card needed.
-            </span>
-          </div>
+          <p className="text-small text-ink-muted">
+            Free during launch. No card needed.
+          </p>
         </div>
       </div>
 
