@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { site } from "@/lib/site";
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
@@ -46,7 +47,7 @@ export function renderOg(title: string, subtitle: string) {
             />
           </svg>
         </div>
-        <div style={{ fontSize: 34, fontWeight: 600 }}>Study planner</div>
+        <div style={{ fontSize: 34, fontWeight: 600 }}>{site.name}</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div

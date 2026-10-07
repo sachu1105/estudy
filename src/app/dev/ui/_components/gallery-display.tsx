@@ -1,5 +1,6 @@
 import { Check, Clock, Flame, Users, X } from "lucide-react";
 
+import { PodTile } from "@/components/blocks/pod-tile";
 import { StatTile } from "@/components/blocks/stat-tile";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,12 +14,31 @@ import {
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { COVER_PRESETS, type CoverPreset } from "@/lib/pods/covers";
 
 import { Row, Section } from "./section";
 
 export function GalleryDisplay() {
   return (
     <Section title="Display">
+      <Row label="Pod tile, one per cover">
+        <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+          {(Object.keys(COVER_PRESETS) as CoverPreset[]).map((preset, i) => (
+            <PodTile
+              key={preset}
+              href="#"
+              title={i === 0 ? "Degree level LDC" : `Cover: ${preset}`}
+              subtitle={i === 0 ? "Kerala PSC · 17 subjects" : "6 subjects"}
+              tag={i % 2 ? "Your pod" : "Exam"}
+              cover={{ kind: "gradient", preset }}
+              stat={{ value: 5 * (i + 1), unit: "of 461 topics done" }}
+              aside={`${i + 2} items`}
+              progress={(5 * (i + 1) * 100) / 461}
+            />
+          ))}
+        </div>
+      </Row>
+
       <Row label="Badge">
         <Badge>Not started</Badge>
         <Badge tone="accent">Check test unlocked</Badge>

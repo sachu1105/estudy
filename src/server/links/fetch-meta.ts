@@ -162,7 +162,7 @@ export async function fetchLinkMeta(
       redirect: "manual",
       signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: {
-        "User-Agent": "StudyPlannerLinkPreview/1.0",
+        "User-Agent": "StudpodsLinkPreview/1.0",
         Accept: "text/html",
       },
     });

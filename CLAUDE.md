@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# Study planner (web)
+# Studpods (web)
 
 A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
 (LDC, LGS, Degree level, High Court Assistant) and extending to SSC, RRB and banking.
@@ -299,7 +299,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   or done/destructive.
 - Never signal state with colour alone: correct = success + check icon, wrong =
   danger + cross icon.
-- No gradients except a single subtle accent glow behind the streak celebration.
+- No gradients except a single subtle accent glow behind the streak celebration, and
+  pod covers: the grainy mesh gradient (or the user's image) on top of each pod card
+  (`lib/pods/covers`, `PodCover`, `PodTile`).
 
 ### Typography (next/font/google)
 

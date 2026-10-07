@@ -15,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { landingSections } from "@/lib/site";
+import { landingSections, site } from "@/lib/site";
 import { cn } from "@/lib/utils/cn";
 
 type MarketingNavProps = { signedIn: boolean };
@@ -103,7 +103,7 @@ export function MarketingNav({ signedIn }: MarketingNavProps) {
       )}
     >
       <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4 md:px-8">
-        <Link href="/" aria-label="Study planner home" className="shrink-0">
+        <Link href="/" aria-label={`${site.name} home`} className="shrink-0">
           <Logo />
         </Link>
 

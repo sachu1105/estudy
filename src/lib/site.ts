@@ -1,7 +1,7 @@
 // Public facts about the product, shared by the marketing pages, metadata and footer.
 
 export const site = {
-  name: "Study planner",
+  name: "Studpods",
   company: "Veraft",
   tagline: "Your syllabus, turned into a daily plan you can actually finish.",
   description:

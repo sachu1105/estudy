@@ -5,6 +5,7 @@ import { Logo } from "@/components/shell/logo";
 import { MaintenancePage } from "@/components/shell/maintenance-page";
 import { requireUser } from "@/server/auth/session";
 import { maintenanceFor } from "@/server/settings/maintenance";
+import { site } from "@/lib/site";
 
 // Onboarding runs outside the app shell: one focused column, no navigation to wander off to.
 export default async function OnboardingLayout({
@@ -18,7 +19,7 @@ export default async function OnboardingLayout({
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex h-16 items-center px-4 md:px-8">
-        <Link href="/" aria-label="Study planner home">
+        <Link href="/" aria-label={`${site.name} home`}>
           <Logo />
         </Link>
       </header>

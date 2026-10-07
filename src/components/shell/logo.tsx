@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils/cn";
+import { site } from "@/lib/site";
 
 export function LogoMark({ className }: { className?: string }) {
   return (
@@ -37,9 +38,7 @@ export function Logo({
     <span className={cn("flex items-center gap-2.5", className)}>
       <LogoMark />
       {showName ? (
-        <span className="font-heading text-h3 font-semibold">
-          Study planner
-        </span>
+        <span className="font-heading text-h3 font-semibold">{site.name}</span>
       ) : null}
     </span>
   );

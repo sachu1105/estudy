@@ -75,7 +75,7 @@ self.addEventListener("push", (event) => {
     return;
   }
   event.waitUntil(
-    self.registration.showNotification(message.title ?? "Study planner", {
+    self.registration.showNotification(message.title ?? "Studpods", {
       body: message.body ?? "",
       icon: "/icon-192.png",
       badge: "/icon-192.png",

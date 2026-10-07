@@ -23,6 +23,9 @@ test.describe("pod material", () => {
   test("notes, links and files, linked to topics, searchable, with a trash", async ({
     page,
   }) => {
+    // A long flow (note, link, file, search, trash): the default 30 s runs out when the
+    // whole suite shares one dev server.
+    test.setTimeout(90_000);
     const run = `${test.info().project.name}${Date.now()}`;
     await podFromNewSyllabus(page, `Material ${run}`);
 

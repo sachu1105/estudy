@@ -81,7 +81,7 @@ export default async function PodsPage() {
               <h2 id="exams" className="text-h2">
                 Your exams
               </h2>
-              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {exams.map((e) => (
                   <li key={e.id} className="flex">
                     <ExamCard

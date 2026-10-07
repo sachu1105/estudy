@@ -1,4 +1,5 @@
 import type { MailMessage } from "./mailer";
+import { site } from "@/lib/site";
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -62,7 +63,7 @@ export function reminderEmail(
     to,
     subject: reminder.title,
     text: `${body}\n\n${url}\n\nTo change or stop these reminders: ${settingsUrl}`,
-    html: layout(reminder.title, body, "Open study planner", url).replace(
+    html: layout(reminder.title, body, `Open ${site.name}`, url).replace(
       "</div></div></body>",
       `<p style="font-size:13px;line-height:20px;color:#9A9AA3;margin:16px 0 0">Change or stop these reminders in your <a href="${escapeHtml(settingsUrl)}" style="color:#4752C4">settings</a>.</p></div></div></body>`,
     ),

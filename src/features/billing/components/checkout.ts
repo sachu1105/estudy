@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/toast";
+import { site } from "@/lib/site";
 
 // Opens Razorpay's own window. Only the public key id and the subscription id come from
 // the server; the secret never leaves it, and nothing here decides what was paid for —
@@ -51,7 +52,7 @@ export async function openCheckout(input: {
   new w.Razorpay({
     key: input.keyId,
     subscription_id: input.subscriptionId,
-    name: "Study planner",
+    name: site.name,
     description: `${input.plan} plan`,
     prefill: { name: input.name, email: input.email },
     theme: { color: "#5865F2" },

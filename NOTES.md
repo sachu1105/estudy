@@ -966,3 +966,24 @@ ledge, some shine and a press.
   re-rendered from the SVG with Playwright; there is no generator script.
 - Known flake: under a full 4-worker run, pod-material.spec's "Delete then land on the
   pod" step once timed out on both projects. It passes on its own and in the next full run.
+
+### Studpods, and pod cards with covers (2026-10-07)
+- The product is now Studpods. `site.name` (lib/site) is the one source. The logo,
+  metadata, manifest, OG images, Razorpay, emails, the service worker's push title and
+  the link-preview user agent all read it, or say Studpods. Internal names (the
+  package, the database, `studyplanner` in env) are unchanged.
+- Pod cards (pods home, for exams and own pods) are `PodTile` (components/blocks): a
+  cover on top, and a folder body whose tab rises into it, built from a span plus an SVG
+  slope. A right float keeps the first line of the name on the tab. A big focal number
+  sits at the foot (padded to "05" for 1-9) with a hairline progress bar.
+- Covers (`lib/pods/covers`, tested): six mesh-gradient presets (meadow, ember,
+  blurple, ocean, dusk, moss). `coverFor(id)` picks one from the id, so it is stable.
+  `PodCover` adds an SVG film-grain overlay and already renders `{ kind: "image", url }`
+  for the coming cover picker; nothing is stored yet. CLAUDE.md lists pod covers as the
+  second allowed gradient.
+- /dev/ui shows a tile per preset.
+- Toasts moved to the top (`top-center`, 72px down). At the bottom on a phone they
+  covered the primary actions, and a finger or pointer resting on one paused it
+  indefinitely (groups.spec caught it on the test player's Next).
+- pod-material.spec runs a long flow and now has a 90 s budget, like the plan and test
+  flows.
