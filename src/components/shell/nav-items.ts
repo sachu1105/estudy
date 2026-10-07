@@ -1,10 +1,8 @@
 import {
   Boxes,
   CalendarCheck,
-  ChartLine,
   ClipboardCheck,
   Settings,
-  Trophy,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -32,8 +30,6 @@ export const primaryNav: NavItem[] = [
   },
   { href: "/tests", label: "Tests", icon: ClipboardCheck, mobileTab: true },
   { href: "/groups", label: "Squads", icon: Users, mobileTab: true },
-  { href: "/rank", label: "Podium", icon: Trophy },
-  { href: "/progress", label: "Growth", icon: ChartLine },
 ];
 
 export const secondaryNav: NavItem[] = [

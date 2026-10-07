@@ -62,8 +62,8 @@ const COPY: Record<ReminderKind, Omit<ReminderMessage, "kind">> = {
   },
   WEEKLY: {
     title: "Last week, in short",
-    body: "Your weekly summary is ready, and this week's plan is set.",
-    url: "/progress",
+    body: "This week's plan is set, built from what you finished last week.",
+    url: "/today",
   },
 };
 

@@ -26,7 +26,7 @@ export const podJobSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("purge-trash") }),
   // Sunday: every active study plan is re-made from that day (milestone 7).
   z.object({ kind: z.literal("replan-week") }),
-  // Nightly: leaderboards rebuilt from the XP log, the source of truth (milestone 12).
+  // Nightly: the squad rank's weekly XP board rebuilt from the XP log, the source of truth.
   z.object({ kind: z.literal("rebuild-ranks") }),
   // Every half hour: the three reminders, each in the person's own local time
   // (milestone 16).

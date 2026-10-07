@@ -1046,3 +1046,24 @@ ledge, some shine and a press.
 - No New button in the sidebar (the owner's call): making things stays on each page
   (Add exam, New pod, Create squad).
 - The search button says "Search pods…" (it no longer wraps at 360px).
+
+### Podium and growth removed (2026-10-07)
+- The owner removed the global rank and the progress page for good. Gone: the global,
+  exam and district boards, /rank (Podium) and /progress (Growth: minutes chart,
+  accuracy trend, subject breakdown), the fullAnalytics and topperComparison
+  entitlements, the `district` and `hideFromGlobalRank` user fields ("Anonymous
+  aspirant") and the admin's XP abuse flags.
+- Stays: XpLedger and the XP rules (1 per verified study minute, capped at 300 a day,
+  test points, streak bonus), streaks with the weekly freeze, and per-pod progress.
+  XP now feeds only the squad rank, which reads a weekly XP board in Redis rebuilt
+  nightly from Postgres.
+- /rank and /progress redirect to /today. The app's focus is squads, tests, pods and
+  today.
+- CLAUDE.md and the build plan were updated to match (Part A too): the analytics row is
+  out of the plans table, the (app) route list is today, pods, syllabus, tests, groups,
+  settings, onboarding and notifications.
+- Build plan milestones were renumbered: the old 12 (progress and the global rank) is
+  gone, and 13-17 are now 12-16 (groups 12, discussion 13, admin 14, billing 15,
+  hardening and launch 16). The road ahead is 9, 10, 11 and 16.
+- Code comments and earlier entries in this file that say "milestone 12" (or 13-17) use
+  the old numbering.

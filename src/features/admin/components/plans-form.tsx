@@ -39,8 +39,6 @@ const LABELS: Record<Limit | Flag, string> = {
   vaultMocksPerMonth: "Mocks from my material a month",
   pagesPerVaultMock: "Pages per material mock",
   aiExplanations: "AI answer explanations",
-  fullAnalytics: "Full analytics",
-  topperComparison: "Topper comparison",
   priorityParsing: "Priority syllabus reading",
 };
 const label = (f: Limit | Flag) => LABELS[f];

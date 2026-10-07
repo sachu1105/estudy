@@ -8,8 +8,6 @@ test.describe("app shell", () => {
       ["/syllabus", "Pods"], // the list moved into the pods home
       ["/tests", "Tests"],
       ["/groups", "Squads"],
-      ["/rank", "Podium"],
-      ["/progress", "Growth"],
       ["/settings", "Settings"],
     ];
     for (const [path, title] of routes) {
@@ -42,9 +40,9 @@ test.describe("app shell", () => {
       await nav.getByRole("button", { name: "More" }).click();
       await page
         .getByRole("dialog")
-        .getByRole("link", { name: "Podium" })
+        .getByRole("link", { name: "Settings" })
         .click();
-      await expect(page).toHaveURL(/\/rank$/);
+      await expect(page).toHaveURL(/\/settings$/);
     }
   });
 
@@ -74,8 +72,8 @@ test.describe("app shell", () => {
       await page.keyboard.press("Control+k");
       await expect(input).toBeVisible({ timeout: 1_000 });
     }).toPass();
-    await input.fill("growth");
+    await input.fill("squads");
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/progress$/);
+    await expect(page).toHaveURL(/\/groups$/);
   });
 });

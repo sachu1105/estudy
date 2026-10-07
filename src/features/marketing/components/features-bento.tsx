@@ -82,8 +82,8 @@ const features: Feature[] = [
   },
   {
     icon: Trophy,
-    title: "Squad rank and the all-India podium",
-    body: "See where you stand, or hide and appear as an anonymous aspirant.",
+    title: "Squad rank",
+    body: "See where you stand among your squad, by this week's study.",
     fragment: <RankFragment />,
     wide: true,
   },

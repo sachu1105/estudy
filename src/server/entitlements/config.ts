@@ -20,8 +20,7 @@ export type LimitFeature =
   | "vaultMocksPerMonth"
   | "pagesPerVaultMock";
 
-export type FlagFeature =
-  "aiExplanations" | "fullAnalytics" | "topperComparison" | "priorityParsing";
+export type FlagFeature = "aiExplanations" | "priorityParsing";
 
 export type Feature = LimitFeature | FlagFeature;
 
@@ -66,8 +65,6 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     },
     flags: {
       aiExplanations: false,
-      fullAnalytics: false,
-      topperComparison: false,
       priorityParsing: false,
     },
   },
@@ -87,8 +84,6 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     },
     flags: {
       aiExplanations: true,
-      fullAnalytics: true,
-      topperComparison: false,
       priorityParsing: false,
     },
   },
@@ -108,8 +103,6 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     },
     flags: {
       aiExplanations: true,
-      fullAnalytics: true,
-      topperComparison: true,
       priorityParsing: true,
     },
   },

@@ -5,7 +5,6 @@ import { randomInt } from "node:crypto";
 import { systemClock } from "@/lib/clock";
 import { limit } from "@/server/entitlements";
 import { today } from "@/lib/clock";
-import { rankKey } from "@/lib/progress/rank-keys";
 import { rankStore } from "@/server/rank/rank-store";
 import { discussionRepository } from "@/server/repositories/discussion-repository";
 import { progressRepository } from "@/server/repositories/progress-repository";
@@ -57,9 +56,8 @@ export const groupTests = createGroupTests({
   questions: questionRepository,
   clock: systemClock,
   random: Math.random,
-  // The group rank reads the members' scores off the global weekly board.
-  weeklyXp: (ids) =>
-    rankStore.scores(rankKey("week", today(systemClock, "Asia/Kolkata")), ids),
+  // The squad rank reads the members' scores off this week's XP board.
+  weeklyXp: (ids) => rankStore.scores(today(systemClock, "Asia/Kolkata"), ids),
   announce: (groupId, actorId, test) =>
     notificationService.notifyGroup(groupId, {
       actorId,

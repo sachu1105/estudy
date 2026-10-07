@@ -18,8 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         "/syllabus",
         "/tests",
         "/groups",
-        "/rank",
-        "/progress",
         "/settings",
         "/onboarding",
       ],

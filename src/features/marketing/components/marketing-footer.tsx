@@ -10,7 +10,7 @@ const columns = [
     links: [
       { label: "Features", href: "/#features" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Podium", href: "/rank" },
+      { label: "Squads", href: "/#groups" },
     ],
   },
   {

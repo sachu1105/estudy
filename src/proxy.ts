@@ -24,8 +24,6 @@ const PROTECTED = [
   "/pods",
   "/tests",
   "/groups",
-  "/rank",
-  "/progress",
   "/settings",
   "/onboarding",
   "/study",

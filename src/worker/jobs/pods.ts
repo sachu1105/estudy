@@ -20,7 +20,9 @@ export async function startPodWorker() {
   // Boards are a cache: start from the truth, then keep up with each new XP entry.
   void rankService
     .rebuild()
-    .catch((e) => console.warn(`[worker] rank rebuild failed: ${String(e)}`));
+    .catch((e) =>
+      console.warn(`[worker] weekly board rebuild failed: ${String(e)}`),
+    );
   const worker = new Worker<PodJob>(
     POD_QUEUE,
     async (job) => {
@@ -38,7 +40,7 @@ export async function startPodWorker() {
         }
         case "rebuild-ranks": {
           const users = await rankService.rebuild();
-          console.log(`[worker] ranks rebuilt for ${users} users`);
+          console.log(`[worker] weekly board rebuilt for ${users} users`);
           return;
         }
         case "send-reminders": {

@@ -8,9 +8,7 @@ import { billingEnabled, planOf } from "@/server/entitlements";
 import { notifyService } from "@/server/services/notifications/notify";
 import { publicVapidKey } from "@/server/push";
 import { fileService } from "@/server/services/pods";
-import { profileService } from "@/server/services/profile";
 import { NotifyForm } from "@/features/settings/components/notify-form";
-import { PrivacyForm } from "@/features/settings/components/privacy-form";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -23,9 +21,8 @@ function size(bytes: number) {
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const [{ used, limit }, privacy, prefs] = await Promise.all([
+  const [{ used, limit }, prefs] = await Promise.all([
     fileService.usage(user),
-    profileService.privacy(user),
     notifyService.prefsOf(user),
   ]);
   const percent =
@@ -60,12 +57,6 @@ export default async function SettingsPage() {
           initial={prefs}
           pushAvailable={Boolean(publicVapidKey())}
           vapidKey={publicVapidKey()}
-        />
-        <PrivacyForm
-          initial={{
-            hideFromGlobalRank: privacy?.hideFromGlobalRank ?? false,
-            district: privacy?.district ?? null,
-          }}
         />
         <section
           aria-labelledby="storage"

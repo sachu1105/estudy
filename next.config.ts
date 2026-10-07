@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   // Native addon: load from node_modules at runtime instead of bundling.
   serverExternalPackages: ["@node-rs/argon2"],
+  // The global rank and the progress page were removed (2026-10-07); old links and
+  // notifications land on Today.
+  async redirects() {
+    return [
+      { source: "/rank", destination: "/today", permanent: false },
+      { source: "/progress", destination: "/today", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

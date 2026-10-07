@@ -34,7 +34,7 @@ describe("entitlements with billing disabled", () => {
 
   it("grants every feature and unlimited counts", () => {
     expect(can(free, "aiExplanations")).toBe(true);
-    expect(can(free, "topperComparison")).toBe(true);
+    expect(can(free, "priorityParsing")).toBe(true);
     expect(limit(free, "syllabusUploads")).toBe(Infinity);
     expect(limit(free, "groupStorageBytes")).toBe(5 * 1024 ** 3);
     expect(limit(free, "vaultStorageBytes")).toBe(20 * 1024 ** 3);
@@ -75,7 +75,7 @@ describe("entitlements with billing enabled", () => {
     expect(limit(pro(), "syllabusUploads")).toBe(5);
     expect(limit(pro(), "afterTaskMocksPerDay")).toBe(Infinity);
     expect(can(pro(), "aiExplanations")).toBe(true);
-    expect(can(pro(), "topperComparison")).toBe(false);
+    expect(can(pro(), "priorityParsing")).toBe(false);
   });
 
   it("keeps a cancelled plan until the period ends, then drops to FREE", () => {
@@ -125,13 +125,13 @@ describe("admin changes to the plans table (milestone 15)", () => {
       overrides: {
         FREE: {
           limits: { syllabusUploads: 3, activePlans: null },
-          flags: { fullAnalytics: true },
+          flags: { priorityParsing: true },
         },
       },
     };
     expect(limit(free, "syllabusUploads")).toBe(3);
     expect(limit(free, "activePlans")).toBe(Infinity);
-    expect(can(free, "fullAnalytics")).toBe(true);
+    expect(can(free, "priorityParsing")).toBe(true);
     // Anything not changed keeps its default.
     expect(limit(free, "groupsJoined")).toBe(3);
   });

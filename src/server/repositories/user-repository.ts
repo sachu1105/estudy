@@ -61,21 +61,6 @@ export const userRepository = {
     return prisma.user.update({ where: { id }, data: { emailVerifiedAt: at } });
   },
 
-  /** The rank's privacy switch and the optional district (milestone 12). */
-  updatePrivacy(
-    id: string,
-    data: { hideFromGlobalRank: boolean; district: string | null },
-  ) {
-    return prisma.user.update({ where: { id }, data });
-  },
-
-  privacyOf(id: string) {
-    return prisma.user.findUnique({
-      where: { id },
-      select: { hideFromGlobalRank: true, district: true },
-    });
-  },
-
   updatePassword(id: string, passwordHash: string) {
     return prisma.user.update({ where: { id }, data: { passwordHash } });
   },

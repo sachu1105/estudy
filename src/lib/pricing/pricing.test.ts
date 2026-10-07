@@ -24,8 +24,6 @@ const plan = {
   },
   flags: {
     aiExplanations: true,
-    fullAnalytics: false,
-    topperComparison: false,
     priorityParsing: false,
   },
 };
@@ -78,7 +76,7 @@ describe("pricing", () => {
     expect(rows.find((r) => r.label === "AI answer explanations")?.on).toBe(
       true,
     );
-    expect(rows.some((r) => r.label === "Basic analytics")).toBe(true);
+    expect(rows.some((r) => /analytics/i.test(r.label))).toBe(false);
     const free = featureRows({
       ...plan,
       limits: { ...plan.limits, vaultMocksPerMonth: 0 },

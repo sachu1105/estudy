@@ -47,15 +47,16 @@ The study plan is built from the pods: days left to the exam, the time the user 
 day, and for each subject how well they already know it (confidence 1-5) and how hard
 they want to push it (intensity). It gives a day-by-day plan and tracks progress at every
 step. Completed topics and test results change next week's plan. A daily streak keeps
-them coming back. Groups let them share material and mock tests, discuss, ask questions
-and compete on a group rank. A global rank shows every user.
+them coming back. Groups (squads) let them share material and mock tests, discuss, ask
+questions and compete on a squad rank. XP and the squad rank are all the competition
+there is.
 
 Previous year question papers are parsed once into questions tagged to syllabus topics,
 then reused for practice and mock tests by everyone preparing for the same exam.
 
 AI does four jobs and nothing else: reading a syllabus that isn't already cached, writing
 mock test questions, parsing previous year papers, and suggesting notes and websites for
-a topic. The plan, progress, streaks and ranks are plain algorithms.
+a topic. The plan, progress, streaks, XP and the squad rank are plain algorithms.
 
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
@@ -97,14 +98,14 @@ studyplanner/
       (marketing)/     landing (hero, features, how it works, groups, pricing, FAQ),
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
-      (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, pods, settings, onboarding
+      (app)/           today, pods, syllabus, tests, groups, settings, onboarding,
+                       notifications
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
       ui/              primitives: button, input, card, badge, ring, skeleton, sheet
       blocks/          composed micro-components: topic-row, streak-chip, plan-day,
-                       stat-tile, question-card, rank-row
+                       stat-tile, question-card
     features/<name>/   components, server actions, queries for one feature
     server/
       auth/ db/ ai/ queue/ storage/ entitlements/ realtime/
@@ -164,8 +165,8 @@ Run test, lint and typecheck before declaring any task done.
 
 6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TopicCompletion, TestAttempt,
    AttemptAnswer, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
-   coverage and ranks are derived from them. Redis rank caches are rebuildable from
-   Postgres at any time.
+   coverage and the squad rank are derived from them. The squad rank's weekly XP board
+   in Redis is rebuildable from Postgres at any time.
 
 7. NO OVERDUE LIST ANYWHERE. Missed tasks are never shown as a backlog, red badge or
    guilt counter. The weekly re-plan discards the unfinished schedule and builds a
@@ -234,7 +235,6 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   groups created             1           5            unlimited
   groups joined              3           10           unlimited
   group file storage         50 MB       1 GB         5 GB
-  analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
   pod storage                200 MB      5 GB         20 GB
   pods, notes and links      unlimited   unlimited    unlimited
@@ -269,7 +269,7 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
 - Previous year questions keep their exam, post and year. Answers come from the official
   answer key when one is uploaded; otherwise they are marked unverified until checked.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
-  Ranks use XP. Users can hide from the global rank and appear as "Anonymous aspirant".
+  XP feeds only the squad rank: a squad's members ranked by this week's XP.
 
 ## Design system
 
@@ -321,7 +321,7 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   Poppins          headings and numbers that are focal points. 600 for h1-h2, 500 for
                    h3, buttons and nav. Never 700+.
   Inter            body and UI text, 400 and 500.
-  JetBrains Mono   timers, scores, countdowns, ranks. tabular-nums.
+  JetBrains Mono   timers, scores, countdowns, squad rank positions. tabular-nums.
 
   display 32/40  h1 24/32  h2 20/28  h3 16/24  body 15/24  small 13/20
   micro 11/16 uppercase, letter-spacing 0.06em (labels above numbers only)
@@ -338,7 +338,7 @@ Sentence case everywhere. Never Title Case.
   Dark mode: replace shadows with a 1px border plus a slightly lighter surface.
   Spacing: 4pt grid - 4, 8, 12, 16, 20, 24, 32, 40, 48, 64.
   Layout: left sidebar on desktop (collapsible), bottom tab bar under 768px.
-  Content max width 1120px. Bento grid of stat tiles on Today and Progress.
+  Content max width 1120px. Bento grid of stat tiles on Today.
 
 ### Motion and micro-interactions
 
@@ -393,6 +393,11 @@ milestone.
 
 One per session, plan mode first, every time.
 
+Where it stands: 1-8 and 12-15 are done. The road ahead is 9 (previous year questions),
+10 (suggested notes and websites), 11 (use it yourself) and 16 (hardening and launch).
+The old milestone 12, progress and the global rank, was removed on 2026-10-07 and the
+milestones after it moved up by one.
+
 ### Milestone 1 — scaffold, Docker and the design system (done)
 
 ```
@@ -429,10 +434,10 @@ Run lint, typecheck and tests. Do not build auth, AI or any feature.
 Read CLAUDE.md. Milestone 1 is committed.
 
 1. Prisma models: User (email, passwordHash, name, displayName, avatarUrl, role USER |
-   MODERATOR | ADMIN | SUPER_ADMIN, timezone, beginnerMode, hideFromGlobalRank,
-   status ACTIVE | SUSPENDED | BANNED), RefreshToken (hashed, family id, expires,
-   revokedAt, replacedBy), EmailVerification, PasswordReset, Subscription (plan FREE |
-   PRO | ELITE, status, periodEnd, source), AuditLog (append-only).
+   MODERATOR | ADMIN | SUPER_ADMIN, timezone, beginnerMode, status ACTIVE | SUSPENDED |
+   BANNED), RefreshToken (hashed, family id, expires, revokedAt, replacedBy),
+   EmailVerification, PasswordReset, Subscription (plan FREE | PRO | ELITE, status,
+   periodEnd, source), AuditLog (append-only).
 2. Register, login, logout, verify email, forgot and reset password. argon2 hashing.
    Access JWT 15 min, refresh 30 days, rotated on every use. Reuse of an old refresh
    token revokes the whole family.
@@ -498,11 +503,11 @@ no client JS except where an interaction needs it.
    - Daily streak with a weekly freeze
    - Weekly re-plan - no overdue pile, ever
    - Study groups with shared notes and tests
-   - Group rank and all-India rank
+   - Group rank on this week's XP
 
 5. How it works: 4 numbered steps in a row (stacked on mobile) - Upload syllabus ->
-   Rate your subjects -> Get your daily plan -> Test and climb the rank. A thin line
-   connects the steps and draws in on scroll.
+   Rate your subjects -> Get your daily plan -> Test and climb your group rank. A thin
+   line connects the steps and draws in on scroll.
 
 6. Groups section: split layout - copy on one side, a mini group preview (member
    avatars, a shared mock test card, a discussion snippet, group rank top 3).
@@ -517,8 +522,8 @@ no client JS except where an interaction needs it.
 
 9. Final CTA band: one sentence + "Create your study plan" accent button.
 
-10. Footer: logo and one-line description; columns Product (features, pricing, rank),
-    Exams, Company (about, contact - Veraft), Legal (privacy, terms); social icons;
+10. Footer: logo and one-line description; columns Product (features, pricing), Exams,
+    Company (about, contact - Veraft), Legal (privacy, terms); social icons;
     "© <year> Veraft". Theme toggle repeated.
 
 11. Also create /about, /privacy, /terms and /contact as simple prose pages using the
@@ -644,7 +649,7 @@ tuned on real Kerala PSC PDFs, hosted page reading (AI_PROVIDER=hosted reads PDF
 photos, fixing old Malayalam fonts), the three-level parse cache from rule 4, "Read
 again" after a parser upgrade, and "Stop and delete" with an honest offline status.
 
-### Milestone 5 — subject pods: the study space
+### Milestone 5 — subject pods: the study space (done)
 
 ```
 Read CLAUDE.md. Milestones 1-4 are committed (the subject board and folder pages from
@@ -725,7 +730,9 @@ Read CLAUDE.md. Milestones 1-6 are committed.
    count.
 3. Completing a task appends TaskCompletion and StudySession, updates the topic's
    completion and the pod's progress, appends XpLedger, updates the streak.
-4. Streak from logs in the user's timezone, one automatic freeze per week.
+4. Streak from logs in the user's timezone, one automatic freeze per week. XP rules
+   from CLAUDE.md (300 verified minutes a day cap, test points, streak bonus),
+   server-side only, every award appended to XpLedger.
 5. Plan and calendar views; pod progress page per subject.
 6. Weekly re-plan (Sunday job, also on demand): runs replan() with completions, test
    results and stored overrides; shows the diff as a card. No overdue items anywhere.
@@ -766,7 +773,7 @@ Read CLAUDE.md. Milestones 1-7 are committed.
 Test: a user scoring 20% on a topic gets more minutes after replan than one scoring 90%.
 ```
 
-### Milestone 9 — previous year questions (skipped for now: AI-heavy)
+### Milestone 9 — previous year questions (road ahead; skipped for now: AI-heavy)
 
 ```
 Read CLAUDE.md. Milestones 1-8 are committed.
@@ -784,7 +791,7 @@ Read CLAUDE.md. Milestones 1-8 are committed.
 5. Year-wise full papers as timed mocks ("LDC 2019, as asked").
 ```
 
-### Milestone 10 — suggested notes and websites (skipped for now: AI-heavy)
+### Milestone 10 — suggested notes and websites (road ahead; skipped for now: AI-heavy)
 
 ```
 Read CLAUDE.md. Milestones 1-9 are committed.
@@ -801,41 +808,22 @@ Read CLAUDE.md. Milestones 1-9 are committed.
    they were drawn from), saved into the pod only on request.
 ```
 
-### Milestone 11 — use it yourself
+### Milestone 11 — use it yourself (road ahead)
 
 ```
 No code this milestone.
 
 Use the app daily for two to three weeks for real PSC preparation. Keep a list of every
 annoyance, slow screen and confusing word. Paste the list back and we fix it before
-groups and ranks are built.
+launch.
 ```
 
-## Part B — Milestones 12–17: ranks, groups, admin and launch
+## Part B — Milestones 12–16: squads, admin and launch
 
-### Milestone 12 — progress and the global rank (done)
+### Milestone 12 — groups: membership, shared pods and tests (done)
 
 ```
 Read CLAUDE.md. Milestones 1-11 are committed.
-
-1. Progress page (bento): streak and best streak, XP and level, minutes per day for the
-   last 30 days (single-colour bars, no gridlines), coverage %, test accuracy trend,
-   weakest five topics, subject breakdown. Everything derived from logs.
-2. XP rules from CLAUDE.md with a 300 verified minutes/day cap. Server-side only.
-3. Global rank: weekly, monthly, all-time, and per exam. Redis sorted sets updated on
-   XpLedger append, rebuilt nightly from Postgres as the source of truth.
-4. Rank page: top 100 with avatar, display name, exam, XP and streak; the user's own
-   position pinned at the bottom even when outside the top 100; filter by exam and
-   district (optional profile field).
-5. Privacy: hideFromGlobalRank shows the user as "Anonymous aspirant". Display names
-   only, never emails.
-6. Anti-abuse: flag accounts gaining XP faster than humanly possible for admin review.
-```
-
-### Milestone 13 — groups: membership, shared pods and tests (done)
-
-```
-Read CLAUDE.md. Milestones 1-12 are committed.
 
 1. Prisma: Group (name, description, exam, visibility PUBLIC | PRIVATE, avatar),
    Membership (role OWNER | ADMIN | MEMBER, mutedUntil), Invite (code, link, expiry,
@@ -847,16 +835,17 @@ Read CLAUDE.md. Milestones 1-12 are committed.
    against limit(owner, 'groupStorage').
 4. Shared mock tests: any member can share a MockTest to the group or build a custom one
    from the verified pool (pick topics, count, duration). Group test results page.
-5. Group rank: weekly XP and group-test scores among members, Redis sorted set per
-   group per week.
+5. Group rank (the squad rank): weekly XP and group-test scores among members. XP
+   comes from a weekly board in Redis, fed on every XpLedger append and rebuilt
+   nightly from Postgres as the source of truth.
 6. Blocking and reporting on every piece of user content. Build now, not later.
 7. Every group action checks membership and group role server-side.
 ```
 
-### Milestone 14 — group discussion and questions (done)
+### Milestone 13 — group discussion and questions (done)
 
 ```
-Read CLAUDE.md. Milestones 1-13 are committed.
+Read CLAUDE.md. Milestones 1-12 are committed.
 
 1. Discussion: threads per group with replies, mentions, reactions, and pinned posts.
    Markdown subset with sanitisation (no raw HTML).
@@ -869,10 +858,10 @@ Read CLAUDE.md. Milestones 1-13 are committed.
 6. Moderation: group admins can hide posts; reported posts go to the admin queue.
 ```
 
-### Milestone 15 — super admin panel (done, ahead of 8-14)
+### Milestone 14 — super admin panel (done, ahead of 8-13)
 
 ```
-Read CLAUDE.md. Milestones 1-14 are committed.
+Read CLAUDE.md. Milestones 1-13 are committed.
 
 /admin, role-gated (MODERATOR sees moderation only, ADMIN everything except roles and
 billing, SUPER_ADMIN everything). Same design system, denser tables.
@@ -895,10 +884,10 @@ billing, SUPER_ADMIN everything). Same design system, denser tables.
 10. Audit log viewer. Every admin action writes AuditLog.
 ```
 
-### Milestone 16 — plans, billing and notifications (done)
+### Milestone 15 — plans, billing and notifications (done)
 
 ```
-Read CLAUDE.md. Milestones 1-15 are committed.
+Read CLAUDE.md. Milestones 1-14 are committed.
 
 1. Pricing page with FREE, PRO, ELITE from the entitlements config. While billing is
    off, show "All features free during launch".
@@ -912,10 +901,10 @@ Read CLAUDE.md. Milestones 1-15 are committed.
 5. Make the app an installable PWA with an offline page and cached Today view.
 ```
 
-### Milestone 17 — hardening and launch
+### Milestone 16 — hardening and launch (road ahead)
 
 ```
-Read CLAUDE.md. Milestones 1-16 are committed.
+Read CLAUDE.md. Milestones 1-15 are committed.
 
 1. Security pass: headers (CSP, HSTS), rate limits everywhere in rule 13, upload
    validation, SSRF-safe fetches, dependency audit, secrets only in env.

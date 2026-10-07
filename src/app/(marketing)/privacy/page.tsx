@@ -47,8 +47,8 @@ export default function PrivacyPage() {
       <ul>
         <li>We don&apos;t sell your data or show ads.</li>
         <li>
-          We never show your email to other users. Ranks use your display name,
-          and you can hide as an anonymous aspirant.
+          We never show your email to other users. In squads you appear by your
+          display name only.
         </li>
       </ul>
       <h2>Cookies</h2>

@@ -32,7 +32,7 @@ export const faqs = [
   },
   {
     q: "Is my data private?",
-    a: "Your plans, uploads and test results are yours. We never sell data or show ads. On the podium and in squads you appear by display name only, and you can hide as an anonymous aspirant.",
+    a: "Your plans, uploads and test results are yours. We never sell data or show ads. In squads you appear by display name only.",
   },
 ];
 

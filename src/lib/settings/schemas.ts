@@ -19,12 +19,7 @@ export const LIMIT_FEATURES = [
   "pagesPerVaultMock",
 ] as const;
 
-export const FLAG_FEATURES = [
-  "aiExplanations",
-  "fullAnalytics",
-  "topperComparison",
-  "priorityParsing",
-] as const;
+export const FLAG_FEATURES = ["aiExplanations", "priorityParsing"] as const;
 
 /** null means unlimited (JSON has no Infinity). */
 const limitValue = z.number().int().min(0).max(1e13).nullable();
@@ -34,7 +29,20 @@ export const entitlementOverridesSchema = z.partialRecord(
   z.enum(PLAN_NAMES),
   z.object({
     limits: z.partialRecord(z.enum(LIMIT_FEATURES), limitValue).default({}),
-    flags: z.partialRecord(z.enum(FLAG_FEATURES), z.boolean()).default({}),
+    // Flags saved before a feature was removed (analytics) are dropped, not rejected.
+    flags: z
+      .preprocess(
+        (v) =>
+          v && typeof v === "object"
+            ? Object.fromEntries(
+                Object.entries(v).filter(([k]) =>
+                  (FLAG_FEATURES as readonly string[]).includes(k),
+                ),
+              )
+            : v,
+        z.partialRecord(z.enum(FLAG_FEATURES), z.boolean()),
+      )
+      .default({}),
   }),
 );
 

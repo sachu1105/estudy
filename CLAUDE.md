@@ -28,15 +28,16 @@ The study plan is built from the pods: days left to the exam, the time the user 
 day, and for each subject how well they already know it (confidence 1-5) and how hard
 they want to push it (intensity). It gives a day-by-day plan and tracks progress at every
 step. Completed topics and test results change next week's plan. A daily streak keeps
-them coming back. Groups let them share material and mock tests, discuss, ask questions
-and compete on a group rank. A global rank shows every user.
+them coming back. Groups (squads) let them share material and mock tests, discuss, ask
+questions and compete on a squad rank. XP and the squad rank are all the competition
+there is.
 
 Previous year question papers are parsed once into questions tagged to syllabus topics,
 then reused for practice and mock tests by everyone preparing for the same exam.
 
 AI does four jobs and nothing else: reading a syllabus that isn't already cached, writing
 mock test questions, parsing previous year papers, and suggesting notes and websites for
-a topic. The plan, progress, streaks and ranks are plain algorithms.
+a topic. The plan, progress, streaks, XP and the squad rank are plain algorithms.
 
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
@@ -78,14 +79,14 @@ studyplanner/
       (marketing)/     landing (hero, features, how it works, groups, pricing, FAQ),
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
-      (app)/           today, plan, calendar, syllabus, tests, groups, rank,
-                       progress, pods, settings, onboarding
+      (app)/           today, pods, syllabus, tests, groups, settings, onboarding,
+                       notifications
       admin/           super admin panel (role-gated)
       api/             route handlers: REST, SSE streams, upload signing
     components/
       ui/              primitives: button, input, card, badge, ring, skeleton, sheet
       blocks/          composed micro-components: topic-row, streak-chip, plan-day,
-                       stat-tile, question-card, rank-row
+                       stat-tile, question-card
     features/<name>/   components, server actions, queries for one feature
     server/
       auth/ db/ ai/ queue/ storage/ entitlements/ realtime/
@@ -145,8 +146,8 @@ Run test, lint and typecheck before declaring any task done.
 
 6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TopicCompletion, TestAttempt,
    AttemptAnswer, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
-   coverage and ranks are derived from them. Redis rank caches are rebuildable from
-   Postgres at any time.
+   coverage and the squad rank are derived from them. The squad rank's weekly XP board
+   in Redis is rebuildable from Postgres at any time.
 
 7. NO OVERDUE LIST ANYWHERE. Missed tasks are never shown as a backlog, red badge or
    guilt counter. The weekly re-plan discards the unfinished schedule and builds a
@@ -215,7 +216,6 @@ later (Razorpay). Limits live in server/entitlements/config.ts and are admin-edi
   groups created             1           5            unlimited
   groups joined              3           10           unlimited
   group file storage         50 MB       1 GB         5 GB
-  analytics                  basic       full         full + topper comparison
   parsing queue              normal      normal       priority
   pod storage                200 MB      5 GB         20 GB
   pods, notes and links      unlimited   unlimited    unlimited
@@ -250,7 +250,7 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
 - Previous year questions keep their exam, post and year. Answers come from the official
   answer key when one is uploaded; otherwise they are marked unverified until checked.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
-  Ranks use XP. Users can hide from the global rank and appear as "Anonymous aspirant".
+  XP feeds only the squad rank: a squad's members ranked by this week's XP.
 
 ## Design system
 
@@ -308,7 +308,7 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   Poppins          headings and numbers that are focal points. 600 for h1-h2, 500 for
                    h3, buttons and nav. Never 700+.
   Inter            body and UI text, 400 and 500.
-  JetBrains Mono   timers, scores, countdowns, ranks. tabular-nums.
+  JetBrains Mono   timers, scores, countdowns, squad rank positions. tabular-nums.
 
   display 32/40  h1 24/32  h2 20/28  h3 16/24  body 15/24  small 13/20
   micro 11/16 uppercase, letter-spacing 0.06em (labels above numbers only)
@@ -332,7 +332,7 @@ Sentence case everywhere. Never Title Case.
   collapsible left sidebar (nav only) sit on the canvas token; the page lives in a
   rounded panel (bg, 1px border, radius 20) that scrolls on its own. Under 768px: one
   plain scrolling page, a sticky top bar and the bottom tab bar.
-  Content max width 1120px. Bento grid of stat tiles on Today and Progress.
+  Content max width 1120px. Bento grid of stat tiles on Today.
 
 ### Motion and micro-interactions
 

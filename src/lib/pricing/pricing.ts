@@ -33,7 +33,7 @@ export const planLabel = (plan: PlanName) =>
 export const blurbs: Record<PlanName, string> = {
   FREE: "Everything you need to start one plan.",
   PRO: "For serious aspirants with more than one exam.",
-  ELITE: "No limits, plus topper comparison.",
+  ELITE: "No limits on anything.",
 };
 
 export type FeatureRow = { label: string; on: boolean };
@@ -95,14 +95,6 @@ export function featureRows(plan: PlanShape): FeatureRow[] {
           ? `${limits.vaultMocksPerMonth} mock tests a month from your own material, up to ${limits.pagesPerVaultMock} pages each`
           : "Mock tests from your own material",
       on: limits.vaultMocksPerMonth > 0,
-    },
-    {
-      label: flags.topperComparison
-        ? "Full analytics and topper comparison"
-        : flags.fullAnalytics
-          ? "Full analytics"
-          : "Basic analytics",
-      on: true,
     },
     {
       label: flags.priorityParsing
