@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ImageIcon, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -20,14 +20,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input, Label } from "@/components/ui/input";
+import type { PodCover } from "@/lib/pods/covers";
 import { toast } from "@/components/ui/toast";
 
 import { deletePodAction, renamePodAction } from "../actions";
+import { CoverPicker, type CoverSelection } from "./cover-picker";
 
-/** Rename or delete one of the user's own pods. */
-export function PodMenu({ podId, name }: { podId: string; name: string }) {
+/** Rename one of the user's own pods, change its cover, or delete it. */
+export function PodMenu({
+  podId,
+  name,
+  cover,
+}: {
+  podId: string;
+  name: string;
+  cover: { selection: CoverSelection; view: PodCover };
+}) {
   const router = useRouter();
-  const [dialog, setDialog] = useState<"rename" | "delete" | null>(null);
+  const [dialog, setDialog] = useState<"rename" | "cover" | "delete" | null>(
+    null,
+  );
   const [draft, setDraft] = useState(name);
   const [pending, start] = useTransition();
 
@@ -58,11 +70,23 @@ export function PodMenu({ podId, name }: { podId: string; name: string }) {
           <DropdownMenuItem onSelect={() => setDialog("rename")}>
             <Pencil aria-hidden /> Rename
           </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setDialog("cover")}>
+            <ImageIcon aria-hidden /> Change cover
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setDialog("delete")}>
             <Trash2 aria-hidden /> Delete pod
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <CoverPicker
+        open={dialog === "cover"}
+        onOpenChange={(o) => setDialog(o ? "cover" : null)}
+        target={{ kind: "pod", podId }}
+        title={name}
+        selection={cover.selection}
+        cover={cover.view}
+      />
 
       <Dialog
         open={dialog === "rename"}

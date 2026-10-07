@@ -5,16 +5,20 @@ import { postJson, putWithProgress } from "@/lib/http";
 const MAX_SIDE = 2000;
 
 /**
- * A photo resized to at most 2000px and re-encoded as JPEG. Orientation from the camera's
- * EXIF data is applied, so the page comes out upright. Other files pass through.
+ * A photo resized to at most 2000px (or `maxSide`) and re-encoded as JPEG. Orientation
+ * from the camera's EXIF data is applied, so the page comes out upright. Other files
+ * pass through.
  */
-export async function preparePhoto(file: File): Promise<File> {
+export async function preparePhoto(
+  file: File,
+  maxSide = MAX_SIDE,
+): Promise<File> {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
   try {
     const bitmap = await createImageBitmap(file, {
       imageOrientation: "from-image",
     });
-    const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(bitmap.width * scale);
     canvas.height = Math.round(bitmap.height * scale);
@@ -85,4 +89,21 @@ export async function uploadNoteImage(itemId: string, raw: File) {
     },
   );
   return src;
+}
+
+/**
+ * A cover image: shrunk to 1600px (a card is at most a few hundred wide), sent straight
+ * to storage, and returned as the key `setCoverAction` checks and saves.
+ */
+export async function uploadCoverImage(
+  raw: File,
+  onProgress: (fraction: number) => void = () => {},
+) {
+  const file = await preparePhoto(raw, 1600);
+  const signed = await postJson<Signed>("/api/uploads/cover", {
+    contentType: file.type,
+    size: file.size,
+  });
+  await putWithProgress(signed.url, file, signed.headers, onProgress);
+  return signed.key;
 }

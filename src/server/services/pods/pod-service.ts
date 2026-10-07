@@ -79,6 +79,7 @@ export function createPodService(deps: PodDeps) {
           topics,
           topicsDone: topics.filter((t) => done.has(t.id)).length,
           items: p._count.items,
+          cover: p.cover,
         };
       });
     },
@@ -154,6 +155,7 @@ export function createPodService(deps: PodDeps) {
       return {
         id: pod.id,
         name: pod.name,
+        cover: pod.cover,
         kind: pod.kind,
         syllabus: pod.syllabusVersion,
         subjectId: pod.subjectId,

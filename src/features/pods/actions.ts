@@ -5,13 +5,20 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { noteDocSchema, type DocNode } from "@/lib/notes/doc";
-import { examService, itemService, podService } from "@/server/services/pods";
+import type { PodCover } from "@/lib/pods/covers";
+import {
+  coverService,
+  examService,
+  itemService,
+  podService,
+} from "@/server/services/pods";
 
 import {
   addLinkSchema,
   addNoteSchema,
   arrangeBoardSchema,
   examIdSchema,
+  setCoverSchema,
   itemIdSchema,
   itemTopicsSchema,
   newPodSchema,
@@ -102,8 +109,11 @@ export async function deletePodAction(input: unknown): Promise<ActionResult> {
   const user = await requireUser();
   const parsed = podIdSchema.safeParse(input);
   if (!parsed.success) return invalid;
+  const target = { kind: "pod" as const, podId: parsed.data.podId };
+  const cover = await coverService.get(user, target);
   const result = await podService.remove(user, parsed.data.podId);
   if (!result.ok) return { ok: false, error: result.message };
+  await coverService.discard(user, cover);
   revalidatePath("/pods", "layout");
   return { ok: true };
 }
@@ -117,8 +127,11 @@ export async function deleteExamAction(
   if (!parsed.success) return invalid;
   const blocked = await limited(user.id);
   if (blocked) return blocked;
+  const target = { kind: "exam" as const, syllabusId: parsed.data.syllabusId };
+  const cover = await coverService.get(user, target);
   const result = await examService.remove(user, parsed.data.syllabusId);
   if (!result.ok) return { ok: false, error: result.message };
+  await coverService.discard(user, cover);
   revalidatePath("/", "layout");
   return { ok: true, kept: result.kept };
 }
@@ -235,4 +248,23 @@ export async function restoreItemAction(input: unknown): Promise<ActionResult> {
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/pods", "layout");
   return { ok: true };
+}
+
+/** The picker's choice for an exam pod or one of the user's own pods. */
+export async function setCoverAction(
+  input: unknown,
+): Promise<ActionResult<{ cover: PodCover }>> {
+  const user = await requireUser();
+  const parsed = setCoverSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const result = await coverService.set(
+    user,
+    parsed.data.target,
+    parsed.data.choice,
+  );
+  if (!result.ok) return { ok: false, error: result.message };
+  revalidatePath("/pods", "layout");
+  return { ok: true, cover: result.cover };
 }

@@ -1,7 +1,9 @@
+import { z } from "zod";
+
 /**
- * Pod covers: the art at the top of a pod's card. A soft, grainy gradient for now, picked
- * from the pod's id so it never changes between visits. Users will later choose their own
- * gradient or upload an image; `PodCover` already draws both.
+ * Pod covers: the art at the top of a pod's card. Automatic by default (a grainy gradient
+ * picked from the pod's id, so it never changes between visits); the user can choose
+ * another gradient or upload an image instead.
  *
  * The one place gradients are allowed besides the streak glow (owner's call, 2026-10-07).
  */
@@ -44,4 +46,43 @@ export function meshBackground(preset: CoverPreset) {
     `radial-gradient(70% 60% at 50% 110%, ${blobs[2]} 0%, transparent 70%)`,
     base,
   ].join(", ");
+}
+
+/** A cover as it's saved (Pod.cover, ExamCover.cover). Images are private keys. */
+export const storedCoverSchema = z.discriminatedUnion("kind", [
+  z.object({
+    kind: z.literal("gradient"),
+    preset: z.enum(NAMES as [CoverPreset, ...CoverPreset[]]),
+  }),
+  z.object({
+    kind: z.literal("image"),
+    key: z.string().max(200),
+    mime: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  }),
+]);
+export type StoredCover = z.infer<typeof storedCoverSchema>;
+
+/** What the picker sends: automatic again, a preset, or an image just uploaded. */
+export const coverChoiceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("auto") }),
+  z.object({
+    kind: z.literal("gradient"),
+    preset: z.enum(NAMES as [CoverPreset, ...CoverPreset[]]),
+  }),
+  z.object({ kind: z.literal("image"), key: z.string().max(200) }),
+]);
+export type CoverChoice = z.infer<typeof coverChoiceSchema>;
+
+/** Which option the picker shows as chosen. */
+export function selectionOf(
+  stored: StoredCover | null,
+): "auto" | CoverPreset | "image" {
+  if (!stored) return "auto";
+  return stored.kind === "gradient" ? stored.preset : "image";
+}
+
+/** Reads a saved cover; anything unreadable falls back to automatic. */
+export function parseStoredCover(value: unknown): StoredCover | null {
+  const parsed = storedCoverSchema.safeParse(value);
+  return parsed.success ? parsed.data : null;
 }

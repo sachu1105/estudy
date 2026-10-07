@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { COVER_PRESETS, coverFor, meshBackground } from "./covers";
+import {
+  COVER_PRESETS,
+  coverFor,
+  meshBackground,
+  parseStoredCover,
+} from "./covers";
 
 describe("pod covers", () => {
   it("gives the same pod the same cover every time", () => {
@@ -22,5 +27,17 @@ describe("pod covers", () => {
     const css = meshBackground("meadow");
     expect(css.match(/radial-gradient/g)).toHaveLength(3);
     expect(css.endsWith(COVER_PRESETS.meadow.base)).toBe(true);
+  });
+
+  it("reads saved covers and drops anything it doesn't know", () => {
+    expect(parseStoredCover({ kind: "gradient", preset: "ember" })).toEqual({
+      kind: "gradient",
+      preset: "ember",
+    });
+    expect(parseStoredCover({ kind: "gradient", preset: "neon" })).toBeNull();
+    expect(
+      parseStoredCover({ kind: "image", key: "covers/u/1", mime: "image/gif" }),
+    ).toBeNull();
+    expect(parseStoredCover(null)).toBeNull();
   });
 });

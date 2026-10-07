@@ -1,5 +1,5 @@
 import { PodTile } from "@/components/blocks/pod-tile";
-import { coverFor } from "@/lib/pods/covers";
+import type { PodCover } from "@/lib/pods/covers";
 
 type ExamCardProps = {
   id: string;
@@ -9,6 +9,7 @@ type ExamCardProps = {
   topics: number;
   topicsDone: number;
   items: number;
+  cover: PodCover;
 };
 
 /** An exam pod at a glance: its subjects and how far through the syllabus the user is. */
@@ -20,6 +21,7 @@ export function ExamCard({
   topics,
   topicsDone,
   items,
+  cover,
 }: ExamCardProps) {
   return (
     <PodTile
@@ -32,7 +34,7 @@ export function ExamCard({
         .filter(Boolean)
         .join(" · ")}
       tag="Exam"
-      cover={coverFor(id)}
+      cover={cover}
       stat={{ value: topicsDone, unit: `of ${topics} topics done` }}
       aside={`${items} item${items === 1 ? "" : "s"}`}
       progress={topics ? (topicsDone / topics) * 100 : 0}

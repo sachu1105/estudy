@@ -8,6 +8,8 @@ import { planRepository } from "@/server/repositories/plan-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { topicCompletionRepository } from "@/server/repositories/topic-completion-repository";
+import { coverRepository } from "@/server/repositories/cover-repository";
+import { createCoverService } from "@/server/services/pods/cover-service";
 import { createExamService } from "@/server/services/pods/exam-service";
 import { createPodService } from "@/server/services/pods/pod-service";
 import { createMemoryStorage } from "@/server/storage/memory";
@@ -28,6 +30,15 @@ const exams = createExamService({
   storage: createMemoryStorage().storage,
   clock: fixedClock("2026-10-06T04:30:00Z"),
 });
+
+const coverStorage = createMemoryStorage();
+const covers = createCoverService({
+  covers: coverRepository,
+  pods: podRepository,
+  storage: coverStorage.storage,
+  ids: { next: () => crypto.randomUUID() },
+});
+const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 const id = () => crypto.randomUUID();
 const topic = (name: string) => ({
@@ -291,6 +302,73 @@ describe("subject pods", () => {
     // Adding it again brings the pods back.
     await pods.syncFromSyllabus(user, version.id);
     expect((await pods.exams(user)).exams).toHaveLength(1);
+  });
+
+  it("saves a pod's cover: a gradient, then an image, then automatic again", async () => {
+    const user = await makeUser();
+    const created = await pods.createCustom(user, "Old papers");
+    const target = { kind: "pod" as const, podId: created.podId };
+    expect(await covers.get(user, target)).toBeNull();
+
+    expect(
+      await covers.set(user, target, { kind: "gradient", preset: "ember" }),
+    ).toEqual({ ok: true, cover: { kind: "gradient", preset: "ember" } });
+
+    // An image: only bytes that really are an image, under the user's own prefix.
+    const key = `covers/${user.id}/${crypto.randomUUID()}`;
+    await coverStorage.storage.put(key, PNG, "image/png");
+    const image = await covers.set(user, target, { kind: "image", key });
+    expect(image.ok && image.cover.kind).toBe("image");
+    expect(await covers.get(user, target)).toEqual({
+      kind: "image",
+      key,
+      mime: "image/png",
+    });
+
+    // Back to automatic: the image is deleted from storage.
+    await covers.set(user, target, { kind: "auto" });
+    expect(await covers.get(user, target)).toBeNull();
+    expect(coverStorage.objects.has(key)).toBe(false);
+  });
+
+  it("refuses someone else's pod, another user's image and files that aren't images", async () => {
+    const user = await makeUser();
+    const other = await makeUser("b@example.com");
+    const created = await pods.createCustom(user, "Old papers");
+    const target = { kind: "pod" as const, podId: created.podId };
+    expect(
+      (await covers.set(other, target, { kind: "gradient", preset: "moss" }))
+        .ok,
+    ).toBe(false);
+
+    const theirs = `covers/${other.id}/${crypto.randomUUID()}`;
+    await coverStorage.storage.put(theirs, PNG, "image/png");
+    expect(
+      (await covers.set(user, target, { kind: "image", key: theirs })).ok,
+    ).toBe(false);
+
+    const fake = `covers/${user.id}/${crypto.randomUUID()}`;
+    await coverStorage.storage.put(
+      fake,
+      new TextEncoder().encode("<svg/>"),
+      "image/png",
+    );
+    expect(
+      (await covers.set(user, target, { kind: "image", key: fake })).ok,
+    ).toBe(false);
+    expect(coverStorage.objects.has(fake)).toBe(false);
+  });
+
+  it("keeps an exam pod's cover per user", async () => {
+    const user = await makeUser();
+    const { versionId } = await confirmedSyllabus(user.id);
+    await pods.syncFromSyllabus(user, versionId);
+    const target = { kind: "exam" as const, syllabusId: versionId };
+    await covers.set(user, target, { kind: "gradient", preset: "ocean" });
+    const map = await covers.examCovers(user, [versionId]);
+    expect(map.get(versionId)).toEqual({ kind: "gradient", preset: "ocean" });
+    await covers.set(user, target, { kind: "auto" });
+    expect(await covers.get(user, target)).toBeNull();
   });
 
   it("logs every tick and untick, the latest one winning (rule 6)", async () => {

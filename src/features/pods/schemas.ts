@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { coverChoiceSchema } from "@/lib/pods/covers";
+
 export const podNameSchema = z
   .string()
   .transform((s) => s.replace(/\s+/g, " ").trim())
@@ -34,6 +36,13 @@ export const arrangeBoardSchema = z.object({
 });
 export const adoptSyllabusSchema = z.object({ versionId: z.uuid() });
 export const examIdSchema = z.object({ syllabusId: z.uuid() });
+export const setCoverSchema = z.object({
+  target: z.discriminatedUnion("kind", [
+    z.object({ kind: z.literal("exam"), syllabusId: z.uuid() }),
+    z.object({ kind: z.literal("pod"), podId: z.uuid() }),
+  ]),
+  choice: coverChoiceSchema,
+});
 
 export type ActionResult<T = object> =
   ({ ok: true } & T) | { ok: false; error: string };

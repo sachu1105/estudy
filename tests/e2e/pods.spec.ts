@@ -135,6 +135,36 @@ test.describe("pods", () => {
       page.getByRole("heading", { level: 1, name: `${name} 2` }),
     ).toBeVisible();
 
+    // Its cover: a gradient sticks across a reload; an image uploads and replaces it.
+    const openCover = async () => {
+      await page.getByRole("button", { name: `More for ${name} 2` }).click();
+      await page.getByRole("menuitem", { name: "Change cover" }).click();
+    };
+    await openCover();
+    await page.getByRole("radio", { name: "ocean" }).click();
+    await expect(page.getByRole("radio", { name: "ocean" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    // Saved once the picker is usable again.
+    await expect(page.getByRole("radio", { name: "moss" })).toBeEnabled();
+    await page.reload();
+    await openCover();
+    await expect(page.getByRole("radio", { name: "ocean" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    await page.getByLabel("Cover image").setInputFiles("public/icon-192.png");
+    await expect(
+      page.getByRole("button", { name: "Remove image" }),
+    ).toBeEnabled({ timeout: 20_000 });
+    await page.reload();
+    await openCover();
+    await expect(
+      page.getByRole("button", { name: "Remove image" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+
     await page.getByRole("button", { name: `More for ${name} 2` }).click();
     await page.getByRole("menuitem", { name: "Delete pod" }).click();
     await page.getByRole("button", { name: "Delete pod" }).click();

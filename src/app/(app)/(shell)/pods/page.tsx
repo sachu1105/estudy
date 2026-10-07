@@ -12,7 +12,7 @@ import { PodCard } from "@/features/pods/components/pod-card";
 import { SetupTile } from "@/features/syllabus/components/setup-tile";
 import { syllabusState } from "@/features/syllabus/state";
 import { requireUser } from "@/server/auth/session";
-import { podService } from "@/server/services/pods";
+import { coverService, podService } from "@/server/services/pods";
 import { reviewService, uploadUsage } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Pods" };
@@ -27,6 +27,14 @@ export default async function PodsPage() {
     podService.exams(user),
     reviewService.list(user),
     uploadUsage(user),
+  ]);
+  // Covers as each user chose them; images come back as short-lived signed links.
+  const [examCovers, ownCovers] = await Promise.all([
+    coverService.examCovers(
+      user,
+      exams.map((e) => e.id),
+    ),
+    Promise.all(own.map((p) => coverService.resolve(p.cover, p.id))),
   ]);
   const pending = syllabuses
     .map((s) => ({ ...s, state: syllabusState(s) }))
@@ -89,6 +97,7 @@ export default async function PodsPage() {
                       topics={e.topics}
                       topicsDone={e.topicsDone}
                       items={e.items}
+                      cover={examCovers.get(e.id)!}
                     />
                   </li>
                 ))}
@@ -128,7 +137,7 @@ export default async function PodsPage() {
                 Your own pods
               </h2>
               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {own.map((p) => (
+                {own.map((p, i) => (
                   <li key={p.id} className="flex">
                     <PodCard
                       id={p.id}
@@ -137,6 +146,7 @@ export default async function PodsPage() {
                       topics={p.topics.length}
                       topicsDone={p.topicsDone}
                       items={p.items}
+                      cover={ownCovers[i]!}
                     />
                   </li>
                 ))}

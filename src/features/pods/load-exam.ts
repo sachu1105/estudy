@@ -6,7 +6,8 @@ import { cache } from "react";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { planService } from "@/server/services/plans";
-import { podService } from "@/server/services/pods";
+import { selectionOf } from "@/lib/pods/covers";
+import { coverService, podService } from "@/server/services/pods";
 
 export type ExamPlanState =
   | { kind: "none" }
@@ -28,10 +29,15 @@ export const loadExam = cache(async (syllabusId: string) => {
     ? await podService.exam(user, syllabusId)
     : null;
   if (!exam) notFound();
-  const [active, draft] = await Promise.all([
+  const [active, draft, stored] = await Promise.all([
     planService.activeFor(user, exam.id),
     planService.draftFor(user, exam.id),
+    coverService.get(user, { kind: "exam", syllabusId: exam.id }),
   ]);
+  const cover = {
+    selection: selectionOf(stored),
+    view: await coverService.resolve(stored, exam.id),
+  };
   const plan: ExamPlanState = active
     ? {
         kind: "active",
@@ -42,5 +48,5 @@ export const loadExam = cache(async (syllabusId: string) => {
     : draft
       ? { kind: "draft" }
       : { kind: "none" };
-  return { user, exam, plan };
+  return { user, exam, plan, cover };
 });

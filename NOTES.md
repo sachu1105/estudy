@@ -1006,3 +1006,33 @@ ledge, some shine and a press.
 - `SyllabusCard` was removed.
 - scripts/shots.ts saves the session after each run. Refresh tokens rotate, and a stale
   saved file was being revoked by reuse detection.
+
+### Cover picker (2026-10-07)
+- Data (migration `20261014090000_pod_covers`): `Pod.cover Json?`, plus `ExamCover`
+  (userId, syllabusVersionId, cover). An exam pod is a user's subject pods for a
+  syllabus rather than a row of its own. Values follow `storedCoverSchema`
+  (lib/pods/covers): a gradient preset, or an image `{ key, mime }`. Null means
+  automatic (`coverFor(id)`).
+- `coverService` (services/pods/cover-service, tested in integration):
+  - `get` and `set` check ownership. A pod must be the user's own; an exam needs the
+    user's subject pods for it.
+  - Images upload with a presigned PUT under `covers/<userId>/` (route
+    /api/uploads/cover, rate-limited by `uploadSignPerUser`) and are capped at 3 MB.
+  - `set` checks the key prefix and the real bytes (`sniffKind`); anything that isn't an
+    image is deleted. Changing away from an image deletes it, and `discard` removes a
+    deleted pod's or exam's image.
+  - Covers render through 15-minute signed links (rule 15).
+  - Cover images don't count toward pod storage yet (at most one per pod).
+- `CoverPicker` (dialog): a live preview strip; Automatic plus six swatches as a radio
+  group, with the choice shown by a ring and a check; upload or remove an image. Each
+  pick saves at once and rolls back on error. The client shrinks the photo to 1600px
+  (`preparePhoto(file, 1600)`), and a local preview shows while it uploads.
+- Where: ⋯ → Change cover on an exam pod (ExamMenu) and on the user's own pods
+  (PodMenu). Subject pods have no card, so they have no cover. The Pods home draws saved
+  covers (`coverService.examCovers` and `resolve`).
+- Dev DB fix: the stored checksum of `20261013090000_billing_notifications` no longer
+  matched the committed file, so `migrate dev` wanted a reset. The schema diff and the
+  Payment trigger showed the database was equivalent, so only the checksum row was
+  updated. No reset was done.
+- After a schema change and `prisma generate`, the running `next dev` needs a moment;
+  the first e2e run right after it can fail all over and then pass on the rerun.

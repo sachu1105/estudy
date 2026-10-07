@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, SlidersHorizontal, Trash2 } from "lucide-react";
+import { ImageIcon, MoreHorizontal, SlidersHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -21,10 +21,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/toast";
 import { startPlanAction } from "@/features/plans/actions";
+import type { PodCover } from "@/lib/pods/covers";
 
 import { deleteExamAction } from "../actions";
+import { CoverPicker, type CoverSelection } from "./cover-picker";
 
-/** The exam pod's less frequent actions: change the plan, delete the whole exam. */
+/** The exam pod's less frequent actions: its cover, the plan, deleting the exam. */
 export function ExamMenu({
   examId,
   title,
@@ -32,6 +34,7 @@ export function ExamMenu({
   items,
   ownUpload,
   hasPlan,
+  cover,
 }: {
   examId: string;
   title: string;
@@ -40,9 +43,11 @@ export function ExamMenu({
   /** The user uploaded this syllabus (rather than adding it from the catalogue). */
   ownUpload: boolean;
   hasPlan: boolean;
+  cover: { selection: CoverSelection; view: PodCover };
 }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
+  const [picking, setPicking] = useState(false);
   const [pending, start] = useTransition();
 
   const changePlan = () =>
@@ -73,6 +78,9 @@ export function ExamMenu({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={() => setPicking(true)}>
+            <ImageIcon aria-hidden /> Change cover
+          </DropdownMenuItem>
           {hasPlan ? (
             <DropdownMenuItem disabled={pending} onSelect={changePlan}>
               <SlidersHorizontal aria-hidden /> Change plan
@@ -83,6 +91,15 @@ export function ExamMenu({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <CoverPicker
+        open={picking}
+        onOpenChange={setPicking}
+        target={{ kind: "exam", syllabusId: examId }}
+        title={title}
+        selection={cover.selection}
+        cover={cover.view}
+      />
 
       <Dialog open={confirming} onOpenChange={setConfirming}>
         <DialogContent>

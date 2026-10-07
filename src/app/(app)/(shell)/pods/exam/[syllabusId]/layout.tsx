@@ -25,7 +25,7 @@ export default async function ExamPodLayout({
   children,
 }: LayoutProps<"/pods/exam/[syllabusId]">) {
   const { syllabusId } = await params;
-  const { user, exam, plan } = await loadExam(syllabusId);
+  const { user, exam, plan, cover } = await loadExam(syllabusId);
   const today = progressService.today(user);
 
   const percent = exam.topics
@@ -60,6 +60,7 @@ export default async function ExamPodLayout({
               items={exam.items}
               ownUpload={exam.editable}
               hasPlan={plan.kind === "active"}
+              cover={cover}
             />
           </div>
         }

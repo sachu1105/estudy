@@ -15,7 +15,8 @@ import { PodTests } from "@/features/tests/components/pod-tests";
 import { isId } from "@/lib/ids";
 import { formatDay, formatMinutes } from "@/lib/plans/format";
 import { requireUser } from "@/server/auth/session";
-import { itemService, podService } from "@/server/services/pods";
+import { parseStoredCover, selectionOf } from "@/lib/pods/covers";
+import { coverService, itemService, podService } from "@/server/services/pods";
 import { progressService } from "@/server/services/progress";
 import { testService } from "@/server/services/tests";
 
@@ -26,7 +27,7 @@ export default async function PodPage({ params }: PageProps<"/pods/[podId]">) {
   const { podId } = await params;
   const pod = isId(podId) ? await podService.get(user, podId) : null;
   if (!pod) notFound();
-  const [items, stats, attempts] = await Promise.all([
+  const [items, stats, attempts, cover] = await Promise.all([
     itemService.list(user, pod.id),
     pod.subjectId
       ? progressService.subjectStats(user, pod.subjectId)
@@ -34,6 +35,7 @@ export default async function PodPage({ params }: PageProps<"/pods/[podId]">) {
     pod.subjectId
       ? testService.history(user, { subjectId: pod.subjectId })
       : [],
+    coverService.resolve(pod.cover, pod.id),
   ]);
 
   const done = pod.topics.filter((t) => t.done).length;
@@ -54,7 +56,14 @@ export default async function PodPage({ params }: PageProps<"/pods/[podId]">) {
         title={pod.name}
         actions={
           pod.kind === "CUSTOM" ? (
-            <PodMenu podId={pod.id} name={pod.name} />
+            <PodMenu
+              podId={pod.id}
+              name={pod.name}
+              cover={{
+                selection: selectionOf(parseStoredCover(pod.cover)),
+                view: cover,
+              }}
+            />
           ) : null
         }
       />

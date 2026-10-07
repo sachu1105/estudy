@@ -1,5 +1,5 @@
 import { PodTile } from "@/components/blocks/pod-tile";
-import { coverFor } from "@/lib/pods/covers";
+import type { PodCover } from "@/lib/pods/covers";
 
 type PodCardProps = {
   id: string;
@@ -8,6 +8,7 @@ type PodCardProps = {
   topics: number;
   topicsDone: number;
   items: number;
+  cover: PodCover;
 };
 
 /** A pod at a glance: how much material it holds, and how much is done. */
@@ -18,6 +19,7 @@ export function PodCard({
   topics,
   topicsDone,
   items,
+  cover,
 }: PodCardProps) {
   return (
     <PodTile
@@ -27,7 +29,7 @@ export function PodCard({
         topics > 0 ? `${topicsDone} of ${topics} topics done` : undefined
       }
       tag={kind === "SUBJECT" ? "Subject" : "Your pod"}
-      cover={coverFor(id)}
+      cover={cover}
       stat={{ value: items, unit: items === 1 ? "item" : "items" }}
       progress={topics ? (topicsDone / topics) * 100 : undefined}
     />
