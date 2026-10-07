@@ -48,6 +48,18 @@ export const envSchema = z
     EMAIL_FROM: z.string().min(1),
 
     BILLING_ENABLED: z.stringbool(),
+    /** Razorpay, used only while BILLING_ENABLED=true (milestone 16). */
+    RAZORPAY_KEY_ID: optionalString,
+    RAZORPAY_KEY_SECRET: optionalString,
+    RAZORPAY_WEBHOOK_SECRET: optionalString,
+    /** Plan ids created in the Razorpay dashboard, one per paid plan. */
+    RAZORPAY_PLAN_PRO: optionalString,
+    RAZORPAY_PLAN_ELITE: optionalString,
+
+    /** Web push (milestone 16). Without these, push is simply off. */
+    VAPID_PUBLIC_KEY: optionalString,
+    VAPID_PRIVATE_KEY: optionalString,
+    VAPID_SUBJECT: optionalString.pipe(z.string().optional()),
 
     SEED_ADMIN_EMAIL: optionalString.pipe(z.email().optional()),
     SEED_ADMIN_PASSWORD: optionalString,
@@ -59,6 +71,21 @@ export const envSchema = z
         path: ["JWT_REFRESH_SECRET"],
         message: "must differ from JWT_ACCESS_SECRET",
       });
+    }
+    if (env.BILLING_ENABLED) {
+      for (const key of [
+        "RAZORPAY_KEY_ID",
+        "RAZORPAY_KEY_SECRET",
+        "RAZORPAY_WEBHOOK_SECRET",
+      ] as const) {
+        if (!env[key]) {
+          ctx.addIssue({
+            code: "custom",
+            path: [key],
+            message: "required when BILLING_ENABLED=true",
+          });
+        }
+      }
     }
     if (env.AI_PROVIDER === "hosted") {
       for (const key of ["AI_API_KEY", "AI_MODEL"] as const) {

@@ -98,6 +98,9 @@ model User {
   replies            Reply[]
   reactions          Reaction[]
   notifications      Notification[]      @relation("NotificationFor")
+  pushSubscriptions  PushSubscription[]
+  notifyPrefs        NotifyPrefs?
+  payments           Payment[]
   notificationsSent  Notification[]      @relation("NotificationActor")
 }
 
@@ -145,17 +148,88 @@ model PasswordReset {
 }
 
 model Subscription {
-  id        String             @id @default(uuid()) @db.Uuid
-  userId    String             @db.Uuid
-  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan      Plan
-  status    SubscriptionStatus @default(ACTIVE)
-  periodEnd DateTime?          @db.Timestamptz(6)
-  source    SubscriptionSource @default(DEFAULT)
-  createdAt DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime           @updatedAt @db.Timestamptz(6)
+  id                String             @id @default(uuid()) @db.Uuid
+  userId            String             @db.Uuid
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan              Plan
+  status            SubscriptionStatus @default(ACTIVE)
+  periodEnd         DateTime?          @db.Timestamptz(6)
+  source            SubscriptionSource @default(DEFAULT)
+  /// Razorpay's own id for the subscription, when it came from there (milestone 16).
+  providerId        String?            @unique
+  /// Payment failed: the plan still works until this passes, then it drops to FREE.
+  graceUntil        DateTime?          @db.Timestamptz(6)
+  cancelAtPeriodEnd Boolean            @default(false)
+  createdAt         DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime           @updatedAt @db.Timestamptz(6)
 
   @@index([userId, status])
+}
+
+/// What the payment provider told us, kept so a webhook is never applied twice
+/// (milestone 16). Append-only.
+model Payment {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @db.Uuid
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  /// The provider's event id: the idempotency key.
+  eventId     String   @unique
+  event       String
+  providerId  String?
+  amountPaise Int?
+  payload     Json
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, createdAt])
+}
+
+/// A browser that agreed to web push (milestone 16).
+model PushSubscription {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+  userAgent  String?
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  lastSeenAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+}
+
+/// Which of the three reminders a person wants, and when to stay quiet (milestone 16).
+model NotifyPrefs {
+  userId          String   @id @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionReminder Boolean  @default(true)
+  streakAtRisk    Boolean  @default(true)
+  weeklySummary   Boolean  @default(true)
+  byEmail         Boolean  @default(true)
+  byPush          Boolean  @default(true)
+  /// Local times, minutes from midnight: when the study window starts, and quiet hours.
+  windowStartMin  Int      @default(1140)
+  quietFromMin    Int      @default(1320)
+  quietToMin      Int      @default(420)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+}
+
+/// One reminder sent to one person on one day: never send the same one twice.
+model ReminderLog {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  kind      ReminderKind
+  localDate DateTime     @db.Date
+  channel   String
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+
+  @@unique([userId, kind, localDate])
+}
+
+enum ReminderKind {
+  SESSION
+  STREAK
+  WEEKLY
 }
 
 /// Append-only (rule 6): UPDATE and DELETE are rejected by a database trigger.

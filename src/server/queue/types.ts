@@ -28,6 +28,11 @@ export const podJobSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("replan-week") }),
   // Nightly: leaderboards rebuilt from the XP log, the source of truth (milestone 12).
   z.object({ kind: z.literal("rebuild-ranks") }),
+  // Every half hour: the three reminders, each in the person's own local time
+  // (milestone 16).
+  z.object({ kind: z.literal("send-reminders") }),
+  // Nightly: paid plans whose grace or paid-up period has passed drop to FREE.
+  z.object({ kind: z.literal("expire-subscriptions") }),
 ]);
 export type PodJob = z.infer<typeof podJobSchema>;
 

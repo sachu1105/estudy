@@ -821,3 +821,48 @@ generation and "mock tests from my material" (paidOnly; a calm card says so).
   edit history is worth more than an in-place edit and belongs with its own milestone.
 - Fixed while building: SSE writes now survive a client that disappears mid-write (both
   stream routes), instead of raising an unhandled rejection in the server log.
+
+## Milestone 16 — plans, billing, reminders and the PWA (2026-10-13)
+
+- Data (migration `20261013090000_billing_notifications`): Subscription gains providerId,
+  graceUntil and cancelAtPeriodEnd; Payment (the provider's events, append-only by
+  trigger, rule 6); PushSubscription; NotifyPrefs; ReminderLog. XpKind already had what
+  it needed.
+- Pricing comes from one place. `lib/pricing` turns the effective plan table (admin edits
+  included) into the rows and prices shown, so the pricing page, the landing teaser and
+  the in-app plan page can never disagree with what `can` and `limit` enforce. Prices
+  live beside the limits in `entitlements/config.ts` as paise.
+- `/pricing` for visitors, `/settings/plan` for members. While BILLING_ENABLED=false both
+  say plainly that everything is free during launch, and no dead "upgrade" button is
+  rendered at all.
+- Razorpay behind a `BillingProvider` interface, built only when billing is on and keys
+  are present. Checkout grants nothing: the row stays CANCELLED until the provider's
+  webhook says otherwise. The webhook checks the HMAC signature with a timing-safe
+  compare before reading the body, and every event is written to Payment by its event id
+  with `skipDuplicates`, so a retry is applied once. Razorpay sends no event id, so one
+  is made from the event name, subscription and period.
+- A failed payment keeps the plan working for GRACE_DAYS (7), then the nightly job drops
+  it to FREE. Cancelling stops at the end of the period already paid for. Nothing is ever
+  deleted on a downgrade: anything over the new limits stays and becomes read-only, and
+  both pages say so.
+- Upgrade prompts only at a limit: the groups page shows an inline card once a person has
+  made every group their plan allows. No modal walls anywhere.
+- Reminders: exactly three (session, streak at risk, weekly summary), each switchable,
+  by email and/or push, with a study-window time and quiet hours that may wrap midnight.
+  `lib/reminders` decides what is due; the worker runs it every half hour and reads each
+  person's own local time. A ReminderLog row is claimed before sending, so two workers
+  can never double-send. Streak warnings go out only when nothing is logged that day and
+  there is a streak to lose.
+- Web push over VAPID (`web-push`). Without keys push is simply off and email still
+  works. A browser that has forgotten its subscription (404/410) is dropped from the
+  table. Every reminder email says how to stop it.
+- PWA: manifest at /manifest.webmanifest, install icons, and a small service worker (no
+  framework) that caches Today, Plan, Calendar and Pods for offline, shows /offline when
+  there is nothing cached, and handles push and notification clicks. It is registered in
+  production only; in dev it would cache pages Next is still rebuilding. API routes and
+  SSE streams are never cached.
+- Deviation: no invoice history page. Payment rows are kept and the audit log records
+  every change, but GST invoices belong with the real launch paperwork.
+- Fixed while building: the landing pricing teaser had its own copy of the plan table;
+  it now uses the shared module, which also fixed "1 syllabus uploads" and the repeated
+  "Free / Free". The footer's Pricing link now goes to /pricing.

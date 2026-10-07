@@ -7,6 +7,8 @@ import {
   schedulePodMaintenance,
   type PodJob,
 } from "@/server/queue";
+import { billingService } from "@/server/services/billing";
+import { notifyService } from "@/server/services/notifications/notify";
 import { planService } from "@/server/services/plans";
 import { rankService } from "@/server/services/rank";
 import { flagOn } from "@/server/settings";
@@ -39,6 +41,16 @@ export async function startPodWorker() {
           console.log(`[worker] ranks rebuilt for ${users} users`);
           return;
         }
+        case "send-reminders": {
+          const sent = await notifyService.runDueReminders();
+          if (sent) console.log(`[worker] ${sent} reminders sent`);
+          return;
+        }
+        case "expire-subscriptions": {
+          const ended = await billingService.expireDue();
+          if (ended) console.log(`[worker] ${ended} subscriptions expired`);
+          return;
+        }
         case "replan-week": {
           if (!(await flagOn("weeklyReplan"))) {
             console.log("[worker] weekly re-plan is switched off by an admin");
@@ -55,6 +67,8 @@ export async function startPodWorker() {
   worker.on("failed", (job, error) =>
     console.warn(`[worker] pod job ${job?.name} failed: ${error.message}`),
   );
-  console.log(`[worker] ${POD_QUEUE}: link previews, file text, trash purge, weekly re-plan`);
+  console.log(
+    `[worker] ${POD_QUEUE}: link previews, file text, trash purge, weekly re-plan, reminders`,
+  );
   return worker;
 }

@@ -93,6 +93,16 @@ export async function schedulePodMaintenance() {
     { name: "replan-week", data: { kind: "replan-week" } },
   );
   await bullPodQueue().upsertJobScheduler(
+    "send-reminders",
+    { pattern: "*/30 * * * *" },
+    { name: "send-reminders", data: { kind: "send-reminders" } },
+  );
+  await bullPodQueue().upsertJobScheduler(
+    "expire-subscriptions",
+    { pattern: "15 3 * * *", tz: "Asia/Kolkata" },
+    { name: "expire-subscriptions", data: { kind: "expire-subscriptions" } },
+  );
+  await bullPodQueue().upsertJobScheduler(
     "rebuild-ranks-nightly",
     { pattern: "30 2 * * *", tz: "Asia/Kolkata" },
     { name: "rebuild-ranks", data: { kind: "rebuild-ranks" } },

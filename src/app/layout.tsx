@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 
 import { BootScript } from "@/components/shell/boot-script";
+import { ServiceWorker } from "@/components/shell/service-worker";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { site } from "@/lib/site";
 import { env } from "@/server/env";
@@ -36,6 +37,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   openGraph: { type: "website", siteName: site.name, locale: "en_IN" },
+  appleWebApp: { capable: true, title: "Study", statusBarStyle: "default" },
   twitter: { card: "summary_large_image" },
 };
 
@@ -59,6 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-dvh">
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+        <ServiceWorker />
       </body>
     </html>
   );

@@ -6,11 +6,13 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
+import { UpgradeCard } from "@/features/billing/components/upgrade-card";
 import { CreateGroupDialog } from "@/features/groups/components/create-group-dialog";
 import { GroupCard } from "@/features/groups/components/group-card";
 import { JoinCodeDialog } from "@/features/groups/components/join-controls";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
+import { billingEnabled, limit } from "@/server/entitlements";
 import { groupService } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
@@ -30,6 +32,10 @@ export default async function GroupsPage({
     catalogueService.listExams(),
   ]);
   const joined = new Set(mine.map((m) => m.group.id));
+  // Only when they have actually reached it (rule: prompts at a limit, never a wall).
+  const owned = mine.filter((m) => m.role === "OWNER").length;
+  const maxOwned = limit(user, "groupsCreated");
+  const atLimit = owned >= maxOwned;
   const examLinks = [
     { id: null, name: "Every exam" },
     ...exams.map((e) => ({ id: e.id, name: e.name })),
@@ -50,6 +56,13 @@ export default async function GroupsPage({
         }
       />
       <div className="flex flex-col gap-10">
+        {atLimit ? (
+          <UpgradeCard
+            title="You have made every group your plan allows"
+            detail={`Your plan covers ${maxOwned} group${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
+            billingOn={billingEnabled()}
+          />
+        ) : null}
         <section aria-labelledby="mine" className="flex flex-col gap-3">
           <h2 id="mine" className="text-h2">
             Your groups

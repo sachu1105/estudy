@@ -33,6 +33,8 @@ export const rules = {
   // Posts and replies; reactions and moderation are lighter (milestone 14).
   postPerUser: { limit: 30, windowMs: 10 * MINUTE },
   reactPerUser: { limit: 200, windowMs: 10 * MINUTE },
+  // Checkout and cancel (milestone 16).
+  billingPerUser: { limit: 10, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

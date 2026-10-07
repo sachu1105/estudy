@@ -895,7 +895,7 @@ billing, SUPER_ADMIN everything). Same design system, denser tables.
 10. Audit log viewer. Every admin action writes AuditLog.
 ```
 
-### Milestone 16 — plans, billing and notifications
+### Milestone 16 — plans, billing and notifications (done)
 
 ```
 Read CLAUDE.md. Milestones 1-15 are committed.

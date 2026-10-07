@@ -48,3 +48,23 @@ export function passwordResetEmail(
     html: layout("Reset your password", body, "Choose a new password", url),
   };
 }
+
+/** One of the three reminders (milestone 16). Every one says how to turn it off. */
+export function reminderEmail(
+  to: string,
+  name: string,
+  reminder: { title: string; body: string },
+  url: string,
+  settingsUrl: string,
+): MailMessage {
+  const body = `Hi ${name}, ${reminder.body}`;
+  return {
+    to,
+    subject: reminder.title,
+    text: `${body}\n\n${url}\n\nTo change or stop these reminders: ${settingsUrl}`,
+    html: layout(reminder.title, body, "Open study planner", url).replace(
+      "</div></div></body>",
+      `<p style="font-size:13px;line-height:20px;color:#9A9AA3;margin:16px 0 0">Change or stop these reminders in your <a href="${escapeHtml(settingsUrl)}" style="color:#2238C9">settings</a>.</p></div></div></body>`,
+    ),
+  };
+}

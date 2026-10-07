@@ -4,67 +4,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils/cn";
-import { PLANS, planConfig, type PlanName } from "@/server/entitlements/config";
+import { featureRows, blurbs, planLabel, rupees } from "@/lib/pricing/pricing";
+import {
+  PLANS,
+  planConfig,
+  planPricePaise,
+} from "@/server/entitlements/config";
 
 import { SectionHeading } from "./section-heading";
-
-const GB = 1024 ** 3;
-
-function count(value: number, unit = "") {
-  return value === Infinity ? "Unlimited" : `${value}${unit}`;
-}
-
-function storage(bytes: number) {
-  return bytes >= GB ? `${bytes / GB} GB` : `${bytes / 1024 ** 2} MB`;
-}
-
-const blurbs: Record<PlanName, string> = {
-  FREE: "Everything you need to start one plan.",
-  PRO: "For serious aspirants with more than one exam.",
-  ELITE: "No limits, plus topper comparison.",
-};
-
-// Every row comes from server/entitlements/config.ts, so pricing can never drift from limits.
-function rows(plan: PlanName) {
-  const { limits, flags } = planConfig[plan];
-  return [
-    { label: `${count(limits.syllabusUploads)} syllabus uploads`, on: true },
-    { label: `${count(limits.activePlans)} active study plans`, on: true },
-    {
-      label: `${count(limits.afterTaskMocksPerDay, " a day")} after-task tests`,
-      on: true,
-    },
-    {
-      label: `${count(limits.sectionMocksPerWeek, " a week")} section and full mocks`,
-      on: true,
-    },
-    { label: "AI answer explanations", on: flags.aiExplanations },
-    {
-      label: `${count(limits.groupsCreated)} groups created, ${count(limits.groupsJoined)} joined`,
-      on: true,
-    },
-    { label: `${storage(limits.groupStorageBytes)} group storage`, on: true },
-    {
-      label: `${storage(limits.vaultStorageBytes)} study vault for notes, links and files`,
-      on: true,
-    },
-    {
-      label:
-        limits.vaultMocksPerMonth > 0
-          ? `${limits.vaultMocksPerMonth} mock tests a month from your own notes, up to ${limits.pagesPerVaultMock} pages each`
-          : "Mock tests from your own notes",
-      on: limits.vaultMocksPerMonth > 0,
-    },
-    {
-      label: flags.topperComparison
-        ? "Full analytics and topper comparison"
-        : flags.fullAnalytics
-          ? "Full analytics"
-          : "Basic analytics",
-      on: true,
-    },
-  ];
-}
 
 export function PricingTeaser({
   billingEnabled,
@@ -100,13 +47,17 @@ export function PricingTeaser({
               className="flex flex-col gap-5 rounded-card border border-border bg-bg p-5 sm:p-6"
             >
               <div className="flex flex-col gap-1">
-                <h3 className="text-h2">
-                  {plan.charAt(0) + plan.slice(1).toLowerCase()}
-                </h3>
+                <h3 className="text-h2">{planLabel(plan)}</h3>
+                <p className="font-mono text-h3 tabular-nums">
+                  {rupees(planPricePaise[plan])}
+                  <span className="text-small text-ink-muted">
+                    {planPricePaise[plan] > 0 ? " a month" : " forever"}
+                  </span>
+                </p>
                 <p className="text-small text-ink-muted">{blurbs[plan]}</p>
               </div>
               <ul className="flex flex-col gap-2.5">
-                {rows(plan).map((row) => (
+                {featureRows(planConfig[plan]).map((row) => (
                   <li
                     key={row.label}
                     className={cn(

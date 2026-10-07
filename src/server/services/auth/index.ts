@@ -2,7 +2,7 @@ import "server-only";
 
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
-import { createSmtpMailer } from "@/server/email/mailer";
+import { mailer } from "@/server/email";
 import { env } from "@/server/env";
 import { auditLogRepository } from "@/server/repositories/audit-log-repository";
 import { oneTimeTokenRepository } from "@/server/repositories/one-time-token-repository";
@@ -20,13 +20,7 @@ const deps: AuthDeps = {
   refreshTokens: refreshTokenRepository,
   oneTimeTokens: oneTimeTokenRepository,
   audit: auditLogRepository,
-  mailer: createSmtpMailer({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
-    user: env.SMTP_USER,
-    password: env.SMTP_PASSWORD,
-    from: env.EMAIL_FROM,
-  }),
+  mailer,
   clock: systemClock,
   ids: randomIds,
   config: {

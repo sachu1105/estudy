@@ -39,6 +39,16 @@ type PlanConfig = {
   flags: Record<FlagFeature, boolean>;
 };
 
+/**
+ * What each plan costs a month, in paise (Razorpay's unit). Shown on the pricing page
+ * and charged by the subscription, so the two can never disagree.
+ */
+export const planPricePaise: Record<PlanName, number> = {
+  FREE: 0,
+  PRO: 19900,
+  ELITE: 39900,
+};
+
 export const planConfig: Record<PlanName, PlanConfig> = {
   FREE: {
     limits: {
