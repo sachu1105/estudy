@@ -8,6 +8,7 @@ const storageState = "playwright/.auth/user.json";
 export default defineConfig({
   testDir: "tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
+  globalTeardown: "./tests/e2e/global-teardown.ts",
   fullyParallel: true,
   // One `next dev` compiles routes on demand; more workers than this starve it locally.
   workers: process.env.CI ? 2 : 4,

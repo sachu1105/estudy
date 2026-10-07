@@ -1067,3 +1067,11 @@ ledge, some shine and a press.
   hardening and launch 16). The road ahead is 9, 10, 11 and 16.
 - Code comments and earlier entries in this file that say "milestone 12" (or 13-17) use
   the old numbering.
+
+### Test accounts cleaned up (2026-10-07)
+- e2e runs left 1,247 `@example.com` users and 160 squads in the dev database. They are
+  deleted, and Playwright's `globalTeardown` now removes them after every run
+  (`tests/e2e/support/cleanup.ts`; by hand: `pnpm tsx scripts/clean-test-data.ts`).
+- Only `@example.com` accounts (a reserved domain) are touched. Their rows in the
+  append-only logs are deleted with the row triggers disabled inside the transaction,
+  then re-enabled; real accounts' logs are never touched.
