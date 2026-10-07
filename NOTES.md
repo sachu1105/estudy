@@ -948,3 +948,21 @@ rows, and the subject's name always in view.
   phone). The keyboard sensor is gone; its menu gained Move up / Move down, and keyboard
   users move cards there. Enter on the card's link opens the pod.
 - `LevelSelect` was removed.
+
+### Blurple and raised buttons (2026-10-07)
+The owner's call: Discord's blurple for the accent, and buttons with a slight brutalist
+ledge, some shine and a press.
+- `--accent` is #5865F2 in both themes (white on it is 4.6:1), plus new tokens:
+  `--accent-hover` #4752C4, `--accent-deep` (the ledge), and `--edge` (a neutral a step
+  darker than the border). `--accent-ink` is #4752C4 light and #C3C8FB dark. In dark mode
+  `--on-accent` is now white.
+- `--ledge-*` shadows (`shadow-ledge-accent` and the rest): a hard -3px 3px ledge, plus
+  inset highlights for the sheen. There is no gradient (CLAUDE.md allows only the streak
+  glow). Primary, secondary and danger buttons are raised, and pressing moves them 2px
+  down-left into a 1px ledge. Ghost buttons stay flat with the 0.98 scale. CLAUDE.md's
+  design system section is updated to match.
+- The hard-coded blue also changed in icon.svg, apple-icon, the manifest theme_color, the
+  OG image, the Razorpay theme and the emails. public/icon-192.png and icon-512.png were
+  re-rendered from the SVG with Playwright; there is no generator script.
+- Known flake: under a full 4-worker run, pod-material.spec's "Delete then land on the
+  pod" step once timed out on both projects. It passes on its own and in the next full run.

@@ -266,9 +266,12 @@ neutral; the accent marks the one thing that matters.
   ink           #16161A   headings and body text
   inkMuted      #5F5F6B   secondary text, labels
   inkSubtle     #9A9AA3   placeholders, disabled, decorative icons. Below AA: never for readable text
-  accent        #3B5BFD   primary button, active nav, links, focus ring, progress
-  accentSoft    #EBEEFF   selected rows, active chips
-  accentInk     #2238C9   text on accentSoft
+  accent        #5865F2   primary button, active nav, links, focus ring, progress (blurple)
+  accentHover   #4752C4   primary button hover
+  accentDeep    #3C45A5   the ledge under a primary button
+  accentSoft    #ECEEFE   selected rows, active chips
+  accentInk     #4752C4   text on accentSoft, links
+  edge          #D3D3CB   the ledge under a secondary button
   streak        #F59E0B   streak flame and streak count ONLY
   streakSoft    #FEF3DC
   success       #1F9D61   correct answers, completed tasks
@@ -280,7 +283,8 @@ neutral; the accent marks the one thing that matters.
 
   bg #0E0E11  surface #16161B  surfaceMuted #1E1E25  border #2A2A33
   ink #EDEDF0  inkMuted #A1A1AB  inkSubtle #6E6E78
-  accent #6A84FF  accentSoft #1C2350  accentInk #B7C3FF
+  accent #5865F2  accentHover #4752C4  accentDeep #2B3290  accentSoft #23264F
+  accentInk #C3C8FB  onAccent #FFFFFF  edge #34343F
   streak #FBBF24  streakSoft #3A2C0A
   success #3CCB85  successSoft #12301F
   danger #FF6B6F  dangerSoft #3A1517
@@ -312,7 +316,11 @@ Sentence case everywhere. Never Title Case.
 ### Shape, depth, spacing
 
   radius: cards 16, buttons and inputs 12, chips 8, pills full
-  borders first, shadows second. Shadows are neutral and soft:
+  buttons are raised: a hard 3px ledge offset down-left (accentDeep under primary, edge
+  under secondary and danger tinted), a 1px bright top edge for sheen (inset shadows,
+  not a gradient). Pressed, the button moves 2px down-left into its ledge. Ghost buttons
+  stay flat. The ledge stays in dark mode.
+  borders first, shadows second. Other shadows are neutral and soft:
     sm  0 1px 2px rgba(16,16,24,.04), 0 1px 1px rgba(16,16,24,.03)
     md  0 4px 16px rgba(16,16,24,.06)
     lg  0 16px 40px rgba(16,16,24,.10)   sheets, dialogs, command palette
@@ -331,7 +339,8 @@ Signature micro-interactions (build these well, keep everything else still):
 - progress ring fills on mount; numbers count up
 - streak flame flickers once on the first task of the day
 - answer reveal: chosen option settles, correct option gets success + check
-- buttons press to scale 0.98; cards lift 1px on hover
+- raised buttons sink into their ledge when pressed; ghost buttons scale to 0.98; cards
+  lift 1px on hover
 - skeletons, never spinners, for anything that loads under 3s
 Max three animated elements on screen at once. Respect prefers-reduced-motion.
 

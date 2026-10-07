@@ -54,7 +54,7 @@ export async function openCheckout(input: {
     name: "Study planner",
     description: `${input.plan} plan`,
     prefill: { name: input.name, email: input.email },
-    theme: { color: "#3B5BFD" },
+    theme: { color: "#5865F2" },
     handler: () =>
       toast.success(
         "Payment received. Your plan opens as soon as the bank confirms.",

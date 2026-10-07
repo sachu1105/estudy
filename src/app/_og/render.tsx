@@ -25,7 +25,7 @@ export function renderOg(title: string, subtitle: string) {
             width: 64,
             height: 64,
             borderRadius: 18,
-            background: "#3B5BFD",
+            background: "#5865F2",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

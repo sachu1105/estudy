@@ -16,7 +16,7 @@ function layout(
 <div style="background:#FFFFFF;border:1px solid #E6E6E1;border-radius:16px;padding:28px">
 <h1 style="font-size:20px;line-height:28px;margin:0 0 12px">${escapeHtml(heading)}</h1>
 <p style="font-size:15px;line-height:24px;color:#5F5F6B;margin:0 0 24px">${escapeHtml(body)}</p>
-<a href="${url}" style="display:inline-block;background:#3B5BFD;color:#FFFFFF;text-decoration:none;font-weight:500;padding:12px 20px;border-radius:12px">${escapeHtml(actionLabel)}</a>
+<a href="${url}" style="display:inline-block;background:#5865F2;color:#FFFFFF;text-decoration:none;font-weight:500;padding:12px 20px;border-radius:12px">${escapeHtml(actionLabel)}</a>
 <p style="font-size:13px;line-height:20px;color:#9A9AA3;margin:24px 0 0;word-break:break-all">Or paste this link into your browser: ${url}</p>
 </div></div></body></html>`;
 }
@@ -64,7 +64,7 @@ export function reminderEmail(
     text: `${body}\n\n${url}\n\nTo change or stop these reminders: ${settingsUrl}`,
     html: layout(reminder.title, body, "Open study planner", url).replace(
       "</div></div></body>",
-      `<p style="font-size:13px;line-height:20px;color:#9A9AA3;margin:16px 0 0">Change or stop these reminders in your <a href="${escapeHtml(settingsUrl)}" style="color:#2238C9">settings</a>.</p></div></div></body>`,
+      `<p style="font-size:13px;line-height:20px;color:#9A9AA3;margin:16px 0 0">Change or stop these reminders in your <a href="${escapeHtml(settingsUrl)}" style="color:#4752C4">settings</a>.</p></div></div></body>`,
     ),
   };
 }

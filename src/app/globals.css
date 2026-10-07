@@ -15,10 +15,16 @@
   --ink: #16161a;
   --ink-muted: #5f5f6b;
   --ink-subtle: #9a9aa3;
-  --accent: #3b5bfd;
-  --accent-soft: #ebeeff;
-  --accent-ink: #2238c9;
+  /* Blurple (the owner's pick, 2026-10-07). White on it is 4.6:1. */
+  --accent: #5865f2;
+  --accent-hover: #4752c4;
+  /* The solid ledge under raised buttons. */
+  --accent-deep: #3c45a5;
+  --accent-soft: #eceefe;
+  --accent-ink: #4752c4;
   --on-accent: #ffffff;
+  /* A neutral a step darker than the border: the ledge under secondary buttons. */
+  --edge: #d3d3cb;
   --streak: #f59e0b;
   --streak-soft: #fef3dc;
   --streak-ink: #b45309;
@@ -34,6 +40,24 @@
     0 1px 2px rgb(16 16 24 / 0.04), 0 1px 1px rgb(16 16 24 / 0.03);
   --shadow-md-value: 0 4px 16px rgb(16 16 24 / 0.06);
   --shadow-lg-value: 0 16px 40px rgb(16 16 24 / 0.1);
+
+  /*
+   * Raised buttons: a hard offset ledge (a touch of brutalism), a bright top edge and a
+   * darker lip for the sheen, no gradient. Pressed, the button sinks into its ledge.
+   */
+  --ledge-accent:
+    -3px 3px 0 0 var(--accent-deep), inset 0 1px 0 0 rgb(255 255 255 / 0.32),
+    inset 0 -2px 0 0 rgb(0 0 0 / 0.12);
+  --ledge-accent-pressed:
+    -1px 1px 0 0 var(--accent-deep), inset 0 2px 3px 0 rgb(0 0 0 / 0.2);
+  --ledge-neutral:
+    -3px 3px 0 0 var(--edge), inset 0 1px 0 0 rgb(255 255 255 / 0.9);
+  --ledge-neutral-pressed:
+    -1px 1px 0 0 var(--edge), inset 0 2px 3px 0 rgb(16 16 24 / 0.08);
+  --ledge-danger: -3px 3px 0 0
+    color-mix(in srgb, var(--danger-ink) 35%, transparent);
+  --ledge-danger-pressed: -1px 1px 0 0
+    color-mix(in srgb, var(--danger-ink) 35%, transparent);
 }
 
 [data-theme="dark"] {
@@ -45,10 +69,13 @@
   --ink: #ededf0;
   --ink-muted: #a1a1ab;
   --ink-subtle: #6e6e78;
-  --accent: #6a84ff;
-  --accent-soft: #1c2350;
-  --accent-ink: #b7c3ff;
-  --on-accent: #0e0e11;
+  --accent: #5865f2;
+  --accent-hover: #4752c4;
+  --accent-deep: #2b3290;
+  --accent-soft: #23264f;
+  --accent-ink: #c3c8fb;
+  --on-accent: #ffffff;
+  --edge: #34343f;
   --streak: #fbbf24;
   --streak-soft: #3a2c0a;
   --streak-ink: #fbbf24;
@@ -64,6 +91,21 @@
   --shadow-sm-value: 0 0 0 1px transparent;
   --shadow-md-value: 0 0 0 1px var(--border);
   --shadow-lg-value: 0 0 0 1px var(--border);
+
+  /* The ledge is the button's shape, not a soft shadow, so it stays in dark mode. */
+  --ledge-accent:
+    -3px 3px 0 0 var(--accent-deep), inset 0 1px 0 0 rgb(255 255 255 / 0.24),
+    inset 0 -2px 0 0 rgb(0 0 0 / 0.16);
+  --ledge-accent-pressed:
+    -1px 1px 0 0 var(--accent-deep), inset 0 2px 3px 0 rgb(0 0 0 / 0.28);
+  --ledge-neutral:
+    -3px 3px 0 0 var(--edge), inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+  --ledge-neutral-pressed:
+    -1px 1px 0 0 var(--edge), inset 0 2px 3px 0 rgb(0 0 0 / 0.3);
+  --ledge-danger: -3px 3px 0 0
+    color-mix(in srgb, var(--danger-ink) 30%, transparent);
+  --ledge-danger-pressed: -1px 1px 0 0
+    color-mix(in srgb, var(--danger-ink) 30%, transparent);
 }
 
 @theme inline {
@@ -81,6 +123,9 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-subtle: var(--ink-subtle);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-deep: var(--accent-deep);
+  --color-edge: var(--edge);
   --color-accent-soft: var(--accent-soft);
   --color-accent-ink: var(--accent-ink);
   --color-on-accent: var(--on-accent);
@@ -122,6 +167,12 @@
   --shadow-sm: var(--shadow-sm-value);
   --shadow-md: var(--shadow-md-value);
   --shadow-lg: var(--shadow-lg-value);
+  --shadow-ledge-accent: var(--ledge-accent);
+  --shadow-ledge-accent-pressed: var(--ledge-accent-pressed);
+  --shadow-ledge-neutral: var(--ledge-neutral);
+  --shadow-ledge-neutral-pressed: var(--ledge-neutral-pressed);
+  --shadow-ledge-danger: var(--ledge-danger);
+  --shadow-ledge-danger-pressed: var(--ledge-danger-pressed);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --container-content: 1120px;
