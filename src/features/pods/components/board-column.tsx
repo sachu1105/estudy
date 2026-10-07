@@ -21,12 +21,14 @@ export function BoardColumn({
   stage,
   pods,
   onMove,
+  onShift,
   open,
   onToggle,
 }: {
   stage: PodStage;
   pods: BoardPod[];
   onMove: (podId: string, stage: PodStage) => void;
+  onShift: (podId: string, delta: -1 | 1) => void;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -87,12 +89,15 @@ export function BoardColumn({
             open ? "flex" : "hidden lg:flex",
           )}
         >
-          {pods.map((pod) => (
+          {pods.map((pod, i) => (
             <li key={pod.id}>
               <BoardCard
                 pod={pod}
                 stage={stage}
+                first={i === 0}
+                last={i === pods.length - 1}
                 onMove={(to) => onMove(pod.id, to)}
+                onShift={(delta) => onShift(pod.id, delta)}
               />
             </li>
           ))}

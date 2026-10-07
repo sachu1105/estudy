@@ -2,9 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, MoreHorizontal } from "lucide-react";
+import { ArrowDown, ArrowUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import type { KeyboardEventHandler } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { POD_STAGES, stageLabels, type PodStage } from "@/lib/pods/stages";
@@ -26,29 +26,32 @@ export type BoardPod = {
 };
 
 /**
- * A subject pod on the exam board. Drag the card (long-press on a phone), or use the
- * handle with the keyboard, or the menu's "Move to".
+ * A subject pod on the exam board. Drag the card itself (long-press on a phone); there
+ * is no handle. The menu does the same with a tap or the keyboard: up, down, or to
+ * another column.
  */
 export function BoardCard({
   pod,
   stage,
+  first,
+  last,
   onMove,
+  onShift,
 }: {
   pod: BoardPod;
   stage: PodStage;
+  first: boolean;
+  last: boolean;
   onMove: (stage: PodStage) => void;
+  /** Up or down within its column. */
+  onShift: (delta: -1 | 1) => void;
 }) {
-  const {
-    setNodeRef,
-    setActivatorNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: pod.id });
-  // Mouse and touch drag the whole card; the keyboard drags from the handle.
-  const { onKeyDown, ...pointer } = listeners ?? {};
+  const { setNodeRef, listeners, transform, transition, isDragging } =
+    useSortable({ id: pod.id });
+  // Pointer drags only: Enter on the card's link must open the pod, not pick it up.
+  // Keyboard users move cards from the menu.
+  const pointer = { ...listeners };
+  delete pointer.onKeyDown;
   const percent = pod.topics ? pod.topicsDone / pod.topics : 0;
 
   return (
@@ -60,20 +63,10 @@ export function BoardCard({
       }}
       {...pointer}
       className={cn(
-        "relative flex touch-manipulation items-center gap-1 rounded-control border border-border bg-surface py-1 pr-1 pl-0.5 shadow-sm transition-shadow duration-[120ms] select-none [-webkit-touch-callout:none] hover:shadow-md",
+        "relative flex cursor-grab touch-manipulation items-center gap-1 rounded-control border border-border bg-surface py-1 pr-1 pl-3 shadow-sm transition-shadow duration-[120ms] select-none [-webkit-touch-callout:none] hover:shadow-md active:cursor-grabbing",
         isDragging && "z-10 opacity-60 shadow-lg",
       )}
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        {...attributes}
-        onKeyDown={onKeyDown as KeyboardEventHandler | undefined}
-        aria-label={`Drag ${pod.name}`}
-        className="relative z-10 grid h-11 w-7 shrink-0 cursor-grab place-items-center rounded-control text-ink-subtle hover:text-ink active:cursor-grabbing"
-      >
-        <GripVertical className="size-4" aria-hidden />
-      </button>
       <div className="flex min-w-0 flex-1 flex-col gap-1 py-1.5">
         {/* The link covers the card, so the whole card opens the pod. */}
         <Link
@@ -113,6 +106,13 @@ export function BoardCard({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem disabled={first} onSelect={() => onShift(-1)}>
+            <ArrowUp aria-hidden /> Move up
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={last} onSelect={() => onShift(1)}>
+            <ArrowDown aria-hidden /> Move down
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuLabel>Move to</DropdownMenuLabel>
           {POD_STAGES.filter((s) => s !== stage).map((s) => (
             <DropdownMenuItem key={s} onSelect={() => onMove(s)}>

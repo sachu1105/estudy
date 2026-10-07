@@ -3,7 +3,6 @@
 import {
   closestCorners,
   DndContext,
-  KeyboardSensor,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -11,7 +10,7 @@ import {
   type DragEndEvent,
   type DragOverEvent,
 } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useId, useRef, useState, useTransition } from "react";
 
 import { toast } from "@/components/ui/toast";
@@ -66,9 +65,6 @@ export function PodBoard({
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
     useSensor(TouchSensor, {
       activationConstraint: { delay: 250, tolerance: 8 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
@@ -126,6 +122,15 @@ export function PodBoard({
     toast.success(`${name(podId)} moved to ${stageLabels[to].toLowerCase()}`);
   };
 
+  const shift = (podId: string, delta: -1 | 1) => {
+    const stage = stageOf(board, podId);
+    if (!stage) return;
+    const from = board[stage].indexOf(podId);
+    const to = from + delta;
+    if (to < 0 || to >= board[stage].length) return;
+    save({ ...board, [stage]: arrayMove(board[stage], from, to) }, board);
+  };
+
   return (
     <DndContext
       id={dndId}
@@ -157,6 +162,7 @@ export function PodBoard({
             stage={stage}
             pods={board[stage].flatMap((id) => byId.get(id) ?? [])}
             onMove={moveTo}
+            onShift={shift}
             open={open[stage]}
             onToggle={() => setOpen((o) => ({ ...o, [stage]: !o[stage] }))}
           />

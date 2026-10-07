@@ -930,3 +930,21 @@ doesn't send you to another page.
   syllabus 11,778px became 4090px.
 - Test fixes: progress.spec ticked through Today's old "To do" region. discussion.spec's
   "Hidden from members" matched its toast too (a flake); it now targets the badge.
+
+### Topic editor and drag handles (2026-10-07)
+The owner's call: no six-dot drag handles anywhere, no dropdowns for the scales, dense
+rows, and the subject's name always in view.
+- `Rating` (components/ui) is a 1-5 radio group drawn as icons (stars for weight, dots
+  for difficulty; `features/syllabus/levels.ts`). Arrow keys, Home/End, one tab stop;
+  unit tested. "sm" for dense mouse rows, "lg" (44px a step) for touch.
+- A topic is one row. From md: checkbox, name, weight, difficulty, a "Basic" toggle and
+  ⋯, under one heading row (`TOPIC_COLUMNS` is shared so they line up). On a phone: the
+  name (a `GrowText` that wraps rather than cutting off) with a "★2 ●3" summary under it;
+  tapping it opens a bottom sheet with big stars and the foundation switch.
+- Topics move with ⋯ Move up / Move down; drag reordering is gone. Picking topics shows
+  a sticky "N selected · Merge" bar at the bottom of the screen.
+- The open subject's header sticks under the top bar (`top-16`) while its topics scroll.
+- Board cards: no handle. Mouse and touch drag the card itself (a long press on a
+  phone). The keyboard sensor is gone; its menu gained Move up / Move down, and keyboard
+  users move cards there. Enter on the card's link opens the pod.
+- `LevelSelect` was removed.

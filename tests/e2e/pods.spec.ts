@@ -162,6 +162,18 @@ test.describe("pods", () => {
     await page.getByRole("button", { name: /^Indian Constitution/ }).click();
     await expect(page.getByLabel("Topic name").first()).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+    // Weight as stars: inline from md, in a bottom sheet on a phone. It autosaves.
+    if (test.info().project.name.includes("mobile"))
+      await page.getByRole("button", { name: /Change for Preamble$/ }).click();
+    const weight = page
+      .getByRole("radiogroup", { name: "Weight of Preamble" })
+      .filter({ visible: true });
+    await weight.getByRole("radio", { name: "5, major" }).click();
+    await expect(
+      weight.getByRole("radio", { name: "5, major" }),
+    ).toHaveAttribute("aria-checked", "true");
+    await expect(page.getByRole("status").getByText("Saved")).toBeVisible();
+    await page.keyboard.press("Escape");
 
     await page.getByRole("button", { name: `More for ${title}` }).click();
     await page.getByRole("menuitem", { name: "Delete exam pod" }).click();

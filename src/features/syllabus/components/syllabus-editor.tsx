@@ -76,13 +76,20 @@ export function SyllabusEditor({
         </div>
       </div>
 
-      <ul className="divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
+      <ul className="divide-y divide-border rounded-card border border-border bg-surface">
         {tree.subjects.map((subject, i) => {
           const expanded = open === subject.id;
           const panelId = `subject-${subject.id}`;
           return (
             <li key={subject.id}>
-              <div className="flex items-center pr-1">
+              {/* The open subject's name stays in view while its topics scroll. */}
+              <div
+                className={cn(
+                  "flex items-center pr-1 first:rounded-t-card",
+                  expanded &&
+                    "sticky top-16 z-20 border-b border-border bg-surface/95 backdrop-blur",
+                )}
+              >
                 <button
                   type="button"
                   aria-expanded={expanded}
@@ -135,7 +142,7 @@ export function SyllabusEditor({
               {expanded ? (
                 <div
                   id={panelId}
-                  className="border-t border-border bg-surface-muted/40 p-3 md:p-4"
+                  className="pb-2 md:bg-surface-muted/40 md:p-4"
                 >
                   <TopicsEditor subject={subject} dispatch={dispatch} />
                 </div>
