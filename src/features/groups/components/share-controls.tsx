@@ -35,16 +35,22 @@ type Shareable = {
 /** Share a copy of something from your pods; the original stays private (rule 15). */
 export function ShareFromPods({
   groupId,
+  channelId,
   items,
 }: {
   groupId: string;
+  channelId: string;
   items: Shareable[];
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const share = (podItemId: string) =>
     start(async () => {
-      const result = await shareFromPodAction({ groupId, podItemId });
+      const result = await shareFromPodAction({
+        groupId,
+        channelId,
+        podItemId,
+      });
       if (!result.ok) return void toast.error(result.error);
       toast.success("Shared with the squad");
       router.refresh();
@@ -97,7 +103,16 @@ export function ShareFromPods({
 }
 
 /** Add a website straight into the group, tagged with a topic. */
-export function AddGroupLink({ groupId }: { groupId: string }) {
+export function AddGroupLink({
+  groupId,
+  channelId,
+  primary = false,
+}: {
+  groupId: string;
+  channelId: string;
+  /** In a links channel it is the one main action. */
+  primary?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState("");
@@ -107,7 +122,7 @@ export function AddGroupLink({ groupId }: { groupId: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary">
+        <Button variant={primary ? "primary" : "secondary"}>
           <Link2 aria-hidden /> Add a link
         </Button>
       </DialogTrigger>
@@ -119,6 +134,7 @@ export function AddGroupLink({ groupId }: { groupId: string }) {
             start(async () => {
               const result = await addGroupLinkAction({
                 groupId,
+                channelId,
                 url,
                 title,
                 topicName: topic,

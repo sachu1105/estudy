@@ -19,9 +19,11 @@ import { shareGroupTestAction, takeGroupTestAction } from "../actions";
 /** Share a test you took: the same questions, for the group to try. */
 export function ShareTestSheet({
   groupId,
+  channelId,
   tests,
 }: {
   groupId: string;
+  channelId: string;
   tests: { mockTestId: string; title: string }[];
 }) {
   const router = useRouter();
@@ -57,6 +59,7 @@ export function ShareTestSheet({
                     start(async () => {
                       const result = await shareGroupTestAction({
                         groupId,
+                        channelId,
                         mockTestId: t.mockTestId,
                       });
                       if (!result.ok) return void toast.error(result.error);

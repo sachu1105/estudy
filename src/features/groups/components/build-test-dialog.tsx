@@ -23,9 +23,11 @@ import { buildGroupTestAction } from "../actions";
 /** A test for the group from the verified pool: pick topics, how many questions, how long. */
 export function BuildTestDialog({
   groupId,
+  channelId,
   topics,
 }: {
   groupId: string;
+  channelId: string;
   topics: string[];
 }) {
   const router = useRouter();
@@ -119,6 +121,7 @@ export function BuildTestDialog({
               start(async () => {
                 const result = await buildGroupTestAction({
                   groupId,
+                  channelId,
                   title,
                   topics: chosen,
                   count: Number(count),

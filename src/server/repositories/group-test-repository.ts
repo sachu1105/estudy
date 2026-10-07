@@ -16,9 +16,15 @@ export const groupTestRepository = {
     return prisma.groupTest.create({ data });
   },
 
-  list(groupId: string, hideFrom: Set<string>) {
+  /** A squad's tests, or one channel's when channelId is given. */
+  list(groupId: string, hideFrom: Set<string>, channelId?: string | null) {
     return prisma.groupTest.findMany({
-      where: { groupId, hiddenAt: null, sharedById: { notIn: [...hideFrom] } },
+      where: {
+        groupId,
+        ...(channelId ? { channelId } : {}),
+        hiddenAt: null,
+        sharedById: { notIn: [...hideFrom] },
+      },
       orderBy: { createdAt: "desc" },
       take: 100,
       include: { sharedBy: { select: { displayName: true } } },

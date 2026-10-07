@@ -47,7 +47,7 @@ export default async function ShellLayout({
         <Sidebar />
         <div
           id="panel"
-          className="flex min-w-0 flex-1 flex-col md:mr-3 md:mb-3 md:[scrollbar-width:thin] md:overflow-y-auto md:rounded-[20px] md:border md:border-border md:bg-bg"
+          className="flex min-w-0 flex-1 flex-col md:mr-3 md:mb-3 md:[scrollbar-width:thin] md:overflow-y-auto md:rounded-[20px] md:border md:border-border md:bg-bg md:has-[[data-bleed]]:overflow-hidden"
         >
           {announcement?.active && announcement.text ? (
             <AnnouncementBanner
@@ -57,7 +57,9 @@ export default async function ShellLayout({
           ) : null}
           <main
             id="main"
-            className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12"
+            // A page marked data-bleed (a squad's columns) fills the panel on md+ and
+            // scrolls its own columns.
+            className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12 md:has-[[data-bleed]]:min-h-0 md:has-[[data-bleed]]:max-w-none md:has-[[data-bleed]]:p-0"
           >
             {children}
           </main>

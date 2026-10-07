@@ -10,9 +10,18 @@ const noSideScroll = (page: Page) =>
       document.documentElement.clientWidth,
   );
 
-/** A tab of the group (the app's own navigation has a "Tests" too). */
+/** A link in the squad's channel list (the app's own navigation has a "Tests" too). */
 const tab = (page: Page, name: string) =>
-  page.getByRole("navigation", { name: "Squad" }).getByRole("link", { name });
+  page
+    .getByRole("navigation", { name: "Squad" })
+    .getByRole("link", { name, exact: true });
+
+/** A channel or page of the squad, by way of its channel list (on phones, the squad page). */
+async function open(page: Page, groupUrl: string, name: string) {
+  await page.goto(groupUrl);
+  await tab(page, name).click();
+  await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+}
 
 /** A second person, in a browser context of their own. */
 async function person(browser: Browser, label: string, role?: "ADMIN") {
@@ -80,6 +89,7 @@ test.describe("groups", () => {
     await expect(
       member.getByRole("heading", { level: 1, name: `Kollam circle ${tag}` }),
     ).toBeVisible();
+    await open(member, groupUrl, "links");
     await member.getByRole("button", { name: "Add a link" }).click();
     await member
       .getByLabel("Link", { exact: true })
@@ -92,11 +102,11 @@ test.describe("groups", () => {
     expect(await noSideScroll(member)).toBeLessThanOrEqual(0);
 
     // The owner sees it, then mutes the member, who can then only read.
-    await tab(page, "Material").click();
+    await open(page, groupUrl, "links");
     await expect(
       page.getByRole("link", { name: /Preamble explained/ }),
     ).toBeVisible();
-    await tab(page, "Members").click();
+    await open(page, groupUrl, "Members");
     // The member's own menu (the header has the group's).
     await page.getByRole("button", { name: "More for Test Aspirant" }).click();
     await page.getByRole("menuitem", { name: "Mute for a day" }).click();
@@ -108,7 +118,7 @@ test.describe("groups", () => {
     ).toHaveCount(0);
 
     // A shared test from the pool: built, taken, and on the results board.
-    await tab(page, "Tests").click();
+    await open(page, groupUrl, "mock-tests");
     await page.getByRole("button", { name: "Build a test" }).click();
     await page
       .getByRole("dialog")
@@ -139,7 +149,7 @@ test.describe("groups", () => {
     await page.goto(`${groupUrl}/tests`);
     await page.getByRole("link", { name: "Results" }).first().click();
     await expect(page.getByText(/\(you\)/)).toBeVisible();
-    await tab(page, "Rank").click();
+    await open(page, groupUrl, "Squad rank");
     await expect(page.getByText(/\(you\)/)).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
     await member.context().close();
@@ -216,5 +226,49 @@ test.describe("groups", () => {
     await asker.reload();
     await expect(tab(asker, "Members")).toBeVisible();
     await asker.context().close();
+  });
+
+  test("an admin adds a channel, edits it, and deletes it", async ({
+    page,
+  }) => {
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `gchannels-${test.info().project.name}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Channels ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+
+    // Add a threads channel from the squad menu: it opens straight away.
+    await page
+      .getByRole("button", { name: `More for Channels ${tag}` })
+      .click();
+    await page.getByRole("menuitem", { name: "Add a channel" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("Kind").click();
+    await page.getByRole("option", { name: "Threads" }).click();
+    await dialog.getByLabel("Name").fill("Kerala History");
+    await expect(dialog.getByText("Shows as #kerala-history")).toBeVisible();
+    await dialog.getByRole("button", { name: "Add channel" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "kerala-history" }),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // Make it admins-only from its own settings.
+    await page.getByRole("button", { name: "Channel settings" }).click();
+    await page.getByRole("menuitem", { name: "Edit channel" }).click();
+    await page.getByRole("radio", { name: "Admins only" }).click();
+    await page.getByRole("button", { name: "Save channel" }).click();
+    await expect(page.getByText("Admins post here")).toBeVisible();
+
+    // Delete it: back to the squad, and it's gone from the list.
+    await page.getByRole("button", { name: "Channel settings" }).click();
+    await page.getByRole("menuitem", { name: "Delete channel" }).click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    await expect(tab(page, "kerala-history")).toHaveCount(0);
   });
 });

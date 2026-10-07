@@ -65,12 +65,15 @@ export async function createPostAction(
       mentionIds,
       subjectName: z.string().trim().max(200).nullable(),
       topicName: z.string().trim().max(200).nullable(),
+      channelId: id.nullable().optional(),
     }),
     "postPerUser",
   );
   if (g.fail) return g.fail;
-  const { groupId, ...rest } = g.data;
-  return out(await discussionService.create(g.user, groupId, rest));
+  const { groupId, channelId, ...rest } = g.data;
+  return out(
+    await discussionService.create(g.user, groupId, rest, channelId ?? null),
+  );
 }
 
 export async function replyAction(

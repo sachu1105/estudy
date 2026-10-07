@@ -1,7 +1,9 @@
+import { Trophy } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Avatar } from "@/components/ui/avatar";
+import { SquadHeading } from "@/features/groups/components/channels/channel-header";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { groupTests } from "@/server/services/groups";
@@ -18,7 +20,12 @@ export default async function GroupRank({
   if (!rows) notFound();
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-body text-ink-muted">This week, Monday to Sunday.</p>
+      <SquadHeading
+        groupId={groupId}
+        icon={Trophy}
+        title="Squad rank"
+        subtitle="This week, Monday to Sunday."
+      />
       <div className="flex justify-end gap-6 px-3 text-micro text-ink-muted uppercase">
         <span className="w-20 text-right">Test answers</span>
         <span className="w-16 text-right">XP</span>

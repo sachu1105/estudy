@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Avatar } from "@/components/ui/avatar";
+import { channelHref } from "@/features/groups/components/channels/channel-icon";
 import { BackLink } from "@/features/pods/components/back-link";
 import { TakeGroupTest } from "@/features/groups/components/group-test-controls";
 import { isId } from "@/lib/ids";
 import { formatMinutes } from "@/lib/plans/format";
 import { requireUser } from "@/server/auth/session";
-import { groupTests } from "@/server/services/groups";
+import { channelService, groupTests } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Test results" };
 
@@ -23,12 +24,20 @@ export default async function GroupTestResults({
       : null;
   if (!data) notFound();
   const took = data.rows.some((r) => r.user.id === user.id);
+  const channel = await channelService.get(user, groupId, data.test.channelId);
 
   return (
     <div className="flex flex-col gap-4">
-      <BackLink href={`/groups/${groupId}/tests`} label="Tests" />
+      <BackLink
+        href={
+          channel
+            ? channelHref(groupId, channel.channel.id)
+            : `/groups/${groupId}`
+        }
+        label={channel?.channel.name ?? "Channels"}
+      />
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-h2 break-words">{data.test.title}</h2>
+        <h1 className="text-h2 break-words">{data.test.title}</h1>
         {took ? null : (
           <TakeGroupTest
             groupId={groupId}

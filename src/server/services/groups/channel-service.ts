@@ -53,6 +53,27 @@ export function createChannelService(deps: ChannelDeps) {
       };
     },
 
+    /** A public squad's channel names, so people can see what's inside before joining. */
+    async preview(user: User, groupId: string) {
+      const found = await deps.groups.memberOf(user, groupId);
+      if (!found || found.group.hiddenAt) return [];
+      if (!found.membership && found.group.visibility === "PRIVATE") return [];
+      const channels = await deps.channels.channels(groupId);
+      return channels.map(({ id, type, name, topic }) => ({
+        id,
+        type,
+        name,
+        topic,
+      }));
+    },
+
+    /** The squad's first channel of a type, for links from before channels existed. */
+    async firstOfType(user: User, groupId: string, type: ChannelType) {
+      const ok = await deps.groups.require(user, groupId, "MEMBER");
+      if ("error" in ok) return null;
+      return deps.channels.firstOfType(groupId, type);
+    },
+
     /** One channel, for a member, with whether they may post in it. */
     async get(user: User, groupId: string, channelId: string) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");

@@ -18,11 +18,14 @@ export const discussionRepository = {
       unanswered: boolean;
       withHidden: boolean;
       notBy: string[];
+      /** One channel's posts; null for the whole squad. */
+      channelId?: string | null;
     },
   ) {
     return prisma.post.findMany({
       where: {
         groupId,
+        ...(options.channelId ? { channelId: options.channelId } : {}),
         deletedAt: null,
         ...(options.withHidden ? {} : { hiddenAt: null }),
         ...(options.kind ? { kind: options.kind } : {}),

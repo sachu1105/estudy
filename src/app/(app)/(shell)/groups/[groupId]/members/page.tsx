@@ -1,8 +1,10 @@
+import { Users } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { SquadHeading } from "@/features/groups/components/channels/channel-header";
 import { InvitesPanel } from "@/features/groups/components/invites-panel";
 import { JoinRequests } from "@/features/groups/components/join-requests";
 import { MemberMenu } from "@/features/groups/components/member-menu";
@@ -25,6 +27,7 @@ export default async function MembersPage({
 
   return (
     <div className="flex flex-col gap-8">
+      <SquadHeading groupId={groupId} icon={Users} title="Members" />
       {myRank >= RANK.ADMIN ? (
         <>
           <JoinRequests requests={data.requests} />

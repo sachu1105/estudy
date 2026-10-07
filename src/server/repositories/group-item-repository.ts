@@ -36,10 +36,12 @@ export const groupItemRepository = {
     });
   },
 
-  list(groupId: string, hideFrom: Set<string>) {
+  /** A squad's material, or one channel's when channelId is given. */
+  list(groupId: string, hideFrom: Set<string>, channelId?: string | null) {
     return prisma.groupItem.findMany({
       where: {
         groupId,
+        ...(channelId ? { channelId } : {}),
         deletedAt: null,
         hiddenAt: null,
         sharedById: { notIn: [...hideFrom] },

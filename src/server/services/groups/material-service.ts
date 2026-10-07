@@ -89,10 +89,14 @@ export function createMaterialService(deps: MaterialDeps) {
     /** What the user could share: their latest pod material. */
     shareable: (user: User) => deps.podItems.recent(user.id),
 
-    async list(user: User, groupId: string) {
+    async list(user: User, groupId: string, channelId: string | null = null) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
-      return deps.items.list(groupId, await deps.groups.blockedIds(user));
+      return deps.items.list(
+        groupId,
+        await deps.groups.blockedIds(user),
+        channelId,
+      );
     },
 
     async get(user: User, groupId: string, itemId: string) {

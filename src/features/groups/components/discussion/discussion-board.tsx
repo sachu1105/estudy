@@ -18,6 +18,7 @@ import type { Person, PostSummary } from "./types";
 /** The group's threads, with a new post shown at once and taken back if it fails. */
 export function DiscussionBoard({
   groupId,
+  channelId,
   me,
   posts,
   members,
@@ -25,6 +26,7 @@ export function DiscussionBoard({
   muted,
 }: {
   groupId: string;
+  channelId: string;
   me: Person;
   posts: PostSummary[];
   members: Mention[];
@@ -57,7 +59,11 @@ export function DiscussionBoard({
           when: "",
           pending: true,
         });
-        const result = await createPostAction({ groupId, ...post });
+        const result = await createPostAction({
+          groupId,
+          channelId,
+          ...post,
+        });
         if (!result.ok) {
           toast.error(result.error);
           setOpen(true);

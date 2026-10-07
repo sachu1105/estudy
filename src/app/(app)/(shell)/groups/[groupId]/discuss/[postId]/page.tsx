@@ -9,12 +9,13 @@ import { PostBody } from "@/features/groups/components/discussion/post-body";
 import { PostMenu } from "@/features/groups/components/discussion/post-menu";
 import { ReactionBar } from "@/features/groups/components/discussion/reaction-bar";
 import { ReplySection } from "@/features/groups/components/discussion/reply-section";
+import { channelHref } from "@/features/groups/components/channels/channel-icon";
 import { BackLink } from "@/features/pods/components/back-link";
 import { systemClock } from "@/lib/clock";
 import { timeAgo } from "@/lib/format/ago";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { discussionService } from "@/server/services/groups";
+import { channelService, discussionService } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Squad thread" };
 
@@ -35,11 +36,19 @@ export default async function ThreadPage({
   const { post } = data;
   const now = systemClock.now();
   const question = post.kind === "QUESTION";
+  const channel = await channelService.get(user, groupId, post.channelId);
 
   return (
     <div className="flex flex-col gap-6">
       <GroupLive groupId={groupId} postId={postId} />
-      <BackLink href={`/groups/${groupId}/discuss`} label="Discussion" />
+      <BackLink
+        href={
+          channel
+            ? channelHref(groupId, channel.channel.id)
+            : `/groups/${groupId}`
+        }
+        label={channel?.channel.name ?? "Channels"}
+      />
       <article className="flex flex-col gap-4 rounded-card border border-border bg-surface p-4 md:p-5">
         <div className="flex flex-wrap items-center gap-1.5">
           {post.pinnedAt ? (
@@ -58,9 +67,9 @@ export default async function ThreadPage({
           ) : null}
         </div>
         <div className="flex items-start gap-2">
-          <h2 className="min-w-0 flex-1 text-h2 wrap-break-word">
+          <h1 className="min-w-0 flex-1 text-h2 wrap-break-word">
             {post.title}
-          </h2>
+          </h1>
           <PostMenu
             groupId={groupId}
             postId={postId}

@@ -5,11 +5,12 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ItemTools } from "@/features/groups/components/item-tools";
 import { NoteView } from "@/features/groups/components/note-view";
+import { channelHref } from "@/features/groups/components/channels/channel-icon";
 import { BackLink } from "@/features/pods/components/back-link";
 import { isId } from "@/lib/ids";
 import type { DocNode } from "@/lib/notes/doc";
 import { requireUser } from "@/server/auth/session";
-import { materialService } from "@/server/services/groups";
+import { channelService, materialService } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Shared material" };
 
@@ -25,12 +26,20 @@ export default async function GroupItemPage({
       : null;
   if (!found) notFound();
   const { item } = found;
+  const channel = await channelService.get(user, groupId, item.channelId);
 
   return (
     <article className="flex flex-col gap-4">
-      <BackLink href={`/groups/${groupId}`} label="Material" />
+      <BackLink
+        href={
+          channel
+            ? channelHref(groupId, channel.channel.id)
+            : `/groups/${groupId}`
+        }
+        label={channel?.channel.name ?? "Channels"}
+      />
       <div className="flex flex-col gap-1">
-        <h2 className="text-h2 break-words">{item.title}</h2>
+        <h1 className="text-h2 break-words">{item.title}</h1>
         <p className="text-small text-ink-muted">
           Shared by {item.sharedBy.displayName}
           {item.subjectName ? ` · ${item.subjectName}` : ""}

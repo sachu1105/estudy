@@ -77,11 +77,13 @@ export function createDiscussionService(deps: DiscussionDeps) {
       user: User,
       groupId: string,
       filter: "all" | "questions" | "unanswered",
+      channelId: string | null = null,
     ) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
       const blocked = await deps.groups.blockedIds(user);
       const posts = await deps.posts.list(groupId, {
+        channelId,
         kind: filter === "all" ? null : "QUESTION",
         unanswered: filter === "unanswered",
         withHidden: isAdmin(ok.me.role),

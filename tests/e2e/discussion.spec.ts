@@ -10,7 +10,9 @@ const noSideScroll = (page: Page) =>
   );
 
 const tab = (page: Page, name: string) =>
-  page.getByRole("navigation", { name: "Squad" }).getByRole("link", { name });
+  page
+    .getByRole("navigation", { name: "Squad" })
+    .getByRole("link", { name, exact: true });
 
 async function person(browser: Browser, label: string) {
   const context = await browser.newContext({

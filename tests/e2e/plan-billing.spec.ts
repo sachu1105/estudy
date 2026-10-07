@@ -16,7 +16,9 @@ test.describe("plans and reminders", () => {
     page,
   }) => {
     await page.goto("/pricing");
-    await expect(page.getByRole("heading", { level: 1, name: "Pricing" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Pricing" }),
+    ).toBeVisible();
     for (const plan of ["Free", "Pro", "Elite"]) {
       await expect(
         page.getByRole("heading", { level: 2, name: plan, exact: true }),
@@ -51,9 +53,7 @@ test.describe("plans and reminders", () => {
     await expect(page.getByRole("button", { name: /^Upgrade to/ })).toHaveCount(
       0,
     );
-    await expect(
-      page.getByText(/nothing of yours is deleted/i),
-    ).toBeVisible();
+    await expect(page.getByText(/nothing of yours is deleted/i)).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
   });
 

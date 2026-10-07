@@ -46,6 +46,8 @@ function done<T extends object>(
 }
 
 const id = z.uuid();
+/** The channel a share lands in; left out, the squad's first fitting channel. */
+const channelId = id.nullable().optional();
 
 export async function createGroupAction(
   input: unknown,
@@ -267,11 +269,23 @@ export async function reportAction(input: unknown): Promise<Result> {
 export async function shareFromPodAction(
   input: unknown,
 ): Promise<Result<{ itemId: string }>> {
-  const g = await guard(input, z.object({ groupId: id, podItemId: id }));
+  const g = await guard(
+    input,
+    z.object({ groupId: id, podItemId: id, channelId }),
+  );
   if (g.fail) return g.fail;
-  const d = g.data as { groupId: string; podItemId: string };
+  const d = g.data as {
+    groupId: string;
+    podItemId: string;
+    channelId?: string | null;
+  };
   return done(
-    await materialService.shareFromPod(g.user!, d.groupId, d.podItemId),
+    await materialService.shareFromPod(
+      g.user!,
+      d.groupId,
+      d.podItemId,
+      d.channelId ?? null,
+    ),
     `/groups/${d.groupId}`,
   );
 }
@@ -294,6 +308,7 @@ export async function addGroupLinkAction(
         .trim()
         .max(200)
         .transform((t) => t || null),
+      channelId,
     }),
   );
   if (g.fail) return g.fail;
@@ -302,12 +317,15 @@ export async function addGroupLinkAction(
     url: string;
     title: string | null;
     topicName: string | null;
+    channelId?: string | null;
   };
   return done(
-    await materialService.addLink(g.user!, d.groupId, {
-      ...d,
-      subjectName: null,
-    }),
+    await materialService.addLink(
+      g.user!,
+      d.groupId,
+      { url: d.url, title: d.title, topicName: d.topicName, subjectName: null },
+      d.channelId ?? null,
+    ),
     `/groups/${d.groupId}`,
   );
 }
@@ -327,11 +345,23 @@ export async function removeGroupItemAction(input: unknown): Promise<Result> {
 export async function shareGroupTestAction(
   input: unknown,
 ): Promise<Result<{ id: string }>> {
-  const g = await guard(input, z.object({ groupId: id, mockTestId: id }));
+  const g = await guard(
+    input,
+    z.object({ groupId: id, mockTestId: id, channelId }),
+  );
   if (g.fail) return g.fail;
-  const d = g.data as { groupId: string; mockTestId: string };
+  const d = g.data as {
+    groupId: string;
+    mockTestId: string;
+    channelId?: string | null;
+  };
   return done(
-    await groupTests.share(g.user!, d.groupId, d.mockTestId),
+    await groupTests.share(
+      g.user!,
+      d.groupId,
+      d.mockTestId,
+      d.channelId ?? null,
+    ),
     `/groups/${d.groupId}`,
   );
 }
@@ -350,6 +380,7 @@ export async function buildGroupTestAction(
         .max(30),
       count: z.number().int().min(5).max(50),
       minutes: z.number().int().min(5).max(180).nullable(),
+      channelId,
     }),
   );
   if (g.fail) return g.fail;
@@ -359,9 +390,10 @@ export async function buildGroupTestAction(
     topics: string[];
     count: number;
     minutes: number | null;
+    channelId?: string | null;
   };
   return done(
-    await groupTests.build(g.user!, d.groupId, d),
+    await groupTests.build(g.user!, d.groupId, d, d.channelId ?? null),
     `/groups/${d.groupId}`,
   );
 }
