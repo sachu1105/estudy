@@ -12,7 +12,7 @@ export const faqs = [
   },
   {
     q: "Which exams does it support?",
-    a: "Kerala PSC exams first (LDC, LGS, Degree level prelims, High Court Assistant), plus SSC CGL, SSC CHSL and RRB NTPC. You can upload the syllabus of any other exam too.",
+    a: "Kerala PSC: LDC, LGS, Degree level prelims and Plus two level prelims. You can upload the syllabus of any other exam too.",
   },
   {
     q: "Can I upload my own syllabus?",

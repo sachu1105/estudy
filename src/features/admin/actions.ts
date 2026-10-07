@@ -139,6 +139,14 @@ export async function saveExamAction(input: unknown) {
   return done(result, "/admin/catalogue", "/syllabus/catalogue");
 }
 
+export async function deleteExamAction(input: unknown) {
+  const by = await requireAdmin("exams");
+  const parsed = z.object({ id: z.uuid() }).safeParse(input);
+  if (!parsed.success) return { ok: false as const, error: invalid.error };
+  const result = await adminService.deleteExam(by, parsed.data.id);
+  return done(result, "/admin/catalogue", "/syllabus/catalogue");
+}
+
 export async function promoteAction(input: unknown) {
   const by = await requireAdmin("exams");
   const parsed = z
@@ -288,7 +296,14 @@ export async function decideReportAction(input: unknown): Promise<AdminResult> {
   const by = await requireAdmin("reports");
   const parsed = z
     .object({
-      type: z.enum(["GROUP", "GROUP_ITEM", "GROUP_TEST", "USER", "POST", "REPLY"]),
+      type: z.enum([
+        "GROUP",
+        "GROUP_ITEM",
+        "GROUP_TEST",
+        "USER",
+        "POST",
+        "REPLY",
+      ]),
       id: z.uuid(),
       hide: z.boolean(),
     })

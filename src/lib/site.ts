@@ -16,10 +16,7 @@ export const exams = [
   "Kerala PSC LDC",
   "Kerala PSC LGS",
   "Degree level prelims",
-  "High Court Assistant",
-  "SSC CGL",
-  "SSC CHSL",
-  "RRB NTPC",
+  "Plus two level prelims",
 ];
 
 export const landingSections = [

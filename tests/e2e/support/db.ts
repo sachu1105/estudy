@@ -162,7 +162,8 @@ export async function seedVerifiedUser(
 
 /**
  * Verified practice questions for these topic names (the right answer is always the
- * first option), so check tests and mocks have a pool.
+ * first option), so check tests and mocks have a pool. Tagged `e2e:run` so the
+ * teardown can take them away again.
  */
 export async function seedQuestions(topics: string[], perTopic = 5) {
   await withDb(async (db) => {
@@ -174,7 +175,7 @@ export async function seedQuestions(topics: string[], perTopic = 5) {
       for (let i = 1; i <= perTopic; i++)
         await db.query(
           `INSERT INTO "Question" (id, "topicKey", difficulty, language, body, options, "correctIndex", explanation, status, source, "sourceRef", "updatedAt")
-           VALUES ($1, $2, 2, 'EN', $3, $4, 0, $5, 'VERIFIED', 'ADMIN', 'e2e', now())`,
+           VALUES ($1, $2, 2, 'EN', $3, $4, 0, $5, 'VERIFIED', 'ADMIN', 'e2e:run', now())`,
           [
             randomUUID(),
             key,

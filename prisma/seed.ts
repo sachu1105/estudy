@@ -11,13 +11,30 @@ import { userRepository } from "@/server/repositories/user-repository";
 
 // Catalogue syllabuses start empty: each one enters PENDING and needs admin approval (rule 5).
 const exams = [
-  { slug: "kerala-psc-ldc", name: "LD Clerk", board: "Kerala PSC", description: "Lower Division Clerk, district-wise." },
-  { slug: "kerala-psc-lgs", name: "Last Grade Servants", board: "Kerala PSC", description: "LGS, district-wise." },
-  { slug: "kerala-psc-degree-prelims", name: "Degree level preliminary exam", board: "Kerala PSC", description: "Common prelims for degree level posts." },
-  { slug: "kerala-hc-assistant", name: "High Court Assistant", board: "Kerala High Court", description: "Assistant / Computer Assistant." },
-  { slug: "ssc-cgl", name: "Combined Graduate Level", board: "SSC", description: "SSC CGL, Tier 1 and Tier 2." },
-  { slug: "ssc-chsl", name: "Combined Higher Secondary Level", board: "SSC", description: "SSC CHSL (10+2)." },
-  { slug: "rrb-ntpc", name: "Non-Technical Popular Categories", board: "RRB", description: "RRB NTPC, graduate and undergraduate." },
+  {
+    slug: "kerala-psc-ldc",
+    name: "LD Clerk",
+    board: "Kerala PSC",
+    description: "Lower Division Clerk, district-wise.",
+  },
+  {
+    slug: "kerala-psc-lgs",
+    name: "Last Grade Servants",
+    board: "Kerala PSC",
+    description: "LGS, district-wise.",
+  },
+  {
+    slug: "kerala-psc-degree-prelims",
+    name: "Degree level preliminary exam",
+    board: "Kerala PSC",
+    description: "Common prelims for degree level posts.",
+  },
+  {
+    slug: "kerala-psc-plus-two-prelims",
+    name: "Plus two level preliminary exam",
+    board: "Kerala PSC",
+    description: "Common prelims for plus two level posts.",
+  },
 ];
 
 async function seedExams() {

@@ -17,9 +17,10 @@ const APPEND_ONLY = [
 ];
 
 /**
- * Deletes every test account (`@example.com`, a reserved domain no real person has)
- * and the squads they own, so e2e runs don't pile up in the dev database. Real
- * accounts and their squads are never touched.
+ * Deletes every test account (`@example.com`, a reserved domain no real person has),
+ * the squads they own, the catalogue syllabuses they promoted or approved and the
+ * questions they (or the e2e seed) added, so e2e runs don't pile up in the dev
+ * database. Real accounts and their data are never touched.
  */
 export async function removeTestAccounts() {
   const db = new Client({
@@ -47,6 +48,13 @@ export async function removeTestAccounts() {
     ])
       await db.query(`DELETE FROM "${table}" WHERE "userId" IN (${test})`);
     await db.query(`DELETE FROM "AuditLog" WHERE "actorId" IN (${test})`);
+    // What the tests put in the shared catalogue and question pool.
+    await db.query(
+      `DELETE FROM "SyllabusVersion" WHERE visibility = 'CATALOGUE' AND ("approvedById" IN (${test}) OR "promotedFromId" IN (SELECT id FROM "SyllabusVersion" WHERE "ownerId" IN (${test})))`,
+    );
+    await db.query(
+      `DELETE FROM "Question" WHERE "sourceRef" = 'e2e:run' OR "createdById" IN (${test})`,
+    );
     const groups = await db.query(
       `DELETE FROM "Group" WHERE "ownerId" IN (${test})`,
     );

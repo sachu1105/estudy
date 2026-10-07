@@ -101,8 +101,11 @@ test.describe("admin panel", () => {
     await page.getByRole("button", { name: "Approve" }).click();
     await expect(page).toHaveURL(/\/admin\/catalogue$/);
     await page.goto("/admin/catalogue?status=APPROVED");
+    // Listed under Approved, and live on its exam's card.
     await expect(
-      page.getByRole("link", { name: new RegExp(title) }),
+      page
+        .getByRole("region", { name: "Syllabuses" })
+        .getByRole("link", { name: new RegExp(title) }),
     ).toBeVisible();
   });
 

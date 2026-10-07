@@ -255,6 +255,11 @@ export const adminRepository = {
     return prisma.exam.update({ where: { id }, data });
   },
 
+  /** Syllabuses and squads on it keep going, with no exam (onDelete: SetNull). */
+  deleteExam(id: string) {
+    return prisma.exam.delete({ where: { id } }).catch(() => null);
+  },
+
   catalogue(status?: "PENDING" | "APPROVED" | "REJECTED") {
     return prisma.syllabusVersion.findMany({
       where: {
@@ -270,7 +275,7 @@ export const adminRepository = {
         reviewNote: true,
         updatedAt: true,
         approvedAt: true,
-        exam: { select: { name: true } },
+        exam: { select: { id: true, name: true } },
         _count: { select: { subjects: true } },
       },
     });

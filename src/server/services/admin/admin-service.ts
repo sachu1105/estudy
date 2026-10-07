@@ -183,6 +183,13 @@ export function createAdminService(deps: AdminDeps) {
       return { ok: true };
     },
 
+    async deleteExam(by: Admin, id: string): Promise<Result<object>> {
+      const deleted = await deps.admin.deleteExam(id);
+      if (!deleted) return failure("NOT_FOUND", "That exam is already gone.");
+      await log(by, "admin.exam.delete", id, { name: deleted.name });
+      return { ok: true };
+    },
+
     catalogue: (status?: "PENDING" | "APPROVED" | "REJECTED") =>
       deps.admin.catalogue(status),
     forReview: (id: string) => deps.admin.versionForReview(id),

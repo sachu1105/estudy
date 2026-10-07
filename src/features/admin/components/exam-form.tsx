@@ -1,5 +1,6 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -16,7 +17,7 @@ import { Input, Label } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 
-import { saveExamAction } from "../actions";
+import { deleteExamAction, saveExamAction } from "../actions";
 
 type Exam = {
   id: string;
@@ -33,6 +34,16 @@ export function ExamForm({ exam }: { exam?: Exam }) {
   const [board, setBoard] = useState(exam?.board ?? "Kerala PSC");
   const [description, setDescription] = useState(exam?.description ?? "");
   const [pending, start] = useTransition();
+  const [confirming, setConfirming] = useState(false);
+
+  const remove = () =>
+    start(async () => {
+      const result = await deleteExamAction({ id: exam!.id });
+      if (!result.ok) return void toast.error(result.error);
+      toast.success("Exam deleted");
+      setOpen(false);
+      router.refresh();
+    });
 
   const save = () =>
     start(async () => {
@@ -51,12 +62,13 @@ export function ExamForm({ exam }: { exam?: Exam }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={exam ? "ghost" : "secondary"}
-          aria-label={exam ? `Edit ${exam.name}` : undefined}
-        >
-          {exam ? "Edit" : "Add exam"}
-        </Button>
+        {exam ? (
+          <Button variant="ghost" size="icon" aria-label={`Edit ${exam.name}`}>
+            <Pencil aria-hidden />
+          </Button>
+        ) : (
+          <Button variant="secondary">Add exam</Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <form
@@ -98,6 +110,19 @@ export function ExamForm({ exam }: { exam?: Exam }) {
             />
           </div>
           <DialogFooter>
+            {exam ? (
+              // Two steps: the first press asks, the second deletes.
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={pending}
+                className="text-danger-ink sm:mr-auto"
+                onClick={() => (confirming ? remove() : setConfirming(true))}
+              >
+                <Trash2 aria-hidden />
+                {confirming ? "Delete for good" : "Delete exam"}
+              </Button>
+            ) : null}
             <Button type="submit" variant="primary" disabled={pending}>
               Save
             </Button>

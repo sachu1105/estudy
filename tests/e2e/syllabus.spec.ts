@@ -135,7 +135,7 @@ test.describe("syllabus", () => {
     await page.goto("/syllabus/catalogue");
     await expect(page.getByRole("heading", { name: "LD Clerk" })).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Combined Graduate Level" }),
+      page.getByRole("heading", { name: "Plus two level preliminary exam" }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Upload yours" }).first().click();
     await expect(page).toHaveURL(/\/syllabus\/new\?exam=/);

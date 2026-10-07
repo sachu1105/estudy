@@ -3,7 +3,7 @@
 # studypods (web)
 
 A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
-(LDC, LGS, Degree level, High Court Assistant) and extending to SSC, RRB and banking.
+(LDC, LGS, Degree level and Plus two level).
 Everything one student needs for an exam lives in one place, organised around their
 syllabus.
 
