@@ -1,46 +1,23 @@
-import { BookOpen, GraduationCap } from "lucide-react";
-
 import { exams } from "@/lib/site";
 
-// What the marquee carries: the exams, and the subjects their syllabuses share. Names
-// only; real user numbers get added once they exist, never invented.
-const SUBJECTS = [
-  "Kerala renaissance",
-  "Indian Constitution",
-  "Simple arithmetic",
-  "General English",
-  "Geography of Kerala",
-  "Current affairs",
-  "Basic science",
-  "Malayalam",
-];
-
-const items = exams.flatMap((exam, i) => [
-  { label: exam, exam: true },
-  { label: SUBJECTS[(i * 2) % SUBJECTS.length]!, exam: false },
-  { label: SUBJECTS[(i * 2 + 1) % SUBJECTS.length]!, exam: false },
-]);
+// Exam names as bold wordmarks, like a logo strip. Names only; real user numbers get
+// added once they exist, never invented.
+const marks = [...exams, "Any exam syllabus"];
 // Each half of the track must be wider than the widest screen.
-const half = [...items, ...items];
+const half = [...marks, ...marks, ...marks];
 
 function Track({ hidden = false }: { hidden?: boolean }) {
   return (
-    <ul aria-hidden={hidden || undefined} className="flex shrink-0 gap-3 pr-3">
-      {half.map((item, i) => (
+    <ul
+      aria-hidden={hidden || undefined}
+      className="flex shrink-0 items-center gap-12 pr-12 md:gap-16 md:pr-16"
+    >
+      {half.map((mark, i) => (
         <li
-          key={`${item.label}-${i}`}
-          className={
-            item.exam
-              ? "flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-2 text-small font-medium whitespace-nowrap text-accent-ink"
-              : "flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-small whitespace-nowrap text-ink-muted"
-          }
+          key={`${mark}-${i}`}
+          className="font-heading text-[20px] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink-muted/70 md:text-[24px] dark:text-ink/80"
         >
-          {item.exam ? (
-            <GraduationCap className="size-4" aria-hidden />
-          ) : (
-            <BookOpen className="size-4 text-ink-subtle" aria-hidden />
-          )}
-          {item.label}
+          {mark}
         </li>
       ))}
     </ul>
@@ -48,19 +25,16 @@ function Track({ hidden = false }: { hidden?: boolean }) {
 }
 
 /**
- * The exams it's built for, drifting past with the subjects their syllabuses share.
- * Pauses on hover; still for reduced motion. Screen readers get the list once.
+ * The exams it's built for, drifting past as wordmarks. Pauses on hover; still for
+ * reduced motion. Screen readers get the list once.
  */
 export function ExamStrip() {
   return (
-    <section
-      aria-label="Built for these exams"
-      className="border-y border-border bg-surface/60 py-6"
-    >
-      <p className="mb-4 text-center text-micro text-ink-muted uppercase">
-        Built for Kerala PSC
+    <section aria-label="Built for these exams" className="py-10 md:py-14">
+      <p className="mb-6 px-4 text-center text-small text-ink-muted">
+        For competitive exam aspirants, starting with Kerala PSC
       </p>
-      <div className="group relative flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+      <div className="group flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
         <div className="flex w-max group-hover:[animation-play-state:paused] motion-safe:animate-marquee">
           <Track />
           <Track hidden />

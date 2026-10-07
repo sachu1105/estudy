@@ -18,7 +18,9 @@ import { loadSettings } from "@/server/settings";
 import { env } from "@/server/env";
 
 export const metadata: Metadata = {
-  title: { absolute: `${site.name}: daily study plans for Kerala PSC` },
+  title: {
+    absolute: `${site.name}: daily study plans for competitive exams`,
+  },
   description: site.description,
   alternates: { canonical: "/" },
 };

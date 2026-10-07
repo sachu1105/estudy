@@ -2,8 +2,9 @@
 
 # studypods (web)
 
-A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
-(LDC, LGS, Degree level and Plus two level).
+A personal study space for Indian competitive exam aspirants, built to help them reach
+the post they are working for. It starts with Kerala PSC (LDC, LGS, Degree level and
+Plus two level), and any other exam works from an uploaded syllabus.
 Everything one student needs for an exam lives in one place, organised around their
 syllabus.
 

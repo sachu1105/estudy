@@ -42,8 +42,8 @@ export function MarketingFooter({ year }: { year: number }) {
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="max-w-xs text-small text-ink-muted">
-            A daily study plan for Kerala PSC aspirants, with a mock test after
-            every task.
+            A study space for competitive exam aspirants: a pod for every
+            subject, a daily plan, and a test after every task.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:contents">
@@ -91,6 +91,12 @@ export function MarketingFooter({ year }: { year: number }) {
             <ThemeToggle />
           </div>
         </div>
+      </div>
+      {/* The name, huge and faint, as the page's last word. Decorative. */}
+      <div aria-hidden className="overflow-hidden select-none">
+        <p className="px-4 pb-2 text-center font-heading text-[clamp(64px,17vw,260px)] leading-none font-semibold tracking-[-0.05em] text-ink/[0.07]">
+          {site.name}
+        </p>
       </div>
     </footer>
   );

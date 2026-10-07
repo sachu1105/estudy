@@ -1,14 +1,3 @@
-import {
-  CalendarSync,
-  ClipboardCheck,
-  Flame,
-  Gauge,
-  GraduationCap,
-  Trophy,
-  Upload,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/ui/reveal";
@@ -16,76 +5,69 @@ import { cn } from "@/lib/utils/cn";
 
 import {
   BeginnerFragment,
-  GroupsFragment,
-  IntensityFragment,
-  MockFragment,
-  RankFragment,
+  MaterialFragment,
+  PodFragment,
   ReplanFragment,
   StreakFragment,
-  UploadFragment,
+  TestFragment,
+  WhyFragment,
 } from "./feature-fragments";
 import { SectionHeading } from "./section-heading";
 
+// Only what the app does today. Squads have their own section; the plan's steps are
+// under How it works.
 type Feature = {
-  icon: LucideIcon;
   title: string;
   body: string;
   fragment: ReactNode;
-  wide?: boolean;
+  /** Columns of six on large screens. */
+  span: string;
+  tag?: string;
 };
 
 const features: Feature[] = [
   {
-    icon: Upload,
-    title: "Upload any syllabus",
-    body: "AI turns your PDF into subjects and topics. You review the tree before anything is planned.",
-    fragment: <UploadFragment />,
-    wide: true,
+    title: "A pod for every subject",
+    body: "Topics straight from your syllabus, each one ticked off as you finish it. Notes, PDFs, links and photos of notebook pages sit under the topics they cover.",
+    fragment: <PodFragment />,
+    span: "lg:col-span-4",
   },
   {
-    icon: Gauge,
-    title: "Set intensity per subject",
-    body: "Light, steady or intense, plus how confident you already are.",
-    fragment: <IntensityFragment />,
+    title: "A plan that shows its working",
+    body: "Every task says why it's there and how long. Change the minutes, the day or the order, and the plan keeps your edit.",
+    fragment: <WhyFragment />,
+    span: "lg:col-span-2",
   },
   {
-    icon: GraduationCap,
-    title: "Beginner mode",
-    body: "New to PSC? Fundamentals first, shorter blocks and an explanation on every question.",
-    fragment: <BeginnerFragment />,
+    title: "A test after every task",
+    body: "Five questions on what you just studied, then section and full mocks with a timer.",
+    fragment: <TestFragment />,
+    span: "lg:col-span-2",
   },
   {
-    icon: ClipboardCheck,
-    title: "A mock test after every task",
-    body: "Five quick questions on what you just studied. Weak topics get extra revision.",
-    fragment: <MockFragment />,
-  },
-  {
-    icon: Flame,
-    title: "Daily streak with a weekly freeze",
-    body: "Keep the habit going. One missed day a week is forgiven automatically.",
-    fragment: <StreakFragment />,
-  },
-  {
-    icon: CalendarSync,
-    title: "Weekly re-plan, no overdue pile",
-    body: "Missed days never pile up. Every week your plan is rebuilt from where you are.",
+    title: "No overdue pile, ever",
+    body: "Missed a day? Every week the plan is rebuilt from where you are.",
     fragment: <ReplanFragment />,
-    wide: true,
+    span: "lg:col-span-2",
   },
   {
-    icon: Users,
-    title: "Study squads",
-    body: "Share notes and mock tests, ask doubts and study alongside friends.",
-    fragment: <GroupsFragment />,
-    wide: true,
+    title: "A streak that forgives",
+    body: "Keep the habit going. One missed day a week is covered for you.",
+    fragment: <StreakFragment />,
+    span: "lg:col-span-2",
   },
   {
-    icon: Trophy,
-    title: "Squad rank",
-    body: "See where you stand among your squad, by this week's study.",
-    fragment: <RankFragment />,
-    wide: true,
+    title: "Mock tests from your own notes",
+    body: "Questions written from what you saved in a pod, so you're tested on what you actually read.",
+    fragment: <MaterialFragment />,
+    span: "lg:col-span-3",
+    tag: "Pro",
+  },
+  {
+    title: "Beginner mode",
+    body: "Sitting your first exam? A gentler start, fundamentals first, and an explanation on every question.",
+    fragment: <BeginnerFragment />,
+    span: "lg:col-span-3",
   },
 ];
 
@@ -102,30 +84,35 @@ export function FeaturesBento() {
           eyebrow="Features"
           title="Everything between today and exam day"
         >
-          One plan that adapts to you, a test after every task, and people to
-          study with.
+          Your syllabus, your material and your plan in one place, with a test
+          to show what stuck.
         </SectionHeading>
       </Reveal>
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {features.map((feature) => (
-          <Reveal
-            key={feature.title}
-            className={cn(
-              "flex flex-col gap-4 rounded-card border border-border bg-surface p-5 transition-[transform,box-shadow] duration-[120ms] hover:-translate-y-px hover:shadow-md",
-              feature.wide && "lg:col-span-2",
-            )}
-          >
-            <span className="grid size-10 place-items-center rounded-control bg-accent-soft text-accent-ink">
-              <feature.icon className="size-5" aria-hidden />
-            </span>
-            <div className="flex flex-col gap-1">
-              <h3>{feature.title}</h3>
-              <p className="text-small text-ink-muted">{feature.body}</p>
-            </div>
-            <div className="mt-auto">{feature.fragment}</div>
-          </Reveal>
+      <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+        {features.map((f, i) => (
+          <li key={f.title} className={cn(f.span, i === 0 && "sm:col-span-2")}>
+            <Reveal className="group flex h-full flex-col gap-6 rounded-[24px] border border-border bg-surface p-5 transition-[transform,box-shadow] duration-[120ms] hover:-translate-y-px hover:shadow-md sm:p-6">
+              <div className="flex flex-col gap-2">
+                <h3 className="flex items-center gap-2">
+                  {f.title}
+                  {f.tag ? (
+                    <span className="rounded-full bg-accent-soft px-2 py-0.5 text-micro font-medium text-accent-ink uppercase">
+                      {f.tag}
+                    </span>
+                  ) : null}
+                </h3>
+                <p className="text-small text-ink-muted">{f.body}</p>
+              </div>
+              <div
+                aria-hidden
+                className="mt-auto rounded-[18px] bg-surface-muted/60 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:14px_14px] p-3 sm:p-4"
+              >
+                {f.fragment}
+              </div>
+            </Reveal>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

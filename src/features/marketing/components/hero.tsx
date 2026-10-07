@@ -25,7 +25,7 @@ export function Hero({ signedIn }: { signedIn: boolean }) {
           </span>
           <span>
             <span className="hidden sm:inline">During launch, for </span>
-            Kerala PSC aspirants
+            competitive exam aspirants
           </span>
           <ArrowRight
             className="size-3.5 transition-transform duration-[120ms] group-hover:translate-x-0.5"
@@ -38,9 +38,9 @@ export function Hero({ signedIn }: { signedIn: boolean }) {
           finish.
         </h1>
         <p className="max-w-xl text-body text-pretty text-ink-muted sm:text-[17px] sm:leading-7">
-          Every subject becomes a pod for its topics, notes and tests. Tell us
-          your hours and how strong you are, and get a day-by-day plan with a
-          short test after every task.
+          Built to get you into the post you are working for. Every subject
+          becomes a pod for its topics, notes and tests, and your hours become a
+          day-by-day plan with a short test after every task.
         </p>
         <div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
           <Button

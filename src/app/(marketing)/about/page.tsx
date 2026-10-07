@@ -25,9 +25,10 @@ export default function AboutPage() {
         actually are. There is no overdue list, ever.
       </p>
       <p>
-        We are built for Kerala PSC: LDC, LGS, Degree level prelims and Plus
-        two level prelims. Beginner mode exists for anyone sitting their first
-        PSC exam.
+        We are built for competitive exam aspirants, starting with Kerala PSC:
+        LDC, LGS, Degree level prelims and Plus two level prelims. Any other
+        exam works too: upload its syllabus and every subject becomes a pod.
+        Beginner mode exists for anyone sitting their first exam.
       </p>
       <h2>Who builds it</h2>
       <p>

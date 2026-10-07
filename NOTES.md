@@ -1103,3 +1103,9 @@ ledge, some shine and a press.
   The featured plan is a setting (`featuredPlan`, admin: Plans and limits, default PRO):
   raised, with a pod-cover top and a "Best value" tag.
 - Copy is Kerala PSC only now (hero, metadata, OG image, footer, about, FAQ, terms).
+- Follow-up (same day): the product is for competitive exam aspirants generally,
+  starting with Kerala PSC (copy, metadata, OG image, footer, about, CLAUDE.md). The exam
+  marquee is bold wordmarks (no chips), muted in light and near-white in dark. Features
+  is a six-column bento of only what's built (pods and material, "Why this?", tests,
+  weekly re-plan, streak, own-material mocks tagged Pro, beginner mode); squads and the
+  plan steps live in their own sections. The footer ends with the name, huge and faint.
