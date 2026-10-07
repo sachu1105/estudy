@@ -84,6 +84,13 @@ export function featureRows(plan: PlanShape): FeatureRow[] {
     },
     { label: "AI answer explanations", on: flags.aiExplanations },
     { label: groups, on: true },
+    {
+      label:
+        limits.squadMembers === Infinity
+          ? "Unlimited members in your squads"
+          : `Up to ${limits.squadMembers} members in each squad you run`,
+      on: true,
+    },
     { label: `${storageOf(limits.groupStorageBytes)} squad storage`, on: true },
     {
       label: `${storageOf(limits.vaultStorageBytes)} pod storage for notes, links and files`,

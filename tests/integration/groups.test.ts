@@ -3,6 +3,7 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { fixedClock } from "@/lib/clock";
 import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { createGroupService } from "@/server/services/groups/group-service";
 
@@ -13,6 +14,8 @@ let created = 5;
 let code = 0;
 const groups = createGroupService({
   groups: groupRepository,
+  channels: channelRepository,
+  ownerLimit: async () => 100,
   clock,
   limit: (_u, f) => (f === "groupsCreated" ? created : 10),
   newCode: () => `CODE${++code}`,

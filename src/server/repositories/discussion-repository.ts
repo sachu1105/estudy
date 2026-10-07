@@ -76,6 +76,7 @@ export const discussionRepository = {
 
   createPost(data: {
     groupId: string;
+    channelId: string;
     authorId: string;
     kind: PostKind;
     title: string;

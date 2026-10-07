@@ -4,8 +4,10 @@ import { fixedClock } from "@/lib/clock";
 import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
+import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createMaterialService } from "@/server/services/groups/material-service";
 import { createMemoryStorage } from "@/server/storage/memory";
@@ -17,12 +19,20 @@ const { storage } = createMemoryStorage();
 let space = 10_000_000;
 const groups = createGroupService({
   groups: groupRepository,
+  channels: channelRepository,
+  ownerLimit: async () => 100,
   clock,
   limit: () => 10,
   newCode: () => crypto.randomUUID().slice(0, 8),
 });
 const material = createMaterialService({
   groups,
+  channels: createChannelService({
+    groups,
+    channels: channelRepository,
+    clock,
+    ownerLimit: async () => 50,
+  }),
   items: groupItemRepository,
   podItems: podItemRepository,
   storage,

@@ -5,6 +5,7 @@ import type { QuestionRepository } from "@/server/repositories/question-reposito
 import type { Actor } from "@/server/services/syllabus/deps";
 
 import { failure, type Result } from "../syllabus/deps";
+import type { ChannelService } from "./channel-service";
 import type { GroupService } from "./group-service";
 
 type User = Actor;
@@ -12,6 +13,8 @@ const DAY = 86_400_000;
 
 export type GroupTestDeps = {
   groups: GroupService;
+  /** Picks and checks the channel a write lands in. */
+  channels: Pick<ChannelService, "place">;
   tests: GroupTestRepository;
   questions: QuestionRepository;
   clock: Clock;
@@ -38,8 +41,17 @@ export function createGroupTests(deps: GroupTestDeps) {
     if ("error" in ok) return { fail: ok.error! } as const;
     if (ok.me.mutedUntil && ok.me.mutedUntil > deps.clock.now())
       return { fail: MUTED } as const;
-    return { fail: null } as const;
+    return { fail: null, me: ok.me } as const;
   }
+
+  /** The tests channel a shared test lands in. */
+  const place = (groupId: string, role: string, channelId: string | null) =>
+    deps.channels.place(
+      groupId,
+      role as "OWNER" | "ADMIN" | "MEMBER",
+      ["TESTS"],
+      channelId,
+    );
 
   return {
     async list(user: User, groupId: string) {
@@ -66,13 +78,17 @@ export function createGroupTests(deps: GroupTestDeps) {
       user: User,
       groupId: string,
       mockTestId: string,
+      channelId: string | null = null,
     ): Promise<Result<{ id: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
+      const channel = await place(groupId, ok.me.role, channelId);
+      if (!channel.ok) return channel;
       const test = await deps.questions.findTest(mockTestId, user.id);
       if (!test) return failure("NOT_FOUND", "That test isn't yours.");
       const shared = await deps.tests.create({
         groupId,
+        channelId: channel.channelId,
         sharedById: user.id,
         title: test.title,
         questionIds: test.questionIds,
@@ -93,9 +109,12 @@ export function createGroupTests(deps: GroupTestDeps) {
         count: number;
         minutes: number | null;
       },
+      channelId: string | null = null,
     ): Promise<Result<{ id: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
+      const channel = await place(groupId, ok.me.role, channelId);
+      if (!channel.ok) return channel;
       const keys = [...new Set(input.topics.map(topicKey))];
       const pool = await deps.questions.pool(keys);
       if (pool.length < 5)
@@ -112,6 +131,7 @@ export function createGroupTests(deps: GroupTestDeps) {
       );
       const shared = await deps.tests.create({
         groupId,
+        channelId: channel.channelId,
         sharedById: user.id,
         title: input.title,
         questionIds: picked.map((q) => q.id),

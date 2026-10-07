@@ -17,17 +17,20 @@ import { toast } from "@/components/ui/toast";
 
 import { joinByCodeAction, joinGroupAction } from "../actions";
 
-/** Join a public group, or ask to join a private one. */
+/** Join an open squad, or ask to join one that asks (answering its question). */
 export function JoinButton({
   groupId,
-  privateGroup,
+  asks,
+  question,
   requested,
 }: {
   groupId: string;
-  privateGroup: boolean;
+  asks: boolean;
+  question: string | null;
   requested: boolean;
 }) {
   const router = useRouter();
+  const [answer, setAnswer] = useState("");
   const [pending, start] = useTransition();
   if (requested)
     return (
@@ -36,20 +39,41 @@ export function JoinButton({
       </p>
     );
   return (
-    <Button
-      variant="primary"
-      disabled={pending}
-      onClick={() =>
+    <form
+      className="flex flex-col gap-3"
+      onSubmit={(e) => {
+        e.preventDefault();
         start(async () => {
-          const result = await joinGroupAction({ groupId });
+          const result = await joinGroupAction({
+            groupId,
+            ...(asks ? { answer } : {}),
+          });
           if (!result.ok) return void toast.error(result.error);
           toast.success(result.joined ? "You're in" : "Request sent");
           router.refresh();
-        })
-      }
+        });
+      }}
     >
-      {privateGroup ? "Ask to join" : "Join squad"}
-    </Button>
+      {asks && question ? (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="join-answer">{question}</Label>
+          <Input
+            id="join-answer"
+            value={answer}
+            maxLength={300}
+            onChange={(e) => setAnswer(e.target.value)}
+          />
+        </div>
+      ) : null}
+      <Button
+        type="submit"
+        variant="primary"
+        className="self-start"
+        disabled={pending}
+      >
+        {asks ? "Ask to join" : "Join squad"}
+      </Button>
+    </form>
   );
 }
 

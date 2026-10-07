@@ -9,12 +9,13 @@ import { toast } from "@/components/ui/toast";
 
 import { decideRequestAction } from "../actions";
 
-/** People asking to join a private group, for its admins. */
+/** People asking to join, with their answer to the squad's question, for its admins. */
 export function JoinRequests({
   requests,
 }: {
   requests: {
     id: string;
+    answer: string | null;
     user: { displayName: string; avatarUrl: string | null };
   }[];
 }) {
@@ -44,8 +45,13 @@ export function JoinRequests({
               src={r.user.avatarUrl ?? undefined}
               size="sm"
             />
-            <span className="min-w-0 flex-1 truncate text-body">
-              {r.user.displayName}
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-body">{r.user.displayName}</span>
+              {r.answer ? (
+                <span className="text-small break-words text-ink-muted">
+                  {r.answer}
+                </span>
+              ) : null}
             </span>
             <Button
               variant="secondary"

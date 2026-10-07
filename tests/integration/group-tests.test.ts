@@ -5,12 +5,14 @@ import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
 import { adminRepository } from "@/server/repositories/admin-repository";
 import { auditLogRepository } from "@/server/repositories/audit-log-repository";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
 import { refreshTokenRepository } from "@/server/repositories/refresh-token-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { createAdminService } from "@/server/services/admin/admin-service";
+import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createGroupTests } from "@/server/services/groups/group-tests";
 
@@ -19,12 +21,20 @@ import { resetDatabase } from "./helpers";
 const clock = fixedClock("2026-10-11T04:30:00Z");
 const groups = createGroupService({
   groups: groupRepository,
+  channels: channelRepository,
+  ownerLimit: async () => 100,
   clock,
   limit: () => 10,
   newCode: () => crypto.randomUUID().slice(0, 8),
 });
 const tests = createGroupTests({
   groups,
+  channels: createChannelService({
+    groups,
+    channels: channelRepository,
+    clock,
+    ownerLimit: async () => 50,
+  }),
   tests: groupTestRepository,
   questions: questionRepository,
   clock,

@@ -14,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
-import { SegmentedControl } from "@/components/ui/segmented-control";
 import {
   Select,
   SelectContent,
@@ -24,10 +23,28 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+import {
+  asksToJoin,
+  SQUAD_ACCESS,
+  type SquadAccess,
+} from "@/lib/squads/access";
+import {
+  SQUAD_TEMPLATES,
+  TEMPLATE_KEYS,
+  type TemplateKey,
+} from "@/lib/squads/templates";
 
 import { createGroupAction } from "../actions";
+import { ChoiceRows } from "./choice-rows";
+import { SquadAccessField } from "./squad-access-field";
 
-/** A new study group: who it's for, and whether anyone can join. */
+const TEMPLATES = TEMPLATE_KEYS.map((value) => ({
+  value,
+  label: SQUAD_TEMPLATES[value].label,
+  description: SQUAD_TEMPLATES[value].description,
+}));
+
+/** A new squad: who it's for, the channels it starts with, and who can join. */
 export function CreateGroupDialog({
   exams,
 }: {
@@ -38,7 +55,9 @@ export function CreateGroupDialog({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [examId, setExamId] = useState("none");
-  const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE">("PUBLIC");
+  const [template, setTemplate] = useState<TemplateKey>("EXAM");
+  const [access, setAccess] = useState<SquadAccess>("OPEN");
+  const [question, setQuestion] = useState("");
   const [pending, start] = useTransition();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -57,7 +76,10 @@ export function CreateGroupDialog({
                 name,
                 description,
                 examId: examId === "none" ? null : examId,
-                visibility,
+                visibility: SQUAD_ACCESS[access].visibility,
+                joinMode: SQUAD_ACCESS[access].joinMode,
+                joinQuestion: asksToJoin(access) ? question : "",
+                template,
               });
               if (!result.ok) return void toast.error(result.error);
               setOpen(false);
@@ -106,18 +128,20 @@ export function CreateGroupDialog({
             </Select>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-small font-medium">Who can join</span>
-            <SegmentedControl
-              ariaLabel="Who can join"
-              value={visibility}
-              onValueChange={setVisibility}
-              options={[
-                { value: "PUBLIC", label: "Anyone" },
-                { value: "PRIVATE", label: "By request or invite" },
-              ]}
-              className="self-start"
+            <span className="text-small font-medium">Start with</span>
+            <ChoiceRows
+              label="Start with"
+              options={TEMPLATES}
+              value={template}
+              onChange={setTemplate}
             />
           </div>
+          <SquadAccessField
+            access={access}
+            onAccessChange={setAccess}
+            question={question}
+            onQuestionChange={setQuestion}
+          />
           <DialogFooter>
             <Button
               type="submit"

@@ -178,4 +178,43 @@ test.describe("groups", () => {
     await expect(admin.getByText(`Group: Spam group ${tag}`)).toHaveCount(0);
     await admin.context().close();
   });
+
+  test("a squad that asks: the asker answers its question, the owner lets them in", async ({
+    page,
+    browser,
+  }) => {
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `gasker-owner-${test.info().project.name}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("Name").fill(`Ask first ${tag}`);
+    await dialog.getByRole("radio", { name: /Study circle/ }).click();
+    await dialog.getByRole("radio", { name: /Ask to join/ }).click();
+    await dialog
+      .getByLabel("Question for people who ask (optional)")
+      .fill("Which exam are you writing?");
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+    await dialog.getByRole("button", { name: "Create squad" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: `Ask first ${tag}` }),
+    ).toBeVisible();
+    const groupUrl = page.url();
+
+    const asker = await person(browser, `gasker-${test.info().project.name}`);
+    await asker.goto(groupUrl);
+    await asker.getByLabel("Which exam are you writing?").fill("Degree level");
+    await asker.getByRole("button", { name: "Ask to join" }).click();
+    await expect(asker.getByText("Request sent").first()).toBeVisible();
+    expect(await noSideScroll(asker)).toBeLessThanOrEqual(0);
+
+    await tab(page, "Members").click();
+    await expect(page.getByText("Degree level")).toBeVisible();
+    await page.getByRole("button", { name: "Let in" }).click();
+    // The request leaves the list once they are in.
+    await expect(page.getByText("Degree level")).toHaveCount(0);
+    await asker.reload();
+    await expect(tab(asker, "Members")).toBeVisible();
+    await asker.context().close();
+  });
 });

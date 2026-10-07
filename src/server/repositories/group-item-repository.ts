@@ -7,6 +7,7 @@ import type { PodItemType, Prisma } from "@/server/db/generated/prisma/client";
 export const groupItemRepository = {
   create(item: {
     groupId: string;
+    channelId: string;
     sharedById: string;
     type: PodItemType;
     title: string;

@@ -13,6 +13,8 @@ export const LIMIT_FEATURES = [
   "groupsCreated",
   "groupsJoined",
   "groupStorageBytes",
+  "squadMembers",
+  "channelsPerSquad",
   "vaultStorageBytes",
   "vaultFolders",
   "vaultMocksPerMonth",

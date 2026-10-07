@@ -15,6 +15,8 @@ export type LimitFeature =
   | "groupsCreated"
   | "groupsJoined"
   | "groupStorageBytes"
+  | "squadMembers"
+  | "channelsPerSquad"
   | "vaultStorageBytes"
   | "vaultFolders"
   | "vaultMocksPerMonth"
@@ -58,6 +60,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: 1,
       groupsJoined: 3,
       groupStorageBytes: 50 * MB,
+      squadMembers: 50,
+      channelsPerSquad: 10,
       vaultStorageBytes: 200 * MB,
       vaultFolders: Infinity,
       vaultMocksPerMonth: 0,
@@ -77,6 +81,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: 5,
       groupsJoined: 10,
       groupStorageBytes: 1 * GB,
+      squadMembers: 300,
+      channelsPerSquad: 30,
       vaultStorageBytes: 5 * GB,
       vaultFolders: Infinity,
       vaultMocksPerMonth: 30,
@@ -96,6 +102,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
       groupsCreated: Infinity,
       groupsJoined: Infinity,
       groupStorageBytes: 5 * GB,
+      squadMembers: 1000,
+      channelsPerSquad: 50,
       vaultStorageBytes: 20 * GB,
       vaultFolders: Infinity,
       vaultMocksPerMonth: 100,

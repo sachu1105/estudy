@@ -43,21 +43,21 @@ enum SubscriptionSource {
 }
 
 model User {
-  id                 String     @id @default(uuid()) @db.Uuid
-  email              String     @unique
-  emailVerifiedAt    DateTime?  @db.Timestamptz(6)
-  passwordHash       String
-  name               String
-  displayName        String
-  avatarUrl          String?
-  role               Role       @default(USER)
-  timezone           String     @default("Asia/Kolkata")
-  beginnerMode       Boolean    @default(false)
+  id              String     @id @default(uuid()) @db.Uuid
+  email           String     @unique
+  emailVerifiedAt DateTime?  @db.Timestamptz(6)
+  passwordHash    String
+  name            String
+  displayName     String
+  avatarUrl       String?
+  role            Role       @default(USER)
+  timezone        String     @default("Asia/Kolkata")
+  beginnerMode    Boolean    @default(false)
   /// An admin reset the streak (abuse): streaks only count days after this.
-  streakResetAt      DateTime?  @db.Timestamptz(6)
-  status             UserStatus @default(ACTIVE)
-  createdAt          DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt          DateTime   @updatedAt @db.Timestamptz(6)
+  streakResetAt   DateTime?  @db.Timestamptz(6)
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime   @updatedAt @db.Timestamptz(6)
 
   refreshTokens      RefreshToken[]
   emailVerifications EmailVerification[]
@@ -1003,6 +1003,29 @@ enum GroupRole {
   MEMBER
 }
 
+/// How people get into a squad. A private squad is never OPEN: it asks or needs an invite.
+enum SquadJoinMode {
+  OPEN
+  REQUEST
+  INVITE_ONLY
+}
+
+/// What a channel holds. Each type is one of the squad's features.
+enum ChannelType {
+  CHAT
+  THREADS
+  MATERIAL
+  LINKS
+  TESTS
+  ANNOUNCEMENTS
+}
+
+/// Who may post in a channel. Everyone reads what they can see.
+enum ChannelPostRule {
+  EVERYONE
+  ADMINS
+}
+
 enum JoinRequestStatus {
   PENDING
   APPROVED
@@ -1025,28 +1048,73 @@ enum ReportStatus {
 }
 
 model Group {
-  id          String          @id @default(uuid()) @db.Uuid
-  name        String
-  description String?
-  examId      String?         @db.Uuid
-  exam        Exam?           @relation(fields: [examId], references: [id], onDelete: SetNull)
-  visibility  GroupVisibility @default(PUBLIC)
-  ownerId     String          @db.Uuid
-  owner       User            @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  id           String          @id @default(uuid()) @db.Uuid
+  name         String
+  description  String?
+  examId       String?         @db.Uuid
+  exam         Exam?           @relation(fields: [examId], references: [id], onDelete: SetNull)
+  visibility   GroupVisibility @default(PUBLIC)
+  joinMode     SquadJoinMode   @default(OPEN)
+  /// Asked of people who request to join, when the squad asks.
+  joinQuestion String?
+  ownerId      String          @db.Uuid
+  owner        User            @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   /// A site admin took it out of the directory (moderation).
-  hiddenAt    DateTime?       @db.Timestamptz(6)
-  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime        @updatedAt @db.Timestamptz(6)
-  deletedAt   DateTime?       @db.Timestamptz(6)
+  hiddenAt     DateTime?       @db.Timestamptz(6)
+  createdAt    DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime        @updatedAt @db.Timestamptz(6)
+  deletedAt    DateTime?       @db.Timestamptz(6)
 
-  members  Membership[]
-  invites  GroupInvite[]
-  requests JoinRequest[]
-  items    GroupItem[]
-  tests    GroupTest[]
-  posts    Post[]
+  members    Membership[]
+  invites    GroupInvite[]
+  requests   JoinRequest[]
+  items      GroupItem[]
+  tests      GroupTest[]
+  posts      Post[]
+  categories ChannelCategory[]
+  channels   Channel[]
 
   @@index([visibility, deletedAt, examId])
+}
+
+/// A heading that groups a squad's channels, like "Library".
+model ChannelCategory {
+  id        String   @id @default(uuid()) @db.Uuid
+  groupId   String   @db.Uuid
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  channels Channel[]
+
+  @@index([groupId, order])
+}
+
+/// One channel in a squad: chat, threads, material, links, tests or announcements.
+model Channel {
+  id         String           @id @default(uuid()) @db.Uuid
+  groupId    String           @db.Uuid
+  group      Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  /// No category: listed above the categories.
+  categoryId String?          @db.Uuid
+  category   ChannelCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  type       ChannelType
+  /// Lower case, words joined with hyphens: "mock-tests".
+  name       String
+  /// A line under the name: what the channel is for.
+  topic      String?
+  order      Int              @default(0)
+  postRule   ChannelPostRule  @default(EVERYONE)
+  createdAt  DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt  DateTime?        @db.Timestamptz(6)
+
+  items GroupItem[]
+  tests GroupTest[]
+  posts Post[]
+
+  @@index([groupId, deletedAt, order])
 }
 
 model Membership {
@@ -1087,6 +1155,8 @@ model JoinRequest {
   userId      String            @db.Uuid
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   status      JoinRequestStatus @default(PENDING)
+  /// The answer to the squad's join question.
+  answer      String?
   decidedById String?           @db.Uuid
   createdAt   DateTime          @default(now()) @db.Timestamptz(6)
   decidedAt   DateTime?         @db.Timestamptz(6)
@@ -1099,6 +1169,8 @@ model GroupItem {
   id              String      @id @default(uuid()) @db.Uuid
   groupId         String      @db.Uuid
   group           Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId       String      @db.Uuid
+  channel         Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sharedById      String      @db.Uuid
   sharedBy        User        @relation(fields: [sharedById], references: [id], onDelete: Cascade)
   type            PodItemType
@@ -1119,6 +1191,7 @@ model GroupItem {
   files GroupItemFile[]
 
   @@index([groupId, deletedAt, createdAt])
+  @@index([channelId, deletedAt, createdAt])
 }
 
 model GroupItemFile {
@@ -1139,6 +1212,8 @@ model GroupTest {
   id              String    @id @default(uuid()) @db.Uuid
   groupId         String    @db.Uuid
   group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId       String    @db.Uuid
+  channel         Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sharedById      String    @db.Uuid
   sharedBy        User      @relation(fields: [sharedById], references: [id], onDelete: Cascade)
   title           String
@@ -1149,6 +1224,7 @@ model GroupTest {
   createdAt       DateTime  @default(now()) @db.Timestamptz(6)
 
   @@index([groupId, createdAt])
+  @@index([channelId, createdAt])
 }
 
 model Block {
@@ -1207,6 +1283,8 @@ model Post {
   id              String    @id @default(uuid()) @db.Uuid
   groupId         String    @db.Uuid
   group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId       String    @db.Uuid
+  channel         Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
   authorId        String    @db.Uuid
   author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   kind            PostKind  @default(DISCUSSION)
@@ -1229,6 +1307,7 @@ model Post {
   replies Reply[]
 
   @@index([groupId, deletedAt, lastActivityAt])
+  @@index([channelId, deletedAt, lastActivityAt])
 }
 
 model Reply {

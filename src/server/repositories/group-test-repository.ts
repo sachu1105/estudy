@@ -6,6 +6,7 @@ import { prisma } from "@/server/db";
 export const groupTestRepository = {
   create(data: {
     groupId: string;
+    channelId: string;
     sharedById: string;
     title: string;
     questionIds: string[];

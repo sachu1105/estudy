@@ -1,4 +1,7 @@
 import type { Clock } from "@/lib/clock";
+import { joinModeOf, type JoinMode } from "@/lib/squads/access";
+import { SQUAD_TEMPLATES, type TemplateKey } from "@/lib/squads/templates";
+import type { ChannelRepository } from "@/server/repositories/channel-repository";
 import type { GroupRepository } from "@/server/repositories/group-repository";
 import type { Actor } from "@/server/services/syllabus/deps";
 
@@ -9,8 +12,11 @@ type Role = "OWNER" | "ADMIN" | "MEMBER";
 
 export type GroupDeps = {
   groups: GroupRepository;
+  channels: Pick<ChannelRepository, "createFromTemplate">;
   clock: Clock;
   limit: (user: Actor, feature: "groupsCreated" | "groupsJoined") => number;
+  /** The squad owner's plan sets how many members a squad holds. */
+  ownerLimit: (ownerId: string, feature: "squadMembers") => Promise<number>;
   /** An unguessable invite code. */
   newCode: () => string;
 };
@@ -56,6 +62,20 @@ export function createGroupService(deps: GroupDeps) {
         );
   }
 
+  /** Room for one more member on the owner's plan, or why not. */
+  async function hasRoom(group: { id: string; ownerId: string }) {
+    const [count, max] = await Promise.all([
+      deps.groups.countMembers(group.id),
+      deps.ownerLimit(group.ownerId, "squadMembers"),
+    ]);
+    return count < max
+      ? null
+      : failure(
+          "SQUAD_FULL",
+          `This squad is full: its owner's plan holds ${max} members.`,
+        );
+  }
+
   return {
     memberOf,
     require,
@@ -67,6 +87,10 @@ export function createGroupService(deps: GroupDeps) {
         description: string | null;
         examId: string | null;
         visibility: "PUBLIC" | "PRIVATE";
+        /** Default: open when public, ask when private. */
+        joinMode?: JoinMode;
+        joinQuestion?: string | null;
+        template?: TemplateKey;
       },
     ): Promise<Result<{ groupId: string }>> {
       const max = deps.limit(user, "groupsCreated");
@@ -75,7 +99,21 @@ export function createGroupService(deps: GroupDeps) {
           "LIMIT",
           `Your plan lets you create ${max} squad${max === 1 ? "" : "s"}.`,
         );
-      const group = await deps.groups.create({ ...input, ownerId: user.id });
+      const { template = "EXAM", joinQuestion, ...fields } = input;
+      const joinMode = joinModeOf({
+        visibility: fields.visibility,
+        joinMode: fields.joinMode ?? "OPEN",
+      });
+      const group = await deps.groups.create({
+        ...fields,
+        joinMode,
+        joinQuestion: joinMode === "REQUEST" ? (joinQuestion ?? null) : null,
+        ownerId: user.id,
+      });
+      await deps.channels.createFromTemplate(
+        group.id,
+        SQUAD_TEMPLATES[template],
+      );
       return { ok: true, groupId: group.id };
     },
 
@@ -102,20 +140,29 @@ export function createGroupService(deps: GroupDeps) {
       };
     },
 
-    /** Public groups: join at once. Private ones: ask, and an admin decides. */
+    /** Open squads: join at once. Others ask and an admin decides, or need an invite. */
     async join(
       user: User,
       groupId: string,
+      answer: string | null = null,
     ): Promise<Result<{ joined: boolean }>> {
       const found = await memberOf(user, groupId);
       if (!found || found.group.hiddenAt) return NOT_FOUND;
       if (found.membership) return { ok: true, joined: true };
+      const mode = joinModeOf(found.group);
+      if (mode === "INVITE_ONLY")
+        return failure(
+          "INVITE_ONLY",
+          "This squad takes members by invite only. Ask a member for an invite link.",
+        );
       const limited = await underJoinLimit(user);
       if (limited) return limited;
-      if (found.group.visibility === "PRIVATE") {
-        await deps.groups.request(groupId, user.id);
+      if (mode === "REQUEST") {
+        await deps.groups.request(groupId, user.id, answer);
         return { ok: true, joined: false };
       }
+      const full = await hasRoom(found.group);
+      if (full) return full;
       await deps.groups.addMember(groupId, user.id);
       return { ok: true, joined: true };
     },
@@ -136,6 +183,8 @@ export function createGroupService(deps: GroupDeps) {
         return { ok: true, groupId: invite.groupId };
       const limited = await underJoinLimit(user);
       if (limited) return limited;
+      const full = await hasRoom(invite.group);
+      if (full) return full;
       if (!(await deps.groups.useInvite(invite.id, invite.maxUses)))
         return failure(
           "FULL",
@@ -234,6 +283,10 @@ export function createGroupService(deps: GroupDeps) {
         return failure("NOT_FOUND", "That request is gone.");
       const ok = await require(user, request.groupId, "ADMIN");
       if ("error" in ok) return ok.error!;
+      if (approve) {
+        const full = await hasRoom(ok.group);
+        if (full) return full;
+      }
       await deps.groups.decideRequest(requestId, approve, user.id, now());
       if (approve) await deps.groups.addMember(request.groupId, request.userId);
       return { ok: true };

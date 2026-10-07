@@ -5,6 +5,7 @@ import type {
   GroupRole,
   GroupVisibility,
   ReportTarget,
+  SquadJoinMode,
 } from "@/server/db/generated/prisma/client";
 
 const groupCard = {
@@ -12,6 +13,8 @@ const groupCard = {
   name: true,
   description: true,
   visibility: true,
+  joinMode: true,
+  joinQuestion: true,
   hiddenAt: true,
   exam: { select: { id: true, name: true } },
   _count: { select: { members: true } },
@@ -24,6 +27,8 @@ export const groupRepository = {
     description: string | null;
     examId: string | null;
     visibility: GroupVisibility;
+    joinMode: SquadJoinMode;
+    joinQuestion: string | null;
     ownerId: string;
   }) {
     return prisma.group.create({
@@ -49,6 +54,9 @@ export const groupRepository = {
 
   countOwned: (userId: string) =>
     prisma.group.count({ where: { ownerId: userId, deletedAt: null } }),
+
+  countMembers: (groupId: string) =>
+    prisma.membership.count({ where: { groupId } }),
 
   countJoined: (userId: string) =>
     prisma.membership.count({
@@ -126,11 +134,11 @@ export const groupRepository = {
 
   // ---- Join requests (private groups) -----------------------------------------------
 
-  request(groupId: string, userId: string) {
+  request(groupId: string, userId: string, answer: string | null) {
     return prisma.joinRequest.upsert({
       where: { groupId_userId: { groupId, userId } },
-      create: { groupId, userId },
-      update: { status: "PENDING", decidedAt: null, decidedById: null },
+      create: { groupId, userId, answer },
+      update: { status: "PENDING", answer, decidedAt: null, decidedById: null },
     });
   },
 
@@ -140,6 +148,7 @@ export const groupRepository = {
       orderBy: { createdAt: "asc" },
       select: {
         id: true,
+        answer: true,
         createdAt: true,
         user: { select: { id: true, displayName: true, avatarUrl: true } },
       },
@@ -189,7 +198,9 @@ export const groupRepository = {
   inviteByCode(code: string) {
     return prisma.groupInvite.findUnique({
       where: { code },
-      include: { group: { select: { id: true, deletedAt: true } } },
+      include: {
+        group: { select: { id: true, ownerId: true, deletedAt: true } },
+      },
     });
   },
 

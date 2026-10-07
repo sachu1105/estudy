@@ -13,11 +13,13 @@ import { notificationService } from "@/server/services/notifications";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { userRepository } from "@/server/repositories/user-repository";
 import { storage } from "@/server/storage";
 
+import { createChannelService } from "./channel-service";
 import { createDiscussionService } from "./discussion-service";
 import { createGroupService } from "./group-service";
 import { createGroupTests } from "./group-tests";
@@ -30,28 +32,45 @@ const newCode = () =>
     "",
   );
 
+/** A limit on the squad owner's plan: members, channels and storage count against it. */
+async function ownerLimit(
+  ownerId: string,
+  feature: "squadMembers" | "channelsPerSquad" | "groupStorageBytes",
+) {
+  const owner = await userRepository.findSessionUser(ownerId);
+  return owner ? limit(owner, feature) : 0;
+}
+
 export const groupService = createGroupService({
   groups: groupRepository,
+  channels: channelRepository,
   clock: systemClock,
   limit: (user, feature) => limit(user, feature),
+  ownerLimit,
   newCode,
+});
+
+export const channelService = createChannelService({
+  groups: groupService,
+  channels: channelRepository,
+  clock: systemClock,
+  ownerLimit,
 });
 
 export const materialService = createMaterialService({
   groups: groupService,
+  channels: channelService,
   items: groupItemRepository,
   podItems: podItemRepository,
   storage,
   clock: systemClock,
   newId: () => crypto.randomUUID(),
-  ownerStorageLimit: async (ownerId) => {
-    const owner = await userRepository.findSessionUser(ownerId);
-    return owner ? limit(owner, "groupStorageBytes") : 0;
-  },
+  ownerStorageLimit: (ownerId) => ownerLimit(ownerId, "groupStorageBytes"),
 });
 
 export const groupTests = createGroupTests({
   groups: groupService,
+  channels: channelService,
   tests: groupTestRepository,
   questions: questionRepository,
   clock: systemClock,
@@ -69,6 +88,7 @@ export const groupTests = createGroupTests({
 
 export const discussionService = createDiscussionService({
   groups: groupService,
+  channels: channelService,
   posts: discussionRepository,
   clock: systemClock,
   emit: groupEvents.emit,

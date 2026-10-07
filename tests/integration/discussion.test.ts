@@ -4,6 +4,7 @@ import { fixedClock } from "@/lib/clock";
 import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
 import { discussionRepository } from "@/server/repositories/discussion-repository";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { notificationRepository } from "@/server/repositories/notification-repository";
 import { progressRepository } from "@/server/repositories/progress-repository";
@@ -12,6 +13,7 @@ import {
   ANSWER_XP,
   createDiscussionService,
 } from "@/server/services/groups/discussion-service";
+import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createNotificationService } from "@/server/services/notifications/notification-service";
 
@@ -20,6 +22,8 @@ import { resetDatabase } from "./helpers";
 const clock = fixedClock("2026-10-12T04:30:00Z");
 const groups = createGroupService({
   groups: groupRepository,
+  channels: channelRepository,
+  ownerLimit: async () => 100,
   clock,
   limit: () => 10,
   newCode: () => crypto.randomUUID().slice(0, 8),
@@ -31,6 +35,12 @@ const notifications = createNotificationService({
 const events: { groupId: string; event: GroupEvent }[] = [];
 const discussion = createDiscussionService({
   groups,
+  channels: createChannelService({
+    groups,
+    channels: channelRepository,
+    clock,
+    ownerLimit: async () => 50,
+  }),
   posts: discussionRepository,
   clock,
   emit: async (groupId, event) => void events.push({ groupId, event }),

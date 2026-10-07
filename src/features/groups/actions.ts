@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { TEMPLATE_KEYS } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import {
@@ -64,6 +65,14 @@ export async function createGroupAction(
         .transform((d) => d || null),
       examId: id.nullable(),
       visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      joinMode: z.enum(["OPEN", "REQUEST", "INVITE_ONLY"]).optional(),
+      joinQuestion: z
+        .string()
+        .trim()
+        .max(200)
+        .transform((q) => q || null)
+        .optional(),
+      template: z.enum(TEMPLATE_KEYS).default("EXAM"),
     }),
   );
   if (g.fail) return g.fail;
@@ -73,10 +82,27 @@ export async function createGroupAction(
 export async function joinGroupAction(
   input: unknown,
 ): Promise<Result<{ joined: boolean }>> {
-  const g = await guard(input, z.object({ groupId: id }));
+  const g = await guard(
+    input,
+    z.object({
+      groupId: id,
+      answer: z
+        .string()
+        .trim()
+        .max(300)
+        .transform((a) => a || null)
+        .optional(),
+    }),
+  );
   if (g.fail) return g.fail;
-  const { groupId } = g.data as { groupId: string };
-  return done(await groupService.join(g.user, groupId), "/groups");
+  const { groupId, answer } = g.data as {
+    groupId: string;
+    answer?: string | null;
+  };
+  return done(
+    await groupService.join(g.user, groupId, answer ?? null),
+    "/groups",
+  );
 }
 
 export async function joinByCodeAction(

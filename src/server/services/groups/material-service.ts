@@ -7,12 +7,15 @@ import type { ObjectStorage } from "@/server/storage/types";
 import type { Actor } from "@/server/services/syllabus/deps";
 
 import { failure, type Result } from "../syllabus/deps";
+import type { ChannelService } from "./channel-service";
 import type { GroupService } from "./group-service";
 
 type User = Actor;
 
 export type MaterialDeps = {
   groups: GroupService;
+  /** Picks and checks the channel a write lands in. */
+  channels: Pick<ChannelService, "place">;
   items: GroupItemRepository;
   podItems: PodItemRepository;
   storage: ObjectStorage;
@@ -111,11 +114,19 @@ export function createMaterialService(deps: MaterialDeps) {
       user: User,
       groupId: string,
       podItemId: string,
+      channelId: string | null = null,
     ): Promise<Result<{ itemId: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
       const source = await deps.podItems.findOwned(podItemId, user.id);
       if (!source) return failure("NOT_FOUND", "That item isn't in your pods.");
+      const place = await deps.channels.place(
+        groupId,
+        ok.me.role,
+        source.type === "LINK" ? ["LINKS", "MATERIAL"] : ["MATERIAL"],
+        channelId,
+      );
+      if (!place.ok) return place;
 
       // A note's images are its own files: copy those too and point the note at them.
       const imageIds =
@@ -144,6 +155,7 @@ export function createMaterialService(deps: MaterialDeps) {
         : null;
       const created = await deps.items.create({
         groupId,
+        channelId: place.channelId,
         sharedById: user.id,
         type: source.type,
         title: source.title,
@@ -174,9 +186,17 @@ export function createMaterialService(deps: MaterialDeps) {
         subjectName: string | null;
         topicName: string | null;
       },
+      channelId: string | null = null,
     ): Promise<Result<{ itemId: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
+      const place = await deps.channels.place(
+        groupId,
+        ok.me.role,
+        ["LINKS", "MATERIAL"],
+        channelId,
+      );
+      if (!place.ok) return place;
       let url: URL;
       try {
         url = await assertPublicUrl(input.url);
@@ -187,6 +207,7 @@ export function createMaterialService(deps: MaterialDeps) {
       }
       const created = await deps.items.create({
         groupId,
+        channelId: place.channelId,
         sharedById: user.id,
         type: "LINK",
         title: input.title || url.hostname.replace(/^www\./, ""),

@@ -6,6 +6,7 @@ import type { GroupEvent } from "@/server/realtime/types";
 import type { Actor } from "@/server/services/syllabus/deps";
 
 import { failure, type Result } from "../syllabus/deps";
+import type { ChannelService } from "./channel-service";
 import type { GroupService } from "./group-service";
 
 type User = Actor;
@@ -17,6 +18,8 @@ export const ANSWER_XP_DAILY_CAP = 30;
 
 export type DiscussionDeps = {
   groups: GroupService;
+  /** Picks and checks the channel a write lands in. */
+  channels: Pick<ChannelService, "place">;
   posts: DiscussionRepository;
   clock: Clock;
   emit: (groupId: string, event: GroupEvent) => Promise<void>;
@@ -166,12 +169,21 @@ export function createDiscussionService(deps: DiscussionDeps) {
         subjectName: string | null;
         topicName: string | null;
       },
+      channelId: string | null = null,
     ): Promise<Result<{ postId: string }>> {
       const ok = await poster(user, groupId);
       if (ok.fail) return ok.fail;
+      const place = await deps.channels.place(
+        groupId,
+        ok.me.role,
+        ["THREADS"],
+        channelId,
+      );
+      if (!place.ok) return place;
       const mentionIds = await members(groupId, input.mentionIds, user.id);
       const post = await deps.posts.createPost({
         groupId,
+        channelId: place.channelId,
         authorId: user.id,
         kind: input.kind,
         title: input.title,
