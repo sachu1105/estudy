@@ -19,7 +19,7 @@ export function FinalCta({ href }: { href: string }) {
           size="lg"
           className="w-full sm:w-auto"
         >
-          <Link href={href}>Create your study plan</Link>
+          <Link href={href}>Get started free</Link>
         </Button>
       </Reveal>
     </section>

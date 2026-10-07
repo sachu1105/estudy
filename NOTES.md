@@ -1109,3 +1109,9 @@ ledge, some shine and a press.
   is a six-column bento of only what's built (pods and material, "Why this?", tests,
   weekly re-plan, streak, own-material mocks tagged Pro, beginner mode); squads and the
   plan steps live in their own sections. The footer ends with the name, huge and faint.
+- Follow-up: the hero leads with what the app is for: tracking a syllabus in pods
+  (topics ticked off, material kept under them, progress), with AI mock tests from your
+  own notes on Pro. Tagline: "Your syllabus, one pod at a time." It is quiet now: the
+  headline left, the paragraph and one "Get started free" right, then one product window
+  (a subject pod) on a dusk cover panel, running off the panel's bottom
+  (`HeroWindow`). The marquee has room for descenders and runs at 90s a loop.

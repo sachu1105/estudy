@@ -57,8 +57,8 @@ const features: Feature[] = [
     span: "lg:col-span-2",
   },
   {
-    title: "Mock tests from your own notes",
-    body: "Questions written from what you saved in a pod, so you're tested on what you actually read.",
+    title: "AI mock tests from your own notes",
+    body: "AI writes questions from what you saved in a pod, so you're tested on what you actually read.",
     fragment: <MaterialFragment />,
     span: "lg:col-span-3",
     tag: "Pro",

@@ -20,7 +20,7 @@ test.describe("landing, signed out", () => {
   test("loads with the hero and one clear call to action", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "daily plan you can actually finish",
+      "one pod at a time",
     );
     await expect(
       page.getByText("Free during launch. No card needed."),
@@ -51,14 +51,9 @@ test.describe("landing, signed out", () => {
     }
   });
 
-  test("create your study plan goes to register, then onboarding", async ({
-    page,
-  }) => {
+  test("get started goes to register, then onboarding", async ({ page }) => {
     await page.goto("/");
-    await page
-      .getByRole("link", { name: "Create your study plan" })
-      .first()
-      .click();
+    await page.getByRole("link", { name: "Get started free" }).first().click();
     await expect(page).toHaveURL(
       /\/register\?next=%2Fonboarding$|\/register\?next=\/onboarding$/,
     );
@@ -111,10 +106,7 @@ test.describe("landing, signed in", () => {
     ).toBeVisible();
     if (isMobile) await page.getByRole("button", { name: "Close" }).click();
 
-    await page
-      .getByRole("link", { name: "Create your study plan" })
-      .first()
-      .click();
+    await page.getByRole("link", { name: "Get started free" }).first().click();
     await expect(page).toHaveURL(/\/onboarding$/);
   });
 });

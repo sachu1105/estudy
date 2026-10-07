@@ -3,9 +3,9 @@
 export const site = {
   name: "studypods",
   company: "Veraft",
-  tagline: "Your syllabus, turned into a daily plan you can actually finish.",
+  tagline: "Your syllabus, one pod at a time.",
   description:
-    "Upload your syllabus, set how strong you are in each subject, and get a day-by-day study plan with a mock test after every task. For competitive exam aspirants.",
+    "Track your syllabus subject by subject: every subject becomes a pod for its topics, notes, PDFs and links, with your progress at a glance and AI mock tests from your own notes. For competitive exam aspirants.",
   // TODO(owner): replace with the real inbox before launch.
   contactEmail: "hello@example.com",
   // TODO(owner): add real handles; the footer renders only what is listed here.
