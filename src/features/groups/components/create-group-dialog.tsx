@@ -44,7 +44,7 @@ export function CreateGroupDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="primary">
-          <Plus aria-hidden /> Create group
+          <Plus aria-hidden /> Create squad
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -66,7 +66,7 @@ export function CreateGroupDialog({
           }}
         >
           <DialogHeader>
-            <DialogTitle>Create a group</DialogTitle>
+            <DialogTitle>Create a squad</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-2">
             <Label htmlFor="group-name">Name</Label>
@@ -124,7 +124,7 @@ export function CreateGroupDialog({
               variant="primary"
               disabled={pending || name.trim().length < 3}
             >
-              Create group
+              Create squad
             </Button>
           </DialogFooter>
         </form>

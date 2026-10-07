@@ -30,7 +30,7 @@ export default async function NotificationsPage() {
         <EmptyState
           icon={Bell}
           title="Nothing new"
-          description="Mentions, replies to your posts and tests shared in your groups show up here."
+          description="Mentions, replies to your posts and tests shared in your squads show up here."
         />
       ) : (
         <NotificationList

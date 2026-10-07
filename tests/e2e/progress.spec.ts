@@ -54,7 +54,7 @@ test.describe("progress and rank", () => {
     // The board, this week: the viewer is marked, wherever they are.
     await page.goto("/rank");
     await expect(
-      page.getByRole("heading", { level: 1, name: "Rank" }),
+      page.getByRole("heading", { level: 1, name: "Podium" }),
     ).toBeVisible();
     await expect(page.getByText(/\(you\)/)).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
@@ -73,7 +73,7 @@ test.describe("progress and rank", () => {
 
     // Hidden from others, never from yourself.
     await page.goto("/settings");
-    await page.getByRole("switch", { name: "Hide me from the rank" }).click();
+    await page.getByRole("switch", { name: "Hide me from the podium" }).click();
     await page.getByRole("button", { name: "Save" }).first().click();
     await expect(page.getByText("Saved")).toBeVisible();
     await page.goto("/rank?period=all");

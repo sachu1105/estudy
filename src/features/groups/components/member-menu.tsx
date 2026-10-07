@@ -127,10 +127,10 @@ export function MemberMenu({
               )}
               <DropdownMenuItem
                 onSelect={() =>
-                  run({ kind: "remove" }, "Removed from the group")
+                  run({ kind: "remove" }, "Removed from the squad")
                 }
               >
-                Remove from group
+                Remove from squad
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>

@@ -33,7 +33,7 @@ export default async function GroupLayout({
 
   return (
     <>
-      <BackLink href="/groups" label="Groups" />
+      <BackLink href="/groups" label="Squads" />
       <PageHeader
         title={group.name}
         description={facts}
@@ -59,7 +59,7 @@ export default async function GroupLayout({
               role="status"
               className="mb-4 rounded-card bg-surface-muted p-3 text-small"
             >
-              A group admin has muted you for now: you can read, but not share.
+              A squad admin has muted you for now: you can read, but not share.
             </p>
           ) : null}
           <GroupTabs groupId={group.id} />
@@ -72,7 +72,7 @@ export default async function GroupLayout({
           ) : null}
           <p className="text-body text-ink-muted">
             {group.visibility === "PRIVATE"
-              ? "This group is private. Ask to join, or use an invite from a member."
+              ? "This squad is private. Ask to join, or use an invite from a member."
               : "Join to see the shared notes and tests, and to take part."}
           </p>
           <JoinButton

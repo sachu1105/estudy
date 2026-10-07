@@ -10,7 +10,7 @@ const noSideScroll = (page: Page) =>
   );
 
 const tab = (page: Page, name: string) =>
-  page.getByRole("navigation", { name: "Group" }).getByRole("link", { name });
+  page.getByRole("navigation", { name: "Squad" }).getByRole("link", { name });
 
 async function person(browser: Browser, label: string) {
   const context = await browser.newContext({
@@ -36,11 +36,11 @@ test.describe("group discussion", () => {
     // The owner makes a group and an invite; a member joins.
     await seedAndLogin(page, `downer-${test.info().project.name}`);
     await page.goto("/groups");
-    await page.getByRole("button", { name: "Create group" }).click();
+    await page.getByRole("button", { name: "Create squad" }).click();
     await page.getByLabel("Name").fill(`Doubts ${tag}`);
     await page
       .getByRole("dialog")
-      .getByRole("button", { name: "Create group" })
+      .getByRole("button", { name: "Create squad" })
       .click();
     await expect(
       page.getByRole("heading", { level: 1, name: `Doubts ${tag}` }),

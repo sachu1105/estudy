@@ -87,7 +87,7 @@ export function SyllabusEditor({
                 className={cn(
                   "flex items-center pr-1 first:rounded-t-card",
                   expanded &&
-                    "sticky top-16 z-20 border-b border-border bg-surface/95 backdrop-blur",
+                    "sticky top-16 z-20 border-b border-border bg-surface/95 backdrop-blur md:top-0",
                 )}
               >
                 <button

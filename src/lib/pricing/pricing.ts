@@ -49,8 +49,8 @@ export function featureRows(plan: PlanShape): FeatureRow[] {
   const { limits, flags } = plan;
   const groups =
     limits.groupsCreated === Infinity && limits.groupsJoined === Infinity
-      ? "Unlimited groups, created or joined"
-      : `${plural(limits.groupsCreated, "group", "groups")} created, ${countOf(limits.groupsJoined)} joined`;
+      ? "Unlimited squads, created or joined"
+      : `${plural(limits.groupsCreated, "squad", "squads")} created, ${countOf(limits.groupsJoined)} joined`;
   return [
     {
       label: plural(
@@ -84,7 +84,7 @@ export function featureRows(plan: PlanShape): FeatureRow[] {
     },
     { label: "AI answer explanations", on: flags.aiExplanations },
     { label: groups, on: true },
-    { label: `${storageOf(limits.groupStorageBytes)} group storage`, on: true },
+    { label: `${storageOf(limits.groupStorageBytes)} squad storage`, on: true },
     {
       label: `${storageOf(limits.vaultStorageBytes)} pod storage for notes, links and files`,
       on: true,

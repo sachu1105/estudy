@@ -104,7 +104,7 @@ export function ReplySection({
       </ol>
       {muted ? (
         <p className="text-small text-ink-muted">
-          A group admin has muted you for now, so you can read but not reply.
+          A squad admin has muted you for now, so you can read but not reply.
         </p>
       ) : (
         <ReplyComposer

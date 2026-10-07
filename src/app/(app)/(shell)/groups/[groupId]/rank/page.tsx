@@ -6,7 +6,7 @@ import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { groupTests } from "@/server/services/groups";
 
-export const metadata: Metadata = { title: "Group rank" };
+export const metadata: Metadata = { title: "Squad rank" };
 
 /** This week among the members: XP from studying, and right answers in group tests. */
 export default async function GroupRank({

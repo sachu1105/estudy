@@ -12,7 +12,7 @@ const noSideScroll = (page: Page) =>
 
 /** A tab of the group (the app's own navigation has a "Tests" too). */
 const tab = (page: Page, name: string) =>
-  page.getByRole("navigation", { name: "Group" }).getByRole("link", { name });
+  page.getByRole("navigation", { name: "Squad" }).getByRole("link", { name });
 
 /** A second person, in a browser context of their own. */
 async function person(browser: Browser, label: string, role?: "ADMIN") {
@@ -54,11 +54,11 @@ test.describe("groups", () => {
     await expect(page).toHaveURL(/\/pods\/exam\//);
 
     await page.goto("/groups");
-    await page.getByRole("button", { name: "Create group" }).click();
+    await page.getByRole("button", { name: "Create squad" }).click();
     await page.getByLabel("Name").fill(`Kollam circle ${tag}`);
     await page
       .getByRole("dialog")
-      .getByRole("button", { name: "Create group" })
+      .getByRole("button", { name: "Create squad" })
       .click();
     await expect(
       page.getByRole("heading", { level: 1, name: `Kollam circle ${tag}` }),
@@ -121,7 +121,7 @@ test.describe("groups", () => {
     await page.getByRole("radio", { name: "10" }).click();
     await page.getByRole("radio", { name: "Untimed" }).click();
     await page.getByRole("button", { name: "Share test" }).click();
-    await expect(page.getByText("Test shared with the group")).toBeVisible();
+    await expect(page.getByText("Test shared with the squad")).toBeVisible();
     await page.getByRole("button", { name: "Take test" }).first().click();
     await expect(page).toHaveURL(/\/test\/[0-9a-f-]{36}$/);
     await page.keyboard.press("1");
@@ -152,14 +152,14 @@ test.describe("groups", () => {
     const tag = `${test.info().project.name}${Date.now()}`;
     await seedAndLogin(page, `greporter-${test.info().project.name}`);
     await page.goto("/groups");
-    await page.getByRole("button", { name: "Create group" }).click();
+    await page.getByRole("button", { name: "Create squad" }).click();
     await page.getByLabel("Name").fill(`Spam group ${tag}`);
     await page
       .getByRole("dialog")
-      .getByRole("button", { name: "Create group" })
+      .getByRole("button", { name: "Create squad" })
       .click();
     await page.getByRole("button", { name: /^More for / }).click();
-    await page.getByRole("menuitem", { name: "Report group" }).click();
+    await page.getByRole("menuitem", { name: "Report squad" }).click();
     await page.getByRole("button", { name: "Send report" }).click();
     await expect(page.getByText("Reported. Thank you.")).toBeVisible();
 

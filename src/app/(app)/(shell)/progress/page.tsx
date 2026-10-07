@@ -12,7 +12,7 @@ import { StartTestButton } from "@/features/tests/components/start-test-button";
 import { requireUser } from "@/server/auth/session";
 import { progressService } from "@/server/services/progress";
 
-export const metadata: Metadata = { title: "Progress" };
+export const metadata: Metadata = { title: "Growth" };
 
 /** Everything here is worked out from what you did (rule 6: from the logs). */
 export default async function ProgressPage() {
@@ -28,7 +28,7 @@ export default async function ProgressPage() {
   return (
     <>
       <PageHeader
-        title="Progress"
+        title="Growth"
         description="Worked out from what you actually did."
       />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

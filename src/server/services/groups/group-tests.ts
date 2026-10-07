@@ -28,7 +28,7 @@ export type GroupTestDeps = {
 
 const MUTED = failure(
   "MUTED",
-  "A group admin has muted you for now, so you can't share.",
+  "A squad admin has muted you for now, so you can't share.",
 );
 
 /** Tests shared in a group, each member's own copy, and the group's rank (milestone 13). */
@@ -132,7 +132,7 @@ export function createGroupTests(deps: GroupTestDeps) {
       if ("error" in ok) return ok.error!;
       const shared = await deps.tests.find(groupId, groupTestId);
       if (!shared)
-        return failure("NOT_FOUND", "That test isn't in this group.");
+        return failure("NOT_FOUND", "That test isn't in this squad.");
       const existing = await deps.tests.myCopy(user.id, groupTestId);
       if (existing) return { ok: true, testId: existing.id };
       const copy = await deps.questions.createTest({

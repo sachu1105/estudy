@@ -967,10 +967,10 @@ ledge, some shine and a press.
 - Known flake: under a full 4-worker run, pod-material.spec's "Delete then land on the
   pod" step once timed out on both projects. It passes on its own and in the next full run.
 
-### Studpods, and pod cards with covers (2026-10-07)
-- The product is now Studpods. `site.name` (lib/site) is the one source. The logo,
+### studypods, and pod cards with covers (2026-10-07)
+- The product is now studypods. `site.name` (lib/site) is the one source. The logo,
   metadata, manifest, OG images, Razorpay, emails, the service worker's push title and
-  the link-preview user agent all read it, or say Studpods. Internal names (the
+  the link-preview user agent all read it, or say studypods. Internal names (the
   package, the database, `studyplanner` in env) are unchanged.
 - Pod cards (pods home, for exams and own pods) are `PodTile` (components/blocks): a
   cover on top, and a folder body whose tab rises into it, built from a span plus an SVG
@@ -1036,3 +1036,13 @@ ledge, some shine and a press.
   updated. No reset was done.
 - After a schema change and `prisma generate`, the running `next dev` needs a moment;
   the first e2e run right after it can fail all over and then pass on the rerun.
+
+### Drive-style shell and the New menu (2026-10-07)
+- From 768px the shell is a canvas (`--canvas`, a step off bg) holding a full-width top
+  bar (logo over the sidebar, a centred search pill, actions) and a sidebar with no
+  border. The page sits in `#panel`: rounded 20, bg, 1px border, and it is the scroll
+  container (`md:h-dvh md:overflow-hidden` on the shell). Sticky things inside the page
+  use `md:top-0` (the syllabus editor's header). Phones are unchanged: window scroll.
+- No New button in the sidebar (the owner's call): making things stays on each page
+  (Add exam, New pod, Create squad).
+- The search button says "Search pods…" (it no longer wraps at 360px).

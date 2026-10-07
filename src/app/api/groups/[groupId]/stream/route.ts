@@ -25,7 +25,7 @@ export const GET = withUser<RouteContext<"/api/groups/[groupId]/stream">>(
       ? await groupService.require(user, groupId, "MEMBER")
       : null;
     if (!member || "error" in member)
-      return NextResponse.json({ error: "No such group." }, { status: 404 });
+      return NextResponse.json({ error: "No such squad." }, { status: 404 });
     const lastId = request.headers.get("last-event-id") ?? "";
 
     const encoder = new TextEncoder();

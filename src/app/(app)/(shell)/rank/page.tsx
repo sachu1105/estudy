@@ -13,7 +13,7 @@ import type { RankPeriod } from "@/lib/progress/rank-keys";
 import { requireUser } from "@/server/auth/session";
 import { rankService } from "@/server/services/rank";
 
-export const metadata: Metadata = { title: "Rank" };
+export const metadata: Metadata = { title: "Podium" };
 
 const PERIODS: [RankPeriod, string][] = [
   ["week", "This week"],
@@ -42,7 +42,7 @@ export default async function RankPage({ searchParams }: PageProps<"/rank">) {
   return (
     <>
       <PageHeader
-        title="Rank"
+        title="Podium"
         description="By XP: study minutes, tasks and tests. Display names only."
       />
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -97,7 +97,8 @@ export default async function RankPage({ searchParams }: PageProps<"/rank">) {
         </p>
       ) : null}
       <p className="mt-3 text-small text-ink-muted">
-        Rather not appear by name? Turn on &quot;Hide me from the rank&quot; in{" "}
+        Rather not appear by name? Turn on &quot;Hide me from the podium&quot;
+        in{" "}
         <Link
           href="/settings"
           className="font-medium text-accent-ink hover:underline"

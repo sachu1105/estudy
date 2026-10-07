@@ -32,29 +32,36 @@ export default async function ShellLayout({
     unread,
   };
 
+  // Drive style on md+: the top bar and sidebar sit on the canvas, and the page lives in
+  // a rounded panel that scrolls on its own. On phones it's one plain scrolling page.
   return (
-    <div className="flex min-h-dvh">
+    <div className="flex min-h-dvh flex-col md:h-dvh md:overflow-hidden md:bg-canvas">
       <a
         href="#main"
         className="sr-only z-50 rounded-control bg-surface px-4 py-2 focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         Skip to content
       </a>
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar viewer={viewer} logout={logoutAction} />
-        {announcement?.active && announcement.text ? (
-          <AnnouncementBanner
-            text={announcement.text}
-            tone={announcement.tone}
-          />
-        ) : null}
-        <main
-          id="main"
-          className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12"
+      <TopBar viewer={viewer} logout={logoutAction} />
+      <div className="flex min-h-0 flex-1">
+        <Sidebar />
+        <div
+          id="panel"
+          className="flex min-w-0 flex-1 flex-col md:mr-3 md:mb-3 md:[scrollbar-width:thin] md:overflow-y-auto md:rounded-[20px] md:border md:border-border md:bg-bg"
         >
-          {children}
-        </main>
+          {announcement?.active && announcement.text ? (
+            <AnnouncementBanner
+              text={announcement.text}
+              tone={announcement.tone}
+            />
+          ) : null}
+          <main
+            id="main"
+            className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12"
+          >
+            {children}
+          </main>
+        </div>
       </div>
       <BottomTabs />
       <Toaster />

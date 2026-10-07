@@ -16,7 +16,7 @@ import { billingEnabled, limit } from "@/server/entitlements";
 import { groupService } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
-export const metadata: Metadata = { title: "Groups" };
+export const metadata: Metadata = { title: "Squads" };
 
 export default async function GroupsPage({
   searchParams,
@@ -44,7 +44,7 @@ export default async function GroupsPage({
   return (
     <>
       <PageHeader
-        title="Groups"
+        title="Squads"
         description="Study with others: share notes and tests, and see who's keeping up."
         actions={
           <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
@@ -58,19 +58,19 @@ export default async function GroupsPage({
       <div className="flex flex-col gap-10">
         {atLimit ? (
           <UpgradeCard
-            title="You have made every group your plan allows"
-            detail={`Your plan covers ${maxOwned} group${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
+            title="You have made every squad your plan allows"
+            detail={`Your plan covers ${maxOwned} squad${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
             billingOn={billingEnabled()}
           />
         ) : null}
         <section aria-labelledby="mine" className="flex flex-col gap-3">
           <h2 id="mine" className="text-h2">
-            Your groups
+            Your squads
           </h2>
           {mine.length === 0 ? (
             <EmptyState
               icon={Users}
-              title="No groups yet"
+              title="No squads yet"
               description="Create one and invite a friend, or join one below."
             />
           ) : (
@@ -86,7 +86,7 @@ export default async function GroupsPage({
 
         <section aria-labelledby="find" className="flex flex-col gap-3">
           <h2 id="find" className="text-h2">
-            Find a group
+            Find a squad
           </h2>
           <nav aria-label="Exam" className="flex flex-wrap gap-2">
             {examLinks.map((e) => (
@@ -109,8 +109,8 @@ export default async function GroupsPage({
             <Input
               name="q"
               defaultValue={q}
-              placeholder="Group name"
-              aria-label="Search groups"
+              placeholder="Squad name"
+              aria-label="Search squads"
               className="max-w-md"
             />
             <Button type="submit" variant="secondary">
@@ -119,7 +119,7 @@ export default async function GroupsPage({
           </form>
           {directory.filter((g) => !joined.has(g.id)).length === 0 ? (
             <p className="text-body text-ink-muted">
-              No open groups here yet. Create the first one.
+              No open squads here yet. Create the first one.
             </p>
           ) : (
             <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">

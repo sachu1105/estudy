@@ -18,7 +18,7 @@ import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { groupService, materialService } from "@/server/services/groups";
 
-export const metadata: Metadata = { title: "Group" };
+export const metadata: Metadata = { title: "Squad" };
 
 const ICONS = {
   NOTE: NotebookPen,

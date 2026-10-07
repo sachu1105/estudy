@@ -8,7 +8,7 @@ import { SectionHeading } from "./section-heading";
 export const faqs = [
   {
     q: "Is it free?",
-    a: "Yes. Planning, check tests, mocks, groups and the study vault are free during launch, with no card needed. Only mock tests made from your own notes and PDFs need a paid plan. The free plan stays.",
+    a: "Yes. Planning, check tests, mocks, squads and the study vault are free during launch, with no card needed. Only mock tests made from your own notes and PDFs need a paid plan. The free plan stays.",
   },
   {
     q: "Which exams does it support?",
@@ -32,7 +32,7 @@ export const faqs = [
   },
   {
     q: "Is my data private?",
-    a: "Your plans, uploads and test results are yours. We never sell data or show ads. On the ranks you appear by display name only, and you can hide as an anonymous aspirant.",
+    a: "Your plans, uploads and test results are yours. We never sell data or show ads. On the podium and in squads you appear by display name only, and you can hide as an anonymous aspirant.",
   },
 ];
 

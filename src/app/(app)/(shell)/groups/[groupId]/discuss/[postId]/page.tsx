@@ -16,7 +16,7 @@ import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { discussionService } from "@/server/services/groups";
 
-export const metadata: Metadata = { title: "Group thread" };
+export const metadata: Metadata = { title: "Squad thread" };
 
 /** One thread: the post, its replies, and for questions the accepted answer. */
 export default async function ThreadPage({

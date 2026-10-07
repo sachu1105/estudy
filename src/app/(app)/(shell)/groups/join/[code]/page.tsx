@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { requireUser } from "@/server/auth/session";
 import { groupService } from "@/server/services/groups";
 
-export const metadata: Metadata = { title: "Join a group" };
+export const metadata: Metadata = { title: "Join a squad" };
 
 // An invite link: joins and opens the group, or says plainly why it can't.
 export default async function JoinByLink({
@@ -27,7 +27,7 @@ export default async function JoinByLink({
           : "Check the link, or ask for a new invite."}
       </p>
       <Button asChild variant="primary">
-        <Link href="/groups">Go to groups</Link>
+        <Link href="/groups">Go to squads</Link>
       </Button>
     </div>
   );

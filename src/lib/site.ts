@@ -1,7 +1,7 @@
 // Public facts about the product, shared by the marketing pages, metadata and footer.
 
 export const site = {
-  name: "Studpods",
+  name: "studypods",
   company: "Veraft",
   tagline: "Your syllabus, turned into a daily plan you can actually finish.",
   description:
@@ -25,7 +25,7 @@ export const exams = [
 export const landingSections = [
   { id: "features", label: "Features" },
   { id: "how-it-works", label: "How it works" },
-  { id: "groups", label: "Groups" },
+  { id: "groups", label: "Squads" },
   { id: "pricing", label: "Pricing" },
   { id: "faq", label: "FAQ" },
 ];

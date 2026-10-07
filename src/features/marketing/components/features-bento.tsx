@@ -75,14 +75,14 @@ const features: Feature[] = [
   },
   {
     icon: Users,
-    title: "Study groups",
+    title: "Study squads",
     body: "Share notes and mock tests, ask doubts and study alongside friends.",
     fragment: <GroupsFragment />,
     wide: true,
   },
   {
     icon: Trophy,
-    title: "Group rank and all-India rank",
+    title: "Squad rank and the all-India podium",
     body: "See where you stand, or hide and appear as an anonymous aspirant.",
     fragment: <RankFragment />,
     wide: true,

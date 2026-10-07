@@ -32,7 +32,7 @@ export type DiscussionDeps = {
 
 const MUTED = failure(
   "MUTED",
-  "A group admin has muted you for now, so you can't post.",
+  "A squad admin has muted you for now, so you can't post.",
 );
 const GONE = failure("NOT_FOUND", "That post is gone.");
 

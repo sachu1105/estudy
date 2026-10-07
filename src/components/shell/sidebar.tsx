@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils/cn";
 
-import { Logo } from "./logo";
 import { isActive, primaryNav, secondaryNav, type NavItem } from "./nav-items";
 
 // Collapsed state lives on <html data-sidebar> (set before paint by BootScript), so CSS
@@ -34,7 +33,7 @@ function SidebarLink({ item, active }: { item: NavItem; active: boolean }) {
         "sidebar-collapsed:justify-center sidebar-collapsed:px-0",
         active
           ? "bg-accent-soft text-accent-ink"
-          : "text-ink-muted hover:bg-surface-muted hover:text-ink",
+          : "text-ink-muted hover:bg-ink/5 hover:text-ink",
       )}
     >
       <item.icon className="size-[18px] shrink-0" aria-hidden />
@@ -58,18 +57,10 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-border bg-surface px-3 py-4 md:flex",
+        "hidden w-60 shrink-0 flex-col px-3 pt-2 pb-3 md:flex",
         "transition-[width] duration-[200ms] ease-out sidebar-collapsed:w-[72px]",
       )}
     >
-      <Link
-        href="/today"
-        className="mb-6 flex h-10 items-center px-1.5 sidebar-collapsed:justify-center"
-      >
-        <Logo className="sidebar-collapsed:hidden" />
-        <Logo showName={false} className="hidden sidebar-collapsed:flex" />
-      </Link>
-
       <nav aria-label="Main" className="flex flex-1 flex-col gap-1">
         {primaryNav.map((item) => (
           <SidebarLink
@@ -91,7 +82,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="flex h-10 cursor-pointer items-center gap-3 rounded-control px-3 text-body text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink sidebar-collapsed:justify-center sidebar-collapsed:px-0"
+          className="flex h-10 cursor-pointer items-center gap-3 rounded-control px-3 text-body text-ink-muted transition-colors hover:bg-ink/5 hover:text-ink sidebar-collapsed:justify-center sidebar-collapsed:px-0"
         >
           <PanelLeftClose
             className="size-[18px] sidebar-collapsed:hidden"

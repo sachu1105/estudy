@@ -16,7 +16,7 @@ import { groupService, groupTests } from "@/server/services/groups";
 import { podService } from "@/server/services/pods";
 import { testService } from "@/server/services/tests";
 
-export const metadata: Metadata = { title: "Group tests" };
+export const metadata: Metadata = { title: "Squad tests" };
 
 /** Tests the members shared: take one, then see how everyone did. */
 export default async function GroupTestsPage({

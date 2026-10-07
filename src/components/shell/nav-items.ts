@@ -31,9 +31,9 @@ export const primaryNav: NavItem[] = [
     also: ["/syllabus", "/plan", "/calendar"],
   },
   { href: "/tests", label: "Tests", icon: ClipboardCheck, mobileTab: true },
-  { href: "/groups", label: "Groups", icon: Users, mobileTab: true },
-  { href: "/rank", label: "Rank", icon: Trophy },
-  { href: "/progress", label: "Progress", icon: ChartLine },
+  { href: "/groups", label: "Squads", icon: Users, mobileTab: true },
+  { href: "/rank", label: "Podium", icon: Trophy },
+  { href: "/progress", label: "Growth", icon: ChartLine },
 ];
 
 export const secondaryNav: NavItem[] = [

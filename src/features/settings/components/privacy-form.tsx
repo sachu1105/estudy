@@ -32,11 +32,11 @@ export function PrivacyForm({
       className="flex max-w-xl flex-col gap-4 rounded-card border border-border bg-surface p-4"
     >
       <h2 id="privacy" className="text-h3">
-        Rank and privacy
+        Podium and privacy
       </h2>
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <Label htmlFor="hide-rank">Hide me from the rank</Label>
+          <Label htmlFor="hide-rank">Hide me from the podium</Label>
           <p className="text-small text-ink-muted">
             Others see you as &quot;Anonymous aspirant&quot;. Your email is
             never shown either way.

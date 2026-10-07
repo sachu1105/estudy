@@ -52,19 +52,19 @@ export function GroupMenu({
         <DropdownMenuContent align="end">
           {owner ? (
             <DropdownMenuItem
-              onSelect={() => run(deleteGroupAction, "Group deleted")}
+              onSelect={() => run(deleteGroupAction, "Squad deleted")}
             >
-              Delete group
+              Delete squad
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              onSelect={() => run(leaveGroupAction, "You left the group")}
+              onSelect={() => run(leaveGroupAction, "You left the squad")}
             >
-              Leave group
+              Leave squad
             </DropdownMenuItem>
           )}
           <DropdownMenuItem onSelect={() => setReporting(true)}>
-            Report group
+            Report squad
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -72,7 +72,7 @@ export function GroupMenu({
         open={reporting}
         onOpenChange={setReporting}
         target={{ type: "GROUP", id: groupId, groupId }}
-        what="this group"
+        what="this squad"
       />
     </>
   );

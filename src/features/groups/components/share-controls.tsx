@@ -46,7 +46,7 @@ export function ShareFromPods({
     start(async () => {
       const result = await shareFromPodAction({ groupId, podItemId });
       if (!result.ok) return void toast.error(result.error);
-      toast.success("Shared with the group");
+      toast.success("Shared with the squad");
       router.refresh();
     });
   return (
@@ -59,7 +59,7 @@ export function ShareFromPods({
       <SheetContent side="bottom" className="overflow-y-auto">
         <SheetTitle>Share from your pods</SheetTitle>
         <SheetDescription>
-          The group gets a copy. Your pod stays yours.
+          The squad gets a copy. Your pod stays yours.
         </SheetDescription>
         {items.length === 0 ? (
           <p className="text-body text-ink-muted">

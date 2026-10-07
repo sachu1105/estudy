@@ -32,12 +32,12 @@ export function ItemTools({
             start(async () => {
               const result = await removeGroupItemAction({ groupId, itemId });
               if (!result.ok) return void toast.error(result.error);
-              toast.success("Removed from the group");
+              toast.success("Removed from the squad");
               router.push(`/groups/${groupId}`);
             })
           }
         >
-          Remove from group
+          Remove from squad
         </Button>
       ) : null}
       <Button variant="ghost" onClick={() => setReporting(true)}>

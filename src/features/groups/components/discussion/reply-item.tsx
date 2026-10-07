@@ -78,7 +78,7 @@ export function ReplyItem({
       </div>
       {masked ? (
         <p className="text-body text-ink-muted italic">
-          A group admin hid this reply.
+          A squad admin hid this reply.
         </p>
       ) : (
         <PostBody source={reply.body} mentions={reply.mentions} />

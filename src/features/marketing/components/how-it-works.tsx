@@ -16,7 +16,7 @@ const steps = [
     body: "A day-by-day schedule that fits the hours you actually have.",
   },
   {
-    title: "Test and climb the rank",
+    title: "Test and climb the podium",
     body: "A short test after each task, and a rank that tracks your effort.",
   },
 ];

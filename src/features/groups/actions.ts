@@ -55,7 +55,7 @@ export async function createGroupAction(
       name: z
         .string()
         .trim()
-        .min(3, "Give the group a name of 3 letters or more.")
+        .min(3, "Give the squad a name of 3 letters or more.")
         .max(80),
       description: z
         .string()

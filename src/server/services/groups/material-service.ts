@@ -24,7 +24,7 @@ export type MaterialDeps = {
 
 const MUTED = failure(
   "MUTED",
-  "A group admin has muted you for now, so you can't share.",
+  "A squad admin has muted you for now, so you can't share.",
 );
 
 /** Shared material in groups: copies of pod items, or links (milestone 13, rule 15). */
@@ -47,7 +47,7 @@ export function createMaterialService(deps: MaterialDeps) {
       ? null
       : failure(
           "STORAGE",
-          "This group is out of space on its owner's plan. Share a link instead, or remove old files.",
+          "This squad is out of space on its owner's plan. Share a link instead, or remove old files.",
         );
   }
 
@@ -209,7 +209,7 @@ export function createMaterialService(deps: MaterialDeps) {
       if (!found?.canRemove)
         return failure(
           "FORBIDDEN",
-          "Only whoever shared it, or a group admin, can remove it.",
+          "Only whoever shared it, or a squad admin, can remove it.",
         );
       await deps.items.softDelete(itemId, deps.clock.now());
       for (const f of found.item.files)

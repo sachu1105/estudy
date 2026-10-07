@@ -9,6 +9,8 @@
 [data-theme="light"] {
   color-scheme: light;
   --bg: #f7f7f5;
+  /* The app shell around the content panel (top bar, sidebar), Drive style. */
+  --canvas: #ecece7;
   --surface: #ffffff;
   --surface-muted: #f0f0ec;
   --border: #e6e6e1;
@@ -63,6 +65,7 @@
 [data-theme="dark"] {
   color-scheme: dark;
   --bg: #0e0e11;
+  --canvas: #1a1a20;
   --surface: #16161b;
   --surface-muted: #1e1e25;
   --border: #2a2a33;
@@ -116,6 +119,7 @@
   --color-black: #000000;
 
   --color-bg: var(--bg);
+  --color-canvas: var(--canvas);
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --color-border: var(--border);

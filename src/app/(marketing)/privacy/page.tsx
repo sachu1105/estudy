@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           test answers and scores.
         </li>
         <li>
-          Group content you choose to share: notes, files, posts and shared
+          Squad content you choose to share: notes, files, posts and shared
           tests.
         </li>
         <li>

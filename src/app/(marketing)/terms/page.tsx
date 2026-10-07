@@ -44,7 +44,7 @@ export default function TermsPage() {
       <p>
         You keep ownership of what you upload. Only share material you have the
         right to share. Don&apos;t post anything abusive, illegal or misleading
-        in groups; we may remove it and suspend accounts that do.
+        in squads; we may remove it and suspend accounts that do.
       </p>
       <h2>Plans and pricing</h2>
       <p>

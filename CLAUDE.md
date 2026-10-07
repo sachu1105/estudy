@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# Studpods (web)
+# studypods (web)
 
 A personal study space for Indian competitive exam aspirants, starting with Kerala PSC
 (LDC, LGS, Degree level, High Court Assistant) and extending to SSC, RRB and banking.
@@ -328,7 +328,10 @@ Sentence case everywhere. Never Title Case.
     lg  0 16px 40px rgba(16,16,24,.10)   sheets, dialogs, command palette
   Dark mode: replace shadows with a 1px border plus a slightly lighter surface.
   Spacing: 4pt grid - 4, 8, 12, 16, 20, 24, 32, 40, 48, 64.
-  Layout: left sidebar on desktop (collapsible), bottom tab bar under 768px.
+  Layout: Drive style from 768px. The top bar (logo, search pill, actions) and the
+  collapsible left sidebar (nav only) sit on the canvas token; the page lives in a
+  rounded panel (bg, 1px border, radius 20) that scrolls on its own. Under 768px: one
+  plain scrolling page, a sticky top bar and the bottom tab bar.
   Content max width 1120px. Bento grid of stat tiles on Today and Progress.
 
 ### Motion and micro-interactions

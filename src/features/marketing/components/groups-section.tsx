@@ -30,7 +30,7 @@ function GroupPreview() {
   return (
     <div
       role="img"
-      aria-label="Preview of a study group with a shared mock test, a discussion and a group rank"
+      aria-label="Preview of a study squad with a shared mock test, a discussion and a squad rank"
       className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-md sm:p-5"
     >
       <div className="flex items-center justify-between gap-3">
@@ -104,18 +104,18 @@ export function GroupsSection() {
         <Reveal>
           <SectionHeading
             id="groups-title"
-            eyebrow="Groups"
+            eyebrow="Squads"
             title="Study together, stay accountable"
             align="left"
           >
-            Make a group with friends or your coaching batch. Share notes and
+            Make a squad with friends or your coaching batch. Share notes and
             mock tests, ask doubts, and see who studied the most this week.
           </SectionHeading>
           <ul className="mt-6 flex flex-col gap-3 text-body text-ink-muted">
             {[
               "Shared notes, PDFs and mock tests in one place",
               "Ask a doubt, mark the answer that helped",
-              "A weekly group rank that resets every Monday",
+              "A weekly squad rank that resets every Monday",
             ].map((point) => (
               <li key={point} className="flex items-start gap-3">
                 <Check

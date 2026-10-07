@@ -59,7 +59,7 @@ describe("pricing", () => {
     expect(one[0].label).toBe("1 syllabus upload");
     expect(one[1].label).toBe("1 active study plan");
     expect(one[3].label).toBe("1 section or full mock a week");
-    expect(one[5].label).toBe("1 group created, 3 joined");
+    expect(one[5].label).toBe("1 squad created, 3 joined");
     const unlimited = featureRows({
       ...plan,
       limits: {
@@ -68,7 +68,7 @@ describe("pricing", () => {
         groupsJoined: Infinity,
       },
     });
-    expect(unlimited[5].label).toBe("Unlimited groups, created or joined");
+    expect(unlimited[5].label).toBe("Unlimited squads, created or joined");
   });
 
   it("builds rows straight from the limits, so they cannot drift", () => {

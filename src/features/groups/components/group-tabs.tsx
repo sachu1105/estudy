@@ -18,7 +18,7 @@ export function GroupTabs({ groupId }: { groupId: string }) {
   ];
   return (
     <nav
-      aria-label="Group"
+      aria-label="Squad"
       className="mb-6 flex gap-1 overflow-x-auto border-b border-border"
     >
       {tabs.map((t) => {

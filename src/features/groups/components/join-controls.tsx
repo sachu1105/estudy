@@ -32,7 +32,7 @@ export function JoinButton({
   if (requested)
     return (
       <p className="text-body text-ink-muted">
-        Request sent. An admin of the group decides.
+        Request sent. An admin of the squad decides.
       </p>
     );
   return (
@@ -48,7 +48,7 @@ export function JoinButton({
         })
       }
     >
-      {privateGroup ? "Ask to join" : "Join group"}
+      {privateGroup ? "Ask to join" : "Join squad"}
     </Button>
   );
 }

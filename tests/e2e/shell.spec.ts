@@ -7,9 +7,9 @@ test.describe("app shell", () => {
       ["/pods", "Pods"],
       ["/syllabus", "Pods"], // the list moved into the pods home
       ["/tests", "Tests"],
-      ["/groups", "Groups"],
-      ["/rank", "Rank"],
-      ["/progress", "Progress"],
+      ["/groups", "Squads"],
+      ["/rank", "Podium"],
+      ["/progress", "Growth"],
       ["/settings", "Settings"],
     ];
     for (const [path, title] of routes) {
@@ -42,7 +42,7 @@ test.describe("app shell", () => {
       await nav.getByRole("button", { name: "More" }).click();
       await page
         .getByRole("dialog")
-        .getByRole("link", { name: "Rank" })
+        .getByRole("link", { name: "Podium" })
         .click();
       await expect(page).toHaveURL(/\/rank$/);
     }
@@ -74,7 +74,7 @@ test.describe("app shell", () => {
       await page.keyboard.press("Control+k");
       await expect(input).toBeVisible({ timeout: 1_000 });
     }).toPass();
-    await input.fill("progress");
+    await input.fill("growth");
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/progress$/);
   });

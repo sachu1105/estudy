@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { setThemePreference } from "@/lib/theme";
 
-import { LogoMark } from "./logo";
+import { Logo, LogoMark } from "./logo";
 import { NotificationBell } from "./notification-bell";
 import { primaryNav, secondaryNav } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
@@ -90,24 +90,32 @@ export function TopBar({ viewer, logout }: TopBarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-bg/90 px-4 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-bg/90 px-4 backdrop-blur md:static md:border-0 md:bg-transparent md:pr-4 md:pl-0 md:backdrop-blur-none">
       <Link href="/today" aria-label="Today" className="md:hidden">
         <LogoMark />
+      </Link>
+      {/* As wide as the sidebar under it, so the logo sits over the nav. */}
+      <Link
+        href="/today"
+        className="hidden h-10 w-60 shrink-0 items-center px-[18px] transition-[width] duration-[200ms] ease-out md:flex sidebar-collapsed:w-[72px] sidebar-collapsed:justify-center sidebar-collapsed:px-0"
+      >
+        <Logo className="sidebar-collapsed:hidden" />
+        <Logo showName={false} className="hidden sidebar-collapsed:flex" />
       </Link>
 
       <button
         type="button"
         onClick={() => setPaletteOpen(true)}
-        className="flex h-10 max-w-sm flex-1 cursor-pointer items-center gap-2.5 rounded-control border border-border bg-surface px-3 text-body text-ink-muted transition-colors hover:border-ink-subtle"
+        className="flex h-10 max-w-xl min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-full border border-border bg-surface px-4 text-body text-ink-muted transition-colors hover:border-ink-subtle md:mx-auto md:h-11"
       >
-        <Search className="size-4" aria-hidden />
-        <span className="flex-1 text-left">Search or jump to…</span>
+        <Search className="size-4 shrink-0" aria-hidden />
+        <span className="flex-1 truncate text-left">Search pods…</span>
         <kbd className="hidden rounded-[6px] border border-border px-1.5 font-mono text-micro text-ink-muted sm:inline">
           Ctrl K
         </kbd>
       </button>
 
-      <div className="ml-auto flex items-center gap-2 sm:gap-3">
+      <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3 md:ml-0">
         <ThemeToggle className="hidden sm:inline-flex" />
         <NotificationBell initial={viewer.unread ?? 0} />
         <DropdownMenu>

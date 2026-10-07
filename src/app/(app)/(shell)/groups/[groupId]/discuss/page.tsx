@@ -12,7 +12,7 @@ import { requireUser } from "@/server/auth/session";
 import { discussionService, groupService } from "@/server/services/groups";
 import { podService } from "@/server/services/pods";
 
-export const metadata: Metadata = { title: "Group discussion" };
+export const metadata: Metadata = { title: "Squad discussion" };
 
 const FILTERS = [
   { value: "all", label: "All" },

@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const sections = [
   ["Features", "features"],
   ["How it works", "how-it-works"],
-  ["Groups", "groups"],
+  ["Squads", "groups"],
   ["Pricing", "pricing"],
   ["FAQ", "faq"],
 ] as const;

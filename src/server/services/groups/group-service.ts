@@ -17,11 +17,11 @@ export type GroupDeps = {
 
 const NOT_FOUND = failure(
   "NOT_FOUND",
-  "That group doesn't exist or isn't open to you.",
+  "That squad doesn't exist or isn't open to you.",
 );
 const NOT_ALLOWED = failure(
   "FORBIDDEN",
-  "Only the group's admins can do that.",
+  "Only the squad's admins can do that.",
 );
 const RANK: Record<Role, number> = { OWNER: 3, ADMIN: 2, MEMBER: 1 };
 
@@ -52,7 +52,7 @@ export function createGroupService(deps: GroupDeps) {
       ? null
       : failure(
           "LIMIT",
-          `Your plan lets you join ${max} groups. Leave one to join another.`,
+          `Your plan lets you join ${max} squads. Leave one to join another.`,
         );
   }
 
@@ -73,7 +73,7 @@ export function createGroupService(deps: GroupDeps) {
       if ((await deps.groups.countOwned(user.id)) >= max)
         return failure(
           "LIMIT",
-          `Your plan lets you create ${max} group${max === 1 ? "" : "s"}.`,
+          `Your plan lets you create ${max} squad${max === 1 ? "" : "s"}.`,
         );
       const group = await deps.groups.create({ ...input, ownerId: user.id });
       return { ok: true, groupId: group.id };
@@ -151,7 +151,7 @@ export function createGroupService(deps: GroupDeps) {
       if (found.membership.role === "OWNER")
         return failure(
           "OWNER",
-          "The owner can't leave. Delete the group, or make someone else owner first.",
+          "The owner can't leave. Delete the squad, or make someone else owner first.",
         );
       await deps.groups.removeMember(groupId, user.id);
       return { ok: true };
@@ -205,7 +205,7 @@ export function createGroupService(deps: GroupDeps) {
       if ("error" in ok) return ok.error!;
       const target = await deps.groups.membership(groupId, targetId);
       if (!target || targetId === user.id)
-        return failure("NOT_FOUND", "That person isn't in the group.");
+        return failure("NOT_FOUND", "That person isn't in the squad.");
       if (RANK[target.role] >= RANK[ok.me.role]) return NOT_ALLOWED;
       if (action.kind === "role" && ok.me.role !== "OWNER")
         return failure("FORBIDDEN", "Only the owner changes who's an admin.");

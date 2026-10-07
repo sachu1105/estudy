@@ -48,7 +48,7 @@ export function BuildTestDialog({
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Build a test for the group</DialogTitle>
+          <DialogTitle>Build a test for the squad</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           <Label htmlFor="test-title">Name</Label>
@@ -125,7 +125,7 @@ export function BuildTestDialog({
                   minutes: minutes === "0" ? null : Number(minutes),
                 });
                 if (!result.ok) return void toast.error(result.error);
-                toast.success("Test shared with the group");
+                toast.success("Test shared with the squad");
                 setOpen(false);
                 router.refresh();
               })
