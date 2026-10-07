@@ -38,29 +38,31 @@ export default async function PodsPage() {
       <PageHeader
         title="Pods"
         description="An exam pod for each syllabus, and a pod for every subject in it."
+        inlineActions
         actions={
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-            <div className="flex gap-2">
-              <Button asChild variant="ghost" className="flex-1 sm:flex-none">
-                <Link href="/pods/search">
-                  <Search aria-hidden /> Search
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" className="flex-1 sm:flex-none">
-                <Link href="/pods/trash">
-                  <Trash2 aria-hidden /> Trash
-                </Link>
-              </Button>
-            </div>
-            <NewPodButton />
-            {atLimit ? null : (
-              <Button asChild variant="primary">
-                <Link href="/syllabus/new">Add exam syllabus</Link>
-              </Button>
-            )}
+          <div className="flex items-center gap-1">
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/pods/search" aria-label="Search your pods">
+                <Search aria-hidden />
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/pods/trash" aria-label="Trash">
+                <Trash2 aria-hidden />
+              </Link>
+            </Button>
           </div>
         }
       />
+      {/* Making things: side by side, under the title, in thumb reach on a phone. */}
+      <div className="-mt-4 mb-8 grid grid-cols-2 gap-2 sm:flex">
+        {atLimit ? null : (
+          <Button asChild variant="primary">
+            <Link href="/syllabus/new">Add exam syllabus</Link>
+          </Button>
+        )}
+        <NewPodButton />
+      </div>
       {empty ? (
         <EmptyState
           icon={Boxes}

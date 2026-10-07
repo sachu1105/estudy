@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/toast";
 import { startTaskTestAction } from "@/features/tests/actions";
 import { cn } from "@/lib/utils/cn";
 
-import { groupTasks, type TaskGroup } from "../group-tasks";
+import { groupTasks, type TaskGroup } from "@/features/plans/group-tasks";
 import { setTaskDoneAction } from "../actions";
 
 export type TodayTask = {

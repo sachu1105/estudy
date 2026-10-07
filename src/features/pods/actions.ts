@@ -5,12 +5,13 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { noteDocSchema, type DocNode } from "@/lib/notes/doc";
-import { itemService, podService } from "@/server/services/pods";
+import { examService, itemService, podService } from "@/server/services/pods";
 
 import {
   addLinkSchema,
   addNoteSchema,
   arrangeBoardSchema,
+  examIdSchema,
   itemIdSchema,
   itemTopicsSchema,
   newPodSchema,
@@ -105,6 +106,21 @@ export async function deletePodAction(input: unknown): Promise<ActionResult> {
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/pods", "layout");
   return { ok: true };
+}
+
+/** Deletes a whole exam pod: its plan, its empty subject pods and the user's upload. */
+export async function deleteExamAction(
+  input: unknown,
+): Promise<ActionResult<{ kept: number }>> {
+  const user = await requireUser();
+  const parsed = examIdSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const result = await examService.remove(user, parsed.data.syllabusId);
+  if (!result.ok) return { ok: false, error: result.message };
+  revalidatePath("/", "layout");
+  return { ok: true, kept: result.kept };
 }
 
 /** "Use this syllabus" from the catalogue: its subjects become the user's pods. */

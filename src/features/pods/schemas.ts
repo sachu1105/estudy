@@ -33,6 +33,7 @@ export const arrangeBoardSchema = z.object({
   }),
 });
 export const adoptSyllabusSchema = z.object({ versionId: z.uuid() });
+export const examIdSchema = z.object({ syllabusId: z.uuid() });
 
 export type ActionResult<T = object> =
   ({ ok: true } & T) | { ok: false; error: string };

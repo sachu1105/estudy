@@ -146,7 +146,8 @@ export function createProgressService(deps: ProgressDeps) {
      * A month of the user's plans: minutes and tasks per day, and what got done. Past
      * days show only what was done, never what wasn't (rule 7).
      */
-    async calendar(user: User, month: string) {
+    /** A month of study days: every active plan, or one exam's (its pod's Plan tab). */
+    async calendar(user: User, month: string, syllabusVersionId?: string) {
       const today = todayFor(user);
       const first = `${month}-01`;
       const [y, m] = month.split("-").map(Number);
@@ -155,8 +156,13 @@ export function createProgressService(deps: ProgressDeps) {
         -1,
       );
       const [days, done] = await Promise.all([
-        deps.progress.planDaysBetween(user.id, first, last),
-        deps.progress.doneCountsBetween(user.id, first, last),
+        deps.progress.planDaysBetween(user.id, first, last, syllabusVersionId),
+        deps.progress.doneCountsBetween(
+          user.id,
+          first,
+          last,
+          syllabusVersionId,
+        ),
       ]);
       const byDate = new Map<
         string,
@@ -319,6 +325,7 @@ export function createProgressService(deps: ProgressDeps) {
         plans: plans.map((p) => ({
           id: p.id,
           title: p.title,
+          examId: p.syllabusVersionId,
           diff: p.replanDiff && !p.diffSeenAt ? p.replanDiff : null,
         })),
         tasks: rows,

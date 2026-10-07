@@ -65,7 +65,14 @@ export default async function HowPage({
 
   return (
     <div className="mx-auto max-w-4xl">
-      <BackLink href={`/plan/${plan.id}`} label="Study plan" />
+      <BackLink
+        href={
+          plan.syllabusVersionId
+            ? `/pods/exam/${plan.syllabusVersionId}/plan`
+            : "/pods"
+        }
+        label={plan.title}
+      />
       <PageHeader
         title="How your plan was built"
         description={`${plan.title}. Every number below came from what you entered and the rules at the end.`}

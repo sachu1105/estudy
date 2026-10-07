@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shell/page-header";
-import { Button } from "@/components/ui/button";
 import { BackLink } from "@/features/pods/components/back-link";
 import { ParseStatus } from "@/features/syllabus/components/parse-status";
 import { RereadNote } from "@/features/syllabus/components/reread-note";
@@ -54,27 +52,16 @@ export default async function SyllabusVersionPage({
     );
   }
 
-  const confirmed = state === "confirmed";
+  // A confirmed syllabus is edited inside its exam pod, under its Syllabus tab.
+  if (state === "confirmed") redirect(`/pods/exam/${version.id}/syllabus`);
+
   return (
     <>
-      {confirmed ? (
-        <BackLink href={`/pods/exam/${version.id}`} label={version.title} />
-      ) : (
-        <BackLink href="/pods" label="Pods" />
-      )}
+      <BackLink href="/pods" label="Pods" />
       <PageHeader
-        title={confirmed ? "Edit syllabus" : version.title}
+        title={version.title}
         description={subtitle}
-        actions={
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-            <DeleteSyllabusButton versionId={version.id} />
-            {confirmed ? (
-              <Button asChild variant="primary">
-                <Link href={`/pods/exam/${version.id}`}>Open exam pod</Link>
-              </Button>
-            ) : null}
-          </div>
-        }
+        actions={<DeleteSyllabusButton versionId={version.id} />}
       />
       {canReadAgain(version) ? (
         <div className="mb-5">
@@ -85,7 +72,6 @@ export default async function SyllabusVersionPage({
         versionId={version.id}
         initialTree={toEditableTree(version.subjects)}
         sourceText={version.parse?.extractedText ?? ""}
-        confirmed={confirmed}
         warnings={version.parse?.warnings ?? []}
       />
     </>

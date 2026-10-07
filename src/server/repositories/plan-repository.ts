@@ -109,6 +109,14 @@ export const planRepository = {
     });
   },
 
+  /** The exam pod was deleted: its plan stops, and Today stops showing its tasks. */
+  archiveForExam(userId: string, syllabusVersionId: string) {
+    return prisma.studyPlan.updateMany({
+      where: { userId, syllabusVersionId, status: "ACTIVE" },
+      data: { status: "ARCHIVED" },
+    });
+  },
+
   listActive(userId: string) {
     return prisma.studyPlan.findMany({
       where: { userId, status: "ACTIVE" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, FileText, Plus } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useReducer, useState, useTransition } from "react";
 
@@ -18,6 +18,7 @@ import { useHydrated } from "@/lib/use-hydrated";
 import { confirmSyllabusAction, saveDraftAction } from "../actions";
 import { topicCount, treeReducer } from "../tree-reducer";
 import { useAutosave } from "../use-autosave";
+import { GarbledNote } from "./garbled-note";
 import { SaveIndicator } from "./save-indicator";
 import { SubjectCard } from "./subject-card";
 import { SubjectMenu } from "./subject-menu";
@@ -26,20 +27,20 @@ type SubjectsBoardProps = {
   versionId: string;
   initialTree: EditableTree;
   sourceText: string;
-  confirmed: boolean;
   /** From the parse, e.g. MALAYALAM_GARBLED. */
   warnings: string[];
 };
 
 /**
- * Every subject as a folder. Fix subjects here (rename, order, remove, add); topics are
- * fixed inside each folder, so nobody has to rate every topic before they can start.
+ * Every subject as a folder, while a new syllabus is checked before it's confirmed. Fix
+ * subjects here (rename, order, remove, add); topics are fixed inside each folder, so
+ * nobody has to rate every topic before they can start. Once confirmed, the exam pod's
+ * Syllabus tab (`SyllabusEditor`) is where it's edited.
  */
 export function SubjectsBoard({
   versionId,
   initialTree,
   sourceText,
-  confirmed,
   warnings,
 }: SubjectsBoardProps) {
   const router = useRouter();
@@ -74,30 +75,11 @@ export function SubjectsBoard({
   const topics = topicCount(tree);
   return (
     <div className="flex flex-col gap-5">
-      {warnings.includes("MALAYALAM_GARBLED") ? (
-        <div
-          role="note"
-          className="flex items-start gap-3 rounded-card border border-border bg-surface-muted p-4"
-        >
-          {" "}
-          <AlertCircle
-            className="mt-0.5 size-5 shrink-0 text-ink-muted"
-            aria-hidden
-          />{" "}
-          <p className="text-body text-ink-muted">
-            {" "}
-            This PDF uses an old Malayalam font, so some words came out with
-            letters missing. We fixed what we could. Check the subject and topic
-            names, or paste the text from another copy.{" "}
-          </p>{" "}
-        </div>
-      ) : null}
+      {warnings.includes("MALAYALAM_GARBLED") ? <GarbledNote /> : null}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-body text-ink-muted">
-          {tree.subjects.length} subjects, {topics} topics.{" "}
-          {confirmed
-            ? "Open a folder to see or fix its topics."
-            : "Check the subjects, then confirm."}
+          {tree.subjects.length} subjects, {topics} topics. Check the subjects,
+          then confirm.
         </p>
         <div className="flex items-center gap-3">
           <SaveIndicator state={save.state} error={save.error} />
@@ -122,15 +104,10 @@ export function SubjectsBoard({
         {tree.subjects.map((subject, i) => (
           <SubjectCard
             key={subject.id}
-            // Confirmed: the subject's pod. Before that: its topics, to check them.
-            href={
-              confirmed
-                ? `/pods/subject/${subject.id}`
-                : `/syllabus/${versionId}/subjects/${subject.id}`
-            }
+            href={`/syllabus/${versionId}/subjects/${subject.id}`}
             name={subject.name}
             topics={subject.topics}
-            cta={confirmed ? "Open pod" : "Check topics"}
+            cta="Check topics"
             menu={
               <SubjectMenu
                 name={subject.name}
@@ -177,28 +154,25 @@ export function SubjectsBoard({
         </button>
       </div>
 
-      {confirmed ? null : (
-        // One line on phones, so it doesn't cover the subjects above the tab bar.
-        <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom)+0.5rem)] z-30 flex items-center justify-between gap-3 rounded-card border border-border bg-surface p-2 pl-4 shadow-lg sm:p-3 sm:pl-4 md:bottom-4">
-          <p className="text-small text-ink-muted">
-            Subjects look right?
-            <span className="hidden sm:inline">
-              {" "}
-              Confirm to build a plan. You can fix topics in each folder any
-              time.
-            </span>
-          </p>
-          <Button
-            variant="primary"
-            size="lg"
-            disabled={!hydrated || confirming}
-            onClick={confirm}
-            className="shrink-0"
-          >
-            {confirming ? "Confirming" : "Confirm syllabus"}
-          </Button>
-        </div>
-      )}
+      {/* One line on phones, so it doesn't cover the subjects above the tab bar. */}
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom)+0.5rem)] z-30 flex items-center justify-between gap-3 rounded-card border border-border bg-surface p-2 pl-4 shadow-lg sm:p-3 sm:pl-4 md:bottom-4">
+        <p className="text-small text-ink-muted">
+          Subjects look right?
+          <span className="hidden sm:inline">
+            {" "}
+            Confirm to build a plan. You can fix topics in each folder any time.
+          </span>
+        </p>
+        <Button
+          variant="primary"
+          size="lg"
+          disabled={!hydrated || confirming}
+          onClick={confirm}
+          className="shrink-0"
+        >
+          {confirming ? "Confirming" : "Confirm syllabus"}
+        </Button>
+      </div>
     </div>
   );
 }

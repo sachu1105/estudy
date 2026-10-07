@@ -37,9 +37,9 @@ test.describe("progress and rank", () => {
     ).toBeVisible();
 
     await page.goto("/today");
+    // Today's open topic: tick its first task.
     await page
-      .getByRole("region", { name: "To do" })
-      .getByRole("checkbox")
+      .getByRole("checkbox", { name: /^Mark .+ as done$/ })
       .first()
       .click();
     await expect(page.getByRole("region", { name: "Done" })).toBeVisible();

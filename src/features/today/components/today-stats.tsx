@@ -1,8 +1,7 @@
 "use client";
 
 import { Info } from "lucide-react";
-import type { ReactNode } from "react";
-
+import { StatCell as Cell, StatStrip } from "@/components/blocks/stat-strip";
 import { StreakChip } from "@/components/blocks/streak-chip";
 import {
   Dialog,
@@ -14,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { STREAK_MINUTES } from "@/lib/progress/streak";
 import { STREAK_XP_CAP, STREAK_XP_PER_DAY } from "@/lib/progress/xp";
-import { cn } from "@/lib/utils/cn";
 
 type TodayStatsProps = {
   minutesDone: number;
@@ -45,7 +43,7 @@ export function TodayStats({
     ? Math.round((coverage.done / coverage.total) * 100)
     : 0;
   return (
-    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border lg:grid-cols-4">
+    <StatStrip>
       <Cell
         label="Minutes today"
         value={`${minutesDone}/${minutesPlanned}`}
@@ -82,48 +80,7 @@ export function TodayStats({
         value={daysLeft ?? "–"}
         hint="Until your plan ends"
       />
-    </div>
-  );
-}
-
-function Cell({
-  label,
-  value,
-  hint,
-  bar,
-  aside,
-}: {
-  label: string;
-  value: ReactNode;
-  hint: string;
-  bar?: number;
-  aside?: ReactNode;
-}) {
-  const plain = typeof value === "string" || typeof value === "number";
-  return (
-    <div className="flex min-w-0 flex-col gap-1.5 bg-surface p-4">
-      <div className="flex items-start justify-between gap-1">
-        <span className="text-micro text-ink-muted uppercase">{label}</span>
-        {aside}
-      </div>
-      <span
-        className={cn(
-          "flex h-8 items-center",
-          plain && "font-mono text-h2 font-medium text-ink tabular-nums",
-        )}
-      >
-        {value}
-      </span>
-      {bar === undefined ? null : (
-        <span className="h-1 overflow-hidden rounded-full bg-surface-muted">
-          <span
-            className="block h-full rounded-full bg-accent transition-[width] duration-[300ms]"
-            style={{ width: `${Math.min(100, Math.max(0, bar))}%` }}
-          />
-        </span>
-      )}
-      <span className="text-small text-balance text-ink-muted">{hint}</span>
-    </div>
+    </StatStrip>
   );
 }
 

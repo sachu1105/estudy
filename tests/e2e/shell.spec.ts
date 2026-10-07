@@ -4,8 +4,6 @@ test.describe("app shell", () => {
   test("renders a placeholder page for every app route", async ({ page }) => {
     const routes: [string, string | RegExp][] = [
       ["/today", "Today"],
-      ["/plan", /^(Plan|Study plan)$/],
-      ["/calendar", "Calendar"],
       ["/pods", "Pods"],
       ["/syllabus", "Pods"], // the list moved into the pods home
       ["/tests", "Tests"],
@@ -31,9 +29,11 @@ test.describe("app shell", () => {
       .getByRole("navigation", { name: "Main" })
       .filter({ visible: true });
     await expect(nav).toHaveCount(1);
-    await nav.getByRole("link", { name: "Plan" }).click();
-    await expect(page).toHaveURL(/\/plan$/);
-    await expect(nav.getByRole("link", { name: "Plan" })).toHaveAttribute(
+    // Plan and calendar live inside each exam pod now, so the nav has no tab for them.
+    await expect(nav.getByRole("link", { name: "Plan" })).toHaveCount(0);
+    await nav.getByRole("link", { name: "Pods" }).click();
+    await expect(page).toHaveURL(/\/pods$/);
+    await expect(nav.getByRole("link", { name: "Pods" })).toHaveAttribute(
       "aria-current",
       "page",
     );

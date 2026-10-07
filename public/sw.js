@@ -30,8 +30,13 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-/** Pages the app caches a copy of, so they open again offline. */
-const CACHEABLE = ["/today", "/plan", "/calendar", "/pods"];
+/**
+ * Pages the app caches a copy of, so they open again offline: Today, the pods home, and
+ * each exam pod's subjects and plan (the plan and calendar live there now).
+ */
+const CACHEABLE = ["/today", "/pods"];
+const EXAM_POD = /^\/pods\/exam\/[0-9a-f-]{36}(\/plan)?$/;
+const cacheable = (path) => CACHEABLE.includes(path) || EXAM_POD.test(path);
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
@@ -47,7 +52,7 @@ self.addEventListener("fetch", (event) => {
     (async () => {
       try {
         const fresh = await fetch(request);
-        if (fresh.ok && CACHEABLE.includes(url.pathname)) {
+        if (fresh.ok && cacheable(url.pathname)) {
           const cache = await caches.open(PAGES);
           cache.put(request, fresh.clone());
         }

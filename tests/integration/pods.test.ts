@@ -4,10 +4,13 @@ import { fixedClock } from "@/lib/clock";
 import type { EditableTree } from "@/lib/syllabus/tree";
 import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
+import { planRepository } from "@/server/repositories/plan-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { topicCompletionRepository } from "@/server/repositories/topic-completion-repository";
+import { createExamService } from "@/server/services/pods/exam-service";
 import { createPodService } from "@/server/services/pods/pod-service";
+import { createMemoryStorage } from "@/server/storage/memory";
 
 import { resetDatabase } from "./helpers";
 
@@ -15,6 +18,14 @@ const pods = createPodService({
   pods: podRepository,
   syllabuses: syllabusRepository,
   completions: topicCompletionRepository,
+  clock: fixedClock("2026-10-06T04:30:00Z"),
+});
+
+const exams = createExamService({
+  pods: podRepository,
+  plans: planRepository,
+  syllabuses: syllabusRepository,
+  storage: createMemoryStorage().storage,
   clock: fixedClock("2026-10-06T04:30:00Z"),
 });
 
@@ -216,6 +227,70 @@ describe("subject pods", () => {
     await pods.syncFromSyllabus(user, versionId);
     const kept = (await pods.list(user)).find((p) => p.id === english.id);
     expect(kept).toMatchObject({ kind: "CUSTOM", items: 1 });
+  });
+
+  it("deletes an exam pod whole: plan stopped, empty pods gone, material kept", async () => {
+    const user = await makeUser();
+    const { versionId } = await confirmedSyllabus(user.id);
+    await pods.syncFromSyllabus(user, versionId);
+    const english = (await pods.list(user)).find((p) => p.name === "English")!;
+    await prisma.podItem.create({
+      data: {
+        podId: english.id,
+        ownerId: user.id,
+        type: "LINK",
+        title: "Tenses",
+      },
+    });
+    const plan = await prisma.studyPlan.create({
+      data: {
+        userId: user.id,
+        syllabusVersionId: versionId,
+        title: "LDC",
+        startDate: new Date("2026-10-06"),
+        endDate: new Date("2026-12-06"),
+        inputs: {},
+        availableMinutes: 0,
+        requiredMinutes: 0,
+        plannedMinutes: 0,
+      },
+    });
+
+    expect(await exams.remove(user, versionId)).toEqual({ ok: true, kept: 1 });
+    const after = await pods.exams(user);
+    expect(after.exams).toEqual([]);
+    expect(after.own.map((p) => [p.name, p.items])).toEqual([["English", 1]]);
+    expect(
+      (await prisma.studyPlan.findUniqueOrThrow({ where: { id: plan.id } }))
+        .status,
+    ).toBe("ARCHIVED");
+    expect(await syllabusRepository.findOwned(versionId, user.id)).toBeNull();
+    // Nothing left to delete a second time, and nobody else can.
+    expect((await exams.remove(user, versionId)).ok).toBe(false);
+  });
+
+  it("deleting a catalogue exam pod leaves the shared syllabus alone", async () => {
+    const user = await makeUser();
+    const other = await makeUser("b@example.com");
+    const version = await prisma.syllabusVersion.create({
+      data: {
+        title: "LDC catalogue",
+        visibility: "CATALOGUE",
+        status: "APPROVED",
+      },
+    });
+    await syllabusRepository.replaceTree(version.id, {
+      subjects: [{ id: id(), name: "History", topics: [topic("Kerala")] }],
+    });
+    await pods.syncFromSyllabus(user, version.id);
+    await pods.syncFromSyllabus(other, version.id);
+
+    expect(await exams.remove(user, version.id)).toEqual({ ok: true, kept: 0 });
+    expect((await pods.exams(user)).exams).toEqual([]);
+    expect((await pods.exams(other)).exams).toHaveLength(1);
+    // Adding it again brings the pods back.
+    await pods.syncFromSyllabus(user, version.id);
+    expect((await pods.exams(user)).exams).toHaveLength(1);
   });
 
   it("logs every tick and untick, the latest one winning (rule 6)", async () => {

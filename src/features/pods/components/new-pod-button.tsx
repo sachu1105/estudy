@@ -37,7 +37,7 @@ export function NewPodButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary">
+        <Button variant="secondary" className="w-full sm:w-auto">
           <Plus aria-hidden /> New pod
         </Button>
       </DialogTrigger>

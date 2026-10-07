@@ -73,12 +73,15 @@ test.describe("study plan", () => {
     await expect(page).toHaveURL(`${setup}/review`);
     await expect(page.getByText("Yes: gentler first week")).toBeVisible();
     await page.getByRole("button", { name: "Build my plan" }).click();
-    await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}\?new=1$/);
+    // The plan lives in the exam pod's Plan tab.
+    await expect(page).toHaveURL(
+      new RegExp(`/pods/exam/${examId}/plan\\?new=1$`),
+    );
     await expect(
       page.getByRole("heading", { name: "Your plan is ready" }),
     ).toBeVisible();
     const today = page.getByRole("region", { name: "Today" });
-    await expect(today.getByText(/^Study /).first()).toBeVisible();
+    await expect(today.getByText(/^Study/).first()).toBeVisible();
     await today.getByText("Why this?").first().click();
     await expect(today.getByText(/min in all: /).first()).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
@@ -100,6 +103,8 @@ test.describe("study plan", () => {
       .fill(next.toISOString().slice(0, 10));
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText("Task moved")).toBeVisible();
+    // Days other than today are folded to one line; open tomorrow.
+    await tomorrow.getByText("Tomorrow", { exact: true }).click();
     await expect(tomorrow.getByText(/placed by you/).first()).toBeVisible();
     // Part numbers follow the order on screen, so find the moved block by its mark.
     await tomorrow
@@ -119,7 +124,7 @@ test.describe("study plan", () => {
     await expect(
       page
         .getByRole("region", { name: "Today" })
-        .getByText("Solve the 2023 paper"),
+        .getByText("Solve the 2023 paper", { exact: true }),
     ).toBeVisible();
 
     // Re-plan on demand keeps it.
@@ -128,7 +133,7 @@ test.describe("study plan", () => {
     await expect(
       page
         .getByRole("region", { name: "Today" })
-        .getByText("Solve the 2023 paper"),
+        .getByText("Solve the 2023 paper", { exact: true }),
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
@@ -143,16 +148,21 @@ test.describe("study plan", () => {
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    // The calendar: today links into the plan.
-    await page.goto("/calendar");
+    // The calendar is the plan's month view, in the same tab.
+    await page.getByRole("link", { name: title, exact: true }).click();
+    await page.getByRole("link", { name: "Month", exact: true }).click();
+    await expect(page).toHaveURL(/\/plan\?view=month$/);
     await expect(
-      page.getByRole("heading", { level: 1, name: "Calendar" }),
+      page.getByRole("navigation", { name: "Months" }),
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    // The exam pod now opens the plan, and a topic says when it comes up.
-    await page.goto(`/pods/exam/${examId}`);
-    await expect(page.getByRole("link", { name: "Open plan" })).toBeVisible();
+    // The exam pod's tabs: subjects and plan side by side, and a topic says when it
+    // comes up.
+    const tabs = page.getByRole("navigation", { name: "Exam" });
+    await tabs.getByRole("link", { name: "Subjects" }).click();
+    await expect(page).toHaveURL(new RegExp(`/pods/exam/${examId}$`));
+    await expect(tabs.getByRole("link", { name: "Plan" })).toBeVisible();
     await page
       .getByRole("link", { name: "Indian Constitution", exact: true })
       .click();

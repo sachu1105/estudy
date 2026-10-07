@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/server/db";
+import { Prisma } from "@/server/db/generated/prisma/client";
 import type { PlanTaskType, XpKind } from "@/server/db/generated/prisma/client";
 
 import { fromDbDate, toDbDate } from "./plan-repository";
@@ -69,11 +70,17 @@ export const progressRepository = {
   },
 
   /** Days of the user's active plans between two dates, with their task counts. */
-  planDaysBetween(userId: string, from: string, to: string) {
+  /** Planned days between two dates, across active plans or for one exam's plan. */
+  planDaysBetween(
+    userId: string,
+    from: string,
+    to: string,
+    syllabusVersionId?: string,
+  ) {
     return prisma.planDay.findMany({
       where: {
         date: { gte: toDbDate(from), lte: toDbDate(to) },
-        plan: { userId, status: "ACTIVE" },
+        plan: { userId, status: "ACTIVE", syllabusVersionId },
       },
       orderBy: { date: "asc" },
       select: {
@@ -85,14 +92,29 @@ export const progressRepository = {
     });
   },
 
-  /** How many tasks are still ticked on each day between two dates. */
-  async doneCountsBetween(userId: string, from: string, to: string) {
+  /**
+   * How many tasks are still ticked on each day between two dates; for one exam, its
+   * plans' tasks only (re-plans archive the old plan, so every plan of the exam counts).
+   */
+  async doneCountsBetween(
+    userId: string,
+    from: string,
+    to: string,
+    syllabusVersionId?: string,
+  ) {
+    const exam = syllabusVersionId
+      ? Prisma.sql`AND "taskId" IN (
+          SELECT t.id FROM "PlanTask" t JOIN "StudyPlan" p ON p.id = t."planId"
+          WHERE p."userId" = ${userId}::uuid
+            AND p."syllabusVersionId" = ${syllabusVersionId}::uuid)`
+      : Prisma.empty;
     const rows = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`
       SELECT "localDate" AS day, COUNT(*) AS count FROM (
         SELECT DISTINCT ON ("taskId") "localDate", done
         FROM "TaskCompletion"
         WHERE "userId" = ${userId}::uuid
           AND "localDate" BETWEEN ${toDbDate(from)} AND ${toDbDate(to)}
+          ${exam}
         ORDER BY "taskId", "createdAt" DESC, id DESC
       ) latest WHERE done GROUP BY "localDate"`;
     return new Map(rows.map((r) => [fromDbDate(r.day), Number(r.count)]));

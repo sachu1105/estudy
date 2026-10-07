@@ -44,6 +44,17 @@ export function PodBoard({
 }) {
   const dndId = useId();
   const [board, setBoard] = useState(initialBoard);
+  // On a phone, open the column being worked on: Studying, else the first with pods.
+  const [open, setOpen] = useState<Record<PodStage, boolean>>(() => {
+    const first =
+      initialBoard.STUDYING.length > 0
+        ? "STUDYING"
+        : (POD_STAGES.find((s) => initialBoard[s].length > 0) ?? "TO_STUDY");
+    return Object.fromEntries(
+      POD_STAGES.map((s) => [s, s === first]),
+    ) as Record<PodStage, boolean>;
+  });
+  const reveal = (stage: PodStage) => setOpen((o) => ({ ...o, [stage]: true }));
   const before = useRef(initialBoard);
   const [, start] = useTransition();
   const byId = new Map(pods.map((p) => [p.id, p]));
@@ -100,6 +111,8 @@ export function PodBoard({
       if (from !== to)
         next = { ...board, [stage]: arrayMove(board[stage], from, to) };
     }
+    const landed = stageOf(next, active.id);
+    if (landed) reveal(landed);
     save(next, before.current);
   };
 
@@ -108,6 +121,7 @@ export function PodBoard({
       POD_STAGES.map((s) => [s, board[s].filter((id) => id !== podId)]),
     ) as Board;
     next[to] = [...next[to], podId];
+    reveal(to);
     save(next, board);
     toast.success(`${name(podId)} moved to ${stageLabels[to].toLowerCase()}`);
   };
@@ -143,6 +157,8 @@ export function PodBoard({
             stage={stage}
             pods={board[stage].flatMap((id) => byId.get(id) ?? [])}
             onMove={moveTo}
+            open={open[stage]}
+            onToggle={() => setOpen((o) => ({ ...o, [stage]: !o[stage] }))}
           />
         ))}
       </div>

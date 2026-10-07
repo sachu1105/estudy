@@ -16,11 +16,14 @@ export function CalendarDay({
   today,
   planned,
   done,
+  planHref,
 }: {
   date: string;
   today: string;
   planned: { planId: string; minutes: number; tasks: number } | undefined;
   done: number;
+  /** The exam's Plan tab; a planned day opens its week there. */
+  planHref: string;
 }) {
   const past = date < today;
   const isToday = date === today;
@@ -83,7 +86,7 @@ export function CalendarDay({
   );
   return ahead ? (
     <Link
-      href={`/plan/${ahead.planId}?from=${date}#days`}
+      href={`${planHref}?from=${date}#days`}
       aria-label={label}
       className={cell}
     >

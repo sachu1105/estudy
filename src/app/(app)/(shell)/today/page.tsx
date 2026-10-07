@@ -94,7 +94,11 @@ export default async function TodayPage() {
               {left > 0 ? `${left} left today` : "Today's tasks"}
             </h2>
             <Link
-              href={`/plan/${view.plans[0]!.id}`}
+              href={
+                view.plans[0]!.examId
+                  ? `/pods/exam/${view.plans[0]!.examId}/plan`
+                  : "/pods"
+              }
               className="text-small font-medium text-accent-ink hover:underline"
             >
               Whole plan

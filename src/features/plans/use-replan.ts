@@ -10,8 +10,9 @@ type Replanned =
   | { ok: false; error: string };
 
 /**
- * Runs an edit or a re-plan. The plan is re-made, so the page moves to the new plan;
- * when the rest no longer fits, the old plan stays and its warning card shows the options.
+ * Runs an edit or a re-plan. The plan is re-made; the exam's Plan tab always shows the
+ * active plan, so a refresh brings the new one in. When the rest no longer fits, the old
+ * plan stays and its warning card shows the options.
  */
 export function useReplan() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export function useReplan() {
           router.refresh();
         } else {
           if (done) toast.success(done);
-          router.replace(`/plan/${result.planId}`);
+          router.refresh();
         }
         resolve(true);
       }),

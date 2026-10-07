@@ -1,10 +1,8 @@
 import {
   Boxes,
   CalendarCheck,
-  CalendarDays,
   ChartLine,
   ClipboardCheck,
-  ListChecks,
   Settings,
   Trophy,
   Users,
@@ -23,18 +21,17 @@ export type NavItem = {
 
 export const primaryNav: NavItem[] = [
   { href: "/today", label: "Today", icon: CalendarCheck, mobileTab: true },
-  // The study space: every subject's pod. Syllabus upload and editing live inside it.
+  // The study space. Each exam pod holds its subjects, its plan (week and month) and
+  // its syllabus, so the plan, the calendar and syllabus editing all live in here.
   {
     href: "/pods",
     label: "Pods",
     icon: Boxes,
     mobileTab: true,
-    also: ["/syllabus"],
+    also: ["/syllabus", "/plan", "/calendar"],
   },
-  { href: "/plan", label: "Plan", icon: ListChecks, mobileTab: true },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/tests", label: "Tests", icon: ClipboardCheck, mobileTab: true },
-  { href: "/groups", label: "Groups", icon: Users },
+  { href: "/groups", label: "Groups", icon: Users, mobileTab: true },
   { href: "/rank", label: "Rank", icon: Trophy },
   { href: "/progress", label: "Progress", icon: ChartLine },
 ];

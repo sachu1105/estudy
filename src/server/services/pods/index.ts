@@ -6,6 +6,7 @@ import { limit } from "@/server/entitlements";
 import { fetchLinkMeta } from "@/server/links/fetch-meta";
 import { podQueue } from "@/server/queue";
 import { podFileRepository } from "@/server/repositories/pod-file-repository";
+import { planRepository } from "@/server/repositories/plan-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
@@ -13,6 +14,7 @@ import { topicCompletionRepository } from "@/server/repositories/topic-completio
 import { flagOn } from "@/server/settings";
 import { storage } from "@/server/storage";
 
+import { createExamService } from "./exam-service";
 import { createFileService } from "./file-service";
 import { createItemService, type ItemDeps } from "./item-service";
 
@@ -28,6 +30,14 @@ export const podDeps: PodDeps = {
 };
 
 export const podService = createPodService(podDeps);
+
+export const examService = createExamService({
+  pods: podRepository,
+  plans: planRepository,
+  syllabuses: syllabusRepository,
+  storage,
+  clock: systemClock,
+});
 
 export const itemDeps: ItemDeps = {
   items: podItemRepository,

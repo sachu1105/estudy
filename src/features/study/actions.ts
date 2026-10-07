@@ -64,5 +64,6 @@ export async function finishSessionAction(
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/today");
   revalidatePath("/plan", "layout");
+  revalidatePath("/pods", "layout");
   return { ok: true, minutes: result.minutes };
 }

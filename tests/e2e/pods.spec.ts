@@ -29,9 +29,9 @@ test.describe("pods", () => {
       page.getByRole("heading", { level: 1, name: title }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Study plan" }),
+      page.getByRole("button", { name: "Create study plan" }),
     ).toBeVisible();
-    await expect(page.getByText("0 of 4 topics done")).toBeVisible();
+    await expect(page.getByText("0/4", { exact: true })).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
     // A subject pod sits inside it.
@@ -58,7 +58,7 @@ test.describe("pods", () => {
     // Back up to the exam pod, which counts the tick.
     await page.getByRole("link", { name: title }).first().click();
     await expect(page).toHaveURL(new RegExp(`/pods/exam/${id}$`));
-    await expect(page.getByText("1 of 4 topics done")).toBeVisible();
+    await expect(page.getByText("1/4", { exact: true })).toBeVisible();
     const column = (name: string) => page.getByRole("region", { name });
     await expect(
       column("To study")
@@ -142,6 +142,37 @@ test.describe("pods", () => {
     await expect(
       page.getByRole("link", { name: new RegExp(`${name} 2`) }),
     ).toHaveCount(0);
+  });
+
+  test("deletes a whole exam pod from its menu, and it's gone everywhere", async ({
+    page,
+  }) => {
+    const title = `Delete ${test.info().project.name} ${Date.now()}`;
+    const id = await seedParsedDraft(await currentUserId(page), title);
+    await page.goto(`/syllabus/${id}`);
+    await page.getByRole("button", { name: "Confirm syllabus" }).click();
+    await expect(page).toHaveURL(new RegExp(`/pods/exam/${id}$`));
+
+    // The syllabus is edited in place, under the exam pod's own tab.
+    await page
+      .getByRole("navigation", { name: "Exam" })
+      .getByRole("link", { name: "Syllabus" })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/pods/exam/${id}/syllabus$`));
+    await page.getByRole("button", { name: /^Indian Constitution/ }).click();
+    await expect(page.getByLabel("Topic name").first()).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    await page.getByRole("button", { name: `More for ${title}` }).click();
+    await page.getByRole("menuitem", { name: "Delete exam pod" }).click();
+    await expect(page.getByRole("dialog")).toContainText("subject pods go");
+    await page.getByRole("button", { name: "Delete exam pod" }).click();
+    await expect(page).toHaveURL(/\/pods$/);
+    await expect(
+      page.getByRole("link", { name: new RegExp(title) }),
+    ).toHaveCount(0);
+    const gone = await page.goto(`/pods/exam/${id}`);
+    expect(gone?.status()).toBe(404);
   });
 
   test("someone else's pod is a 404", async ({ page }) => {

@@ -1,21 +1,38 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/lib/utils/cn";
+
 type PageHeaderProps = {
   title: string;
   description?: string;
   actions?: ReactNode;
+  /**
+   * The actions are small (icon buttons, a menu): keep them beside the title on a phone
+   * instead of wrapping them onto a row of their own.
+   */
+  inlineActions?: boolean;
 };
 
-export function PageHeader({ title, description, actions }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  description,
+  actions,
+  inlineActions = false,
+}: PageHeaderProps) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div className="flex flex-col gap-1">
+    <div
+      className={cn(
+        "mb-8 flex justify-between gap-4",
+        inlineActions ? "items-start" : "flex-wrap items-end",
+      )}
+    >
+      <div className={cn("flex flex-col gap-1", inlineActions && "min-w-0")}>
         <h1>{title}</h1>
         {description ? (
           <p className="text-body text-ink-muted">{description}</p>
         ) : null}
       </div>
-      {actions}
+      {inlineActions ? <div className="shrink-0">{actions}</div> : actions}
     </div>
   );
 }

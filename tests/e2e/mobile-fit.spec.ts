@@ -15,8 +15,6 @@ const publicRoutes = [
 ];
 const appRoutes = [
   "/today",
-  "/plan",
-  "/calendar",
   "/syllabus/new",
   "/syllabus/catalogue",
   "/pods",

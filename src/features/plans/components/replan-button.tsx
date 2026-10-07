@@ -13,6 +13,8 @@ export function ReplanButton({ syllabusId }: { syllabusId: string }) {
   return (
     <Button
       variant="secondary"
+      size="sm"
+      className="h-11 md:h-9"
       disabled={pending}
       onClick={() =>
         run(() => replanAction({ syllabusId }), "Plan re-made from today")

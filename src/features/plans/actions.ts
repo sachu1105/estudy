@@ -117,6 +117,7 @@ function replanned(
 ): Replanned {
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/plan", "layout");
+  revalidatePath("/pods", "layout");
   revalidatePath("/today");
   return "planId" in result
     ? { ok: true, planId: result.planId, warning: false }
@@ -172,6 +173,7 @@ export async function dismissDiffAction(input: unknown): Promise<ActionResult> {
   if (!parsed.success) return invalid;
   await planService.dismissDiff(user, parsed.data.planId);
   revalidatePath("/plan", "layout");
+  revalidatePath("/pods", "layout");
   revalidatePath("/today");
   return { ok: true };
 }

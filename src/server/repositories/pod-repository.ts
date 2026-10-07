@@ -47,6 +47,32 @@ export const podRepository = {
     });
   },
 
+  /**
+   * The user deletes an exam pod. A subject pod holding material (trashed material too)
+   * is kept as the user's own pod, the same rule as a syllabus edit that removes a
+   * subject: material is never lost. Empty ones are soft-deleted; re-adding the same
+   * syllabus brings them back through `syncSubjectPods`.
+   */
+  async releaseExam(ownerId: string, syllabusVersionId: string, at: Date) {
+    const subjectPods = {
+      ownerId,
+      syllabusVersionId,
+      kind: "SUBJECT" as const,
+      deletedAt: null,
+    };
+    return prisma.$transaction(async (tx) => {
+      const kept = await tx.pod.updateMany({
+        where: { ...subjectPods, items: { some: {} } },
+        data: { kind: "CUSTOM", syllabusVersionId: null, subjectId: null },
+      });
+      const removed = await tx.pod.updateMany({
+        where: subjectPods,
+        data: { deletedAt: at },
+      });
+      return { kept: kept.count, removed: removed.count };
+    });
+  },
+
   /** Ids of the user's subject pods for one syllabus: the cards on its board. */
   async boardPodIds(ownerId: string, syllabusVersionId: string) {
     const pods = await prisma.pod.findMany({
@@ -73,7 +99,15 @@ export const podRepository = {
 
   listOwned(ownerId: string) {
     return prisma.pod.findMany({
-      where: { ownerId, deletedAt: null },
+      where: {
+        ownerId,
+        deletedAt: null,
+        // A deleted syllabus takes its exam pod with it.
+        OR: [
+          { syllabusVersionId: null },
+          { syllabusVersion: { deletedAt: null } },
+        ],
+      },
       orderBy: [
         { syllabusVersionId: "asc" },
         { order: "asc" },

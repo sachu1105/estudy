@@ -890,3 +890,43 @@ files. Run prettier on the files you touched.
 - The next mock is a quiet line at the bottom, no longer a card.
 - `streak-tile.tsx` was removed. `TaskList` and `TopicRow` stay for /dev/ui.
 - Height at 360px: 5920px before, 2940px after.
+
+### Pods, plan and calendar in one place (2026-10-07)
+The owner's call: the plan and the calendar are not separate pages, and syllabus editing
+doesn't send you to another page.
+- Each exam pod is a hub (`pods/exam/[syllabusId]/layout.tsx`): back link, title, a ⋯
+  menu, a stat strip and link tabs (`ExamTabs`). The tabs are Subjects (the board), Plan
+  and Syllabus (own uploads only). `loadExam` (React `cache`) lets the layout and the tab
+  share one read.
+- Plan tab: Week | Month. The month is the old calendar (`PlanMonth`, filtered to this
+  exam by `progressService.calendar(user, month, syllabusVersionId)`). Days fold to one
+  line naming their topics, and only today opens by itself. Inside a day, tasks sit
+  under their topic, and a topic with one task is a single row. "Why this?" is an inline
+  toggle. Days are keyed by date, because an edit re-makes the plan and would otherwise
+  close the days the user opened.
+- Syllabus tab: `SyllabusEditor`. One row per subject; the open one shows
+  `TopicsEditor` in place, with the same reducer and autosave. `SubjectsBoard` (the cards)
+  is now only the pre-confirmation review at /syllabus/[id].
+- Redirects for old links: /plan goes to the one plan's tab, or /pods. /plan/[id] goes to
+  its exam's Plan tab, keeping `new` and `from`. /calendar goes to the month view, or
+  /pods. A confirmed /syllabus/[id] goes to the Syllabus tab. The nav lost Plan and
+  Calendar ("Pods" covers those paths); Groups took the free phone tab.
+- "Create study plan" is in the header (`ExamPlanCta`) except on the Plan tab, whose
+  invitation carries it (one primary button per view).
+- Board: compact cards. The link covers the card, so the link's accessible name is just
+  the subject. On phones columns fold: Studying opens, else the first non-empty column,
+  and a moved subject opens its new column. From lg all columns stay open.
+- Delete exam pod (⋯ menu, `examService.remove`, tested). It archives the active plan,
+  soft-deletes empty subject pods and keeps pods holding material as the user's own (the
+  same rule as removing a subject). An own upload is soft-deleted; a catalogue syllabus
+  is left alone, and re-adding it restores the pods. Bug fixed: deleting a confirmed
+  syllabus used to leave its subject pods listed; `listOwned` now skips pods of a deleted
+  syllabus.
+- `StatStrip`/`StatCell` (components/blocks) is shared by Today and the exam header.
+  `PageHeader` has `inlineActions` for icon-only actions beside the title on a phone.
+- The service worker caches exam pod Subjects and Plan pages instead of /plan and
+  /calendar.
+- Heights at 360px: exam pod 8536px became 2762px; plan week 59,264px became 5828px;
+  syllabus 11,778px became 4090px.
+- Test fixes: progress.spec ticked through Today's old "To do" region. discussion.spec's
+  "Hidden from members" matched its toast too (a flake); it now targets the badge.

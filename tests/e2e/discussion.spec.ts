@@ -129,7 +129,10 @@ test.describe("group discussion", () => {
       .getByRole("button", { name: /^More for post Which article/ })
       .click();
     await page.getByRole("menuitem", { name: "Hide from members" }).click();
-    await expect(page.getByText("Hidden from members")).toBeVisible();
+    // The post's badge, not the toast that says the same thing.
+    await expect(
+      page.getByText("hidden from members", { exact: true }),
+    ).toBeVisible();
     await member.goto(`${groupUrl}/discuss`);
     await expect(member.getByText("No posts yet")).toBeVisible();
     await member.context().close();
