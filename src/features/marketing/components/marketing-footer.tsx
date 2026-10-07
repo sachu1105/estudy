@@ -2,22 +2,18 @@ import Link from "next/link";
 
 import { Logo } from "@/components/shell/logo";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
-import { exams, site } from "@/lib/site";
+import { site } from "@/lib/site";
 
 const columns = [
   {
     title: "Product",
     links: [
       { label: "Features", href: "/#features" },
-      { label: "Pricing", href: "/pricing" },
+      { label: "How it works", href: "/#how-it-works" },
       { label: "Squads", href: "/#groups" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "FAQ", href: "/#faq" },
     ],
-  },
-  {
-    title: "Exams",
-    links: exams
-      .slice(0, 5)
-      .map((exam) => ({ label: exam, href: "/#features" })),
   },
   {
     title: `Company`,
@@ -38,7 +34,7 @@ const columns = [
 export function MarketingFooter({ year }: { year: number }) {
   return (
     <footer className="border-t border-border bg-surface">
-      <div className="mx-auto grid max-w-content gap-10 px-4 py-12 md:grid-cols-[1.4fr_repeat(4,1fr)] md:px-8">
+      <div className="mx-auto grid max-w-content gap-10 px-4 py-12 md:grid-cols-[1.6fr_repeat(3,1fr)] md:px-8">
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="max-w-xs text-small text-ink-muted">
@@ -46,7 +42,7 @@ export function MarketingFooter({ year }: { year: number }) {
             subject, a daily plan, and a test after every task.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:contents">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:contents">
           {columns.map((column) => (
             <nav
               key={column.title}

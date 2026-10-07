@@ -7,7 +7,7 @@
 
 export type Testimonial = {
   name: string;
-  /** Who they are, in their words: "LDC aspirant, Kollam". */
+  /** Who they are, in their words: "Banking aspirant". */
   role: string;
   quote: string;
 };
@@ -17,37 +17,37 @@ export const testimonials: { sample: boolean; quotes: Testimonial[] } = {
   quotes: [
     {
       name: "Sample aspirant",
-      role: "LDC aspirant, Kollam",
+      role: "Public service aspirant",
       quote:
         "I finally know what to study each morning. The plan fits the two hours I get after work.",
     },
     {
       name: "Sample aspirant",
-      role: "LGS aspirant, Thrissur",
+      role: "Banking aspirant",
       quote:
         "The short test after every topic shows me what didn't stick, and the plan brings it back.",
     },
     {
       name: "Sample aspirant",
-      role: "Degree level, Kozhikode",
+      role: "Staff selection aspirant",
       quote:
         "Our squad shares notes and mock tests. Seeing the weekly rank keeps all five of us going.",
     },
     {
       name: "Sample aspirant",
-      role: "Plus two level, Palakkad",
+      role: "Railways aspirant",
       quote:
         "I uploaded the syllabus PDF and every subject was there to check in a few minutes.",
     },
     {
       name: "Sample aspirant",
-      role: "LDC aspirant, Kannur",
+      role: "Teaching exam aspirant",
       quote:
         "Missing a day doesn't pile up. Next week's plan just starts fresh from where I am.",
     },
     {
       name: "Sample aspirant",
-      role: "Degree level, Ernakulam",
+      role: "Degree level aspirant",
       quote:
         "My photos of notebook pages sit right under the topic they cover. No more hunting.",
     },

@@ -62,7 +62,7 @@ export function RateVisual() {
 export function PlanVisual() {
   const tasks: [string, string, boolean][] = [
     ["Fundamental rights", "45m", true],
-    ["Rivers of Kerala", "30m", false],
+    ["Rivers of India", "30m", false],
     ["Percentages", "25m", false],
   ];
   return (

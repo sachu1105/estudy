@@ -11,8 +11,8 @@ const tasks = [
     tickDelay: "700ms",
   },
   {
-    title: "Rivers of Kerala",
-    subject: "Kerala geography",
+    title: "Rivers of India",
+    subject: "Indian geography",
     minutes: 30,
     tickDelay: "1300ms",
   },

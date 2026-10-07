@@ -1,8 +1,8 @@
-import { exams } from "@/lib/site";
+import { examKinds } from "@/lib/site";
 
-// Exam names as bold wordmarks, like a logo strip. Names only; real user numbers get
+// Kinds of exam as bold wordmarks, like a logo strip. Names only; real user numbers get
 // added once they exist, never invented.
-const marks = [...exams, "Any exam syllabus"];
+const marks = [...examKinds, "Any syllabus you bring"];
 // Each half of the track must be wider than the widest screen.
 const half = [...marks, ...marks, ...marks];
 
@@ -25,14 +25,17 @@ function Track({ hidden = false }: { hidden?: boolean }) {
 }
 
 /**
- * The exams it's built for, drifting past as wordmarks. Pauses on hover; still for
+ * The kinds of exam it works for, drifting past as wordmarks. Pauses on hover; still for
  * reduced motion. Screen readers get the list once.
  */
 export function ExamStrip() {
   return (
-    <section aria-label="Built for these exams" className="py-10 md:py-14">
+    <section
+      aria-label="Works for any competitive exam"
+      className="py-10 md:py-14"
+    >
       <p className="mb-6 px-4 text-center text-small text-ink-muted">
-        For competitive exam aspirants, starting with Kerala PSC
+        For every competitive exam: bring its syllabus
       </p>
       <div className="group flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
         <div className="flex w-max group-hover:[animation-play-state:paused] motion-safe:animate-marquee">

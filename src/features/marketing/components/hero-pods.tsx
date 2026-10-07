@@ -9,7 +9,7 @@ const pods: {
   preset: CoverPreset;
 }[] = [
   { name: "Indian Constitution", done: 12, total: 30, preset: "blurple" },
-  { name: "Kerala geography", done: 9, total: 18, preset: "meadow" },
+  { name: "Indian geography", done: 9, total: 18, preset: "meadow" },
   { name: "Quantitative aptitude", done: 4, total: 26, preset: "ember" },
   { name: "General English", done: 15, total: 22, preset: "ocean" },
 ];
@@ -19,11 +19,13 @@ export function HeroPods() {
   return (
     <div
       role="img"
-      aria-label="An exam pod for LDC 2026 holding four subject pods, each with its topics done"
+      aria-label="An exam pod for Prelims 2026 holding four subject pods, each with its topics done"
       className="flex flex-col gap-3"
     >
       <div className="flex items-baseline justify-between gap-2 px-1">
-        <p className="font-heading text-body font-medium text-ink">LDC 2026</p>
+        <p className="font-heading text-body font-medium text-ink">
+          Prelims 2026
+        </p>
         <p className="text-small text-ink-muted">4 subject pods</p>
       </div>
       <ul className="grid grid-cols-2 gap-3">

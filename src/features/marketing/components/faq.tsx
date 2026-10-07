@@ -12,7 +12,7 @@ export const faqs = [
   },
   {
     q: "Which exams does it support?",
-    a: "Kerala PSC: LDC, LGS, Degree level prelims and Plus two level prelims. You can upload the syllabus of any other exam too.",
+    a: "Any competitive exam. Pick its syllabus from our catalogue if it's there, or upload it (PDF, Word, a photo or pasted text) and every subject becomes a pod.",
   },
   {
     q: "Can I upload my own syllabus?",
@@ -27,8 +27,8 @@ export const faqs = [
     a: "Nothing piles up. Every week your plan is rebuilt from where you actually are, and one missed day a week is forgiven so your streak survives.",
   },
   {
-    q: "Are the questions official PSC questions?",
-    a: "No. They are practice questions written to match each topic, checked before they reach you. They are not official PSC questions, and we don't claim they will appear in your exam.",
+    q: "Are the questions official exam questions?",
+    a: "No. They are practice questions written to match each topic, checked before they reach you. They are not official exam questions, and we don't claim they will appear in your exam.",
   },
   {
     q: "Is my data private?",

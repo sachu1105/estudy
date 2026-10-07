@@ -41,7 +41,7 @@ function GroupPreview() {
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="font-heading text-h3 font-medium">
-            LDC 2026 · Thrissur
+            Prelims 2026 · Evening batch
           </p>
           <p className="text-small text-ink-muted">18 members</p>
         </div>
@@ -62,7 +62,7 @@ function GroupPreview() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-small font-medium">
-            Kerala renaissance · 25 questions
+            Modern history · 25 questions
           </p>
           <p className="text-small text-ink-muted">
             Shared by Rahul · 9 attempts
@@ -77,8 +77,8 @@ function GroupPreview() {
           aria-hidden
         />
         <p className="text-small text-ink-muted">
-          <span className="font-medium text-ink">Fathima:</span> Is Vaikom
-          Satyagraha 1924 or 1925 in the answer key?{" "}
+          <span className="font-medium text-ink">Fathima:</span> Is the Dandi
+          March 1930 or 1931 in the answer key?{" "}
           <span className="text-ink-muted">· 3 answers</span>
         </p>
       </div>
