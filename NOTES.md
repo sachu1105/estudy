@@ -866,3 +866,27 @@ generation and "mock tests from my material" (paidOnly; a calm card says so).
 - Fixed while building: the landing pricing teaser had its own copy of the plan table;
   it now uses the shared module, which also fixed "1 syllabus uploads" and the repeated
   "Free / Free". The footer's Pricing link now goes to /pricing.
+
+## UI/UX polish pass (2026-10-07)
+
+Area by area, on the owner's lead. `scripts/shots.ts` takes 360px (or `--width 1366`,
+`--dark`) shots as the seeded super admin; under Git Bash pass routes without the
+leading slash (`today`, not `/today`), or MSYS rewrites them into Windows paths.
+Don't run `pnpm format` over the repo: it isn't prettier-clean and reflows unrelated
+files. Run prettier on the files you touched.
+
+### Today
+- One focus: a "Next up" card on accent-soft holds the page's only filled button. Its
+  visible text is "Start", and its accessible name is "Start next task".
+- The four stat cards became one compact 2x2 strip (4 across from lg) above the work:
+  minutes today, streak (the "How your streak works" dialog moved here), covered and
+  days left. It used to sit below 20 tasks, about 4000px down on a phone.
+- Tasks are grouped by topic (`features/today/group-tasks.ts`, tested). The plan writes
+  2-4 tasks per topic; flat, that was 20 near-identical rows. The current topic opens by
+  default and the rest collapse to one line each. Rows show only the step
+  (`taskStep`: "Study · part 1 of 2", "Check test"), because the topic is the heading.
+  One pod link per group replaces a folder icon on every row.
+- Ticked tasks move to a "Done · N" region at the bottom (e2e looks for that region).
+- The next mock is a quiet line at the bottom, no longer a card.
+- `streak-tile.tsx` was removed. `TaskList` and `TopicRow` stay for /dev/ui.
+- Height at 360px: 5920px before, 2940px after.

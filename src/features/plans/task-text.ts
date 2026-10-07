@@ -36,6 +36,33 @@ export function taskTitle(task: TaskLike, topic: string, subject: string) {
   }
 }
 
+/**
+ * The same task inside its topic group, where the topic name is already the heading:
+ * just the step, e.g. "Study · part 1 of 2".
+ */
+export function taskStep(task: TaskLike, subject: string) {
+  switch (task.type) {
+    case "STUDY":
+      return task.partTotal && task.partTotal > 1
+        ? `Study · part ${task.partIndex} of ${task.partTotal}`
+        : "Study";
+    case "CHECK_TEST":
+      return "Check test";
+    case "REVISION":
+      return task.finalReview
+        ? "Final review"
+        : task.touch
+          ? `Revision ${task.touch}`
+          : "Revision";
+    case "SECTION_MOCK":
+      return `Section mock · ${subject}`;
+    case "FULL_MOCK":
+      return "Full mock test";
+    case "CUSTOM":
+      return task.title ?? "Your task";
+  }
+}
+
 /** "Why this?" (rule 14): the engine's reason, as sentences. */
 export function whyThis(reason: TaskReason, subject: string): string[] {
   const lines: string[] = [];
