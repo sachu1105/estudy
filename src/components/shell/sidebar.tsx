@@ -71,29 +71,36 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="flex flex-col gap-1 border-t border-border pt-3">
+      {/* Settings, with the collapse toggle as a quiet icon beside it. */}
+      <div className="flex items-center gap-1 border-t border-border pt-3 sidebar-collapsed:flex-col">
         {secondaryNav.map((item) => (
-          <SidebarLink
+          <div
             key={item.href}
-            item={item}
-            active={isActive(pathname, item.href, item.also)}
-          />
+            className="min-w-0 flex-1 sidebar-collapsed:w-full"
+          >
+            <SidebarLink
+              item={item}
+              active={isActive(pathname, item.href, item.also)}
+            />
+          </div>
         ))}
-        <button
-          type="button"
-          onClick={toggleCollapsed}
-          className="flex h-10 cursor-pointer items-center gap-3 rounded-control px-3 text-body text-ink-muted transition-colors hover:bg-ink/5 hover:text-ink sidebar-collapsed:justify-center sidebar-collapsed:px-0"
-        >
-          <PanelLeftClose
-            className="size-[18px] sidebar-collapsed:hidden"
-            aria-hidden
-          />
-          <PanelLeftOpen
-            className="hidden size-[18px] sidebar-collapsed:block"
-            aria-hidden
-          />
-          <span className="sidebar-collapsed:sr-only">Collapse sidebar</span>
-        </button>
+        <Tooltip content="Collapse sidebar" side="right">
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            aria-label="Collapse sidebar"
+            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-control text-ink-muted transition-colors hover:bg-ink/5 hover:text-ink"
+          >
+            <PanelLeftClose
+              className="size-[18px] sidebar-collapsed:hidden"
+              aria-hidden
+            />
+            <PanelLeftOpen
+              className="hidden size-[18px] sidebar-collapsed:block"
+              aria-hidden
+            />
+          </button>
+        </Tooltip>
       </div>
     </aside>
   );
