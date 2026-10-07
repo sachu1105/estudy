@@ -78,7 +78,7 @@ export function FileDrop({
       onDragLeave={() => setOver(false)}
       onDrop={onDrop}
       className={cn(
-        "flex min-h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-card border-[1.5px] border-dashed bg-surface px-4 py-8 text-center transition-colors duration-[120ms]",
+        "flex min-h-32 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border-[1.5px] border-dashed bg-surface px-4 py-6 text-center transition-colors duration-[120ms]",
         over
           ? "border-accent bg-accent-soft"
           : "border-border hover:bg-surface-muted",
@@ -86,12 +86,14 @@ export function FileDrop({
         "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent",
       )}
     >
-      <FileUp className="size-6 text-ink-muted" aria-hidden />
-      <span className="font-heading text-h3 font-medium">Choose a file</span>
+      <span className="mb-1 grid size-10 place-items-center rounded-full bg-accent-soft text-accent-ink">
+        <FileUp className="size-5" aria-hidden />
+      </span>
+      <span className="font-heading text-body font-medium">Choose a file</span>
       <span className="max-w-xs text-small text-ink-muted">
         {photos
           ? "PDF, Word (.docx) or a clear photo of the syllabus, up to 15 MB."
-          : "PDF or Word (.docx), up to 15 MB. Drop it here on a computer."}
+          : "PDF or Word (.docx), up to 15 MB. Or drop it here."}
       </span>
       <input
         id={id}

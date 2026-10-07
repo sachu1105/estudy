@@ -36,7 +36,9 @@ export function DialogContent({
       <DialogPrimitive.Content
         className={cn(
           "fixed top-1/2 left-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2",
-          "rounded-card border border-border bg-surface p-6 shadow-lg",
+          // Taller than the screen (a phone, a long form): it scrolls inside, never clips.
+          "max-h-[calc(100dvh-32px)] overflow-y-auto overscroll-contain",
+          "rounded-card border border-border bg-surface p-5 shadow-lg sm:p-6",
           "data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in",
           className,
         )}

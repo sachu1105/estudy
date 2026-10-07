@@ -84,7 +84,7 @@ export function ParseStatus({
             {retrying ? "Starting again" : "Try again"}
           </Button>
           <Button asChild variant="secondary">
-            <Link href="/syllabus/new">Upload or paste instead</Link>
+            <Link href="/pods?add=upload">Upload or paste instead</Link>
           </Button>
           <DeleteSyllabusButton versionId={versionId} />
         </div>

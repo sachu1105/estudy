@@ -23,21 +23,25 @@ test.describe("syllabus", () => {
     await page.getByLabel("Title").fill(`Pasted ${test.info().project.name}`);
     await page.getByRole("button", { name: "Read syllabus" }).click();
 
-    await expect(page).toHaveURL(/\/syllabus\/[0-9a-f-]{36}$/);
-    // A running worker may finish before the page shows; both outcomes are honest.
-    const progress = page.getByRole("list", { name: "Progress" });
-    const review = page.getByRole("button", { name: "Confirm syllabus" });
-    await expect(progress.or(review)).toBeVisible();
-    if (await progress.isVisible()) {
+    // The reading shows in the same dialog, step by step (rule 2).
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByRole("list", { name: "Progress" })).toBeVisible();
+    // A running worker may finish at once; both outcomes are honest.
+    const check = dialog.getByRole("link", { name: "Check subjects" });
+    const stop = dialog.getByRole("button", { name: "Stop and delete" });
+    await expect(check.or(stop)).toBeVisible();
+    if (await stop.isVisible()) {
       // With a worker running it says it keeps going; without one, that the reader is offline.
       await expect(
-        page
-          .getByText("You can leave this page")
-          .or(page.getByText("The syllabus reader is offline")),
+        dialog
+          .getByText(/You can close this/)
+          .or(dialog.getByText("The syllabus reader is offline")),
       ).toBeVisible();
       // A way out: stop the reading and delete the upload.
-      await page.getByRole("button", { name: "Stop and delete" }).click();
+      await stop.click();
     } else {
+      await check.click();
+      await expect(page).toHaveURL(/\/syllabus\/[0-9a-f-]{36}$/);
       await page.getByRole("button", { name: "Delete", exact: true }).click();
     }
     await page.getByRole("button", { name: "Delete syllabus" }).click();
@@ -138,8 +142,14 @@ test.describe("syllabus", () => {
       page.getByRole("heading", { name: "Plus two level preliminary exam" }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Upload yours" }).first().click();
-    await expect(page).toHaveURL(/\/syllabus\/new\?exam=/);
-    await expect(page.getByLabel("Exam (optional)")).not.toHaveValue("");
+    await expect(page).toHaveURL(/\/pods\?add=upload&exam=/);
+    // The exam comes pre-picked.
+    const exam = page.getByRole("radiogroup", { name: "Exam" });
+    await expect(exam.getByRole("radio", { checked: true })).toHaveCount(1);
+    await expect(exam.getByRole("radio", { name: "Other" })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
   });
 
   test("someone else's syllabus is a 404", async ({ page }) => {

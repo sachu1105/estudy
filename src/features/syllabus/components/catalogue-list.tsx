@@ -58,7 +58,7 @@ export function CatalogueList({ exams }: CatalogueListProps) {
             <p className="text-small text-ink-muted">
               No syllabus here yet.{" "}
               <Link
-                href={`/syllabus/new?exam=${exam.id}`}
+                href={`/pods?add=upload&exam=${exam.id}`}
                 className="font-medium text-accent-ink underline-offset-2 hover:underline"
               >
                 Upload yours

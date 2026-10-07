@@ -1,28 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  FieldError,
-  FieldHint,
-  Input,
-  Label,
-  fieldClasses,
-} from "@/components/ui/input";
+import { FieldError, FieldHint, Input, Label } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Textarea } from "@/components/ui/textarea";
 import { useHydrated } from "@/lib/use-hydrated";
-import { cn } from "@/lib/utils/cn";
 
 import { submitPastedTextAction } from "../actions";
 import { uploadSyllabusFile } from "../api";
+import { ExamChips } from "./exam-chips";
 import { FileDrop } from "./file-drop";
 
 const MAX_BYTES = 15 * 1024 * 1024;
 const DRAFT_KEY = "syllabus-paste-draft";
 type Mode = "file" | "text";
+
+export type StartedUpload = { versionId: string; jobId: string; title: string };
 
 function readDraft() {
   try {
@@ -46,22 +41,30 @@ const titleFromFile = (name: string) =>
     .trim()
     .slice(0, 120);
 
+/**
+ * A file or pasted text, which exam it is for, and a name. Sends it to be read and
+ * hands back the new syllabus and its job; the caller shows the reading.
+ */
 export function UploadForm({
   exams,
   initialExamId = "",
   photos = false,
+  onStarted,
+  actions,
 }: {
   exams: { id: string; name: string }[];
   initialExamId?: string;
   /** Photos of the syllabus can be read. */
   photos?: boolean;
+  onStarted: (started: StartedUpload) => void;
+  /** Shown beside the submit button (a way back). */
+  actions?: React.ReactNode;
 }) {
-  const router = useRouter();
   const hydrated = useHydrated();
   const [mode, setMode] = useState<Mode>("file");
   const [file, setFile] = useState<File | null>(null);
-  // Pasted text survives a refresh or an accidental back (friction rules: autosave drafts).
-  // The textarea only renders after a tap on "Paste text", so this can't mismatch hydration.
+  // Pasted text survives a refresh or an accidental close (friction rules: autosave
+  // drafts). The textarea only renders after "Paste text", so hydration can't mismatch.
   const [text, setText] = useState(readDraft);
   const [title, setTitle] = useState("");
   const [examId, setExamId] = useState(
@@ -86,24 +89,22 @@ export function UploadForm({
   const submit = (event: FormEvent) => {
     event.preventDefault();
     setError(null);
-    if (!title.trim()) return setError("Give the syllabus a title.");
     if (mode === "file" && !file) return setError("Choose a file to upload.");
+    if (mode === "text" && !text.trim())
+      return setError("Paste the syllabus text first.");
+    if (!title.trim()) return setError("Give the syllabus a name.");
     const meta = { title, examId: examId || null };
     startTransition(async () => {
       try {
         if (mode === "file") {
           setProgress(0);
-          const { versionId } = await uploadSyllabusFile(
-            file!,
-            meta,
-            setProgress,
-          );
-          router.push(`/syllabus/${versionId}`);
+          const started = await uploadSyllabusFile(file!, meta, setProgress);
+          onStarted({ ...started, title });
         } else {
           const result = await submitPastedTextAction({ ...meta, text });
           if (!result.ok) return setError(result.error);
           writeDraft("");
-          router.push(`/syllabus/${result.versionId}`);
+          onStarted({ ...result, title });
         }
       } catch (e) {
         setError((e as Error).message);
@@ -113,17 +114,14 @@ export function UploadForm({
   };
 
   const busyLabel =
-    progress !== null && progress < 1
-      ? `Uploading ${Math.round(progress * 100)}%`
-      : "Checking the file";
+    mode === "text"
+      ? "Sending"
+      : progress !== null && progress < 1
+        ? `Uploading ${Math.round(progress * 100)}%`
+        : "Checking the file";
 
   return (
-    <form
-      method="post"
-      onSubmit={submit}
-      className="flex flex-col gap-6"
-      noValidate
-    >
+    <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
       <SegmentedControl<Mode>
         ariaLabel="How to add the syllabus"
         value={mode}
@@ -151,7 +149,7 @@ export function UploadForm({
           <Label htmlFor="syllabus-text">Syllabus text</Label>
           <Textarea
             id="syllabus-text"
-            rows={12}
+            rows={7}
             value={text}
             disabled={pending}
             placeholder="Paste the subjects and the topics under each one."
@@ -160,54 +158,63 @@ export function UploadForm({
               writeDraft(e.target.value);
             }}
           />
-          <FieldHint>
-            Your text is kept on this device until you send it.
-          </FieldHint>
+          <FieldHint>Kept on this device until you send it.</FieldHint>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="syllabus-title">Title</Label>
-          <Input
-            id="syllabus-title"
-            value={title}
-            maxLength={120}
-            disabled={pending}
-            placeholder="Kerala PSC LDC 2026"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="syllabus-exam">Exam (optional)</Label>
-          <select
-            id="syllabus-exam"
-            value={examId}
-            disabled={pending}
-            onChange={(e) => setExamId(e.target.value)}
-            className={cn(fieldClasses, "appearance-auto")}
-          >
-            <option value="">Not listed</option>
-            {exams.map((exam) => (
-              <option key={exam.id} value={exam.id}>
-                {exam.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex flex-col gap-2">
+        <span id="exam-chips-label" className="text-small font-medium text-ink">
+          Exam
+        </span>
+        <ExamChips
+          exams={exams}
+          value={examId}
+          onChange={setExamId}
+          disabled={pending}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="syllabus-title">Title</Label>
+        <Input
+          id="syllabus-title"
+          value={title}
+          maxLength={120}
+          disabled={pending}
+          placeholder="Kerala PSC LDC 2026"
+          onChange={(e) => setTitle(e.target.value)}
+        />
       </div>
 
       {error ? <FieldError role="alert">{error}</FieldError> : null}
 
-      <Button
-        type="submit"
-        variant="primary"
-        size="lg"
-        disabled={!hydrated || pending}
-        className="w-full sm:w-auto sm:self-start"
-      >
-        {pending ? (mode === "file" ? busyLabel : "Sending") : "Read syllabus"}
-      </Button>
+      {progress !== null && pending ? (
+        <div
+          role="progressbar"
+          aria-label="Uploading"
+          aria-valuenow={Math.round(progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="h-1.5 overflow-hidden rounded-full bg-surface-muted"
+        >
+          <div
+            className="h-full rounded-full bg-accent transition-[width] duration-[120ms]"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
+      ) : null}
+
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        {actions}
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={!hydrated || pending}
+          className="w-full sm:w-auto"
+        >
+          {pending ? busyLabel : "Read syllabus"}
+        </Button>
+      </div>
     </form>
   );
 }

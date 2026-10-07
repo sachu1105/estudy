@@ -57,7 +57,7 @@ export default async function OnboardingPage() {
           <Link href="/syllabus/catalogue">Pick from the catalogue</Link>
         </Button>
         <Button asChild variant="secondary">
-          <Link href="/syllabus/new">Upload a syllabus</Link>
+          <Link href="/pods?add=upload">Upload a syllabus</Link>
         </Button>
       </div>
     </>

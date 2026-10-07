@@ -1075,3 +1075,13 @@ ledge, some shine and a press.
 - Only `@example.com` accounts (a reserved domain) are touched. Their rows in the
   append-only logs are deleted with the row triggers disabled inside the transaction,
   then re-enabled; real accounts' logs are never touched.
+
+### Upload in a dialog (2026-10-07)
+- Add exam on Pods is one dialog with three steps: choose (catalogue or upload), the
+  upload form, then the reading itself, live (`UploadProgress`, the same job status as
+  before over SSE or polling). Closing at any point is safe: the job goes on and the
+  setup tile on Pods follows it. "Check subjects" opens the review page when it's read.
+- `/syllabus/new` redirects to `/pods?add=upload` (keeping `?exam=`), which opens the
+  dialog at the upload step; the catalogue, onboarding and the failed-parse card link
+  there. The exam is picked with chips (`ExamChips`, a radio group), not a select.
+- Dialogs now cap at the screen height and scroll inside (`DialogContent`).

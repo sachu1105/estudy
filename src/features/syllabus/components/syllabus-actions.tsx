@@ -23,10 +23,13 @@ import { deleteSyllabusAction } from "../actions";
 export function DeleteSyllabusButton({
   versionId,
   stopping = false,
+  onDeleted,
 }: {
   versionId: string;
   /** Still being read: the button stops the reading as well. */
   stopping?: boolean;
+  /** Instead of going to Pods (the upload dialog closes itself). */
+  onDeleted?: () => void;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -37,7 +40,9 @@ export function DeleteSyllabusButton({
       const result = await deleteSyllabusAction({ versionId });
       if (!result.ok) return void toast.error(result.error);
       toast.success("Syllabus deleted");
-      router.push("/pods");
+      setOpen(false);
+      if (onDeleted) onDeleted();
+      else router.push("/pods");
     });
 
   return (

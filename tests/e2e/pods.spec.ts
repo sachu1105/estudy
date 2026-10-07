@@ -232,16 +232,20 @@ test.describe("pods", () => {
 
     await page.getByRole("button", { name: "Add exam" }).click();
     const chooser = page.getByRole("dialog");
+    // Upload stays in the dialog: the form, with a way back.
+    await chooser.getByRole("button", { name: /Upload your syllabus/ }).click();
     await expect(
-      chooser.getByRole("link", { name: /Upload your syllabus/ }),
+      chooser.getByRole("radiogroup", { name: "Exam" }),
     ).toBeVisible();
+    await chooser.getByRole("button", { name: "Back" }).click();
     await chooser
       .getByRole("link", { name: /Pick from the catalogue/ })
       .click();
     await expect(page).toHaveURL(/\/syllabus\/catalogue$/);
 
-    // The upload page points to the catalogue too.
+    // The old upload page opens the upload dialog, which points to the catalogue too.
     await page.goto("/syllabus/new");
+    await expect(page).toHaveURL(/\/pods\?add=upload$/);
     await expect(
       page.getByRole("link", { name: /Is your exam in the catalogue/ }),
     ).toBeVisible();

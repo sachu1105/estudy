@@ -15,7 +15,7 @@ const publicRoutes = [
 ];
 const appRoutes = [
   "/today",
-  "/syllabus/new",
+  "/pods?add=upload",
   "/syllabus/catalogue",
   "/pods",
   "/pods/search",
@@ -30,7 +30,12 @@ test.use({ viewport: { width: 360, height: 740 } });
 
 async function expectNoSideScroll(page: Page, path: string) {
   await page.goto(path);
-  await expect(page).toHaveURL(new RegExp(`${path === "/" ? "/$" : path}`));
+  // The URL ends up where we went: no redirect elsewhere (a query is matched as is).
+  await expect(page).toHaveURL((url) =>
+    path === "/"
+      ? url.pathname === "/"
+      : `${url.pathname}${url.search}`.startsWith(path),
+  );
   const overflow = await page.evaluate(
     () =>
       document.documentElement.scrollWidth -

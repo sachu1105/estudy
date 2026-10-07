@@ -6,10 +6,14 @@ import { DeleteSyllabusButton } from "./syllabus-actions";
 export function ParseStatusFooter({
   versionId,
   offline,
+  inDialog = false,
+  onDeleted,
 }: {
   versionId: string;
   /** Queued, and no reader is running to pick it up. */
   offline: boolean;
+  inDialog?: boolean;
+  onDeleted?: () => void;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -24,12 +28,18 @@ export function ParseStatusFooter({
         </p>
       ) : (
         <p className="text-small text-ink-muted">
-          This can take a few minutes for a long syllabus. You can leave this
-          page; it keeps going and will be here when you come back.
+          This can take a few minutes for a long syllabus.{" "}
+          {inDialog
+            ? "You can close this: it keeps going, and its tile on Pods shows when it's ready."
+            : "You can leave this page; it keeps going and will be here when you come back."}
         </p>
       )}
       <div>
-        <DeleteSyllabusButton versionId={versionId} stopping />
+        <DeleteSyllabusButton
+          versionId={versionId}
+          stopping
+          onDeleted={onDeleted}
+        />
       </div>
     </div>
   );

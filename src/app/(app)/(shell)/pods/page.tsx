@@ -13,7 +13,13 @@ import { SetupTile } from "@/features/syllabus/components/setup-tile";
 import { syllabusState } from "@/features/syllabus/state";
 import { requireUser } from "@/server/auth/session";
 import { coverService, podService } from "@/server/services/pods";
-import { reviewService, uploadUsage } from "@/server/services/syllabus";
+import {
+  catalogueService,
+  jobService,
+  photosSupported,
+  reviewService,
+  uploadUsage,
+} from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Pods" };
 
@@ -21,13 +27,17 @@ export const metadata: Metadata = { title: "Pods" };
  * The study space, two levels deep: an exam pod per syllabus, holding a pod per subject.
  * Syllabuses still being read or checked sit among the exams until they're confirmed.
  */
-export default async function PodsPage() {
+export default async function PodsPage({ searchParams }: PageProps<"/pods">) {
   const user = await requireUser();
-  const [{ exams, own }, syllabuses, usage] = await Promise.all([
-    podService.exams(user),
-    reviewService.list(user),
-    uploadUsage(user),
-  ]);
+  const query = await searchParams;
+  const [{ exams, own }, syllabuses, usage, catalogueExams, readerOnline] =
+    await Promise.all([
+      podService.exams(user),
+      reviewService.list(user),
+      uploadUsage(user),
+      catalogueService.listExams(),
+      jobService.readerOnline(),
+    ]);
   // Covers as each user chose them; images come back as short-lived signed links.
   const [examCovers, ownCovers] = await Promise.all([
     coverService.examCovers(
@@ -64,7 +74,17 @@ export default async function PodsPage() {
       />
       {/* Making things: side by side, under the title, in thumb reach on a phone. */}
       <div className="-mt-4 mb-8 grid grid-cols-2 gap-2 sm:flex">
-        <AddExamButton uploads={usage} />
+        <AddExamButton
+          uploads={usage}
+          exams={catalogueExams.map((e) => ({ id: e.id, name: e.name }))}
+          photos={photosSupported}
+          readerOnline={readerOnline}
+          // Links elsewhere (the catalogue, onboarding) open the upload straight away.
+          initialStep={query.add === "upload" ? "upload" : undefined}
+          initialExamId={
+            typeof query.exam === "string" ? query.exam : undefined
+          }
+        />
         <NewPodButton />
       </div>
       {empty ? (

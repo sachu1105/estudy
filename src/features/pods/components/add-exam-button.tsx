@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronRight, Library, Upload, type LucideIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,126 +12,139 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils/cn";
+import {
+  UploadForm,
+  type StartedUpload,
+} from "@/features/syllabus/components/upload-form";
+import { UploadProgress } from "@/features/syllabus/components/upload-progress";
 
-/**
- * The way to a new exam pod: pick a syllabus from the catalogue (ready-made, checked)
- * or upload your own. One button; both roads behind it.
- */
-export function AddExamButton({
-  uploads,
-  className,
-}: {
+import { ChooseStep } from "./add-exam-choose";
+
+export type AddExamStep = "choose" | "upload";
+
+type Props = {
   /** Upload allowance; `limit` is Infinity when unlimited. */
   uploads: { used: number; limit: number };
+  exams: { id: string; name: string }[];
+  photos: boolean;
+  readerOnline: boolean;
+  /** Opened from a link (`?add=upload&exam=`): start there. */
+  initialStep?: AddExamStep;
+  initialExamId?: string;
   className?: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const atLimit = uploads.used >= uploads.limit;
+};
+
+/**
+ * The way to a new exam pod, all in one dialog: pick a syllabus from the catalogue, or
+ * upload one and watch it being read. Closing never loses the upload: it keeps going
+ * and shows as a tile on Pods.
+ */
+export function AddExamButton({ initialStep, className, ...props }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const [open, setOpen] = useState(Boolean(initialStep));
+  const [step, setStep] = useState<AddExamStep>(initialStep ?? "choose");
+  const [started, setStarted] = useState<StartedUpload | null>(null);
+
+  const close = () => {
+    setOpen(false);
+    // The tile for a new upload appears; a link's ?add= is dropped.
+    if (started || params.has("add")) router.replace(pathname);
+    if (started) router.refresh();
+    setTimeout(() => {
+      setStep("choose");
+      setStarted(null);
+    }, 300);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="primary" className={className}>
-          Add exam
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add an exam</DialogTitle>
-          <DialogDescription>
-            Every subject in its syllabus becomes a pod.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-2">
-          <Choice
-            href="/syllabus/catalogue"
-            icon={Library}
-            title="Pick from the catalogue"
-            text="Ready-made syllabuses, already checked. The quickest way in."
-            onPick={() => setOpen(false)}
-          />
-          <Choice
-            href="/syllabus/new"
-            icon={Upload}
-            title="Upload your syllabus"
-            text={
-              atLimit
-                ? `You've used ${uploads.used} of ${uploads.limit} uploads on your plan. The catalogue is always open.`
-                : "A PDF, a photo or pasted text. We read it, and you check the subjects."
-            }
-            note={
-              !atLimit && Number.isFinite(uploads.limit)
-                ? `${uploads.used} of ${uploads.limit} used`
-                : undefined
-            }
-            disabled={atLimit}
-            onPick={() => setOpen(false)}
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button
+        variant="primary"
+        className={className}
+        onClick={() => setOpen(true)}
+      >
+        Add exam
+      </Button>
+      <Dialog open={open} onOpenChange={(next) => (next ? null : close())}>
+        <DialogContent className="sm:max-w-lg">
+          {started ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>Reading {started.title}</DialogTitle>
+                <DialogDescription>
+                  We find the subjects and topics. You check them before
+                  anything is planned.
+                </DialogDescription>
+              </DialogHeader>
+              <UploadProgress
+                started={started}
+                readerOnline={props.readerOnline}
+                onClose={close}
+              />
+            </>
+          ) : step === "upload" ? (
+            <UploadStep
+              {...props}
+              onBack={initialStep === "upload" ? null : () => setStep("choose")}
+              onStarted={setStarted}
+            />
+          ) : (
+            <ChooseStep
+              uploads={props.uploads}
+              onUpload={() => setStep("upload")}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
-function Choice({
-  href,
-  icon: Icon,
-  title,
-  text,
-  note,
-  disabled = false,
-  onPick,
-}: {
-  href: string;
-  icon: LucideIcon;
-  title: string;
-  text: string;
-  note?: string;
-  disabled?: boolean;
-  onPick: () => void;
+function UploadStep({
+  exams,
+  photos,
+  initialExamId,
+  onBack,
+  onStarted,
+}: Omit<Props, "uploads" | "readerOnline" | "className"> & {
+  onBack: (() => void) | null;
+  onStarted: (started: StartedUpload) => void;
 }) {
-  const body = (
+  return (
     <>
-      <span className="grid size-11 shrink-0 place-items-center rounded-control bg-accent-soft text-accent-ink">
-        <Icon className="size-5" aria-hidden />
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="flex items-baseline justify-between gap-2">
-          <span className="font-heading text-body font-medium text-ink">
-            {title}
-          </span>
-          {note ? (
-            <span className="shrink-0 text-small text-ink-muted">{note}</span>
-          ) : null}
-        </span>
-        <span className="text-small text-ink-muted">{text}</span>
-      </span>
-      {disabled ? null : (
-        <ChevronRight
-          className="size-4 shrink-0 self-center text-ink-subtle"
-          aria-hidden
-        />
-      )}
+      <DialogHeader>
+        <DialogTitle>Upload your syllabus</DialogTitle>
+        <DialogDescription>
+          We read it and find the subjects and topics.{" "}
+          <Link
+            href="/syllabus/catalogue"
+            className="font-medium text-accent-ink hover:underline"
+          >
+            Is your exam in the catalogue? Pick it instead.
+          </Link>
+        </DialogDescription>
+      </DialogHeader>
+      <UploadForm
+        exams={exams}
+        photos={photos}
+        initialExamId={initialExamId}
+        onStarted={onStarted}
+        actions={
+          onBack ? (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onBack}
+              className="w-full sm:mr-auto sm:w-auto"
+            >
+              <ArrowLeft aria-hidden /> Back
+            </Button>
+          ) : null
+        }
+      />
     </>
-  );
-  const box =
-    "flex items-start gap-3 rounded-control border border-border p-3 text-left";
-  return disabled ? (
-    <div aria-disabled className={cn(box, "opacity-60")}>
-      {body}
-    </div>
-  ) : (
-    <Link
-      href={href}
-      onClick={onPick}
-      className={cn(
-        box,
-        "transition-colors duration-[120ms] hover:border-accent hover:bg-accent-soft/40",
-      )}
-    >
-      {body}
-    </Link>
   );
 }

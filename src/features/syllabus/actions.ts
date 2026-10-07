@@ -31,7 +31,7 @@ function firstIssue(error: { issues: { message: string }[] }) {
 
 export async function submitPastedTextAction(
   input: unknown,
-): Promise<ActionResult<{ versionId: string }>> {
+): Promise<ActionResult<{ versionId: string; jobId: string }>> {
   const user = await requireUser();
   const parsed = pasteTextSchema.safeParse(input);
   if (!parsed.success) return firstIssue(parsed.error);
@@ -41,7 +41,8 @@ export async function submitPastedTextAction(
   const result = await uploadService.submitText(user, parsed.data);
   if (!result.ok) return { ok: false, error: result.message };
   revalidatePath("/syllabus");
-  return { ok: true, versionId: result.versionId };
+  revalidatePath("/pods");
+  return { ok: true, versionId: result.versionId, jobId: result.jobId };
 }
 
 export async function saveDraftAction(input: unknown): Promise<ActionResult> {
