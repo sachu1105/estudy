@@ -218,3 +218,22 @@ export async function seedPodLink(userId: string, pod: string, title: string) {
     );
   });
 }
+
+/** A focus timer running right now, so the squad's study room has someone in it. */
+export async function seedActiveSession(userId: string, minutes = 20) {
+  await withDb(async (db) => {
+    await db.query(
+      `INSERT INTO "ActiveSession" (id, "userId", "planId", "taskId", "startedAt", "lastBeatAt", "activeSeconds", paused)
+       VALUES ($1, $2, $3, $4, now() - ($5 || ' minutes')::interval, now(), $6, false)
+       ON CONFLICT ("userId") DO UPDATE SET "lastBeatAt" = now()`,
+      [
+        randomUUID(),
+        userId,
+        randomUUID(),
+        randomUUID(),
+        String(minutes),
+        minutes * 60,
+      ],
+    );
+  });
+}

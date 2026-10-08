@@ -34,6 +34,7 @@ const tests = createGroupTests({
     channels: channelRepository,
     clock,
     ownerLimit: async () => 50,
+    examSubjects: async () => [],
   }),
   tests: groupTestRepository,
   questions: questionRepository,

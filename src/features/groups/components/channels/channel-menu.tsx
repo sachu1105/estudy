@@ -23,6 +23,7 @@ export function ChannelMenu({
   groupId,
   channel,
   categories,
+  subjects = [],
   first,
   last,
   label = `Manage #${channel.name}`,
@@ -30,6 +31,7 @@ export function ChannelMenu({
   groupId: string;
   channel: ChannelSummary;
   categories: { id: string; name: string }[];
+  subjects?: string[];
   first: boolean;
   last: boolean;
   label?: string;
@@ -109,6 +111,7 @@ export function ChannelMenu({
         <ChannelDialog
           groupId={groupId}
           categories={categories}
+          subjects={subjects}
           channel={channel}
           open={editing}
           onOpenChange={setEditing}

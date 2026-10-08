@@ -20,6 +20,7 @@ const channelRow = {
   postRule: true,
   viewRule: true,
   slowModeSec: true,
+  subjectName: true,
 } as const;
 
 /** A squad's categories and channels (squads S1). */
@@ -176,6 +177,7 @@ export const channelRepository = {
     postRule: ChannelPostRule;
     viewRule: ChannelViewRule;
     slowModeSec: number;
+    subjectName?: string | null;
   }) {
     const last = await prisma.channel.aggregate({
       where: {
@@ -199,6 +201,7 @@ export const channelRepository = {
       postRule?: ChannelPostRule;
       viewRule?: ChannelViewRule;
       slowModeSec?: number;
+      subjectName?: string | null;
     },
   ) {
     return prisma.channel.update({

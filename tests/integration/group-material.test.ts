@@ -32,6 +32,7 @@ const material = createMaterialService({
     channels: channelRepository,
     clock,
     ownerLimit: async () => 50,
+    examSubjects: async () => [],
   }),
   items: groupItemRepository,
   podItems: podItemRepository,

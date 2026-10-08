@@ -34,6 +34,7 @@ const channels = createChannelService({
   channels: channelRepository,
   clock,
   ownerLimit: async () => 50,
+  examSubjects: async () => [],
 });
 const chat = createChatService({
   groups,

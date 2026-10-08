@@ -1,7 +1,11 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { seedAndLogin } from "./support/auth";
-import { seedParsedDraft, seedQuestions } from "./support/db";
+import {
+  seedActiveSession,
+  seedParsedDraft,
+  seedQuestions,
+} from "./support/db";
 
 const noSideScroll = (page: Page) =>
   page.evaluate(
@@ -332,7 +336,10 @@ test.describe("groups", () => {
     await page.getByRole("button", { name: "New invite" }).click();
     const code = (await page.locator("li .font-mono").first().textContent())!;
 
-    const member = await person(browser, `gprivate-${test.info().project.name}`);
+    const member = await person(
+      browser,
+      `gprivate-${test.info().project.name}`,
+    );
     await member.goto(`/groups/join/${code.trim()}`);
     await expect(member).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
 
@@ -371,5 +378,36 @@ test.describe("groups", () => {
     await expect(tab(member, /^inner-circle/)).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
     await member.context().close();
+  });
+
+  test("the study room lists whoever is studying right now", async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `groom-${test.info().project.name}`);
+    const me = (await (await page.request.get("/api/me")).json()) as {
+      id: string;
+    };
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Room ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    const groupUrl = page.url();
+
+    // Nobody is studying yet.
+    await open(page, groupUrl, "Study room");
+    await expect(page.getByText("Nobody is studying yet")).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // With a timer running, the room shows you and how long you have studied.
+    await seedActiveSession(me.id, 20);
+    await page.reload();
+    await expect(page.getByText("(you)")).toBeVisible();
+    await expect(page.getByText("20 min")).toBeVisible();
   });
 });

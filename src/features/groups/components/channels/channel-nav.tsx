@@ -1,6 +1,6 @@
 "use client";
 
-import { BellOff, Lock, Trophy, Users } from "lucide-react";
+import { BellOff, Lock, Timer, Trophy, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -180,6 +180,12 @@ export function ChannelNav({
           label="Members"
           active={pathname === `/groups/${groupId}/members`}
           icon={<Users className="size-4 shrink-0" aria-hidden />}
+        />
+        <Row
+          href={`/groups/${groupId}/room`}
+          label="Study room"
+          active={pathname === `/groups/${groupId}/room`}
+          icon={<Timer className="size-4 shrink-0" aria-hidden />}
         />
         <Row
           href={`/groups/${groupId}/rank`}

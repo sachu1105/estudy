@@ -30,10 +30,11 @@ export default async function SquadPage({
   const user = await requireUser();
   const { groupId } = await params;
   if (!isId(groupId)) notFound();
-  const [view, layout, unread] = await Promise.all([
+  const [view, layout, unread, subjects] = await Promise.all([
     groupService.view(user, groupId),
     channelService.layout(user, groupId),
     chatService.unread(user, groupId),
+    channelService.subjects(user, groupId),
   ]);
   if (!view?.role || !layout) return null; // the layout shows how to join
   const { group } = view;
@@ -75,6 +76,7 @@ export default async function SquadPage({
             owner={view.role === "OWNER"}
             canManage={layout.canManage}
             categories={layout.categories.map(({ id, name }) => ({ id, name }))}
+            subjects={subjects.map((s) => s.name)}
           />
         </div>
       </header>

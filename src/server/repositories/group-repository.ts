@@ -1,8 +1,9 @@
 import "server-only";
 
 import { prisma } from "@/server/db";
-import type {
-  GroupRole,
+import {
+  Prisma,
+  type GroupRole,
   GroupVisibility,
   ReportTarget,
   SquadJoinMode,
@@ -12,12 +13,21 @@ const groupCard = {
   id: true,
   name: true,
   description: true,
+  cover: true,
   visibility: true,
   joinMode: true,
   joinQuestion: true,
   hiddenAt: true,
   exam: { select: { id: true, name: true } },
   _count: { select: { members: true } },
+  /** A few faces for the card. Capped, so a listing stays one query. */
+  members: {
+    take: 5,
+    orderBy: { joinedAt: "asc" as const },
+    select: {
+      user: { select: { id: true, displayName: true, avatarUrl: true } },
+    },
+  },
 } as const;
 
 /** Groups, membership, invites, blocks and reports (milestone 13). */
@@ -71,6 +81,22 @@ export const groupRepository = {
     });
   },
 
+  /**
+   * The squads shown on a shared profile. Only public ones: a private squad's existence
+   * is the squad's business, not something a member's profile gives away.
+   */
+  publicSquadsOf(userId: string) {
+    return prisma.membership.findMany({
+      where: {
+        userId,
+        group: { deletedAt: null, hiddenAt: null, visibility: "PUBLIC" },
+      },
+      orderBy: { joinedAt: "desc" },
+      take: 12,
+      select: { group: { select: groupCard } },
+    });
+  },
+
   directory(examId: string | null, query: string) {
     return prisma.group.findMany({
       where: {
@@ -102,6 +128,20 @@ export const groupRepository = {
     return prisma.membership.update({
       where: { groupId_userId: { groupId, userId } },
       data: { role },
+    });
+  },
+
+  setCover(groupId: string, cover: unknown) {
+    return prisma.group.update({
+      where: { id: groupId },
+      data: { cover: cover === null ? Prisma.DbNull : cover },
+    });
+  },
+
+  coverOf(groupId: string) {
+    return prisma.group.findUnique({
+      where: { id: groupId },
+      select: { cover: true, visibility: true, deletedAt: true },
     });
   },
 
@@ -137,6 +177,30 @@ export const groupRepository = {
     },
   ) {
     return prisma.group.update({ where: { id: groupId }, data });
+  },
+
+  /**
+   * Who in the squad has a focus timer running right now: a live session that has
+   * beaten recently. Presence, not a log: it says nothing once the timer stops.
+   */
+  async studyingNow(groupId: string, since: Date) {
+    const rows = await prisma.activeSession.findMany({
+      where: {
+        lastBeatAt: { gte: since },
+        user: { memberships: { some: { groupId } } },
+      },
+      orderBy: { startedAt: "asc" },
+      take: 50,
+      select: {
+        userId: true,
+        startedAt: true,
+        activeSeconds: true,
+        paused: true,
+        lastBeatAt: true,
+        user: { select: { displayName: true, avatarUrl: true } },
+      },
+    });
+    return rows;
   },
 
   softDelete(groupId: string, at: Date) {

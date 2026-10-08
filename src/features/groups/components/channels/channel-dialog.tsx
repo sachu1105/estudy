@@ -70,11 +70,14 @@ export function ChannelDialog({
   categories,
   channel,
   categoryId: startCategory = null,
+  subjects = [],
   open,
   onOpenChange,
 }: {
   groupId: string;
   categories: { id: string; name: string }[];
+  /** The squad's exam subjects, to tag the channel with one. */
+  subjects?: string[];
   /** Editing this channel; left out, a new one. */
   channel?: ChannelSummary;
   categoryId?: string | null;
@@ -88,6 +91,7 @@ export function ChannelDialog({
   const [postRule, setPostRule] = useState(channel?.postRule ?? "EVERYONE");
   const [viewRule, setViewRule] = useState(channel?.viewRule ?? "EVERYONE");
   const [slowModeSec, setSlowModeSec] = useState(channel?.slowModeSec ?? 0);
+  const [subject, setSubject] = useState(channel?.subjectName ?? NONE);
   const [categoryId, setCategoryId] = useState(
     channel ? (channel.categoryId ?? NONE) : (startCategory ?? NONE),
   );
@@ -103,6 +107,7 @@ export function ChannelDialog({
         postRule,
         viewRule,
         slowModeSec,
+        subjectName: subject === NONE ? "" : subject,
         categoryId: categoryId === NONE ? null : categoryId,
       };
       const result = channel
@@ -191,6 +196,28 @@ export function ChannelDialog({
               </SelectContent>
             </Select>
           </div>
+          {subjects.length ? (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="channel-subject">Subject (optional)</Label>
+              <Select value={subject} onValueChange={setSubject}>
+                <SelectTrigger id="channel-subject">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>No subject</SelectItem>
+                  {subjects.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-small text-ink-muted">
+                Everything posted here is tagged with it, and its topics come
+                first.
+              </span>
+            </div>
+          ) : null}
           <div className="flex flex-col gap-2">
             <span className="text-small font-medium">Who can see it</span>
             <ChoiceRows

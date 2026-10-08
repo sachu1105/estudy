@@ -51,6 +51,11 @@ const topic = z
 const postRule = z.enum(["EVERYONE", "ADMINS"]);
 const viewRule = z.enum(["EVERYONE", "ADMINS", "PICKED"]);
 const slowModeSec = z.number().int().min(0).max(3600);
+const subjectName = z
+  .string()
+  .trim()
+  .max(200)
+  .transform((v) => v || null);
 const direction = z.enum(["up", "down"]);
 
 export async function createChannelAction(
@@ -67,6 +72,7 @@ export async function createChannelAction(
       postRule,
       viewRule,
       slowModeSec,
+      subjectName: subjectName.optional(),
     }),
   );
   if (g.fail) return g.fail;
@@ -85,6 +91,7 @@ export async function updateChannelAction(input: unknown): Promise<Result> {
       postRule: postRule.optional(),
       viewRule: viewRule.optional(),
       slowModeSec: slowModeSec.optional(),
+      subjectName: subjectName.optional(),
       categoryId: id.nullable().optional(),
     }),
   );
@@ -200,5 +207,18 @@ export async function setNotifyAction(input: unknown): Promise<Result> {
   return done(
     groupId,
     await channelService.setNotify(g.user, groupId, channelId, level),
+  );
+}
+
+/** One threads channel per subject of the squad's exam, under one category. */
+export async function addSubjectChannelsAction(
+  input: unknown,
+): Promise<Result<{ added: number }>> {
+  const g = await guard(input, z.object({ groupId: id }));
+  if (g.fail) return g.fail;
+  const { groupId } = g.data;
+  return done(
+    groupId,
+    await channelService.addSubjectChannels(g.user, groupId),
   );
 }

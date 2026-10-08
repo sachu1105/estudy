@@ -13,8 +13,10 @@ import { notificationService } from "@/server/services/notifications";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
+import { catalogueRepository } from "@/server/repositories/catalogue-repository";
 import { channelRepository } from "@/server/repositories/channel-repository";
 import { messageRepository } from "@/server/repositories/message-repository";
+import { randomIds } from "@/lib/ids";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { userRepository } from "@/server/repositories/user-repository";
@@ -24,6 +26,7 @@ import { createChannelService } from "./channel-service";
 import { createChatService } from "./chat-service";
 import { createDiscussionService } from "./discussion-service";
 import { createGroupService } from "./group-service";
+import { createSquadCoverService } from "./squad-cover-service";
 import { createGroupTests } from "./group-tests";
 import { createMaterialService } from "./material-service";
 
@@ -52,11 +55,19 @@ export const groupService = createGroupService({
   newCode,
 });
 
+export const squadCoverService = createSquadCoverService({
+  groups: groupRepository,
+  squads: groupService,
+  storage,
+  ids: randomIds,
+});
+
 export const channelService = createChannelService({
   groups: groupService,
   channels: channelRepository,
   clock: systemClock,
   ownerLimit,
+  examSubjects: (examId) => catalogueRepository.subjectsForExam(examId),
 });
 
 export const materialService = createMaterialService({

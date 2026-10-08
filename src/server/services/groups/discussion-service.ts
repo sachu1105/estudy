@@ -192,7 +192,10 @@ export function createDiscussionService(deps: DiscussionDeps) {
         title: input.title,
         body: input.body,
         mentionIds,
-        subjectName: input.kind === "QUESTION" ? input.subjectName : null,
+        // A subject channel tags everything in it; elsewhere the asker chooses.
+        subjectName:
+          place.subjectName ??
+          (input.kind === "QUESTION" ? input.subjectName : null),
         topicName: input.kind === "QUESTION" ? input.topicName : null,
         at: now(),
       });

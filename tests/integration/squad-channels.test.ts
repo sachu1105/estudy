@@ -15,6 +15,7 @@ import { resetDatabase } from "./helpers";
 const clock = fixedClock("2026-10-16T04:30:00Z");
 let members = 100;
 let channelCap = 50;
+let examSubjects: { name: string; topics: string[] }[] = [];
 const groups = createGroupService({
   groups: groupRepository,
   channels: channelRepository,
@@ -28,6 +29,7 @@ const channels = createChannelService({
   channels: channelRepository,
   clock,
   ownerLimit: async () => channelCap,
+  examSubjects: async () => examSubjects,
 });
 const discussion = createDiscussionService({
   groups,
@@ -58,6 +60,7 @@ beforeEach(async () => {
   await resetDatabase();
   members = 100;
   channelCap = 50;
+  examSubjects = [];
 });
 afterAll(async () => {
   await prisma.$disconnect();
@@ -518,5 +521,138 @@ describe("private channels and the moderator role", () => {
     expect(
       await groups.manage(admin, g, other.id, { kind: "role", role: "ADMIN" }),
     ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+  });
+});
+
+describe("subject channels", () => {
+  it("makes one channel per subject, tags what's posted, and can be run again", async () => {
+    const owner = await user("Owner");
+    const exam = await prisma.exam.create({
+      data: {
+        slug: `ldc-${crypto.randomUUID().slice(0, 8)}`,
+        name: "LD Clerk",
+        board: "Kerala PSC",
+      },
+    });
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: exam.id,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    examSubjects = [
+      { name: "Kerala History", topics: ["Travancore", "Malabar"] },
+      { name: "Maths", topics: ["Percentage"] },
+    ];
+
+    expect(await channels.addSubjectChannels(owner, g)).toEqual({
+      ok: true,
+      added: 2,
+    });
+    const layout = (await channels.layout(owner, g))!;
+    const subjects = layout.categories.find((c) => c.name === "Subjects")!;
+    expect(subjects.channels.map((c) => [c.name, c.subjectName])).toEqual([
+      ["kerala-history", "Kerala History"],
+      ["maths", "Maths"],
+    ]);
+
+    // A question asked there carries the channel's subject, whatever the form said.
+    const history = subjects.channels[0]!;
+    const made = (await discussion.create(
+      owner,
+      g,
+      {
+        kind: "QUESTION",
+        title: "Who ruled Travancore?",
+        body: "Asking",
+        mentionIds: [],
+        subjectName: "Something else",
+        topicName: "Travancore",
+      },
+      history.id,
+    )) as { postId: string };
+    expect(
+      (await prisma.post.findUnique({ where: { id: made.postId } }))
+        ?.subjectName,
+    ).toBe("Kerala History");
+
+    // Run again after the syllabus grows: only the new subject is added.
+    examSubjects = [...examSubjects, { name: "English", topics: [] }];
+    expect(await channels.addSubjectChannels(owner, g)).toEqual({
+      ok: true,
+      added: 1,
+    });
+    expect(await channels.addSubjectChannels(owner, g)).toEqual({
+      ok: true,
+      added: 0,
+    });
+  });
+
+  it("asks for an exam first, and a member can't do it", async () => {
+    const owner = await user("Owner");
+    const anu = await user("Anu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    await groups.join(anu, g);
+    expect(await channels.addSubjectChannels(owner, g)).toMatchObject({
+      ok: false,
+      code: "NO_EXAM",
+    });
+    expect(await channels.addSubjectChannels(anu, g)).toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+  });
+});
+
+describe("the study room", () => {
+  it("lists members whose timer is beating, and forgets the ones that stopped", async () => {
+    const owner = await user("Owner");
+    const anu = await user("Anu");
+    const outsider = await user("Outsider");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    await groups.join(anu, g);
+    const beat = async (
+      who: { id: string },
+      secondsAgo: number,
+      paused = false,
+    ) =>
+      prisma.activeSession.create({
+        data: {
+          userId: who.id,
+          planId: crypto.randomUUID(),
+          taskId: crypto.randomUUID(),
+          startedAt: new Date(clock.now().getTime() - 25 * 60_000),
+          lastBeatAt: new Date(clock.now().getTime() - secondsAgo * 1000),
+          activeSeconds: 20 * 60,
+          paused,
+        },
+      });
+    await beat(anu, 10);
+    await beat(outsider, 10);
+    await beat(owner, 10 * 60); // stopped beating: gone quiet
+
+    const room = (await groups.studyRoom(owner, g))!;
+    expect(room.map((p) => p.name)).toEqual(["Anu"]);
+    expect(room[0]).toMatchObject({ minutes: 20, paused: false, you: false });
+    expect(await groups.studyRoom(outsider, g)).toBeNull();
   });
 });

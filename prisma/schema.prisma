@@ -49,7 +49,18 @@ model User {
   passwordHash    String
   name            String
   displayName     String
+  /// The stable path that serves the photo (/api/profile-image/<id>?...), not a storage
+  /// key: every avatar in the app reads this field straight from its query.
   avatarUrl       String?
+  /// Storage key behind avatarUrl. Null when the user has no photo (initials show).
+  avatarKey       String?
+  /// lib/pods/covers storedCoverSchema: a gradient preset, or an image the user uploaded.
+  profileCover    Json?
+  bio             String?
+  /// The public profile's handle: /u/<handle>. Null until sharing is turned on.
+  handle          String?    @unique
+  /// Off by default: a profile is private until the user chooses to share it.
+  profilePublic   Boolean    @default(false)
   role            Role       @default(USER)
   timezone        String     @default("Asia/Kolkata")
   beginnerMode    Boolean    @default(false)
@@ -1075,6 +1086,8 @@ model Group {
   id           String          @id @default(uuid()) @db.Uuid
   name         String
   description  String?
+  /// lib/pods/covers storedCoverSchema: the squad's banner. Null means automatic.
+  cover        Json?
   examId       String?         @db.Uuid
   exam         Exam?           @relation(fields: [examId], references: [id], onDelete: SetNull)
   visibility   GroupVisibility @default(PUBLIC)
@@ -1132,6 +1145,8 @@ model Channel {
   order       Int              @default(0)
   postRule    ChannelPostRule  @default(EVERYONE)
   viewRule    ChannelViewRule  @default(EVERYONE)
+  /// The syllabus subject this channel is for: what's posted here is tagged with it.
+  subjectName String?
   /// Seconds a member waits between messages here. 0 is off; admins are exempt.
   slowModeSec Int              @default(0)
   createdAt   DateTime         @default(now()) @db.Timestamptz(6)

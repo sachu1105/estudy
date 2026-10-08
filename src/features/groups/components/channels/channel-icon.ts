@@ -33,6 +33,7 @@ export type ChannelSummary = {
   postRule: "EVERYONE" | "ADMINS";
   viewRule: "EVERYONE" | "ADMINS" | "PICKED";
   slowModeSec: number;
+  subjectName: string | null;
 };
 
 export type CategorySummary = {

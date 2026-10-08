@@ -16,6 +16,7 @@ import {
 import { toast } from "@/components/ui/toast";
 
 import { deleteGroupAction, leaveGroupAction } from "../actions";
+import { addSubjectChannelsAction } from "../channel-actions";
 import { CategoryDialog } from "./channels/category-dialog";
 import { ChannelDialog } from "./channels/channel-dialog";
 import { ReportDialog } from "./report-dialog";
@@ -27,12 +28,14 @@ export function GroupMenu({
   owner,
   canManage = false,
   categories = [],
+  subjects = [],
 }: {
   groupId: string;
   name: string;
   owner: boolean;
   canManage?: boolean;
   categories?: { id: string; name: string }[];
+  subjects?: string[];
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -68,6 +71,22 @@ export function GroupMenu({
               <DropdownMenuItem onSelect={() => setAddingCategory(true)}>
                 Add a category
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() =>
+                  start(async () => {
+                    const result = await addSubjectChannelsAction({ groupId });
+                    if (!result.ok) return void toast.error(result.error);
+                    toast.success(
+                      result.added
+                        ? `Added ${result.added} subject channel${result.added === 1 ? "" : "s"}`
+                        : "Every subject already has a channel",
+                    );
+                    router.refresh();
+                  })
+                }
+              >
+                A channel per subject
+              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href={`/groups/${groupId}/members`}>Invite people</Link>
               </DropdownMenuItem>
@@ -99,6 +118,7 @@ export function GroupMenu({
         <ChannelDialog
           groupId={groupId}
           categories={categories}
+          subjects={subjects}
           open={addingChannel}
           onOpenChange={setAddingChannel}
         />

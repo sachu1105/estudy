@@ -22,6 +22,10 @@ export type ChannelDeps = {
   clock: Clock;
   /** The squad owner's plan sets how many channels a squad holds. */
   ownerLimit: (ownerId: string, feature: "channelsPerSquad") => Promise<number>;
+  /** The subjects of an exam's catalogue syllabus, with their topics. */
+  examSubjects: (
+    examId: string,
+  ) => Promise<{ name: string; topics: string[] }[]>;
 };
 
 const GONE = failure("NOT_FOUND", "That channel is gone.");
@@ -29,6 +33,9 @@ const BAD_NAME = failure(
   "BAD_NAME",
   "Give the channel a name with at least one letter or number.",
 );
+/** Where a channel per subject goes. */
+export const SUBJECTS_CATEGORY = "Subjects";
+
 /** Slow mode choices, in seconds. */
 export const SLOW_MODE_MAX = 3600;
 
@@ -123,7 +130,7 @@ export function createChannelService(deps: ChannelDeps) {
       who: Viewer,
       types: ChannelType[],
       channelId?: string | null,
-    ): Promise<Result<{ channelId: string }>> {
+    ): Promise<Result<{ channelId: string; subjectName: string | null }>> {
       const channel = channelId
         ? await deps.channels.find(groupId, channelId)
         : await deps.channels.firstOfType(groupId, types[0]);
@@ -141,7 +148,11 @@ export function createChannelService(deps: ChannelDeps) {
           "FORBIDDEN",
           "Only the squad's admins post in this channel.",
         );
-      return { ok: true, channelId: channel.id };
+      return {
+        ok: true,
+        channelId: channel.id,
+        subjectName: channel.subjectName,
+      };
     },
 
     async create(
@@ -155,6 +166,7 @@ export function createChannelService(deps: ChannelDeps) {
         postRule: ChannelPostRule;
         viewRule?: ChannelViewRule;
         slowModeSec?: number;
+        subjectName?: string | null;
       },
     ): Promise<Result<{ channelId: string }>> {
       const ok = await admin(user, groupId);
@@ -184,6 +196,7 @@ export function createChannelService(deps: ChannelDeps) {
         postRule: input.postRule,
         viewRule: input.viewRule ?? "EVERYONE",
         slowModeSec: slowMode(input.slowModeSec),
+        subjectName: input.subjectName?.trim() || null,
       });
       return { ok: true, channelId: channel.id };
     },
@@ -199,6 +212,7 @@ export function createChannelService(deps: ChannelDeps) {
         postRule?: ChannelPostRule;
         viewRule?: ChannelViewRule;
         slowModeSec?: number;
+        subjectName?: string | null;
         categoryId?: string | null;
       },
     ): Promise<Result<object>> {
@@ -227,6 +241,10 @@ export function createChannelService(deps: ChannelDeps) {
           input.slowModeSec === undefined
             ? undefined
             : slowMode(input.slowModeSec),
+        subjectName:
+          input.subjectName === undefined
+            ? undefined
+            : input.subjectName?.trim() || null,
       });
       if (moving)
         await deps.channels.moveToCategory(
@@ -235,6 +253,67 @@ export function createChannelService(deps: ChannelDeps) {
           input.categoryId ?? null,
         );
       return { ok: true };
+    },
+
+    /** The subjects of the squad's exam, for tagging a channel and narrowing topics. */
+    async subjects(user: User, groupId: string) {
+      const ok = await deps.groups.require(user, groupId, "MEMBER");
+      if ("error" in ok) return [];
+      const examId = ok.group.exam?.id;
+      return examId ? deps.examSubjects(examId) : [];
+    },
+
+    /**
+     * A channel for every subject of the squad's exam, under one category. Subjects that
+     * already have a channel are left alone, so it can be run again after a syllabus grows.
+     */
+    async addSubjectChannels(
+      user: User,
+      groupId: string,
+    ): Promise<Result<{ added: number }>> {
+      const ok = await admin(user, groupId);
+      if ("error" in ok) return ok.error!;
+      const examId = ok.group.exam?.id;
+      if (!examId)
+        return failure(
+          "NO_EXAM",
+          "Link this squad to an exam first, in Squad settings.",
+        );
+      const subjects = await deps.examSubjects(examId);
+      if (!subjects.length)
+        return failure(
+          "NO_SUBJECTS",
+          "That exam has no syllabus in the catalogue yet.",
+        );
+      const existing = await deps.channels.channels(groupId);
+      const taken = new Set(existing.map((c) => c.subjectName).filter(Boolean));
+      const wanted = subjects.filter((s) => !taken.has(s.name));
+      if (!wanted.length) return { ok: true, added: 0 };
+
+      const max = await deps.ownerLimit(ok.group.ownerId, "channelsPerSquad");
+      const room = Math.max(0, max - existing.length);
+      if (!room)
+        return failure(
+          "LIMIT",
+          `This squad has ${max} channels, the most its owner's plan allows.`,
+        );
+      const categories = await deps.channels.categories(groupId);
+      const category =
+        categories.find((c) => c.name === SUBJECTS_CATEGORY) ??
+        (await deps.channels.createCategory(groupId, SUBJECTS_CATEGORY));
+      for (const subject of wanted.slice(0, room))
+        await deps.channels.create({
+          groupId,
+          categoryId: category.id,
+          type: "THREADS",
+          name: channelName(subject.name) || "subject",
+          topic: `Doubts about ${subject.name}`,
+          postRule: "EVERYONE",
+          viewRule: "EVERYONE",
+          slowModeSec: 0,
+          subjectName: subject.name,
+        });
+      return { ok: true, added: Math.min(room, wanted.length) };
     },
 
     // ---- Who is let into a private channel -------------------------------------------

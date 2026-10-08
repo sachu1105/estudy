@@ -3,7 +3,7 @@ import Link from "next/link";
 import { systemClock } from "@/lib/clock";
 import { timeAgo } from "@/lib/format/ago";
 import { cn } from "@/lib/utils/cn";
-import { discussionService } from "@/server/services/groups";
+import { channelService, discussionService } from "@/server/services/groups";
 import { podService } from "@/server/services/pods";
 
 import { channelHref } from "../components/channels/channel-icon";
@@ -31,15 +31,22 @@ export async function ThreadsChannel({
 }: ChannelViewProps) {
   const filter: Filter =
     FILTERS.find((f) => f.value === searchParams.show)?.value ?? "all";
-  const [posts, members, pods] = await Promise.all([
+  const [posts, members, pods, subjects] = await Promise.all([
     discussionService.list(user, groupId, filter, channel.id),
     discussionService.mentionable(user, groupId),
     podService.list(user),
+    channel.subjectName
+      ? channelService.subjects(user, groupId)
+      : Promise.resolve([]),
   ]);
   const now = systemClock.now();
-  const topics = [
+  // A subject channel offers its own topics first, then whatever else is in the pods.
+  const mine = [
     ...new Set(pods.flatMap((p) => p.topics.map((t) => t.name))),
   ].sort();
+  const subjectTopics =
+    subjects.find((s) => s.name === channel.subjectName)?.topics ?? [];
+  const topics = [...new Set([...subjectTopics, ...mine])];
   const base = channelHref(groupId, channel.id);
 
   return (

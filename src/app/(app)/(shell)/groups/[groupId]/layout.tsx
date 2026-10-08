@@ -36,11 +36,12 @@ export default async function GroupLayout({
 
   if (!role) return <Visitor user={user} view={view} />;
 
-  const [layout, mine, unread, unreadSquads] = await Promise.all([
+  const [layout, mine, unread, unreadSquads, subjects] = await Promise.all([
     channelService.layout(user, groupId),
     groupService.mine(user),
     chatService.unread(user, groupId),
     chatService.squadsWithUnread(user),
+    channelService.subjects(user, groupId),
   ]);
   if (!layout) notFound();
   const categories = layout.categories.map(({ id, name }) => ({ id, name }));
@@ -68,6 +69,7 @@ export default async function GroupLayout({
             owner={role === "OWNER"}
             canManage={layout.canManage}
             categories={categories}
+            subjects={subjects.map((s) => s.name)}
           />
         </div>
         <div className="flex-1 scrollbar-thin overflow-y-auto p-2">

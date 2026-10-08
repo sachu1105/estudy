@@ -1,6 +1,7 @@
 import type { Clock } from "@/lib/clock";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
 import { canManage, RANK, type GroupRole } from "@/lib/squads/roles";
+import { MAX_BEAT_SECONDS } from "@/server/services/progress/session-service";
 import { SQUAD_TEMPLATES, type TemplateKey } from "@/lib/squads/templates";
 import type { ChannelRepository } from "@/server/repositories/channel-repository";
 import type { GroupRepository } from "@/server/repositories/group-repository";
@@ -21,6 +22,9 @@ export type GroupDeps = {
   /** An unguessable invite code. */
   newCode: () => string;
 };
+
+/** A timer silent this long has stopped: presence says nothing beyond it. */
+const PRESENCE_MS = 3 * 60_000;
 
 const NOT_FOUND = failure(
   "NOT_FOUND",
@@ -228,6 +232,36 @@ export function createGroupService(deps: GroupDeps) {
         joinQuestion: joinMode === "REQUEST" ? input.joinQuestion : null,
       });
       return { ok: true };
+    },
+
+    /**
+     * Who in the squad is studying right now, longest first. Presence only: a timer that
+     * stopped beating a few minutes ago has gone quiet, and nothing is kept.
+     */
+    async studyRoom(user: User, groupId: string) {
+      const ok = await require(user, groupId, "MEMBER");
+      if ("error" in ok) return null;
+      const at = now();
+      const rows = await deps.groups.studyingNow(
+        groupId,
+        new Date(at.getTime() - PRESENCE_MS),
+      );
+      return rows.map((r) => {
+        const since = Math.floor(
+          (at.getTime() - r.lastBeatAt.getTime()) / 1000,
+        );
+        const seconds =
+          r.activeSeconds +
+          (r.paused ? 0 : Math.max(0, Math.min(MAX_BEAT_SECONDS, since)));
+        return {
+          id: r.userId,
+          name: r.user.displayName,
+          avatarUrl: r.user.avatarUrl,
+          minutes: Math.floor(seconds / 60),
+          paused: r.paused,
+          you: r.userId === user.id,
+        };
+      });
     },
 
     async remove(user: User, groupId: string): Promise<Result<object>> {

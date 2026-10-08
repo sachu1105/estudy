@@ -173,7 +173,7 @@ export function createMaterialService(deps: MaterialDeps) {
         noteText: source.noteText,
         url: source.url,
         linkDescription: source.linkDescription,
-        subjectName: source.pod.name,
+        subjectName: place.subjectName ?? source.pod.name,
         topicName: null,
         sizeBytes: bytes,
         files: copies.map((c) => ({
@@ -222,7 +222,7 @@ export function createMaterialService(deps: MaterialDeps) {
         type: "LINK",
         title: input.title || url.hostname.replace(/^www\./, ""),
         url: url.href,
-        subjectName: input.subjectName,
+        subjectName: place.subjectName ?? input.subjectName,
         topicName: input.topicName,
         sizeBytes: 0,
         files: [],
