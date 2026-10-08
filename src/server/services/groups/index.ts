@@ -14,12 +14,14 @@ import { groupItemRepository } from "@/server/repositories/group-item-repository
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
 import { channelRepository } from "@/server/repositories/channel-repository";
+import { messageRepository } from "@/server/repositories/message-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
 import { userRepository } from "@/server/repositories/user-repository";
 import { storage } from "@/server/storage";
 
 import { createChannelService } from "./channel-service";
+import { createChatService } from "./chat-service";
 import { createDiscussionService } from "./discussion-service";
 import { createGroupService } from "./group-service";
 import { createGroupTests } from "./group-tests";
@@ -94,4 +96,16 @@ export const discussionService = createDiscussionService({
   emit: groupEvents.emit,
   notify: (rows) => notificationService.notify(rows),
   addXp: (entry) => progressRepository.addXp(entry),
+});
+
+export const chatService = createChatService({
+  groups: groupService,
+  channels: channelService,
+  messages: messageRepository,
+  memberNames: (groupId) => discussionRepository.memberNames(groupId),
+  shareFromPod: (user, groupId, podItemId, channelId) =>
+    materialService.shareFromPod(user, groupId, podItemId, channelId, "chat"),
+  clock: systemClock,
+  emit: groupEvents.emit,
+  notify: (rows) => notificationService.notify(rows),
 });

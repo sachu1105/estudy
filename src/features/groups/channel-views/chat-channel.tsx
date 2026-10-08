@@ -1,23 +1,50 @@
-import { Hash, Megaphone } from "lucide-react";
+import { notFound } from "next/navigation";
 
-import { EmptyState } from "@/components/ui/empty-state";
+import { chatService, materialService } from "@/server/services/groups";
 
 import { ChannelHeader } from "../components/channels/channel-header";
+import { ChatView } from "../components/chat/chat-view";
 import type { ChannelViewProps } from "./types";
 
-/** A chat or announcements channel. Live messages are the next squads step (S3). */
-export function ChatChannel({ groupId, channel, manage }: ChannelViewProps) {
-  const announcements = channel.type === "ANNOUNCEMENTS";
+/** A chat or announcements channel: the latest messages, live, and the box to write in. */
+export async function ChatChannel({
+  user,
+  groupId,
+  channel,
+  canPost,
+  manage,
+}: ChannelViewProps) {
+  const [page, members, attachable] = await Promise.all([
+    chatService.page(user, groupId, channel.id),
+    chatService.mentionable(user, groupId),
+    canPost ? materialService.shareable(user) : Promise.resolve([]),
+  ]);
+  if (!page) notFound();
   return (
     <>
       <ChannelHeader manage={manage} groupId={groupId} channel={channel} />
-      <EmptyState
-        icon={announcements ? Megaphone : Hash}
-        title={announcements ? "Announcements open soon" : "Chat opens soon"}
-        description={
-          announcements
-            ? "Admins will post news here for everyone. Until then, pin a thread in a threads channel."
-            : "Live messages are on their way. Until then, start a thread in a threads channel."
+      <ChatView
+        groupId={groupId}
+        channel={{
+          id: channel.id,
+          name: channel.name,
+          type: channel.type === "ANNOUNCEMENTS" ? "ANNOUNCEMENTS" : "CHAT",
+        }}
+        me={{
+          id: user.id,
+          displayName: user.displayName,
+          avatarUrl: user.avatarUrl,
+        }}
+        timeZone={user.timezone}
+        initial={page.messages}
+        initialHasMore={page.hasMore}
+        members={members}
+        attachable={attachable}
+        canPost={canPost}
+        readOnlyNote={
+          channel.postRule === "ADMINS"
+            ? "Only the squad's admins post here."
+            : "A squad admin has muted you for now: you can read, but not send."
         }
       />
     </>

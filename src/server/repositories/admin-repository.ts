@@ -444,6 +444,25 @@ export const adminRepository = {
           }
         : null;
     }
+    if (type === "MESSAGE") {
+      const m = await prisma.message.findUnique({
+        where: { id },
+        select: {
+          body: true,
+          hiddenAt: true,
+          groupId: true,
+          channel: { select: { id: true, name: true } },
+        },
+      });
+      return m
+        ? {
+            label: `Message in #${m.channel.name}`,
+            excerpt: m.body.slice(0, 280),
+            hidden: !!m.hiddenAt,
+            href: `/groups/${m.groupId}/c/${m.channel.id}`,
+          }
+        : null;
+    }
     const u = await prisma.user.findUnique({
       where: { id },
       select: { email: true },
@@ -469,6 +488,8 @@ export const adminRepository = {
       return prisma.post.update({ where: { id }, data: { hiddenAt: at } });
     if (type === "REPLY")
       return prisma.reply.update({ where: { id }, data: { hiddenAt: at } });
+    if (type === "MESSAGE")
+      return prisma.message.update({ where: { id }, data: { hiddenAt: at } });
     return Promise.resolve(null);
   },
 

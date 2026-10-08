@@ -7,12 +7,17 @@ import { BackLink } from "@/features/pods/components/back-link";
 import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
 import { CHANNEL_ICONS } from "@/features/groups/components/channels/channel-icon";
 import { SquadRail } from "@/features/groups/components/channels/squad-rail";
+import { SquadLive } from "@/features/groups/components/chat/squad-live";
 import { GroupMenu } from "@/features/groups/components/group-menu";
 import { JoinButton } from "@/features/groups/components/join-controls";
 import { isId } from "@/lib/ids";
 import { joinModeOf } from "@/lib/squads/access";
 import { requireUser } from "@/server/auth/session";
-import { channelService, groupService } from "@/server/services/groups";
+import {
+  channelService,
+  chatService,
+  groupService,
+} from "@/server/services/groups";
 
 /**
  * A squad. Members get its channels: on md+ a rail of their squads, the channel list and
@@ -31,16 +36,24 @@ export default async function GroupLayout({
 
   if (!role) return <Visitor user={user} view={view} />;
 
-  const [layout, mine] = await Promise.all([
+  const [layout, mine, unread, unreadSquads] = await Promise.all([
     channelService.layout(user, groupId),
     groupService.mine(user),
+    chatService.unread(user, groupId),
+    chatService.squadsWithUnread(user),
   ]);
   if (!layout) notFound();
   const categories = layout.categories.map(({ id, name }) => ({ id, name }));
 
   return (
-    <div data-bleed className="flex flex-col md:h-full md:flex-row">
-      <SquadRail squads={mine.map((m) => m.group)} />
+    <div data-bleed className="flex flex-1 flex-col md:h-full md:flex-row">
+      <SquadLive groupId={group.id} meId={user.id} />
+      <SquadRail
+        squads={mine.map((m) => ({
+          ...m.group,
+          unread: unreadSquads.has(m.group.id),
+        }))}
+      />
       <aside
         aria-label={`${group.name} channels`}
         className="hidden w-64 shrink-0 flex-col border-r border-border md:flex"
@@ -63,11 +76,12 @@ export default async function GroupLayout({
             loose={layout.loose}
             categories={layout.categories}
             canManage={layout.canManage}
+            unread={unread}
           />
         </div>
       </aside>
-      <div className="min-w-0 flex-1 md:scrollbar-thin md:overflow-y-auto">
-        <div className="mx-auto w-full max-w-content md:px-8 md:pt-6 md:pb-12">
+      <div className="min-w-0 flex-1 has-[[data-focus-view]]:flex has-[[data-focus-view]]:flex-col md:scrollbar-thin md:overflow-y-auto">
+        <div className="mx-auto w-full max-w-content has-[[data-focus-view]]:flex has-[[data-focus-view]]:flex-1 has-[[data-focus-view]]:flex-col md:px-8 md:pt-6 md:pb-12 md:has-[[data-focus-view]]:pb-0">
           {view.muted ? (
             <p
               role="status"

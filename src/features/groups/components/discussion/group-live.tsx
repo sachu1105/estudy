@@ -31,8 +31,11 @@ export function GroupLive({
       source = new EventSource(`/api/groups/${groupId}/stream`);
       source.addEventListener("group", (e) => {
         const event = JSON.parse((e as MessageEvent<string>).data) as {
-          postId: string;
+          type: string;
+          postId?: string;
         };
+        // Chat messages have their own listener (ChatLive).
+        if (event.type === "message") return;
         if (!postId || event.postId === postId) refresh();
       });
       source.addEventListener("resync", refresh);

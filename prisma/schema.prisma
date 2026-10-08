@@ -94,6 +94,9 @@ model User {
   posts              Post[]
   replies            Reply[]
   reactions          Reaction[]
+  messages           Message[]
+  messageReactions   MessageReaction[]
+  channelReads       ChannelRead[]
   notifications      Notification[]      @relation("NotificationFor")
   pushSubscriptions  PushSubscription[]
   notifyPrefs        NotifyPrefs?
@@ -1039,6 +1042,7 @@ enum ReportTarget {
   USER
   POST
   REPLY
+  MESSAGE
 }
 
 enum ReportStatus {
@@ -1073,6 +1077,7 @@ model Group {
   posts      Post[]
   categories ChannelCategory[]
   channels   Channel[]
+  messages   Message[]
 
   @@index([visibility, deletedAt, examId])
 }
@@ -1110,11 +1115,69 @@ model Channel {
   updatedAt  DateTime         @updatedAt @db.Timestamptz(6)
   deletedAt  DateTime?        @db.Timestamptz(6)
 
-  items GroupItem[]
-  tests GroupTest[]
-  posts Post[]
+  items    GroupItem[]
+  tests    GroupTest[]
+  posts    Post[]
+  messages Message[]
+  reads    ChannelRead[]
 
   @@index([groupId, deletedAt, order])
+}
+
+/// A message in a chat or announcements channel (squads S3). Editable by its author.
+model Message {
+  id         String     @id @default(uuid()) @db.Uuid
+  groupId    String     @db.Uuid
+  group      Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId  String     @db.Uuid
+  channel    Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  authorId   String     @db.Uuid
+  author     User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  /// Markdown subset, rendered without HTML.
+  body       String
+  /// The message this answers, shown above it.
+  replyToId  String?    @db.Uuid
+  replyTo    Message?   @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
+  answers    Message[]  @relation("MessageReply")
+  /// People named with @, checked to be members when sent.
+  mentionIds String[]   @db.Uuid
+  /// A pod item shared into the chat: a copy, like any shared material (rule 15).
+  itemId     String?    @db.Uuid
+  item       GroupItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  editedAt   DateTime?  @db.Timestamptz(6)
+  /// A squad admin or site admin took it down.
+  hiddenAt   DateTime?  @db.Timestamptz(6)
+  createdAt  DateTime   @default(now()) @db.Timestamptz(6)
+  deletedAt  DateTime?  @db.Timestamptz(6)
+
+  reactions MessageReaction[]
+
+  @@index([channelId, createdAt])
+  @@index([groupId, createdAt])
+}
+
+model MessageReaction {
+  id        String       @id @default(uuid()) @db.Uuid
+  messageId String       @db.Uuid
+  message   Message      @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      ReactionKind
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+
+  @@unique([messageId, userId, kind])
+}
+
+/// How far one person has read a channel: newer messages show as unread.
+model ChannelRead {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channelId  String   @db.Uuid
+  channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  lastReadAt DateTime @db.Timestamptz(6)
+
+  @@unique([userId, channelId])
 }
 
 model Membership {
@@ -1188,7 +1251,8 @@ model GroupItem {
   createdAt       DateTime    @default(now()) @db.Timestamptz(6)
   deletedAt       DateTime?   @db.Timestamptz(6)
 
-  files GroupItemFile[]
+  files    GroupItemFile[]
+  messages Message[]
 
   @@index([groupId, deletedAt, createdAt])
   @@index([channelId, deletedAt, createdAt])

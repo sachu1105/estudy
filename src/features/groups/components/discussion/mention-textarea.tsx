@@ -12,6 +12,8 @@ type Props = Omit<ComponentProps<"textarea">, "value" | "onChange"> & {
   members: Mention[];
   /** Called with each person picked from the list. */
   onMention: (person: Mention) => void;
+  /** Open the list above the box (a composer at the bottom of the screen). */
+  listAbove?: boolean;
 };
 
 /** A textarea that offers group members after "@", by keyboard or tap. */
@@ -20,6 +22,8 @@ export function MentionTextarea({
   onValueChange,
   members,
   onMention,
+  listAbove = false,
+  onKeyDown,
   className,
   ...props
 }: Props) {
@@ -71,7 +75,7 @@ export function MentionTextarea({
           track(e.target.value, e.target.selectionStart);
         }}
         onKeyDown={(e) => {
-          if (!open) return;
+          if (!open) return onKeyDown?.(e);
           if (e.key === "ArrowDown" || e.key === "ArrowUp") {
             e.preventDefault();
             const step = e.key === "ArrowDown" ? 1 : -1;
@@ -93,7 +97,8 @@ export function MentionTextarea({
         role="listbox"
         aria-label="People to mention"
         className={cn(
-          "absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-control border border-border bg-surface shadow-md",
+          "absolute inset-x-0 z-20 overflow-hidden rounded-control border border-border bg-surface shadow-md",
+          listAbove ? "bottom-full mb-1" : "top-full mt-1",
           !open && "hidden",
         )}
       >

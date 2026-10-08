@@ -59,7 +59,7 @@ export default async function ShellLayout({
             id="main"
             // A page marked data-bleed (a squad's columns) fills the panel on md+ and
             // scrolls its own columns.
-            className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 md:px-8 md:pt-8 md:pb-12 md:has-[[data-bleed]]:min-h-0 md:has-[[data-bleed]]:max-w-none md:has-[[data-bleed]]:p-0"
+            className="mx-auto w-full max-w-content flex-1 px-4 pt-6 pb-24 has-[[data-focus-view]]:flex has-[[data-focus-view]]:flex-col has-[[data-focus-view]]:pb-0 md:px-8 md:pt-8 md:pb-12 md:has-[[data-bleed]]:min-h-0 md:has-[[data-bleed]]:max-w-none md:has-[[data-bleed]]:p-0"
           >
             {children}
           </main>

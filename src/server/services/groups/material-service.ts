@@ -119,6 +119,8 @@ export function createMaterialService(deps: MaterialDeps) {
       groupId: string,
       podItemId: string,
       channelId: string | null = null,
+      /** Shared inside a chat message rather than into a material channel. */
+      into: "material" | "chat" = "material",
     ): Promise<Result<{ itemId: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
@@ -127,7 +129,11 @@ export function createMaterialService(deps: MaterialDeps) {
       const place = await deps.channels.place(
         groupId,
         ok.me.role,
-        source.type === "LINK" ? ["LINKS", "MATERIAL"] : ["MATERIAL"],
+        into === "chat"
+          ? ["CHAT", "ANNOUNCEMENTS"]
+          : source.type === "LINK"
+            ? ["LINKS", "MATERIAL"]
+            : ["MATERIAL"],
         channelId,
       );
       if (!place.ok) return place;

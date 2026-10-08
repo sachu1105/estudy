@@ -486,3 +486,9 @@ html {
     pointer-events: none;
   }
 }
+
+/* A focus view (a squad chat) has the screen to itself on phones: no tab bar. Outside
+   the layers so it wins over the tab bar's own display utility. */
+body:has([data-focus-view]) [data-bottom-tabs] {
+  display: none;
+}

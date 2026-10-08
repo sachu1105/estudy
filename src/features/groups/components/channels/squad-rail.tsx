@@ -29,7 +29,7 @@ const tile = (active: boolean) =>
 export function SquadRail({
   squads,
 }: {
-  squads: { id: string; name: string }[];
+  squads: { id: string; name: string; unread?: boolean }[];
 }) {
   const pathname = usePathname();
   return (
@@ -59,11 +59,17 @@ export function SquadRail({
               aria-current={active ? "page" : undefined}
               className={tile(active)}
             >
-              {active ? (
+              {active || s.unread ? (
                 <span
                   aria-hidden
-                  className="absolute top-1/2 -left-3 h-8 w-1 -translate-y-1/2 rounded-r-full bg-ink"
+                  className={cn(
+                    "absolute top-1/2 -left-3 w-1 -translate-y-1/2 rounded-r-full bg-ink",
+                    active ? "h-8" : "h-2",
+                  )}
                 />
+              ) : null}
+              {s.unread && !active ? (
+                <span className="sr-only">, new messages</span>
               ) : null}
               {initials(s.name)}
             </Link>

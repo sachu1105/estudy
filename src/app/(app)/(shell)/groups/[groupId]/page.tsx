@@ -12,7 +12,11 @@ import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
 import { GroupMenu } from "@/features/groups/components/group-menu";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { channelService, groupService } from "@/server/services/groups";
+import {
+  channelService,
+  chatService,
+  groupService,
+} from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Squad" };
 
@@ -26,9 +30,10 @@ export default async function SquadPage({
   const user = await requireUser();
   const { groupId } = await params;
   if (!isId(groupId)) notFound();
-  const [view, layout] = await Promise.all([
+  const [view, layout, unread] = await Promise.all([
     groupService.view(user, groupId),
     channelService.layout(user, groupId),
+    chatService.unread(user, groupId),
   ]);
   if (!view?.role || !layout) return null; // the layout shows how to join
   const { group } = view;
@@ -83,6 +88,7 @@ export default async function SquadPage({
           loose={layout.loose}
           categories={layout.categories}
           canManage={layout.canManage}
+          unread={unread}
         />
       </div>
 

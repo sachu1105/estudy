@@ -240,6 +240,7 @@ export async function reportAction(input: unknown): Promise<Result> {
         "USER",
         "POST",
         "REPLY",
+        "MESSAGE",
       ]),
       targetId: id,
       groupId: id.nullable(),

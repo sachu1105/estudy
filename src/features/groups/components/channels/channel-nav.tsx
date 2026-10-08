@@ -31,22 +31,37 @@ function Row({
   label,
   active,
   tools,
+  unread,
 }: {
   href: string;
   icon: ReactNode;
   label: string;
   active: boolean;
   tools?: ReactNode;
+  /** New messages from others, and how many name the viewer. */
+  unread?: { unread: number; mentions: number };
 }) {
+  const fresh = !active && !!unread?.unread;
   return (
     <li className="group flex items-center gap-1">
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={rowLink(active)}
+        className={cn(rowLink(active), fresh && "font-medium text-ink")}
       >
         {icon}
-        <span className="truncate">{label}</span>
+        <span className="flex-1 truncate">
+          {label}
+          {fresh ? <span className="sr-only">, new messages</span> : null}
+        </span>
+        {!active && unread?.mentions ? (
+          <span className="grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 font-mono text-micro text-on-accent tabular-nums">
+            {unread.mentions}
+            <span className="sr-only"> mentions</span>
+          </span>
+        ) : fresh ? (
+          <span aria-hidden className="size-2 rounded-full bg-ink" />
+        ) : null}
       </Link>
       {tools ? (
         // Phones manage a channel from its own page: rows stay clean.
@@ -64,11 +79,13 @@ export function ChannelNav({
   loose,
   categories,
   canManage,
+  unread = {},
 }: {
   groupId: string;
   loose: ChannelSummary[];
   categories: CategorySummary[];
   canManage: boolean;
+  unread?: Record<string, { unread: number; mentions: number }>;
 }) {
   const pathname = usePathname();
   const options = categories.map(({ id, name }) => ({ id, name }));
@@ -82,6 +99,7 @@ export function ChannelNav({
           href={href}
           label={ch.name}
           active={pathname === href}
+          unread={unread[ch.id]}
           icon={<Icon className="size-4 shrink-0" aria-hidden />}
           tools={
             canManage ? (

@@ -305,6 +305,7 @@ export async function decideReportAction(input: unknown): Promise<AdminResult> {
         "USER",
         "POST",
         "REPLY",
+        "MESSAGE",
       ]),
       id: z.uuid(),
       hide: z.boolean(),

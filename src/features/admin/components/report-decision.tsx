@@ -11,7 +11,7 @@ export function ReportDecision({
   id,
   canHide,
 }: {
-  type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY";
+  type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY" | "MESSAGE";
   id: string;
   canHide: boolean;
 }) {

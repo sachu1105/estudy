@@ -340,7 +340,14 @@ export function createGroupService(deps: GroupDeps) {
     report: (
       user: User,
       target: {
-        type: "GROUP" | "GROUP_ITEM" | "GROUP_TEST" | "USER" | "POST" | "REPLY";
+        type:
+          | "GROUP"
+          | "GROUP_ITEM"
+          | "GROUP_TEST"
+          | "USER"
+          | "POST"
+          | "REPLY"
+          | "MESSAGE";
         id: string;
         groupId: string | null;
       },
