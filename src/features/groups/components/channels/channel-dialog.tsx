@@ -32,9 +32,37 @@ import {
   createChannelAction,
   updateChannelAction,
 } from "../../channel-actions";
+import { ChoiceRows } from "../choice-rows";
 import { channelHref, type ChannelSummary } from "./channel-icon";
 
 const NONE = "none";
+
+const VIEW_RULES = [
+  {
+    value: "EVERYONE" as const,
+    label: "Everyone in the squad",
+    description: "Listed for every member.",
+  },
+  {
+    value: "PICKED" as const,
+    label: "People you pick",
+    description: "Hidden from everyone else. Choose them after saving.",
+  },
+  {
+    value: "ADMINS" as const,
+    label: "Admins and moderators",
+    description: "For the people who run the squad.",
+  },
+];
+
+/** Slow mode choices: a calm pace, never a punishment. */
+const SLOW_MODES = [0, 5, 15, 30, 60, 300, 900] as const;
+const slowLabel = (seconds: number) =>
+  seconds === 0
+    ? "Off"
+    : seconds < 60
+      ? `${seconds} seconds`
+      : `${seconds / 60} minute${seconds === 60 ? "" : "s"}`;
 
 /** Add a channel, or edit one: name, what it's for, who posts, and its category. */
 export function ChannelDialog({
@@ -58,6 +86,8 @@ export function ChannelDialog({
   const [name, setName] = useState(channel?.name ?? "");
   const [topic, setTopic] = useState(channel?.topic ?? "");
   const [postRule, setPostRule] = useState(channel?.postRule ?? "EVERYONE");
+  const [viewRule, setViewRule] = useState(channel?.viewRule ?? "EVERYONE");
+  const [slowModeSec, setSlowModeSec] = useState(channel?.slowModeSec ?? 0);
   const [categoryId, setCategoryId] = useState(
     channel ? (channel.categoryId ?? NONE) : (startCategory ?? NONE),
   );
@@ -71,6 +101,8 @@ export function ChannelDialog({
         name,
         topic,
         postRule,
+        viewRule,
+        slowModeSec,
         categoryId: categoryId === NONE ? null : categoryId,
       };
       const result = channel
@@ -158,6 +190,37 @@ export function ChannelDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="text-small font-medium">Who can see it</span>
+            <ChoiceRows
+              label="Who can see it"
+              options={VIEW_RULES}
+              value={viewRule}
+              onChange={setViewRule}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="channel-slow">Slow mode</Label>
+            <Select
+              value={String(slowModeSec)}
+              onValueChange={(v) => setSlowModeSec(Number(v))}
+            >
+              <SelectTrigger id="channel-slow">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SLOW_MODES.map((s) => (
+                  <SelectItem key={s} value={String(s)}>
+                    {slowLabel(s)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-small text-ink-muted">
+              How long a member waits between messages. Admins and moderators
+              are never slowed.
+            </span>
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-small font-medium">Who can post</span>

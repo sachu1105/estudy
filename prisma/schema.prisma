@@ -97,6 +97,8 @@ model User {
   messages           Message[]
   messageReactions   MessageReaction[]
   channelReads       ChannelRead[]
+  channelAccess      ChannelAccess[]
+  channelNotify      ChannelNotify[]
   notifications      Notification[]      @relation("NotificationFor")
   pushSubscriptions  PushSubscription[]
   notifyPrefs        NotifyPrefs?
@@ -1003,6 +1005,8 @@ enum GroupVisibility {
 enum GroupRole {
   OWNER
   ADMIN
+  /// Keeps the peace: hides and deletes content, mutes members. Runs nothing else.
+  MODERATOR
   MEMBER
 }
 
@@ -1027,6 +1031,22 @@ enum ChannelType {
 enum ChannelPostRule {
   EVERYONE
   ADMINS
+}
+
+/// Who may open a channel at all (squads S5).
+enum ChannelViewRule {
+  EVERYONE
+  /// The squad's owner, admins and moderators.
+  ADMINS
+  /// Those, plus the people listed in ChannelAccess.
+  PICKED
+}
+
+/// How much of a channel reaches one person.
+enum NotifyLevel {
+  ALL
+  MENTIONS
+  MUTE
 }
 
 enum JoinRequestStatus {
@@ -1098,30 +1118,60 @@ model ChannelCategory {
 
 /// One channel in a squad: chat, threads, material, links, tests or announcements.
 model Channel {
-  id         String           @id @default(uuid()) @db.Uuid
-  groupId    String           @db.Uuid
-  group      Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  id          String           @id @default(uuid()) @db.Uuid
+  groupId     String           @db.Uuid
+  group       Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
   /// No category: listed above the categories.
-  categoryId String?          @db.Uuid
-  category   ChannelCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  type       ChannelType
+  categoryId  String?          @db.Uuid
+  category    ChannelCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  type        ChannelType
   /// Lower case, words joined with hyphens: "mock-tests".
-  name       String
+  name        String
   /// A line under the name: what the channel is for.
-  topic      String?
-  order      Int              @default(0)
-  postRule   ChannelPostRule  @default(EVERYONE)
-  createdAt  DateTime         @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime         @updatedAt @db.Timestamptz(6)
-  deletedAt  DateTime?        @db.Timestamptz(6)
+  topic       String?
+  order       Int              @default(0)
+  postRule    ChannelPostRule  @default(EVERYONE)
+  viewRule    ChannelViewRule  @default(EVERYONE)
+  /// Seconds a member waits between messages here. 0 is off; admins are exempt.
+  slowModeSec Int              @default(0)
+  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
+  deletedAt   DateTime?        @db.Timestamptz(6)
 
   items    GroupItem[]
   tests    GroupTest[]
   posts    Post[]
   messages Message[]
   reads    ChannelRead[]
+  access   ChannelAccess[]
+  notify   ChannelNotify[]
 
   @@index([groupId, deletedAt, order])
+}
+
+/// One person let into a PICKED channel (squads S5).
+model ChannelAccess {
+  id        String   @id @default(uuid()) @db.Uuid
+  channelId String   @db.Uuid
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([channelId, userId])
+  @@index([userId])
+}
+
+/// How much of one channel reaches one person. No row means everything.
+model ChannelNotify {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @db.Uuid
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channelId String      @db.Uuid
+  channel   Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  level     NotifyLevel
+
+  @@unique([userId, channelId])
 }
 
 /// A message in a chat or announcements channel (squads S3). Editable by its author.

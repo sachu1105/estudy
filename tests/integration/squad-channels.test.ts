@@ -383,12 +383,140 @@ describe("squad settings", () => {
         where: { id: g },
         select: { name: true, joinMode: true, joinQuestion: true },
       }),
-    ).toEqual({ name: "After", joinMode: "REQUEST", joinQuestion: "Which post?" });
+    ).toEqual({
+      name: "After",
+      joinMode: "REQUEST",
+      joinQuestion: "Which post?",
+    });
 
     await groups.update(owner, g, { ...change, joinMode: "INVITE_ONLY" });
     expect(
       (await prisma.group.findUnique({ where: { id: g } }))?.joinQuestion,
     ).toBeNull();
     expect(await groups.directory(null, "")).toHaveLength(0);
+  });
+});
+
+describe("private channels and the moderator role", () => {
+  it("hides a private channel from members until they are let in", async () => {
+    const owner = await user("Owner");
+    const anu = await user("Anu");
+    const binu = await user("Binu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    await groups.join(anu, g);
+    await groups.join(binu, g);
+    const made = (await channels.create(owner, g, {
+      type: "CHAT",
+      name: "inner-circle",
+      topic: null,
+      categoryId: null,
+      postRule: "EVERYONE",
+      viewRule: "PICKED",
+    })) as { ok: true; channelId: string };
+
+    const names = async (u: typeof anu) =>
+      (await channels.layout(u, g))!.loose.map((c) => c.name);
+    expect(await names(owner)).toContain("inner-circle");
+    expect(await names(anu)).not.toContain("inner-circle");
+    expect(await channels.get(anu, g, made.channelId)).toBeNull();
+
+    await channels.setAccess(owner, g, made.channelId, [anu.id]);
+    expect(await names(anu)).toContain("inner-circle");
+    expect(await names(binu)).not.toContain("inner-circle");
+    // Who is let in, as the picker shows it: staff are always in.
+    const access = (await channels.access(owner, g, made.channelId))!;
+    expect(access.members.map((m) => [m.name, m.picked, m.always])).toEqual(
+      expect.arrayContaining([
+        ["Owner", false, true],
+        ["Anu", true, false],
+        ["Binu", false, false],
+      ]),
+    );
+  });
+
+  it("keeps a staff-only channel for the people who run the squad", async () => {
+    const owner = await user("Owner");
+    const anu = await user("Anu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    await groups.join(anu, g);
+    const made = (await channels.create(owner, g, {
+      type: "CHAT",
+      name: "mod-chat",
+      topic: null,
+      categoryId: null,
+      postRule: "EVERYONE",
+      viewRule: "ADMINS",
+    })) as { ok: true; channelId: string };
+    expect(await channels.get(anu, g, made.channelId)).toBeNull();
+
+    await groups.manage(owner, g, anu.id, { kind: "role", role: "MODERATOR" });
+    expect(await channels.get(anu, g, made.channelId)).toMatchObject({
+      role: "MODERATOR",
+    });
+  });
+
+  it("lets moderators mute but not run the squad", async () => {
+    const owner = await user("Owner");
+    const mod = await user("Mod");
+    const anu = await user("Anu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Squad",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+        template: "BLANK",
+      }),
+    );
+    await groups.join(mod, g);
+    await groups.join(anu, g);
+    await groups.manage(owner, g, mod.id, { kind: "role", role: "MODERATOR" });
+
+    expect(
+      await groups.manage(mod, g, anu.id, { kind: "mute", hours: 24 }),
+    ).toEqual({ ok: true });
+    expect(
+      await groups.manage(mod, g, anu.id, { kind: "role", role: "MODERATOR" }),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    expect(
+      await channels.create(mod, g, {
+        type: "CHAT",
+        name: "nope",
+        topic: null,
+        categoryId: null,
+        postRule: "EVERYONE",
+      }),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    // An admin may make a moderator, but only the owner makes an admin.
+    const admin = await user("Admin");
+    await groups.join(admin, g);
+    await groups.manage(owner, g, admin.id, { kind: "role", role: "ADMIN" });
+    expect(
+      await groups.manage(admin, g, anu.id, {
+        kind: "role",
+        role: "MODERATOR",
+      }),
+    ).toEqual({ ok: true });
+    const other = await user("Other");
+    await groups.join(other, g);
+    expect(
+      await groups.manage(admin, g, other.id, { kind: "role", role: "ADMIN" }),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
   });
 });

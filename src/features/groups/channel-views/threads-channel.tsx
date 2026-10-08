@@ -26,6 +26,7 @@ export async function ThreadsChannel({
   channel,
   canPost,
   manage,
+  notify,
   searchParams,
 }: ChannelViewProps) {
   const filter: Filter =
@@ -44,7 +45,12 @@ export async function ThreadsChannel({
   return (
     <>
       <GroupLive groupId={groupId} />
-      <ChannelHeader manage={manage} groupId={groupId} channel={channel} />
+      <ChannelHeader
+        manage={manage}
+        notify={notify}
+        groupId={groupId}
+        channel={channel}
+      />
       <div className="flex flex-col gap-4">
         <nav aria-label="Show" className="flex flex-wrap gap-2">
           {FILTERS.map((f) => (

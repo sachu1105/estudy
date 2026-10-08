@@ -9,12 +9,16 @@ import { InvitesPanel } from "@/features/groups/components/invites-panel";
 import { JoinRequests } from "@/features/groups/components/join-requests";
 import { MemberMenu } from "@/features/groups/components/member-menu";
 import { isId } from "@/lib/ids";
+import {
+  canManage,
+  canModerate,
+  outranks,
+  ROLE_LABELS,
+} from "@/lib/squads/roles";
 import { requireUser } from "@/server/auth/session";
 import { groupService } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Members" };
-
-const RANK = { OWNER: 3, ADMIN: 2, MEMBER: 1 } as const;
 
 export default async function MembersPage({
   params,
@@ -23,12 +27,12 @@ export default async function MembersPage({
   const { groupId } = await params;
   const data = isId(groupId) ? await groupService.members(user, groupId) : null;
   if (!data) notFound();
-  const myRank = RANK[data.me.role];
+  const manages = canManage(data.me.role);
 
   return (
     <div className="flex flex-col gap-8">
       <SquadHeading groupId={groupId} icon={Users} title="Members" />
-      {myRank >= RANK.ADMIN ? (
+      {manages ? (
         <>
           <JoinRequests requests={data.requests} />
           <InvitesPanel groupId={groupId} invites={data.invites} />
@@ -59,7 +63,7 @@ export default async function MembersPage({
                   ) : null}
                 </span>
                 {m.role !== "MEMBER" ? (
-                  <Badge tone="accent">{m.role.toLowerCase()}</Badge>
+                  <Badge tone="accent">{ROLE_LABELS[m.role]}</Badge>
                 ) : null}
                 {!isMe ? (
                   <MemberMenu
@@ -70,8 +74,12 @@ export default async function MembersPage({
                       role: m.role,
                       muted,
                     }}
-                    canManage={myRank >= RANK.ADMIN && RANK[m.role] < myRank}
-                    canSetRole={data.me.role === "OWNER" && m.role !== "OWNER"}
+                    canManage={
+                      canModerate(data.me.role) &&
+                      outranks(data.me.role, m.role)
+                    }
+                    canSetRole={manages && outranks(data.me.role, m.role)}
+                    canSetAdmin={data.me.role === "OWNER"}
                   />
                 ) : null}
               </li>

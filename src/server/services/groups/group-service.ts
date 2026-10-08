@@ -1,5 +1,6 @@
 import type { Clock } from "@/lib/clock";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
+import { canManage, RANK, type GroupRole } from "@/lib/squads/roles";
 import { SQUAD_TEMPLATES, type TemplateKey } from "@/lib/squads/templates";
 import type { ChannelRepository } from "@/server/repositories/channel-repository";
 import type { GroupRepository } from "@/server/repositories/group-repository";
@@ -8,7 +9,7 @@ import type { Actor } from "@/server/services/syllabus/deps";
 import { failure, type Result } from "../syllabus/deps";
 
 type User = Actor;
-type Role = "OWNER" | "ADMIN" | "MEMBER";
+type Role = GroupRole;
 
 export type GroupDeps = {
   groups: GroupRepository;
@@ -29,7 +30,6 @@ const NOT_ALLOWED = failure(
   "FORBIDDEN",
   "Only the squad's admins can do that.",
 );
-const RANK: Record<Role, number> = { OWNER: 3, ADMIN: 2, MEMBER: 1 };
 
 /** Groups: who's in, who runs it, how people get in (rule 9 on every action). */
 export function createGroupService(deps: GroupDeps) {
@@ -244,10 +244,8 @@ export function createGroupService(deps: GroupDeps) {
       if ("error" in ok) return null;
       const [members, requests, invites] = await Promise.all([
         deps.groups.members(groupId),
-        RANK[ok.me.role] >= RANK.ADMIN
-          ? deps.groups.pendingRequests(groupId)
-          : [],
-        RANK[ok.me.role] >= RANK.ADMIN ? deps.groups.invites(groupId) : [],
+        canManage(ok.me.role) ? deps.groups.pendingRequests(groupId) : [],
+        canManage(ok.me.role) ? deps.groups.invites(groupId) : [],
       ]);
       const at = now();
       return {
@@ -262,8 +260,9 @@ export function createGroupService(deps: GroupDeps) {
     },
 
     /**
-     * Remove, mute or change role. Admins manage members; only the owner manages admins;
-     * nobody acts on someone at or above their own role, or on themselves.
+     * Remove, mute or change role. Moderators remove and mute; admins also change roles,
+     * though only the owner makes another admin. Nobody acts on someone at or above
+     * their own role, or on themselves.
      */
     async manage(
       user: User,
@@ -272,16 +271,23 @@ export function createGroupService(deps: GroupDeps) {
       action:
         | { kind: "remove" }
         | { kind: "mute"; hours: number | null }
-        | { kind: "role"; role: "ADMIN" | "MEMBER" },
+        | { kind: "role"; role: "ADMIN" | "MODERATOR" | "MEMBER" },
     ): Promise<Result<object>> {
-      const ok = await require(user, groupId, "ADMIN");
+      const ok = await require(user, groupId, "MODERATOR");
       if ("error" in ok) return ok.error!;
       const target = await deps.groups.membership(groupId, targetId);
       if (!target || targetId === user.id)
         return failure("NOT_FOUND", "That person isn't in the squad.");
       if (RANK[target.role] >= RANK[ok.me.role]) return NOT_ALLOWED;
-      if (action.kind === "role" && ok.me.role !== "OWNER")
-        return failure("FORBIDDEN", "Only the owner changes who's an admin.");
+      if (action.kind === "role") {
+        if (!canManage(ok.me.role))
+          return failure(
+            "FORBIDDEN",
+            "Moderators keep the peace; admins change who does what.",
+          );
+        if (action.role === "ADMIN" && ok.me.role !== "OWNER")
+          return failure("FORBIDDEN", "Only the owner makes someone an admin.");
+      }
       if (action.kind === "remove")
         await deps.groups.removeMember(groupId, targetId);
       if (action.kind === "mute")

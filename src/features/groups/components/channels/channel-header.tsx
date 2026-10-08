@@ -1,4 +1,4 @@
-import { ChevronLeft, Lock, type LucideIcon } from "lucide-react";
+import { ChevronLeft, Lock, Timer, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -58,33 +58,66 @@ export function ChannelHeader({
   channel,
   actions,
   manage,
+  notify,
 }: {
   groupId: string;
-  channel: Pick<ChannelSummary, "type" | "name" | "topic" | "postRule">;
+  channel: Pick<
+    ChannelSummary,
+    "type" | "name" | "topic" | "postRule" | "viewRule" | "slowModeSec"
+  >;
   actions?: ReactNode;
   /** The admin's channel menu, when the viewer manages the squad. */
   manage?: ReactNode;
+  /** How much of this channel reaches the viewer. */
+  notify?: ReactNode;
 }) {
   const adminsOnly = channel.postRule === "ADMINS";
+  const slow = channel.slowModeSec;
   return (
     <SquadHeading
       groupId={groupId}
       icon={CHANNEL_ICONS[channel.type]}
       title={channel.name}
       subtitle={
-        channel.topic || adminsOnly ? (
+        channel.topic ||
+        adminsOnly ||
+        slow ||
+        channel.viewRule !== "EVERYONE" ? (
           <>
             {channel.topic}
+            {channel.viewRule !== "EVERYONE" ? (
+              <span className="inline-flex items-center gap-1 text-small">
+                <Lock className="size-3.5" aria-hidden />
+                {channel.viewRule === "ADMINS"
+                  ? "Admins and moderators only"
+                  : "Private channel"}
+              </span>
+            ) : null}
             {adminsOnly ? (
               <span className="inline-flex items-center gap-1 text-small">
                 <Lock className="size-3.5" aria-hidden /> Admins post here
+              </span>
+            ) : null}
+            {slow ? (
+              <span className="inline-flex items-center gap-1 text-small">
+                <Timer className="size-3.5" aria-hidden />
+                {slow < 60
+                  ? `${slow}s between messages`
+                  : `${slow / 60} min between messages`}
               </span>
             ) : null}
           </>
         ) : null
       }
       actions={actions}
-      menu={manage}
+      menu={
+        notify || manage ? (
+          <span className="flex items-center">
+            {notify}
+            {manage}
+          </span>
+        ) : null
+      }
     />
   );
 }

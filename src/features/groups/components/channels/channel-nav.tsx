@@ -1,6 +1,6 @@
 "use client";
 
-import { Trophy, Users } from "lucide-react";
+import { BellOff, Lock, Trophy, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -32,12 +32,18 @@ function Row({
   active,
   tools,
   unread,
+  badge,
+  extra,
 }: {
   href: string;
   icon: ReactNode;
   label: string;
   active: boolean;
   tools?: ReactNode;
+  /** A lock or a crossed-out bell, before the unread mark. */
+  badge?: ReactNode;
+  /** What those icons mean, for a screen reader. */
+  extra?: string;
   /** New messages from others, and how many name the viewer. */
   unread?: { unread: number; mentions: number };
 }) {
@@ -52,8 +58,10 @@ function Row({
         {icon}
         <span className="flex-1 truncate">
           {label}
+          {extra ? <span className="sr-only">{extra}</span> : null}
           {fresh ? <span className="sr-only">, new messages</span> : null}
         </span>
+        {badge}
         {!active && unread?.mentions ? (
           <span className="grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 font-mono text-micro text-on-accent tabular-nums">
             {unread.mentions}
@@ -80,12 +88,14 @@ export function ChannelNav({
   categories,
   canManage,
   unread = {},
+  notify = {},
 }: {
   groupId: string;
   loose: ChannelSummary[];
   categories: CategorySummary[];
   canManage: boolean;
   unread?: Record<string, { unread: number; mentions: number }>;
+  notify?: Record<string, "ALL" | "MENTIONS" | "MUTE">;
 }) {
   const pathname = usePathname();
   const options = categories.map(({ id, name }) => ({ id, name }));
@@ -101,6 +111,26 @@ export function ChannelNav({
           active={pathname === href}
           unread={unread[ch.id]}
           icon={<Icon className="size-4 shrink-0" aria-hidden />}
+          extra={[
+            ch.viewRule !== "EVERYONE" ? ", private" : "",
+            notify[ch.id] === "MUTE" ? ", muted" : "",
+          ].join("")}
+          badge={
+            <>
+              {ch.viewRule !== "EVERYONE" ? (
+                <Lock
+                  className="size-3.5 shrink-0 text-ink-subtle"
+                  aria-hidden
+                />
+              ) : null}
+              {notify[ch.id] === "MUTE" ? (
+                <BellOff
+                  className="size-3.5 shrink-0 text-ink-subtle"
+                  aria-hidden
+                />
+              ) : null}
+            </>
+          }
           tools={
             canManage ? (
               <ChannelMenu

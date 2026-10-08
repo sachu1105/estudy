@@ -28,6 +28,7 @@ export async function MaterialChannel({
   channel,
   canPost,
   manage,
+  notify,
 }: ChannelViewProps) {
   const links = channel.type === "LINKS";
   const [items, shareable] = await Promise.all([
@@ -39,6 +40,7 @@ export async function MaterialChannel({
     <>
       <ChannelHeader
         manage={manage}
+        notify={notify}
         groupId={groupId}
         channel={channel}
         actions={

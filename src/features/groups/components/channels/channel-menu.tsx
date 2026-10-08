@@ -14,6 +14,7 @@ import {
 import { toast } from "@/components/ui/toast";
 
 import { deleteChannelAction, moveChannelAction } from "../../channel-actions";
+import { AccessDialog } from "./access-dialog";
 import { ChannelDialog } from "./channel-dialog";
 import type { ChannelSummary } from "./channel-icon";
 
@@ -35,6 +36,7 @@ export function ChannelMenu({
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
+  const [picking, setPicking] = useState(false);
   const [pending, start] = useTransition();
   const run = (
     action: () => Promise<{ ok: true } | { ok: false; error: string }>,
@@ -65,6 +67,11 @@ export function ChannelMenu({
           <DropdownMenuItem onSelect={() => setEditing(true)}>
             Edit channel
           </DropdownMenuItem>
+          {channel.viewRule === "PICKED" ? (
+            <DropdownMenuItem onSelect={() => setPicking(true)}>
+              Who&apos;s let in
+            </DropdownMenuItem>
+          ) : null}
           {first ? null : (
             <DropdownMenuItem onSelect={() => move("up")}>
               Move up
@@ -89,6 +96,15 @@ export function ChannelMenu({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {picking ? (
+        <AccessDialog
+          groupId={groupId}
+          channelId={channel.id}
+          channelName={channel.name}
+          open={picking}
+          onOpenChange={setPicking}
+        />
+      ) : null}
       {editing ? (
         <ChannelDialog
           groupId={groupId}

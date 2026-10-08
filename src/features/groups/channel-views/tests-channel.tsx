@@ -22,6 +22,7 @@ export async function TestsChannel({
   channel,
   canPost,
   manage,
+  notify,
 }: ChannelViewProps) {
   const [tests, history, pods] = await Promise.all([
     groupTests.list(user, groupId, channel.id),
@@ -44,6 +45,7 @@ export async function TestsChannel({
     <>
       <ChannelHeader
         manage={manage}
+        notify={notify}
         groupId={groupId}
         channel={channel}
         actions={

@@ -49,6 +49,8 @@ const topic = z
   .max(200)
   .transform((t) => t || null);
 const postRule = z.enum(["EVERYONE", "ADMINS"]);
+const viewRule = z.enum(["EVERYONE", "ADMINS", "PICKED"]);
+const slowModeSec = z.number().int().min(0).max(3600);
 const direction = z.enum(["up", "down"]);
 
 export async function createChannelAction(
@@ -63,6 +65,8 @@ export async function createChannelAction(
       topic,
       categoryId: id.nullable(),
       postRule,
+      viewRule,
+      slowModeSec,
     }),
   );
   if (g.fail) return g.fail;
@@ -79,6 +83,8 @@ export async function updateChannelAction(input: unknown): Promise<Result> {
       name: name.optional(),
       topic: topic.optional(),
       postRule: postRule.optional(),
+      viewRule: viewRule.optional(),
+      slowModeSec: slowModeSec.optional(),
       categoryId: id.nullable().optional(),
     }),
   );
@@ -162,5 +168,37 @@ export async function deleteCategoryAction(input: unknown): Promise<Result> {
   return done(
     groupId,
     await channelService.removeCategory(g.user, groupId, categoryId),
+  );
+}
+
+/** Replaces who is let into a private channel. */
+export async function setChannelAccessAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({ groupId: id, channelId: id, userIds: z.array(id).max(500) }),
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId, userIds } = g.data;
+  return done(
+    groupId,
+    await channelService.setAccess(g.user, groupId, channelId, userIds),
+  );
+}
+
+/** How much of a channel reaches the person asking: all, mentions, or nothing. */
+export async function setNotifyAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({
+      groupId: id,
+      channelId: id,
+      level: z.enum(["ALL", "MENTIONS", "MUTE"]),
+    }),
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId, level } = g.data;
+  return done(
+    groupId,
+    await channelService.setNotify(g.user, groupId, channelId, level),
   );
 }

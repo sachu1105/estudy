@@ -1,5 +1,6 @@
 import type { Clock } from "@/lib/clock";
 import { plainText } from "@/lib/markdown/markdown";
+import { canModerate } from "@/lib/squads/roles";
 import type { MessageView } from "@/lib/squads/chat-types";
 import type {
   MessageRepository,
@@ -23,8 +24,15 @@ export const CHAT_PAGE = 50;
 
 export type ChatDeps = {
   groups: GroupService;
-  channels: Pick<ChannelService, "get">;
+  channels: Pick<ChannelService, "get" | "slowModeWait">;
   messages: MessageRepository;
+  /** How much of each channel reaches this person: no row means everything. */
+  notifyLevels: (
+    userId: string,
+    groupId: string,
+  ) => Promise<Map<string, "ALL" | "MENTIONS" | "MUTE">>;
+  /** Of these people, who has muted this channel (no mention notification). */
+  mutedOn: (channelId: string, userIds: string[]) => Promise<Set<string>>;
   /** Everyone in the squad, to check mentions and name them. */
   memberNames: (
     groupId: string,
@@ -51,7 +59,7 @@ const MUTED = failure(
 /** Chat and announcement channels: messages, replies, reactions and unread state. */
 export function createChatService(deps: ChatDeps) {
   const now = () => deps.clock.now();
-  const isAdmin = (role: string) => role === "OWNER" || role === "ADMIN";
+  const isAdmin = (role: string) => canModerate(role as "MEMBER");
 
   /** A member in a chat channel, with what they may do there. */
   async function inChat(user: User, groupId: string, channelId: string) {
@@ -188,6 +196,16 @@ export function createChatService(deps: ChatDeps) {
           "FORBIDDEN",
           "Only the squad's admins post in this channel.",
         );
+      const wait = await deps.channels.slowModeWait(
+        chat.channel,
+        { id: user.id, role: chat.role },
+        await deps.messages.lastSentAt(channelId, user.id),
+      );
+      if (wait)
+        return failure(
+          "SLOW_MODE",
+          `This channel is in slow mode. You can write again in ${wait} second${wait === 1 ? "" : "s"}.`,
+        );
       const body = input.body.trim();
       if (!body && !input.podItemId)
         return failure("EMPTY", "Write a message first.");
@@ -219,15 +237,19 @@ export function createChatService(deps: ChatDeps) {
         itemId,
         at: now(),
       });
+      // Someone who muted the channel hears nothing from it, mentions included.
+      const silent = await deps.mutedOn(channelId, mentionIds);
       await deps.notify(
-        mentionIds.map((userId) => ({
-          userId,
-          actorId: user.id,
-          kind: "MENTION",
-          groupId,
-          href: `/groups/${groupId}/c/${channelId}`,
-          subject: `#${chat.channel.name}: ${plainText(body, 80)}`,
-        })),
+        mentionIds
+          .filter((userId) => !silent.has(userId))
+          .map((userId) => ({
+            userId,
+            actorId: user.id,
+            kind: "MENTION" as const,
+            groupId,
+            href: `/groups/${groupId}/c/${channelId}`,
+            subject: `#${chat.channel.name}: ${plainText(body, 80)}`,
+          })),
       );
       await deps.emit(groupId, {
         type: "message",
@@ -333,15 +355,32 @@ export function createChatService(deps: ChatDeps) {
       await deps.messages.markRead(user.id, channelId, now());
     },
 
-    /** Unread messages and mentions per channel, for the channel list. */
+    /**
+     * Unread messages and mentions per channel, for the channel list. A channel set to
+     * mentions only shows just those; a muted one shows nothing.
+     */
     async unread(user: User, groupId: string) {
-      const rows = await deps.messages.unread(user.id, groupId);
-      return Object.fromEntries(
-        rows.map((r) => [
-          r.channelId,
-          { unread: r.unread, mentions: r.mentions },
-        ]),
-      ) as Record<string, { unread: number; mentions: number }>;
+      const [rows, levels] = await Promise.all([
+        deps.messages.unread(user.id, groupId),
+        deps.notifyLevels(user.id, groupId),
+      ]);
+      const counted = rows.flatMap((r) => {
+        const level = levels.get(r.channelId) ?? "ALL";
+        if (level === "MUTE") return [];
+        return [
+          [
+            r.channelId,
+            {
+              unread: level === "MENTIONS" ? r.mentions : r.unread,
+              mentions: r.mentions,
+            },
+          ] as const,
+        ];
+      });
+      return Object.fromEntries(counted) as Record<
+        string,
+        { unread: number; mentions: number }
+      >;
     },
 
     squadsWithUnread: (user: User) => deps.messages.squadsWithUnread(user.id),

@@ -103,6 +103,10 @@ export const chatService = createChatService({
   channels: channelService,
   messages: messageRepository,
   memberNames: (groupId) => discussionRepository.memberNames(groupId),
+  notifyLevels: (userId, groupId) =>
+    channelRepository.notifyLevels(userId, groupId),
+  mutedOn: (channelId, userIds) =>
+    channelRepository.mutedOn(channelId, userIds),
   shareFromPod: (user, groupId, podItemId, channelId) =>
     materialService.shareFromPod(user, groupId, podItemId, channelId, "chat"),
   clock: systemClock,

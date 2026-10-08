@@ -7,6 +7,7 @@ import { TestsChannel } from "@/features/groups/channel-views/tests-channel";
 import { ThreadsChannel } from "@/features/groups/channel-views/threads-channel";
 import type { ChannelViewProps } from "@/features/groups/channel-views/types";
 import { ChannelMenu } from "@/features/groups/components/channels/channel-menu";
+import { NotifyMenu } from "@/features/groups/components/channels/notify-menu";
 import { isId } from "@/lib/ids";
 import type { ChannelType } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
@@ -59,6 +60,8 @@ export default async function ChannelPage({
     />
   ) : null;
 
+  const chatty = channel.type === "CHAT" || channel.type === "ANNOUNCEMENTS";
+
   return (
     <View
       user={user}
@@ -66,6 +69,15 @@ export default async function ChannelPage({
       channel={channel}
       canPost={found.canPost && !view.muted}
       manage={manage}
+      notify={
+        chatty ? (
+          <NotifyMenu
+            groupId={groupId}
+            channelId={channel.id}
+            level={layout.notify[channel.id] ?? "ALL"}
+          />
+        ) : null
+      }
       searchParams={await searchParams}
     />
   );

@@ -5,7 +5,7 @@ import type { QuestionRepository } from "@/server/repositories/question-reposito
 import type { Actor } from "@/server/services/syllabus/deps";
 
 import { failure, type Result } from "../syllabus/deps";
-import type { ChannelService } from "./channel-service";
+import type { ChannelService, Viewer } from "./channel-service";
 import type { GroupService } from "./group-service";
 
 type User = Actor;
@@ -45,13 +45,8 @@ export function createGroupTests(deps: GroupTestDeps) {
   }
 
   /** The tests channel a shared test lands in. */
-  const place = (groupId: string, role: string, channelId: string | null) =>
-    deps.channels.place(
-      groupId,
-      role as "OWNER" | "ADMIN" | "MEMBER",
-      ["TESTS"],
-      channelId,
-    );
+  const place = (groupId: string, who: Viewer, channelId: string | null) =>
+    deps.channels.place(groupId, who, ["TESTS"], channelId);
 
   return {
     async list(user: User, groupId: string, channelId: string | null = null) {
@@ -83,7 +78,11 @@ export function createGroupTests(deps: GroupTestDeps) {
     ): Promise<Result<{ id: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
-      const channel = await place(groupId, ok.me.role, channelId);
+      const channel = await place(
+        groupId,
+        { id: user.id, role: ok.me.role },
+        channelId,
+      );
       if (!channel.ok) return channel;
       const test = await deps.questions.findTest(mockTestId, user.id);
       if (!test) return failure("NOT_FOUND", "That test isn't yours.");
@@ -114,7 +113,11 @@ export function createGroupTests(deps: GroupTestDeps) {
     ): Promise<Result<{ id: string }>> {
       const ok = await sharer(user, groupId);
       if (ok.fail) return ok.fail;
-      const channel = await place(groupId, ok.me.role, channelId);
+      const channel = await place(
+        groupId,
+        { id: user.id, role: ok.me.role },
+        channelId,
+      );
       if (!channel.ok) return channel;
       const keys = [...new Set(input.topics.map(topicKey))];
       const pool = await deps.questions.pool(keys);

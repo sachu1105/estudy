@@ -89,6 +89,7 @@ export default async function SquadPage({
           categories={layout.categories}
           canManage={layout.canManage}
           unread={unread}
+          notify={layout.notify}
         />
       </div>
 
@@ -111,6 +112,15 @@ export default async function SquadPage({
                   <span className="flex items-center gap-2 text-body font-medium">
                     <Icon className="size-4 text-ink-muted" aria-hidden />
                     {c.name}
+                    {c.viewRule !== "EVERYONE" ? (
+                      <>
+                        <Lock
+                          className="size-3.5 text-ink-subtle"
+                          aria-hidden
+                        />
+                        <span className="sr-only">, private</span>
+                      </>
+                    ) : null}
                   </span>
                   {c.topic ? (
                     <span className="line-clamp-2 text-small text-ink-muted">

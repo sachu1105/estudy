@@ -154,7 +154,9 @@ export function buildModel(input: ParsedPlanInput): Model {
     confidence <= 2 ? earliest : preferred[0];
 
   const progress = new Map(input.progress.map((p) => [p.topicId, p]));
-  const timelineStart = input.timelineStart ? toDay(input.timelineStart) : start;
+  const timelineStart = input.timelineStart
+    ? toDay(input.timelineStart)
+    : start;
   const adjustments = new Map(input.adjustments.map((a) => [a.topicId, a]));
   const relative = (iso: string | null) => (iso ? toDay(iso) - start : null);
 

@@ -11,10 +11,10 @@ const noSideScroll = (page: Page) =>
   );
 
 /** A link in the squad's channel list (the app's own navigation has a "Tests" too). */
-const tab = (page: Page, name: string) =>
+const tab = (page: Page, name: string | RegExp) =>
   page
     .getByRole("navigation", { name: "Squad" })
-    .getByRole("link", { name, exact: true });
+    .getByRole("link", { name, exact: typeof name === "string" });
 
 /** A channel or page of the squad, by way of its channel list (on phones, the squad page). */
 async function open(page: Page, groupUrl: string, name: string) {
@@ -288,7 +288,10 @@ test.describe("groups", () => {
     await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
     const groupUrl = page.url();
 
-    const finder = await person(browser, `gdiscover-${test.info().project.name}`);
+    const finder = await person(
+      browser,
+      `gdiscover-${test.info().project.name}`,
+    );
     await finder.goto(`/groups/discover?q=${encodeURIComponent(tag)}`);
     expect(await noSideScroll(finder)).toBeLessThanOrEqual(0);
     await finder.getByRole("button", { name: `Join Findable ${tag}` }).click();
@@ -307,5 +310,66 @@ test.describe("groups", () => {
     await finder.goto(`/groups/discover?q=${encodeURIComponent(tag)}`);
     await expect(finder.getByText("No squads match")).toBeVisible();
     await finder.context().close();
+  });
+
+  test("a private channel is hidden until the admin lets someone in", async ({
+    page,
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `gprivate-owner-${test.info().project.name}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Private ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    const groupUrl = page.url();
+    await open(page, groupUrl, "Members");
+    await page.getByRole("button", { name: "New invite" }).click();
+    const code = (await page.locator("li .font-mono").first().textContent())!;
+
+    const member = await person(browser, `gprivate-${test.info().project.name}`);
+    await member.goto(`/groups/join/${code.trim()}`);
+    await expect(member).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+
+    // A channel only picked people can see.
+    await page.goto(groupUrl);
+    await page.getByRole("button", { name: `More for Private ${tag}` }).click();
+    await page.getByRole("menuitem", { name: "Add a channel" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("Name").fill("inner circle");
+    await dialog.getByRole("radio", { name: /People you pick/ }).click();
+    await dialog.getByRole("button", { name: "Add channel" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "inner-circle" }),
+    ).toBeVisible();
+    await expect(page.getByText("Private channel")).toBeVisible();
+
+    await member.goto(groupUrl);
+    await expect(tab(member, /^inner-circle/)).toHaveCount(0);
+
+    // Let them in, and it shows up.
+    await page.getByRole("button", { name: "Channel settings" }).click();
+    await page.getByRole("menuitem", { name: "Who's let in" }).click();
+    // Both seeded people are called Test Aspirant; the owner's box is already fixed on.
+    await page
+      .getByRole("dialog")
+      .getByRole("checkbox", { name: "Test Aspirant", exact: true })
+      .click();
+    const box = page
+      .getByRole("dialog")
+      .getByRole("checkbox", { name: "Test Aspirant", exact: true });
+    await expect(box).toBeChecked();
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByText("Saved who's let in")).toBeVisible();
+
+    await member.reload();
+    await expect(tab(member, /^inner-circle/)).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+    await member.context().close();
   });
 });

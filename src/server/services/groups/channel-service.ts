@@ -1,5 +1,6 @@
 import type { Clock } from "@/lib/clock";
 import { channelName } from "@/lib/squads/channel-name";
+import { canManage, canModerate, type GroupRole } from "@/lib/squads/roles";
 import type { ChannelPostRule, ChannelType } from "@/lib/squads/templates";
 import type { ChannelRepository } from "@/server/repositories/channel-repository";
 import type { Actor } from "@/server/services/syllabus/deps";
@@ -8,8 +9,12 @@ import { failure, type Result } from "../syllabus/deps";
 import type { GroupService } from "./group-service";
 
 type User = Actor;
-type Role = "OWNER" | "ADMIN" | "MEMBER";
 type Direction = "up" | "down";
+export type ChannelViewRule = "EVERYONE" | "ADMINS" | "PICKED";
+export type NotifyLevel = "ALL" | "MENTIONS" | "MUTE";
+
+/** Who the channel rules are applied to: one member of one squad. */
+export type Viewer = { id: string; role: GroupRole };
 
 export type ChannelDeps = {
   groups: GroupService;
@@ -19,94 +24,119 @@ export type ChannelDeps = {
   ownerLimit: (ownerId: string, feature: "channelsPerSquad") => Promise<number>;
 };
 
-const isAdmin = (role: Role) => role === "OWNER" || role === "ADMIN";
 const GONE = failure("NOT_FOUND", "That channel is gone.");
 const BAD_NAME = failure(
   "BAD_NAME",
   "Give the channel a name with at least one letter or number.",
 );
+/** Slow mode choices, in seconds. */
+export const SLOW_MODE_MAX = 3600;
 
 /** A squad's channels and categories: who sees them, who posts, who arranges them. */
 export function createChannelService(deps: ChannelDeps) {
   const admin = (user: User, groupId: string) =>
     deps.groups.require(user, groupId, "ADMIN");
 
+  /** Whether this person may open a channel at all. */
+  async function canSee(
+    channel: { id: string; viewRule: ChannelViewRule },
+    who: Viewer,
+  ) {
+    if (channel.viewRule === "EVERYONE") return true;
+    if (canModerate(who.role)) return true;
+    if (channel.viewRule === "ADMINS") return false;
+    return deps.channels.hasAccess(channel.id, who.id);
+  }
+
   return {
+    canSee,
+
     /** Categories in order with their channels; uncategorised channels come first. */
     async layout(user: User, groupId: string) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
-      const [categories, channels] = await Promise.all([
+      const role = ok.me.role;
+      const [categories, channels, notify] = await Promise.all([
         deps.channels.categories(groupId),
-        deps.channels.channels(groupId),
+        deps.channels.channels(groupId, {
+          id: user.id,
+          staff: canModerate(role),
+        }),
+        deps.channels.notifyLevels(user.id, groupId),
       ]);
       const inCategory = (id: string | null) =>
         channels.filter((c) => c.categoryId === id);
       return {
-        role: ok.me.role,
-        canManage: isAdmin(ok.me.role),
+        role,
+        canManage: canManage(role),
+        notify: Object.fromEntries(notify) as Record<string, NotifyLevel>,
         loose: inCategory(null),
-        categories: categories.map((c) => ({
-          ...c,
-          channels: inCategory(c.id),
-        })),
+        // A category whose channels this person can't see is left out entirely.
+        categories: categories
+          .map((c) => ({ ...c, channels: inCategory(c.id) }))
+          .filter((c) => c.channels.length > 0 || canManage(role)),
       };
     },
 
-    /** A public squad's channel names, so people can see what's inside before joining. */
+    /** A public squad's open channels, so people see what's inside before joining. */
     async preview(user: User, groupId: string) {
       const found = await deps.groups.memberOf(user, groupId);
       if (!found || found.group.hiddenAt) return [];
       if (!found.membership && found.group.visibility === "PRIVATE") return [];
       const channels = await deps.channels.channels(groupId);
-      return channels.map(({ id, type, name, topic }) => ({
-        id,
-        type,
-        name,
-        topic,
-      }));
+      return channels
+        .filter((c) => c.viewRule === "EVERYONE")
+        .map(({ id, type, name, topic }) => ({ id, type, name, topic }));
     },
 
     /** The squad's first channel of a type, for links from before channels existed. */
     async firstOfType(user: User, groupId: string, type: ChannelType) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
-      return deps.channels.firstOfType(groupId, type);
+      const channel = await deps.channels.firstOfType(groupId, type);
+      if (!channel) return null;
+      const who = { id: user.id, role: ok.me.role };
+      return (await canSee(channel, who)) ? channel : null;
     },
 
-    /** One channel, for a member, with whether they may post in it. */
+    /** One channel, for someone who may open it, with whether they may post in it. */
     async get(user: User, groupId: string, channelId: string) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
       const channel = await deps.channels.find(groupId, channelId);
-      if (!channel) return null;
+      const who = { id: user.id, role: ok.me.role };
+      if (!channel || !(await canSee(channel, who))) return null;
       return {
         channel,
         role: ok.me.role,
-        canPost: channel.postRule === "EVERYONE" || isAdmin(ok.me.role),
+        canPost: channel.postRule === "EVERYONE" || canModerate(ok.me.role),
       };
     },
 
     /**
      * Where a write lands: the named channel when it takes this kind of content and the
-     * caller may post there, else the squad's first channel of the first type.
+     * caller may open and post in it, else the squad's first channel of the first type.
      * Callers have already checked membership and mutes; this checks the channel.
      */
     async place(
       groupId: string,
-      role: Role,
+      who: Viewer,
       types: ChannelType[],
       channelId?: string | null,
     ): Promise<Result<{ channelId: string }>> {
       const channel = channelId
         ? await deps.channels.find(groupId, channelId)
         : await deps.channels.firstOfType(groupId, types[0]);
-      if (!channel || !types.includes(channel.type))
+      if (
+        !channel ||
+        !types.includes(channel.type) ||
+        !(await canSee(channel, who))
+      )
         return failure(
           "NO_CHANNEL",
           "This squad has no channel for that. Ask an admin to add one.",
         );
-      if (channel.postRule === "ADMINS" && !isAdmin(role))
+      if (channel.postRule === "ADMINS" && !canModerate(who.role))
         return failure(
           "FORBIDDEN",
           "Only the squad's admins post in this channel.",
@@ -123,6 +153,8 @@ export function createChannelService(deps: ChannelDeps) {
         topic: string | null;
         categoryId: string | null;
         postRule: ChannelPostRule;
+        viewRule?: ChannelViewRule;
+        slowModeSec?: number;
       },
     ): Promise<Result<{ channelId: string }>> {
       const ok = await admin(user, groupId);
@@ -150,11 +182,13 @@ export function createChannelService(deps: ChannelDeps) {
         name,
         topic: input.topic,
         postRule: input.postRule,
+        viewRule: input.viewRule ?? "EVERYONE",
+        slowModeSec: slowMode(input.slowModeSec),
       });
       return { ok: true, channelId: channel.id };
     },
 
-    /** Rename, retopic, change who posts, or move to another category. */
+    /** Rename, retopic, change who sees or posts, slow it down, or move it. */
     async update(
       user: User,
       groupId: string,
@@ -163,6 +197,8 @@ export function createChannelService(deps: ChannelDeps) {
         name?: string;
         topic?: string | null;
         postRule?: ChannelPostRule;
+        viewRule?: ChannelViewRule;
+        slowModeSec?: number;
         categoryId?: string | null;
       },
     ): Promise<Result<object>> {
@@ -186,6 +222,11 @@ export function createChannelService(deps: ChannelDeps) {
         name,
         topic: input.topic,
         postRule: input.postRule,
+        viewRule: input.viewRule,
+        slowModeSec:
+          input.slowModeSec === undefined
+            ? undefined
+            : slowMode(input.slowModeSec),
       });
       if (moving)
         await deps.channels.moveToCategory(
@@ -194,6 +235,77 @@ export function createChannelService(deps: ChannelDeps) {
           input.categoryId ?? null,
         );
       return { ok: true };
+    },
+
+    // ---- Who is let into a private channel -------------------------------------------
+
+    /** The squad's members, and which of them this channel already lets in. */
+    async access(user: User, groupId: string, channelId: string) {
+      const ok = await admin(user, groupId);
+      if ("error" in ok) return null;
+      const channel = await deps.channels.find(groupId, channelId);
+      if (!channel) return null;
+      const [members, picked] = await Promise.all([
+        deps.groups.members(user, groupId),
+        deps.channels.accessIds(channelId),
+      ]);
+      const inside = new Set(picked);
+      return {
+        viewRule: channel.viewRule as ChannelViewRule,
+        members: (members?.members ?? []).map((m) => ({
+          id: m.user.id,
+          name: m.user.displayName,
+          role: m.role as GroupRole,
+          picked: inside.has(m.user.id),
+          // Staff are in every channel already; they can't be taken out.
+          always: canModerate(m.role as GroupRole),
+        })),
+      };
+    },
+
+    /** Replaces who is let in by hand. Staff are in regardless. */
+    async setAccess(
+      user: User,
+      groupId: string,
+      channelId: string,
+      userIds: string[],
+    ): Promise<Result<object>> {
+      const ok = await admin(user, groupId);
+      if ("error" in ok) return ok.error!;
+      const channel = await deps.channels.find(groupId, channelId);
+      if (!channel) return GONE;
+      const members = await deps.groups.members(user, groupId);
+      const inSquad = new Set((members?.members ?? []).map((m) => m.user.id));
+      await deps.channels.setAccess(
+        channelId,
+        [...new Set(userIds)].filter((id) => inSquad.has(id)),
+      );
+      return { ok: true };
+    },
+
+    /** How much of a channel reaches this person: everything, mentions, or nothing. */
+    async setNotify(
+      user: User,
+      groupId: string,
+      channelId: string,
+      level: NotifyLevel,
+    ): Promise<Result<object>> {
+      const found = await this.get(user, groupId, channelId);
+      if (!found) return GONE;
+      await deps.channels.setNotify(user.id, channelId, level);
+      return { ok: true };
+    },
+
+    /** How long this person must wait before writing here again, in seconds. */
+    async slowModeWait(
+      channel: { id: string; slowModeSec: number },
+      who: Viewer,
+      lastSentAt: Date | null,
+    ) {
+      if (!channel.slowModeSec || canModerate(who.role) || !lastSentAt)
+        return 0;
+      const passed = (deps.clock.now().getTime() - lastSentAt.getTime()) / 1000;
+      return Math.max(0, Math.ceil(channel.slowModeSec - passed));
     },
 
     async move(
@@ -295,5 +407,9 @@ export function createChannelService(deps: ChannelDeps) {
     },
   };
 }
+
+/** Whole seconds, never more than an hour. */
+const slowMode = (seconds: number | undefined) =>
+  Math.min(SLOW_MODE_MAX, Math.max(0, Math.round(seconds ?? 0)));
 
 export type ChannelService = ReturnType<typeof createChannelService>;

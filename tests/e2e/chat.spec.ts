@@ -77,9 +77,7 @@ test.describe("squad chat", () => {
     await open(member, groupUrl, "general");
     await expect(page.getByText("This is the start of #general")).toBeVisible();
     if (project === "mobile")
-      await expect(
-        page.getByRole("navigation", { name: "Main" }),
-      ).toBeHidden();
+      await expect(page.getByRole("navigation", { name: "Main" })).toBeHidden();
 
     // The member writes; the owner sees it without a reload.
     await send(member, "Hello squad");
@@ -99,7 +97,9 @@ test.describe("squad chat", () => {
     // The member says thanks; the owner edits their message.
     await menuOf(member, "Welcome aboard");
     await member.getByRole("menuitem", { name: "Thanks" }).click();
-    await expect(member.getByRole("button", { name: "Thanks, 1" })).toBeVisible();
+    await expect(
+      member.getByRole("button", { name: "Thanks, 1" }),
+    ).toBeVisible();
     await menuOf(page, "Welcome aboard");
     await page.getByRole("menuitem", { name: "Edit message" }).click();
     await page

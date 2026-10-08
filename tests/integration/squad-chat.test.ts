@@ -40,6 +40,8 @@ const chat = createChatService({
   channels,
   messages: messageRepository,
   memberNames: (g) => discussionRepository.memberNames(g),
+  notifyLevels: (userId, g) => channelRepository.notifyLevels(userId, g),
+  mutedOn: (channelId, ids) => channelRepository.mutedOn(channelId, ids),
   shareFromPod: async () => ({ ok: false, code: "NO", message: "no" }),
   clock,
   emit: async (_g, e) => void events.push(e),
@@ -298,5 +300,70 @@ describe("squad chat", () => {
     await chat.markRead(s.anu, s.groupId, s.general);
     expect(await chat.unread(s.anu, s.groupId)).toEqual({});
     expect((await chat.squadsWithUnread(s.anu)).size).toBe(0);
+  });
+});
+
+describe("slow mode and notification levels", () => {
+  it("makes members wait between messages, but never the squad's staff", async () => {
+    const s = await squad();
+    await channels.update(s.owner, s.groupId, s.general, { slowModeSec: 30 });
+    const channel = (await channels.get(s.anu, s.groupId, s.general))!.channel;
+    expect(channel.slowModeSec).toBe(30);
+
+    expect(
+      await chat.send(s.anu, s.groupId, s.general, text("one")),
+    ).toMatchObject({
+      ok: true,
+    });
+    clock.advance(10_000);
+    expect(
+      await chat.send(s.anu, s.groupId, s.general, text("two")),
+    ).toMatchObject({
+      ok: false,
+      code: "SLOW_MODE",
+    });
+    // The owner is never slowed.
+    expect(
+      await chat.send(s.owner, s.groupId, s.general, text("mine")),
+    ).toMatchObject({ ok: true });
+    clock.advance(21_000);
+    expect(
+      await chat.send(s.anu, s.groupId, s.general, text("two")),
+    ).toMatchObject({
+      ok: true,
+    });
+  });
+
+  it("counts only mentions when set to mentions, and nothing when muted", async () => {
+    const s = await squad();
+    clock.advance(1000);
+    await chat.send(s.owner, s.groupId, s.general, text("one"));
+    await chat.send(s.owner, s.groupId, s.general, {
+      ...text("two @Anu"),
+      mentionIds: [s.anu.id],
+    });
+    expect((await chat.unread(s.anu, s.groupId))[s.general]).toEqual({
+      unread: 2,
+      mentions: 1,
+    });
+
+    await channels.setNotify(s.anu, s.groupId, s.general, "MENTIONS");
+    expect((await chat.unread(s.anu, s.groupId))[s.general]).toEqual({
+      unread: 1,
+      mentions: 1,
+    });
+
+    await channels.setNotify(s.anu, s.groupId, s.general, "MUTE");
+    expect(await chat.unread(s.anu, s.groupId)).toEqual({});
+    // A muted channel doesn't reach the notification centre either.
+    notes.length = 0;
+    await chat.send(s.owner, s.groupId, s.general, {
+      ...text("three @Anu"),
+      mentionIds: [s.anu.id],
+    });
+    expect(notes).toEqual([]);
+
+    await channels.setNotify(s.anu, s.groupId, s.general, "ALL");
+    expect((await chat.unread(s.anu, s.groupId))[s.general]?.unread).toBe(3);
   });
 });

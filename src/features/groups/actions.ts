@@ -177,7 +177,7 @@ export async function manageMemberAction(input: unknown): Promise<Result> {
         }),
         z.object({
           kind: z.literal("role"),
-          role: z.enum(["ADMIN", "MEMBER"]),
+          role: z.enum(["ADMIN", "MODERATOR", "MEMBER"]),
         }),
       ]),
     }),

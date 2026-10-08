@@ -13,6 +13,7 @@ export async function ChatChannel({
   channel,
   canPost,
   manage,
+  notify,
 }: ChannelViewProps) {
   const [page, members, attachable] = await Promise.all([
     chatService.page(user, groupId, channel.id),
@@ -22,7 +23,12 @@ export async function ChatChannel({
   if (!page) notFound();
   return (
     <>
-      <ChannelHeader manage={manage} groupId={groupId} channel={channel} />
+      <ChannelHeader
+        manage={manage}
+        notify={notify}
+        groupId={groupId}
+        channel={channel}
+      />
       <ChatView
         groupId={groupId}
         channel={{

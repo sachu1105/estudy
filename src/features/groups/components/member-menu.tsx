@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/toast";
+import { ROLE_LABELS, type GroupRole } from "@/lib/squads/roles";
 
 import { blockUserAction, manageMemberAction } from "../actions";
 import { ReportDialog } from "./report-dialog";
@@ -20,27 +21,30 @@ import { ReportDialog } from "./report-dialog";
 type Action =
   | { kind: "remove" }
   | { kind: "mute"; hours: number | null }
-  | { kind: "role"; role: "ADMIN" | "MEMBER" };
+  | { kind: "role"; role: "ADMIN" | "MODERATOR" | "MEMBER" };
 
 /**
- * What the viewer may do about one member. The server checks again: admins manage
- * members, the owner manages admins. Anyone can block or report.
+ * What the viewer may do about one member. The server checks again: moderators mute and
+ * remove, admins also change roles, only the owner makes an admin. Anyone can block or
+ * report.
  */
 export function MemberMenu({
   groupId,
   member,
   canManage,
   canSetRole,
+  canSetAdmin,
 }: {
   groupId: string;
   member: {
     id: string;
     name: string;
-    role: "OWNER" | "ADMIN" | "MEMBER";
+    role: GroupRole;
     muted: boolean;
   };
   canManage: boolean;
   canSetRole: boolean;
+  canSetAdmin: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -81,23 +85,38 @@ export function MemberMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {canSetRole ? (
-            member.role === "ADMIN" ? (
-              <DropdownMenuItem
-                onSelect={() =>
-                  run({ kind: "role", role: "MEMBER" }, "No longer an admin")
-                }
-              >
-                Remove admin
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onSelect={() =>
-                  run({ kind: "role", role: "ADMIN" }, "Made an admin")
-                }
-              >
-                Make admin
-              </DropdownMenuItem>
-            )
+            <>
+              {member.role === "MEMBER" ? (
+                <DropdownMenuItem
+                  onSelect={() =>
+                    run({ kind: "role", role: "MODERATOR" }, "Made a moderator")
+                  }
+                >
+                  Make moderator
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onSelect={() =>
+                    run(
+                      { kind: "role", role: "MEMBER" },
+                      `No longer ${ROLE_LABELS[member.role] === "admin" ? "an admin" : "a moderator"}`,
+                    )
+                  }
+                >
+                  Make a member again
+                </DropdownMenuItem>
+              )}
+              {canSetAdmin && member.role !== "ADMIN" ? (
+                <DropdownMenuItem
+                  onSelect={() =>
+                    run({ kind: "role", role: "ADMIN" }, "Made an admin")
+                  }
+                >
+                  Make admin
+                </DropdownMenuItem>
+              ) : null}
+              <DropdownMenuSeparator />
+            </>
           ) : null}
           {canManage ? (
             <>

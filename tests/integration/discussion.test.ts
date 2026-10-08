@@ -28,6 +28,12 @@ const groups = createGroupService({
   limit: () => 10,
   newCode: () => crypto.randomUUID().slice(0, 8),
 });
+const channels = createChannelService({
+  groups,
+  channels: channelRepository,
+  clock,
+  ownerLimit: async () => 50,
+});
 const notifications = createNotificationService({
   notifications: notificationRepository,
   clock,
@@ -35,12 +41,7 @@ const notifications = createNotificationService({
 const events: { groupId: string; event: GroupEvent }[] = [];
 const discussion = createDiscussionService({
   groups,
-  channels: createChannelService({
-    groups,
-    channels: channelRepository,
-    clock,
-    ownerLimit: async () => 50,
-  }),
+  channels,
   posts: discussionRepository,
   clock,
   emit: async (groupId, event) => void events.push({ groupId, event }),
@@ -298,5 +299,37 @@ describe("group discussion", () => {
     expect(post.acceptedReplyId).toBeNull();
     await discussion.remove(anu, groupId, { postId, replyId: null });
     expect(await discussion.list(anu, groupId, "all")).toHaveLength(0);
+  });
+});
+
+describe("an announcements-style threads channel", () => {
+  it("lets members read but not post or reply", async () => {
+    const { owner, anu, groupId } = await setup();
+    const doubts = (await channels.layout(owner, groupId))!.categories
+      .flatMap((c) => c.channels)
+      .find((c) => c.name === "doubts")!;
+    const { postId } = (await discussion.create(
+      owner,
+      groupId,
+      question("Preamble"),
+    )) as { postId: string };
+
+    await channels.update(owner, groupId, doubts.id, { postRule: "ADMINS" });
+    expect(
+      await discussion.create(anu, groupId, question("Rivers")),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    expect(
+      await discussion.reply(anu, groupId, postId, {
+        body: "Me too",
+        mentionIds: [],
+      }),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    // The squad's staff still answer.
+    expect(
+      await discussion.reply(owner, groupId, postId, {
+        body: "Article 21",
+        mentionIds: [],
+      }),
+    ).toMatchObject({ ok: true });
   });
 });

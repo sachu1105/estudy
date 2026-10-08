@@ -13,5 +13,7 @@ export type ChannelViewProps = {
   canPost: boolean;
   /** The admin's channel settings menu, for the header. */
   manage?: ReactNode;
+  /** How much of this channel reaches the viewer, for the header. */
+  notify?: ReactNode;
   searchParams: Record<string, string | string[] | undefined>;
 };

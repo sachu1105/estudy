@@ -1,4 +1,5 @@
 import { today, type Clock } from "@/lib/clock";
+import { canModerate } from "@/lib/squads/roles";
 import { plainText } from "@/lib/markdown/markdown";
 import type { DiscussionRepository } from "@/server/repositories/discussion-repository";
 import type { NewNotification } from "@/server/repositories/notification-repository";
@@ -42,7 +43,7 @@ const GONE = failure("NOT_FOUND", "That post is gone.");
 /** Threads, questions, replies and reactions in a group (milestone 14). */
 export function createDiscussionService(deps: DiscussionDeps) {
   const now = () => deps.clock.now();
-  const isAdmin = (role: string) => role === "OWNER" || role === "ADMIN";
+  const isAdmin = (role: string) => canModerate(role as "MEMBER");
 
   /** A member who may post: not muted. */
   async function poster(user: User, groupId: string) {
@@ -177,7 +178,7 @@ export function createDiscussionService(deps: DiscussionDeps) {
       if (ok.fail) return ok.fail;
       const place = await deps.channels.place(
         groupId,
-        ok.me.role,
+        { id: user.id, role: ok.me.role },
         ["THREADS"],
         channelId,
       );
@@ -219,6 +220,14 @@ export function createDiscussionService(deps: DiscussionDeps) {
       if (ok.fail) return ok.fail;
       const post = await visiblePost(groupId, postId, "MEMBER");
       if (!post) return GONE;
+      // The channel decides who may write here, replies included.
+      const where = await deps.channels.place(
+        groupId,
+        { id: user.id, role: ok.me.role },
+        ["THREADS"],
+        post.channelId,
+      );
+      if (!where.ok) return where;
       const mentionIds = await members(groupId, input.mentionIds, user.id);
       const reply = await deps.posts.createReply({
         postId,

@@ -77,6 +77,7 @@ export default async function GroupLayout({
             categories={layout.categories}
             canManage={layout.canManage}
             unread={unread}
+            notify={layout.notify}
           />
         </div>
       </aside>

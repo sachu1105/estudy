@@ -4,6 +4,8 @@ import { prisma } from "@/server/db";
 import type {
   ChannelPostRule,
   ChannelType,
+  ChannelViewRule,
+  NotifyLevel,
 } from "@/server/db/generated/prisma/client";
 import type { SquadTemplate } from "@/lib/squads/templates";
 
@@ -16,6 +18,8 @@ const channelRow = {
   topic: true,
   order: true,
   postRule: true,
+  viewRule: true,
+  slowModeSec: true,
 } as const;
 
 /** A squad's categories and channels (squads S1). */
@@ -53,12 +57,88 @@ export const channelRepository = {
     });
   },
 
-  channels(groupId: string) {
+  /**
+   * The squad's channels, or only the ones this person may open. Staff (owner, admins
+   * and moderators) see them all, including the private ones they run.
+   */
+  channels(groupId: string, forUser?: { id: string; staff: boolean }) {
     return prisma.channel.findMany({
-      where: { groupId, deletedAt: null },
+      where: {
+        groupId,
+        deletedAt: null,
+        ...(forUser && !forUser.staff
+          ? {
+              OR: [
+                { viewRule: "EVERYONE" as const },
+                {
+                  viewRule: "PICKED" as const,
+                  access: { some: { userId: forUser.id } },
+                },
+              ],
+            }
+          : {}),
+      },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
       select: channelRow,
     });
+  },
+
+  hasAccess(channelId: string, userId: string) {
+    return prisma.channelAccess
+      .findUnique({
+        where: { channelId_userId: { channelId, userId } },
+        select: { id: true },
+      })
+      .then(Boolean);
+  },
+
+  /** Who is let into a PICKED channel, by hand. */
+  accessIds(channelId: string) {
+    return prisma.channelAccess
+      .findMany({ where: { channelId }, select: { userId: true } })
+      .then((rows) => rows.map((r) => r.userId));
+  },
+
+  async setAccess(channelId: string, userIds: string[]) {
+    await prisma.$transaction([
+      prisma.channelAccess.deleteMany({
+        where: { channelId, userId: { notIn: userIds } },
+      }),
+      prisma.channelAccess.createMany({
+        data: userIds.map((userId) => ({ channelId, userId })),
+        skipDuplicates: true,
+      }),
+    ]);
+  },
+
+  /** How much of each channel of a squad reaches this person. */
+  async notifyLevels(userId: string, groupId: string) {
+    const rows = await prisma.channelNotify.findMany({
+      where: { userId, channel: { groupId } },
+      select: { channelId: true, level: true },
+    });
+    return new Map(rows.map((r) => [r.channelId, r.level]));
+  },
+
+  /** Of these people, who has muted this channel. */
+  async mutedOn(channelId: string, userIds: string[]) {
+    if (!userIds.length) return new Set<string>();
+    const rows = await prisma.channelNotify.findMany({
+      where: { channelId, level: "MUTE", userId: { in: userIds } },
+      select: { userId: true },
+    });
+    return new Set(rows.map((r) => r.userId));
+  },
+
+  async setNotify(userId: string, channelId: string, level: NotifyLevel) {
+    if (level === "ALL")
+      await prisma.channelNotify.deleteMany({ where: { userId, channelId } });
+    else
+      await prisma.channelNotify.upsert({
+        where: { userId_channelId: { userId, channelId } },
+        create: { userId, channelId, level },
+        update: { level },
+      });
   },
 
   find(groupId: string, channelId: string) {
@@ -94,6 +174,8 @@ export const channelRepository = {
     name: string;
     topic: string | null;
     postRule: ChannelPostRule;
+    viewRule: ChannelViewRule;
+    slowModeSec: number;
   }) {
     const last = await prisma.channel.aggregate({
       where: {
@@ -115,6 +197,8 @@ export const channelRepository = {
       name?: string;
       topic?: string | null;
       postRule?: ChannelPostRule;
+      viewRule?: ChannelViewRule;
+      slowModeSec?: number;
     },
   ) {
     return prisma.channel.update({

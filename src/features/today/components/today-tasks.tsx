@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ChevronRight,
-  ClipboardCheck,
-  FolderOpen,
-  Play,
-} from "lucide-react";
+import { ChevronRight, ClipboardCheck, FolderOpen, Play } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotionConfig } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

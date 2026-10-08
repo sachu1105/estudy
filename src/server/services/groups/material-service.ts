@@ -128,7 +128,7 @@ export function createMaterialService(deps: MaterialDeps) {
       if (!source) return failure("NOT_FOUND", "That item isn't in your pods.");
       const place = await deps.channels.place(
         groupId,
-        ok.me.role,
+        { id: user.id, role: ok.me.role },
         into === "chat"
           ? ["CHAT", "ANNOUNCEMENTS"]
           : source.type === "LINK"
@@ -202,7 +202,7 @@ export function createMaterialService(deps: MaterialDeps) {
       if (ok.fail) return ok.fail;
       const place = await deps.channels.place(
         groupId,
-        ok.me.role,
+        { id: user.id, role: ok.me.role },
         ["LINKS", "MATERIAL"],
         channelId,
       );

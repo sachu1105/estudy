@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { accessOf, joinModeOf } from "./access";
 import { channelName, CHANNEL_NAME_MAX } from "./channel-name";
+import { canManage, canModerate, GROUP_ROLES, outranks } from "./roles";
 import { SQUAD_TEMPLATES, TEMPLATE_KEYS } from "./templates";
 
 describe("channelName", () => {
@@ -56,5 +57,19 @@ describe("squad access", () => {
     expect(joinModeOf({ visibility: "PRIVATE", joinMode: "OPEN" })).toBe(
       "REQUEST",
     );
+  });
+});
+
+describe("squad roles", () => {
+  it("says who manages, who moderates, and who outranks whom", () => {
+    expect(GROUP_ROLES.filter(canManage)).toEqual(["OWNER", "ADMIN"]);
+    expect(GROUP_ROLES.filter(canModerate)).toEqual([
+      "OWNER",
+      "ADMIN",
+      "MODERATOR",
+    ]);
+    expect(outranks("ADMIN", "MODERATOR")).toBe(true);
+    expect(outranks("MODERATOR", "MODERATOR")).toBe(false);
+    expect(outranks("MEMBER", "MODERATOR")).toBe(false);
   });
 });

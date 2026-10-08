@@ -1,6 +1,11 @@
 "use client";
 
-import { ImageIcon, MoreHorizontal, SlidersHorizontal, Trash2 } from "lucide-react";
+import {
+  ImageIcon,
+  MoreHorizontal,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 

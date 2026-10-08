@@ -31,6 +31,8 @@ export type ChannelSummary = {
   name: string;
   topic: string | null;
   postRule: "EVERYONE" | "ADMINS";
+  viewRule: "EVERYONE" | "ADMINS" | "PICKED";
+  slowModeSec: number;
 };
 
 export type CategorySummary = {

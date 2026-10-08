@@ -91,6 +91,17 @@ export const messageRepository = {
     });
   },
 
+  /** When this person last wrote here, for slow mode. */
+  lastSentAt(channelId: string, authorId: string) {
+    return prisma.message
+      .findFirst({
+        where: { channelId, authorId, deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true },
+      })
+      .then((row) => row?.createdAt ?? null);
+  },
+
   find(channelId: string, messageId: string) {
     return prisma.message.findFirst({
       where: { id: messageId, channelId },

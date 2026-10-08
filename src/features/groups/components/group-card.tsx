@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
+import { ROLE_LABELS, type GroupRole } from "@/lib/squads/roles";
 
 const JOIN_LABEL: Record<JoinMode, string> = {
   OPEN: "Open",
@@ -39,7 +40,7 @@ export function GroupCard({
     exam: { name: string } | null;
     _count: { members: number };
   };
-  role?: "OWNER" | "ADMIN" | "MEMBER" | null;
+  role?: GroupRole | null;
   /** Something new in its chats. */
   unread?: boolean;
   action?: ReactNode;
@@ -77,7 +78,7 @@ export function GroupCard({
             </Badge>
           ) : null}
           {role && role !== "MEMBER" ? (
-            <Badge tone="accent">{role.toLowerCase()}</Badge>
+            <Badge tone="accent">{ROLE_LABELS[role]}</Badge>
           ) : null}
         </span>
         <span className="text-small text-ink-muted">{facts}</span>
