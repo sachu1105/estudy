@@ -6,13 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -21,6 +14,7 @@ import {
 import { mentionedIn, type Mention } from "@/lib/markdown/markdown";
 
 import { MentionTextarea } from "./mention-textarea";
+import { TopicPicker } from "./topic-picker";
 import { useDraft } from "./use-draft";
 
 export type NewPost = {
@@ -109,19 +103,12 @@ export function NewPostSheet({
           {kind === "QUESTION" ? (
             <div className="flex flex-col gap-2">
               <Label htmlFor="post-topic">Topic</Label>
-              <Select value={topic} onValueChange={setTopic}>
-                <SelectTrigger id="post-topic">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No topic</SelectItem>
-                  {topics.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <TopicPicker
+                id="post-topic"
+                topics={topics}
+                value={topic}
+                onChange={setTopic}
+              />
             </div>
           ) : null}
           <div className="flex flex-col gap-2">
