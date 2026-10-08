@@ -1,20 +1,22 @@
 "use client";
 
-import { FileText, Paperclip } from "lucide-react";
-import { useState } from "react";
+import { Paperclip } from "lucide-react";
 
+import { ItemPicker } from "@/components/blocks/item-picker";
+import { PodItemIcon } from "@/components/blocks/pod-item-icon";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
-export type Attachable = { id: string; title: string; pod: { name: string } };
+export type Attachable = {
+  id: string;
+  title: string;
+  type: string;
+  pod: { name: string };
+};
 
-/** Pick something from your pods to send with a message; the squad gets a copy. */
+/**
+ * Pick something from your pods to send with a message; the squad gets a copy. Opens
+ * upward from the paperclip on md+, as a sheet on phones.
+ */
 export function AttachSheet({
   items,
   onPick,
@@ -22,51 +24,28 @@ export function AttachSheet({
   items: Attachable[];
   onPick: (item: Attachable) => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <ItemPicker
+      side="top"
+      align="start"
+      trigger={
         <Button variant="ghost" size="icon" aria-label="Attach from my pods">
           <Paperclip aria-hidden />
         </Button>
-      </SheetTrigger>
-      <SheetContent side="bottom" className="overflow-y-auto">
-        <SheetTitle>Attach from your pods</SheetTitle>
-        <SheetDescription>
-          The squad gets a copy. Your pod stays yours.
-        </SheetDescription>
-        {items.length === 0 ? (
-          <p className="text-body text-ink-muted">
-            Nothing in your pods yet. Add notes, links or files there first.
-          </p>
-        ) : (
-          <ul className="flex flex-col divide-y divide-border">
-            {items.map((item) => (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  className="flex min-h-12 w-full cursor-pointer items-center gap-3 py-2 text-left hover:bg-surface-muted"
-                  onClick={() => {
-                    onPick(item);
-                    setOpen(false);
-                  }}
-                >
-                  <FileText
-                    className="size-4 shrink-0 text-ink-muted"
-                    aria-hidden
-                  />
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-body">{item.title}</span>
-                    <span className="truncate text-small text-ink-muted">
-                      {item.pod.name}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </SheetContent>
-    </Sheet>
+      }
+      title="Attach from your pods"
+      description="The squad gets a copy. Your pod stays yours."
+      empty="Nothing in your pods yet. Add notes, links or files there first."
+      items={items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.pod.name,
+        icon: <PodItemIcon type={item.type} />,
+      }))}
+      onPick={(id) => {
+        const item = items.find((i) => i.id === id);
+        if (item) onPick(item);
+      }}
+    />
   );
 }

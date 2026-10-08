@@ -1,6 +1,7 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { seedAndLogin } from "./support/auth";
+import { seedPodLink } from "./support/db";
 
 const noSideScroll = (page: Page) =>
   page.evaluate(
@@ -109,6 +110,22 @@ test.describe("squad chat", () => {
       timeout: 15_000,
     });
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // Attach a link from the member's pod: picked from a list, sent as a card.
+    const me = (await (await member.request.get("/api/me")).json()) as {
+      id: string;
+    };
+    await seedPodLink(me.id, "Kerala history", `Travancore notes ${tag}`);
+    await member.reload();
+    await member.getByRole("button", { name: "Attach from my pods" }).click();
+    await member
+      .getByRole("button", { name: new RegExp(`Travancore notes ${tag}`) })
+      .click();
+    await member.getByRole("button", { name: "Send" }).click();
+    await expect(
+      page.getByRole("link", { name: `Travancore notes ${tag}` }),
+    ).toBeVisible({ timeout: 15_000 });
+    expect(await noSideScroll(member)).toBeLessThanOrEqual(0);
 
     // Away from the chat, a new message marks the channel unread.
     await page.goto(groupUrl);

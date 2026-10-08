@@ -21,8 +21,11 @@ const sheetVariants = cva(
         right:
           "inset-y-0 right-0 w-[min(400px,100%-48px)] border-l data-[state=closed]:animate-sheet-out-right data-[state=open]:animate-sheet-in-right",
         left: "inset-y-0 left-0 w-[min(320px,100%-48px)] border-r data-[state=closed]:animate-sheet-out-left data-[state=open]:animate-sheet-in-left",
-        bottom:
+        // From the bottom on phones; on md+ a centred panel, never a full-width slab.
+        bottom: cn(
           "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-card border-t pb-[max(24px,env(safe-area-inset-bottom))] data-[state=closed]:animate-sheet-out-bottom data-[state=open]:animate-sheet-in-bottom",
+          "md:inset-0 md:m-auto md:h-fit md:max-h-[min(85dvh,720px)] md:w-[min(560px,100%-48px)] md:rounded-card md:border md:pb-6 md:data-[state=closed]:animate-pop-out md:data-[state=open]:animate-pop-in",
+        ),
       },
     },
     defaultVariants: { side: "right" },

@@ -201,3 +201,20 @@ export async function resetLoginLimits() {
     redis.disconnect();
   }
 }
+
+/** A pod of the user's own with one saved link, to share or attach in a squad. */
+export async function seedPodLink(userId: string, pod: string, title: string) {
+  await withDb(async (db) => {
+    const podId = randomUUID();
+    await db.query(
+      `INSERT INTO "Pod" (id, "ownerId", kind, name, "updatedAt")
+       VALUES ($1, $2, 'CUSTOM', $3, now())`,
+      [podId, userId, pod],
+    );
+    await db.query(
+      `INSERT INTO "PodItem" (id, "podId", "ownerId", type, title, url, "updatedAt")
+       VALUES ($1, $2, $3, 'LINK', $4, 'https://93.184.216.34/notes', now())`,
+      [randomUUID(), podId, userId, title],
+    );
+  });
+}

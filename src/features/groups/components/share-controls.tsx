@@ -1,9 +1,11 @@
 "use client";
 
-import { FileText, Link2, Share2 } from "lucide-react";
+import { Link2, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { ItemPicker } from "@/components/blocks/item-picker";
+import { PodItemIcon } from "@/components/blocks/pod-item-icon";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,13 +16,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { toast } from "@/components/ui/toast";
 
 import { addGroupLinkAction, shareFromPodAction } from "../actions";
@@ -56,49 +51,25 @@ export function ShareFromPods({
       router.refresh();
     });
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <ItemPicker
+      align="end"
+      disabled={pending}
+      trigger={
         <Button variant="primary">
           <Share2 aria-hidden /> Share from my pods
         </Button>
-      </SheetTrigger>
-      <SheetContent side="bottom" className="overflow-y-auto">
-        <SheetTitle>Share from your pods</SheetTitle>
-        <SheetDescription>
-          The squad gets a copy. Your pod stays yours.
-        </SheetDescription>
-        {items.length === 0 ? (
-          <p className="text-body text-ink-muted">
-            Nothing in your pods yet. Add notes, links or files there first.
-          </p>
-        ) : (
-          <ul className="flex flex-col divide-y divide-border">
-            {items.map((item) => (
-              <li key={item.id} className="flex items-center gap-3 py-2">
-                <FileText
-                  className="size-4 shrink-0 text-ink-muted"
-                  aria-hidden
-                />
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate text-body">{item.title}</span>
-                  <span className="truncate text-small text-ink-muted">
-                    {item.pod.name}
-                  </span>
-                </span>
-                <Button
-                  variant="secondary"
-                  disabled={pending}
-                  onClick={() => share(item.id)}
-                  aria-label={`Share ${item.title}`}
-                >
-                  Share
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </SheetContent>
-    </Sheet>
+      }
+      title="Share from your pods"
+      description="The squad gets a copy. Your pod stays yours."
+      empty="Nothing in your pods yet. Add notes, links or files there first."
+      items={items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.pod.name,
+        icon: <PodItemIcon type={item.type} />,
+      }))}
+      onPick={share}
+    />
   );
 }
 
