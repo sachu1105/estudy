@@ -125,6 +125,20 @@ export const groupRepository = {
     });
   },
 
+  update(
+    groupId: string,
+    data: {
+      name: string;
+      description: string | null;
+      examId: string | null;
+      visibility: GroupVisibility;
+      joinMode: SquadJoinMode;
+      joinQuestion: string | null;
+    },
+  ) {
+    return prisma.group.update({ where: { id: groupId }, data });
+  },
+
   softDelete(groupId: string, at: Date) {
     return prisma.group.update({
       where: { id: groupId },

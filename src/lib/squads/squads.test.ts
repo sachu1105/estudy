@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { accessOf, joinModeOf } from "./access";
 import { channelName, CHANNEL_NAME_MAX } from "./channel-name";
 import { SQUAD_TEMPLATES, TEMPLATE_KEYS } from "./templates";
 
@@ -33,5 +34,27 @@ describe("squad templates", () => {
       for (const name of names) expect(channelName(name)).toBe(name);
       expect(new Set(names).size).toBe(names.length);
     }
+  });
+});
+
+describe("squad access", () => {
+  it("reads one choice back from what is stored", () => {
+    expect(accessOf({ visibility: "PUBLIC", joinMode: "OPEN" })).toBe("OPEN");
+    expect(accessOf({ visibility: "PUBLIC", joinMode: "REQUEST" })).toBe("ASK");
+    expect(accessOf({ visibility: "PRIVATE", joinMode: "REQUEST" })).toBe(
+      "PRIVATE",
+    );
+    expect(accessOf({ visibility: "PRIVATE", joinMode: "OPEN" })).toBe(
+      "PRIVATE",
+    );
+    expect(accessOf({ visibility: "PUBLIC", joinMode: "INVITE_ONLY" })).toBe(
+      "INVITE",
+    );
+  });
+
+  it("never lets a private squad be open", () => {
+    expect(joinModeOf({ visibility: "PRIVATE", joinMode: "OPEN" })).toBe(
+      "REQUEST",
+    );
   });
 });

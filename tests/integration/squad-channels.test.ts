@@ -350,3 +350,45 @@ describe("joining a squad", () => {
     });
   });
 });
+
+describe("squad settings", () => {
+  it("lets admins change the squad and who can join; members can't", async () => {
+    const owner = await user("Owner");
+    const binu = await user("Binu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Before",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+      }),
+    );
+    await groups.join(binu, g);
+    const change = {
+      name: "After",
+      description: "Weekend mocks",
+      examId: null,
+      visibility: "PRIVATE" as const,
+      joinMode: "OPEN" as const,
+      joinQuestion: "Which post?",
+    };
+    expect(await groups.update(binu, g, change)).toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+    expect(await groups.update(owner, g, change)).toEqual({ ok: true });
+    // Private can't be open: it asks, and keeps the question.
+    expect(
+      await prisma.group.findUnique({
+        where: { id: g },
+        select: { name: true, joinMode: true, joinQuestion: true },
+      }),
+    ).toEqual({ name: "After", joinMode: "REQUEST", joinQuestion: "Which post?" });
+
+    await groups.update(owner, g, { ...change, joinMode: "INVITE_ONLY" });
+    expect(
+      (await prisma.group.findUnique({ where: { id: g } }))?.joinQuestion,
+    ).toBeNull();
+    expect(await groups.directory(null, "")).toHaveLength(0);
+  });
+});

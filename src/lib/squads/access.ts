@@ -48,6 +48,17 @@ export const SQUAD_ACCESS: Record<
   },
 };
 
+/** The one choice a squad's settings show, from what is stored. */
+export function accessOf(group: {
+  visibility: "PUBLIC" | "PRIVATE";
+  joinMode: JoinMode;
+}): SquadAccess {
+  const mode = joinModeOf(group);
+  if (mode === "INVITE_ONLY") return "INVITE";
+  if (group.visibility === "PRIVATE") return "PRIVATE";
+  return mode === "OPEN" ? "OPEN" : "ASK";
+}
+
 /** Whether people joining this way answer the squad's question. */
 export const asksToJoin = (access: SquadAccess) =>
   SQUAD_ACCESS[access].joinMode === "REQUEST";

@@ -49,31 +49,50 @@ const id = z.uuid();
 /** The channel a share lands in; left out, the squad's first fitting channel. */
 const channelId = id.nullable().optional();
 
+/** What a squad is and who can get in: the same on create and in its settings. */
+const squadFields = {
+  name: z
+    .string()
+    .trim()
+    .min(3, "Give the squad a name of 3 letters or more.")
+    .max(80),
+  description: z
+    .string()
+    .trim()
+    .max(500)
+    .transform((d) => d || null),
+  examId: id.nullable(),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]),
+  joinMode: z.enum(["OPEN", "REQUEST", "INVITE_ONLY"]),
+  joinQuestion: z
+    .string()
+    .trim()
+    .max(200)
+    .transform((q) => q || null),
+};
+
+export async function updateGroupAction(input: unknown): Promise<Result> {
+  const g = await guard(input, z.object({ groupId: id, ...squadFields }));
+  if (g.fail) return g.fail;
+  const { groupId, ...rest } = g.data as { groupId: string } & Parameters<
+    typeof groupService.update
+  >[2];
+  return done(
+    await groupService.update(g.user, groupId, rest),
+    "/groups",
+    `/groups/${groupId}`,
+  );
+}
+
 export async function createGroupAction(
   input: unknown,
 ): Promise<Result<{ groupId: string }>> {
   const g = await guard(
     input,
     z.object({
-      name: z
-        .string()
-        .trim()
-        .min(3, "Give the squad a name of 3 letters or more.")
-        .max(80),
-      description: z
-        .string()
-        .trim()
-        .max(500)
-        .transform((d) => d || null),
-      examId: id.nullable(),
-      visibility: z.enum(["PUBLIC", "PRIVATE"]),
-      joinMode: z.enum(["OPEN", "REQUEST", "INVITE_ONLY"]).optional(),
-      joinQuestion: z
-        .string()
-        .trim()
-        .max(200)
-        .transform((q) => q || null)
-        .optional(),
+      ...squadFields,
+      joinMode: squadFields.joinMode.optional(),
+      joinQuestion: squadFields.joinQuestion.optional(),
       template: z.enum(TEMPLATE_KEYS).default("EXAM"),
     }),
   );

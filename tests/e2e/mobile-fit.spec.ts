@@ -22,6 +22,7 @@ const appRoutes = [
   "/pods/trash",
   "/tests",
   "/groups",
+  "/groups/discover",
   "/settings",
   "/onboarding",
 ];

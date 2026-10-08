@@ -271,4 +271,41 @@ test.describe("groups", () => {
     await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
     await expect(tab(page, "kerala-history")).toHaveCount(0);
   });
+
+  test("an open squad is found in Discover and joined; its admin then makes it invite only", async ({
+    page,
+    browser,
+  }) => {
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `gdiscover-owner-${test.info().project.name}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Findable ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    const groupUrl = page.url();
+
+    const finder = await person(browser, `gdiscover-${test.info().project.name}`);
+    await finder.goto(`/groups/discover?q=${encodeURIComponent(tag)}`);
+    expect(await noSideScroll(finder)).toBeLessThanOrEqual(0);
+    await finder.getByRole("button", { name: `Join Findable ${tag}` }).click();
+    await expect(
+      finder.getByRole("heading", { level: 1, name: `Findable ${tag}` }),
+    ).toBeVisible();
+
+    // The owner renames it and makes it invite only, from its settings.
+    await page.goto(`${groupUrl}/settings`);
+    await page.getByLabel("Name").fill(`Renamed ${tag}`);
+    await page.getByRole("radio", { name: /Invite only/ }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.getByText("Squad saved")).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    await finder.goto(`/groups/discover?q=${encodeURIComponent(tag)}`);
+    await expect(finder.getByText("No squads match")).toBeVisible();
+    await finder.context().close();
+  });
 });

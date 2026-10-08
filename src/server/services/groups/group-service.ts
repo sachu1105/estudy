@@ -206,6 +206,30 @@ export function createGroupService(deps: GroupDeps) {
       return { ok: true };
     },
 
+    /** Admins change what the squad is and who can get in. */
+    async update(
+      user: User,
+      groupId: string,
+      input: {
+        name: string;
+        description: string | null;
+        examId: string | null;
+        visibility: "PUBLIC" | "PRIVATE";
+        joinMode: JoinMode;
+        joinQuestion: string | null;
+      },
+    ): Promise<Result<object>> {
+      const ok = await require(user, groupId, "ADMIN");
+      if ("error" in ok) return ok.error!;
+      const joinMode = joinModeOf(input);
+      await deps.groups.update(groupId, {
+        ...input,
+        joinMode,
+        joinQuestion: joinMode === "REQUEST" ? input.joinQuestion : null,
+      });
+      return { ok: true };
+    },
+
     async remove(user: User, groupId: string): Promise<Result<object>> {
       const ok = await require(user, groupId, "OWNER");
       if ("error" in ok) return ok.error!;

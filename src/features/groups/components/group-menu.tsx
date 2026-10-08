@@ -71,6 +71,9 @@ export function GroupMenu({
               <DropdownMenuItem asChild>
                 <Link href={`/groups/${groupId}/members`}>Invite people</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/groups/${groupId}/settings`}>Squad settings</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
           ) : null}
