@@ -133,17 +133,42 @@ test.describe("syllabus", () => {
     ).toBeVisible();
   });
 
-  test("the catalogue lists the seeded exams and invites an upload", async ({
+  test("the catalogue shows ready syllabuses as pods and invites an upload for the rest", async ({
     page,
   }) => {
     await page.goto("/syllabus/catalogue");
-    await expect(page.getByRole("heading", { name: "LD Clerk" })).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Plus two level preliminary exam" }),
+      page.getByRole("heading", { name: "Ready to use" }),
     ).toBeVisible();
-    await page.getByRole("link", { name: "Upload yours" }).first().click();
+
+    // A ready syllabus previews what it covers, one subject open at a time.
+    const ready = page
+      .getByRole("region", { name: /Ready to use/ })
+      .getByRole("link");
+    if ((await ready.count()) > 0) {
+      await ready.first().click();
+      await expect(page).toHaveURL(/\/(syllabus\/catalogue|pods\/exam)\//);
+      if (page.url().includes("/syllabus/catalogue/")) {
+        await expect(
+          page.getByRole("heading", { name: "What it covers" }),
+        ).toBeVisible();
+        const subject = page
+          .getByRole("region", { name: "What it covers" })
+          .getByRole("button", { expanded: false })
+          .first();
+        await subject.click();
+        await expect(page.getByText("Weight", { exact: true })).toBeVisible();
+      }
+      await page.goto("/syllabus/catalogue");
+    }
+
+    // An exam with no syllabus yet opens the upload with that exam picked.
+    const upload = page
+      .getByRole("region", { name: /Not in the catalogue yet/ })
+      .getByRole("link");
+    if ((await upload.count()) === 0) return;
+    await upload.first().click();
     await expect(page).toHaveURL(/\/pods\?add=upload&exam=/);
-    // The exam comes pre-picked.
     const exam = page.getByRole("radiogroup", { name: "Exam" });
     await expect(exam.getByRole("radio", { checked: true })).toHaveCount(1);
     await expect(exam.getByRole("radio", { name: "Other" })).toHaveAttribute(

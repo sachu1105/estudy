@@ -23,7 +23,7 @@ function Dots({ value, label }: { value: number; label: string }) {
     <span
       role="img"
       aria-label={`${label} ${value} of 5`}
-      className="flex w-14 shrink-0 justify-end gap-1"
+      className="flex w-18 shrink-0 justify-end gap-1"
     >
       {[1, 2, 3, 4, 5].map((n) => (
         <span
@@ -101,8 +101,8 @@ export function CatalogueSubjects({ subjects }: { subjects: Subject[] }) {
               <div id={panel} className="pb-2">
                 <div className="flex items-center gap-3 px-4 pt-3 pb-1 pl-11 text-micro text-ink-muted uppercase">
                   <span className="flex-1">Topic</span>
-                  <span className="w-14 text-right">Weight</span>
-                  <span className="hidden w-14 text-right sm:block">
+                  <span className="w-18 text-right">Weight</span>
+                  <span className="hidden w-18 text-right sm:block">
                     Difficulty
                   </span>
                 </div>
