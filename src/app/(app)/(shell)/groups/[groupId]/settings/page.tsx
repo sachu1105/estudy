@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SquadHeading } from "@/features/groups/components/channels/channel-header";
+import { SquadCoverButton } from "@/features/groups/components/squad-cover-button";
 import { SquadSettingsForm } from "@/features/groups/components/squad-settings-form";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { groupService } from "@/server/services/groups";
+import { groupService, squadCoverService } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Squad settings" };
@@ -21,11 +22,12 @@ export default async function SquadSettingsPage({
     ? await groupService.require(user, groupId, "ADMIN")
     : null;
   if (!ok || "error" in ok) notFound();
-  const [view, exams] = await Promise.all([
+  const [view, exams, banner] = await Promise.all([
     groupService.view(user, groupId),
     catalogueService.listExams(),
+    squadCoverService.get(user, groupId),
   ]);
-  if (!view) notFound();
+  if (!view || !banner) notFound();
   const { group } = view;
 
   return (
@@ -36,6 +38,13 @@ export default async function SquadSettingsPage({
         title="Squad settings"
         subtitle="Changes show to everyone in the squad, and in Discover when it's listed."
       />
+      <div className="mb-6">
+        <SquadCoverButton
+          groupId={groupId}
+          selection={banner.selection}
+          cover={banner.cover}
+        />
+      </div>
       <SquadSettingsForm
         group={{
           id: group.id,

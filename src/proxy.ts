@@ -25,7 +25,6 @@ const PROTECTED = [
   "/tests",
   "/groups",
   "/settings",
-  "/onboarding",
   "/study",
   "/test",
   "/admin",

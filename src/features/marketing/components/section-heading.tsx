@@ -37,6 +37,15 @@ export function SectionHeading({
   );
 }
 
+/**
+ * Signed in, every landing CTA goes straight to the dashboard: someone already using
+ * studypods is never sent back through a setup screen. Signed out, it goes to register,
+ * which lands on the dashboard too.
+ */
 export function ctaHref(signedIn: boolean) {
-  return signedIn ? "/onboarding" : "/register?next=/onboarding";
+  return signedIn ? "/today" : "/register";
+}
+
+export function ctaLabel(signedIn: boolean) {
+  return signedIn ? "Go to dashboard" : "Get started free";
 }

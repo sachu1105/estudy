@@ -9,8 +9,13 @@ import {
 } from "@/lib/settings/schemas";
 import { settingsRepository } from "@/server/repositories/settings-repository";
 
-/** How long a process trusts its copy before reading the database again. */
-const TTL_MS = 30_000;
+/**
+ * How long a process trusts its copy before reading the database again. Short outside
+ * production: in-app changes already force a reload, so this window only governs edits
+ * made straight to the database — by a second process, or by a test setting its
+ * baseline — and waiting 30s for those is no use to anyone.
+ */
+const TTL_MS = process.env.NODE_ENV === "production" ? 30_000 : 1_000;
 
 type Snapshot = {
   at: number;

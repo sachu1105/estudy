@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/shell/logo";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
+import { COVER_GRAIN, meshBackground } from "@/lib/pods/covers";
 import { site } from "@/lib/site";
 
 const columns = [
@@ -10,7 +11,6 @@ const columns = [
     links: [
       { label: "Features", href: "/#features" },
       { label: "How it works", href: "/#how-it-works" },
-      { label: "Squads", href: "/#groups" },
       { label: "Pricing", href: "/pricing" },
       { label: "FAQ", href: "/#faq" },
     ],
@@ -30,6 +30,30 @@ const columns = [
     ],
   },
 ];
+
+/**
+ * The name, huge, as the page's last word. The letters are cut out of the pod cover art
+ * (CLAUDE.md allows the landing page to reuse it), so the gradient shows through them.
+ * `overflow-x-clip` keeps it off the page's width without cropping the y and p tails,
+ * and the padding below the line leaves those tails their room. Decorative.
+ */
+function Wordmark() {
+  return (
+    <div aria-hidden className="overflow-x-clip select-none">
+      <p
+        className="bg-clip-text px-4 pt-[0.08em] pb-[0.2em] text-center font-heading text-[clamp(64px,17vw,260px)] leading-none font-semibold tracking-[-0.05em] text-transparent"
+        style={{
+          background: [COVER_GRAIN, meshBackground("blurple")].join(", "),
+          // The grain is the first layer; the three mesh blobs under it stay as they are.
+          backgroundBlendMode: "overlay, normal, normal, normal",
+          WebkitBackgroundClip: "text",
+        }}
+      >
+        {site.name}
+      </p>
+    </div>
+  );
+}
 
 export function MarketingFooter({ year }: { year: number }) {
   return (
@@ -88,12 +112,7 @@ export function MarketingFooter({ year }: { year: number }) {
           </div>
         </div>
       </div>
-      {/* The name, huge and faint, as the page's last word. Decorative. */}
-      <div aria-hidden className="overflow-hidden select-none">
-        <p className="px-4 pb-2 text-center font-heading text-[clamp(64px,17vw,260px)] leading-none font-semibold tracking-[-0.05em] text-ink/[0.07]">
-          {site.name}
-        </p>
-      </div>
+      <Wordmark />
     </footer>
   );
 }

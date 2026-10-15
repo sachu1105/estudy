@@ -36,15 +36,31 @@ export const subjectSettingSchema = z.object({
   intensity: intensitySchema,
 });
 
-export const planDraftSchema = z.object({
-  beginnerMode: z.boolean(),
-  examDate: isoDateSchema.nullable(),
-  targetDays: z.number().int().min(7).max(730).nullable(),
+/**
+ * The time the user has, which belongs to the user and not to one exam: every exam they are
+ * preparing for is planned from a slice of it. The copy inside a draft is a cache of the
+ * StudyAvailability row, stamped on load, never the source of truth.
+ */
+export const studyAvailabilitySchema = z.object({
   /** Sunday first, like the engine. */
   minutesByWeekday: z
     .array(z.number().int().min(0).max(MAX_DAY_MINUTES))
     .length(7),
   preferredWindows: z.array(timeWindowSchema).min(1).max(4),
+});
+
+export type StudyAvailability = z.infer<typeof studyAvailabilitySchema>;
+
+export const DEFAULT_AVAILABILITY: StudyAvailability = {
+  minutesByWeekday: [180, 120, 120, 120, 120, 120, 180],
+  preferredWindows: ["MORNING", "EVENING"],
+};
+
+export const planDraftSchema = z.object({
+  beginnerMode: z.boolean(),
+  examDate: isoDateSchema.nullable(),
+  targetDays: z.number().int().min(7).max(730).nullable(),
+  ...studyAvailabilitySchema.shape,
   subjects: z.record(z.uuid(), subjectSettingSchema),
 });
 
@@ -55,13 +71,13 @@ export type SubjectSetting = z.infer<typeof subjectSettingSchema>;
 export function defaultDraft(
   beginnerMode: boolean,
   subjectIds: string[],
+  availability: StudyAvailability = DEFAULT_AVAILABILITY,
 ): PlanDraft {
   return {
     beginnerMode,
     examDate: null,
     targetDays: 90,
-    minutesByWeekday: [180, 120, 120, 120, 120, 120, 180],
-    preferredWindows: ["MORNING", "EVENING"],
+    ...availability,
     subjects: Object.fromEntries(
       subjectIds.map((id) => [
         id,

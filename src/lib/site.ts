@@ -26,7 +26,6 @@ export const examKinds = [
 export const landingSections = [
   { id: "features", label: "Features" },
   { id: "how-it-works", label: "How it works" },
-  { id: "groups", label: "Squads" },
   { id: "pricing", label: "Pricing" },
   { id: "faq", label: "FAQ" },
 ];

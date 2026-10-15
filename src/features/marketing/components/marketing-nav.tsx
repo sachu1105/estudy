@@ -56,7 +56,7 @@ function AuthActions({
         size={stacked ? "lg" : "md"}
         className={width}
       >
-        <Link href="/register?next=/onboarding">Sign up</Link>
+        <Link href="/register">Sign up</Link>
       </Button>
     </>
   );

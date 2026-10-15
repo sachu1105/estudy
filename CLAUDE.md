@@ -303,8 +303,12 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
 - No gradients except a single subtle accent glow behind the streak celebration, and
   pod covers: the grainy mesh gradient (or the user's image) on top of each pod card
   (`lib/pods/covers`, `PodCover`, `PodTile`). The landing page may reuse the same
-  cover art: a soft glow behind the hero window, and the top of the featured plan card
-  (the admin picks it under Plans and limits). Nothing else.
+  cover art: a soft glow behind the hero window, the top of the featured plan card
+  (the admin picks it under Plans and limits), the giant studypods wordmark at the foot
+  of the page, where the gradient shows through the letters, and the cover strip on each
+  How it works card, which uses its own pale wash (blue, indigo, blurple, violet - one
+  hue family, not the pod rainbow) with the deep version of the same hue on the card's
+  icon tile. Nothing else.
 
 ### Typography (next/font/google)
 

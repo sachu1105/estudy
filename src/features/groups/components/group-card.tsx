@@ -1,10 +1,15 @@
-import { ChevronRight, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { PodCover } from "@/components/blocks/pod-cover";
+import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { COVER_PRESETS, type CoverPreset } from "@/lib/pods/covers";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
+import { squadCover } from "@/lib/squads/cover";
 import { ROLE_LABELS, type GroupRole } from "@/lib/squads/roles";
+import { cn } from "@/lib/utils/cn";
 
 const JOIN_LABEL: Record<JoinMode, string> = {
   OPEN: "Open",
@@ -21,9 +26,41 @@ function initials(name: string) {
   ).toUpperCase();
 }
 
+type Member = {
+  user: { id: string; displayName: string; avatarUrl: string | null };
+};
+
+/** The first few faces, overlapping, with the rest as a count. */
+function Faces({ members, total }: { members: Member[]; total: number }) {
+  const shown = members.slice(0, 4);
+  const rest = total - shown.length;
+  if (shown.length === 0) return null;
+  return (
+    <span className="flex items-center gap-2">
+      <span className="flex">
+        {shown.map((m, i) => (
+          <Avatar
+            key={m.user.id}
+            name={m.user.displayName}
+            src={m.user.avatarUrl}
+            size="sm"
+            className={cn("border-2 border-surface", i > 0 && "-ml-2")}
+          />
+        ))}
+      </span>
+      <span className="text-small text-ink-muted">
+        {rest > 0 ? `+${rest}` : `${total} member${total === 1 ? "" : "s"}`}
+      </span>
+    </span>
+  );
+}
+
 /**
- * A squad at a glance: its exam, size, how to get in, and the viewer's role. The whole
- * card opens the squad; an action (Join) sits on top of it.
+ * A squad at a glance: its own cover art, the faces already in it, its exam and how to
+ * get in. The whole card opens the squad; an action (Join) sits on top of it.
+ *
+ * Shaped like a pod card, which is the app's card idiom: art on top, a tile straddling
+ * its edge, the content below.
  */
 export function GroupCard({
   group,
@@ -38,6 +75,9 @@ export function GroupCard({
     visibility: "PUBLIC" | "PRIVATE";
     joinMode: JoinMode;
     exam: { name: string } | null;
+    /** lib/pods/covers storedCoverSchema, or null for the automatic gradient. */
+    cover?: unknown;
+    members?: Member[];
     _count: { members: number };
   };
   role?: GroupRole | null;
@@ -45,25 +85,38 @@ export function GroupCard({
   unread?: boolean;
   action?: ReactNode;
 }) {
+  const art = squadCover(group);
+  // The tile behind the initials takes the gradient's base, or stays neutral on a photo.
+  const tile: string | undefined =
+    art.kind === "gradient"
+      ? COVER_PRESETS[art.preset as CoverPreset].base
+      : undefined;
   const facts = [
     group.exam?.name,
-    `${group._count.members} member${group._count.members === 1 ? "" : "s"}`,
     role ? null : JOIN_LABEL[joinModeOf(group)],
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  ].filter(Boolean);
+
   return (
-    <div className="relative flex w-full items-start gap-3 rounded-card border border-border bg-surface p-4 transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md">
-      <span className="relative grid size-11 shrink-0 place-items-center rounded-xl bg-surface-muted font-heading text-small font-medium text-ink-muted">
-        {initials(group.name)}
-        {unread ? (
-          <span
-            aria-hidden
-            className="absolute -top-0.5 -right-0.5 size-3 rounded-full border-2 border-surface bg-ink"
-          />
-        ) : null}
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
+    <div className="relative flex w-full flex-col overflow-hidden rounded-card border border-border bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md">
+      <PodCover cover={art} className="h-16 shrink-0" />
+
+      <div className="relative flex flex-1 flex-col p-4 pt-0">
+        <span
+          className={cn(
+            "relative -mt-6 mb-3 grid size-12 w-12 place-items-center rounded-[14px] border-4 border-surface font-heading text-small font-medium",
+            tile ? "text-white" : "bg-surface-muted text-ink-muted",
+          )}
+          style={tile ? { background: tile } : undefined}
+        >
+          {initials(group.name)}
+          {unread ? (
+            <span
+              aria-hidden
+              className="absolute -top-1 -right-1 size-3 rounded-full border-2 border-surface bg-accent"
+            />
+          ) : null}
+        </span>
+
         <span className="flex flex-wrap items-center gap-2">
           <Link
             href={`/groups/${group.id}`}
@@ -81,21 +134,26 @@ export function GroupCard({
             <Badge tone="accent">{ROLE_LABELS[role]}</Badge>
           ) : null}
         </span>
-        <span className="text-small text-ink-muted">{facts}</span>
+
+        {facts.length > 0 ? (
+          <span className="mt-0.5 text-small text-ink-muted">
+            {facts.join(" · ")}
+          </span>
+        ) : null}
+
         {group.description ? (
-          <span className="line-clamp-2 text-small text-ink-muted">
+          <span className="mt-1.5 line-clamp-2 text-small text-ink-muted">
             {group.description}
           </span>
         ) : null}
-      </span>
-      {action ? (
-        <span className="relative z-10 shrink-0 self-center">{action}</span>
-      ) : (
-        <ChevronRight
-          className="mt-1 size-4 shrink-0 text-ink-muted"
-          aria-hidden
-        />
-      )}
+
+        <span className="mt-auto flex items-center justify-between gap-3 pt-4">
+          <Faces members={group.members ?? []} total={group._count.members} />
+          {action ? (
+            <span className="relative z-10 shrink-0">{action}</span>
+          ) : null}
+        </span>
+      </div>
     </div>
   );
 }

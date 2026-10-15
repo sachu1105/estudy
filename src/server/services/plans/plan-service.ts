@@ -14,10 +14,13 @@ import {
   type TopicAdjustment,
 } from "@/lib/plan-engine";
 import {
+  DEFAULT_AVAILABILITY,
   daysLeft,
   defaultDraft,
   planDraftSchema,
+  studyAvailabilitySchema,
   type PlanDraft,
+  type StudyAvailability,
 } from "@/lib/plans/draft";
 import type { Actor } from "@/server/services/syllabus/deps";
 import {
@@ -116,14 +119,23 @@ export function createPlanService(deps: PlanDeps) {
   }
   type ExamSubject = Awaited<ReturnType<typeof examSubjects>>[number];
 
-  /** Settings for subjects added since the draft was saved; removed ones dropped. */
-  function reconcile(draft: PlanDraft, subjects: ExamSubject[]): PlanDraft {
+  /**
+   * Settings for subjects added since the draft was saved; removed ones dropped. The study
+   * time is stamped from the user's own record, which is the only source of truth for it.
+   */
+  function reconcile(
+    draft: PlanDraft,
+    subjects: ExamSubject[],
+    availability: StudyAvailability,
+  ): PlanDraft {
     const fresh = defaultDraft(
       draft.beginnerMode,
       subjects.map((s) => s.subjectId),
+      availability,
     );
     return {
       ...draft,
+      ...availability,
       subjects: Object.fromEntries(
         subjects.map((s) => [
           s.subjectId,
@@ -133,10 +145,24 @@ export function createPlanService(deps: PlanDeps) {
     };
   }
 
+  /**
+   * The user's study time, which belongs to the user and not to one exam. The copy saved in
+   * a draft is only a cache: it is stamped from here on every read, so editing the time in
+   * one exam's setup can never leave another exam planning against a stale day.
+   */
+  async function availabilityOf(user: PlanUser): Promise<StudyAvailability> {
+    const row = await deps.plans.availabilityFor(user.id);
+    const parsed = studyAvailabilitySchema.safeParse(row);
+    return parsed.success ? parsed.data : DEFAULT_AVAILABILITY;
+  }
+
   async function loadDraft(user: PlanUser, draftId: string) {
     const row = await deps.plans.findDraftById(draftId, user.id);
     if (!row) return null;
-    const parsed = planDraftSchema.safeParse(row.data);
+    const [parsed, availability] = await Promise.all([
+      planDraftSchema.safeParseAsync(row.data),
+      availabilityOf(user),
+    ]);
     const subjects = await examSubjects(user, row.syllabusVersionId);
     const data = reconcile(
       parsed.success
@@ -144,10 +170,12 @@ export function createPlanService(deps: PlanDeps) {
         : defaultDraft(
             user.beginnerMode,
             subjects.map((s) => s.subjectId),
+            availability,
           ),
       subjects,
+      availability,
     );
-    return { row, data, subjects };
+    return { row, data, subjects, availability };
   }
 
   /** The engine input for a draft. The copy saved with the plan includes every name. */
@@ -286,9 +314,14 @@ export function createPlanService(deps: PlanDeps) {
       );
     const subjects = await examSubjects(user, syllabusId);
     const leftOut = existing.leftOut as LeftOutTopic[];
+    const availability = await availabilityOf(user);
     const input = withoutLeftOut(
       {
-        ...buildInput(reconcile(parsed.data, subjects), subjects, today),
+        ...buildInput(
+          reconcile(parsed.data, subjects, availability),
+          subjects,
+          today,
+        ),
         // Keep the end date: the days that remain, not "N days from now" again.
         examDate: undefined,
         targetDays: toDay(end) - toDay(today) + 1,
@@ -343,6 +376,7 @@ export function createPlanService(deps: PlanDeps) {
         defaultDraft(
           user.beginnerMode,
           subjects.map((s) => s.subjectId),
+          await availabilityOf(user),
         ),
       );
       return { ok: true, draftId: draft.id };
@@ -367,7 +401,14 @@ export function createPlanService(deps: PlanDeps) {
     ): Promise<Result<object>> {
       const loaded = await loadDraft(user, draftId);
       if (!loaded) return NO_DRAFT;
-      await deps.plans.saveDraft(draftId, reconcile(data, loaded.subjects));
+      // The time belongs to the user, not to this exam, so it is written once where every
+      // exam reads it. The copy left in the draft is only a cache.
+      const availability = studyAvailabilitySchema.parse(data);
+      await deps.plans.saveAvailability(user.id, availability);
+      await deps.plans.saveDraft(
+        draftId,
+        reconcile(data, loaded.subjects, availability),
+      );
       return { ok: true };
     },
 

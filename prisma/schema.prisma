@@ -84,6 +84,7 @@ model User {
   podFiles           PodFile[]
   topicCompletions   TopicCompletion[]
   planDrafts         PlanDraft[]
+  studyAvailability  StudyAvailability?
   studyPlans         StudyPlan[]
   taskCompletions    TaskCompletion[]
   studySessions      StudySession[]
@@ -634,6 +635,21 @@ enum TimeWindow {
 enum PlanPhase {
   LEARN
   REVIEW
+}
+
+/// The study time the user has, shared by every exam they are preparing for. One row per
+/// user, created the first time they set it up; no row means the defaults. Each exam's plan
+/// is built from a slice of this (lib/plans/shares), so two plans can never book the same
+/// minute twice. The copy inside PlanDraft.data is a cache of this, never the source.
+model StudyAvailability {
+  userId           String       @id @db.Uuid
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Minutes available on each weekday, Sunday first, like the engine.
+  minutesByWeekday Int[]
+  /// In the user's order of preference; the earliest window goes to weak topics.
+  preferredWindows TimeWindow[]
+  createdAt        DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime     @updatedAt @db.Timestamptz(6)
 }
 
 /// The plan's setup steps, autosaved so back never loses anything. One per exam.

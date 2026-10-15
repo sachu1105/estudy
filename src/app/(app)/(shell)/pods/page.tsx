@@ -79,7 +79,7 @@ export default async function PodsPage({ searchParams }: PageProps<"/pods">) {
           exams={catalogueExams.map((e) => ({ id: e.id, name: e.name }))}
           photos={photosSupported}
           readerOnline={readerOnline}
-          // Links elsewhere (the catalogue, onboarding) open the upload straight away.
+          // Links elsewhere (the catalogue, Today) open the upload straight away.
           initialStep={query.add === "upload" ? "upload" : undefined}
           initialExamId={
             typeof query.exam === "string" ? query.exam : undefined

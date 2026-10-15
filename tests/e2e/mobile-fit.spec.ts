@@ -24,7 +24,6 @@ const appRoutes = [
   "/groups",
   "/groups/discover",
   "/settings",
-  "/onboarding",
 ];
 
 test.use({ viewport: { width: 360, height: 740 } });

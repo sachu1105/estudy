@@ -3,6 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import {
+  COVER_PRESETS,
+  type CoverPreset,
+  type PodCover,
+} from "@/lib/pods/covers";
 import { TEMPLATE_KEYS } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
@@ -10,6 +15,7 @@ import {
   groupService,
   groupTests,
   materialService,
+  squadCoverService,
 } from "@/server/services/groups";
 
 // Every action: requireUser() (rule 9), zod (rule 11), rate limited (rule 13). The
@@ -79,6 +85,34 @@ export async function updateGroupAction(input: unknown): Promise<Result> {
   >[2];
   return done(
     await groupService.update(g.user, groupId, rest),
+    "/groups",
+    `/groups/${groupId}`,
+  );
+}
+
+const coverChoice = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("auto") }),
+  z.object({
+    kind: z.literal("gradient"),
+    preset: z.enum(
+      Object.keys(COVER_PRESETS) as [CoverPreset, ...CoverPreset[]],
+    ),
+  }),
+  z.object({ kind: z.literal("image"), key: z.string().max(200) }),
+]);
+
+/** The squad's banner. Admins only; the service checks the role. */
+export async function setSquadCoverAction(
+  input: unknown,
+): Promise<Result<{ cover: PodCover }>> {
+  const g = await guard(input, z.object({ groupId: id, choice: coverChoice }));
+  if (g.fail) return g.fail;
+  const { groupId, choice } = g.data as {
+    groupId: string;
+    choice: z.infer<typeof coverChoice>;
+  };
+  return done(
+    await squadCoverService.set(g.user, groupId, choice),
     "/groups",
     `/groups/${groupId}`,
   );

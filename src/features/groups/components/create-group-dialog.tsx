@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,8 +47,11 @@ const TEMPLATES = TEMPLATE_KEYS.map((value) => ({
 /** A new squad: who it's for, the channels it starts with, and who can join. */
 export function CreateGroupDialog({
   exams,
+  trigger,
 }: {
   exams: { id: string; name: string }[];
+  /** Replaces the default button, so the same dialog can open from a grid tile. */
+  trigger?: ReactNode;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -62,9 +65,11 @@ export function CreateGroupDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="primary">
-          <Plus aria-hidden /> Create squad
-        </Button>
+        {trigger ?? (
+          <Button variant="primary">
+            <Plus aria-hidden /> Create squad
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <form

@@ -224,6 +224,48 @@ describe("study plans", () => {
       expect(planned.has(topic.topicId)).toBe(false);
   });
 
+  it("keeps study time on the user, so every exam's setup sees the same day", async () => {
+    const user = await makeUser();
+    const ldc = await exam(user, "LDC");
+    const lgs = await exam(user, "LGS");
+    const ldcDraft = (await plans.startDraft(user, ldc)) as { draftId: string };
+    const week = [200, 90, 90, 90, 90, 90, 200];
+    await plans.saveDraft(user, ldcDraft.draftId, {
+      ...(await plans.getDraft(user, ldcDraft.draftId))!.data,
+      minutesByWeekday: week,
+      preferredWindows: ["NIGHT"],
+    });
+
+    // A setup opened afterwards starts from the time they already gave us...
+    const lgsDraft = (await plans.startDraft(user, lgs)) as { draftId: string };
+    const fresh = (await plans.getDraft(user, lgsDraft.draftId))!;
+    expect(fresh.data.minutesByWeekday).toEqual(week);
+    expect(fresh.data.preferredWindows).toEqual(["NIGHT"]);
+
+    // ...and changing it there changes it for the first exam too.
+    await plans.saveDraft(user, lgsDraft.draftId, {
+      ...fresh.data,
+      minutesByWeekday: [60, 60, 60, 60, 60, 60, 60],
+    });
+    const reopened = (await plans.getDraft(user, ldcDraft.draftId))!;
+    expect(reopened.data.minutesByWeekday).toEqual([
+      60, 60, 60, 60, 60, 60, 60,
+    ]);
+    // The per-exam settings are untouched by a shared edit.
+    expect(reopened.data.targetDays).toBe(90);
+  });
+
+  it("falls back to the default day until the user sets one", async () => {
+    const user = await makeUser();
+    const started = (await plans.startDraft(user, await exam(user))) as {
+      draftId: string;
+    };
+    const draft = (await plans.getDraft(user, started.draftId))!;
+    expect(draft.data.minutesByWeekday).toEqual([
+      180, 120, 120, 120, 120, 120, 180,
+    ]);
+  });
+
   it("enforces the active plan limit across exams", async () => {
     planLimit = 1;
     const user = await makeUser();

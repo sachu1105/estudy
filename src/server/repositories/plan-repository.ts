@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { PlanOutput } from "@/lib/plan-engine";
+import type { StudyAvailability } from "@/lib/plans/draft";
 import { prisma } from "@/server/db";
 import { Prisma } from "@/server/db/generated/prisma/client";
 
@@ -58,6 +59,19 @@ export const planRepository = {
           },
         },
       },
+    });
+  },
+
+  /** The user's study time. Null means they have never set it: the app uses the defaults. */
+  availabilityFor(userId: string) {
+    return prisma.studyAvailability.findUnique({ where: { userId } });
+  },
+
+  saveAvailability(userId: string, data: StudyAvailability) {
+    return prisma.studyAvailability.upsert({
+      where: { userId },
+      create: { userId, ...data },
+      update: data,
     });
   },
 

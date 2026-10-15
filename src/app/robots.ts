@@ -19,7 +19,6 @@ export default function robots(): MetadataRoute.Robots {
         "/tests",
         "/groups",
         "/settings",
-        "/onboarding",
       ],
     },
     sitemap: `${env.APP_URL}/sitemap.xml`,

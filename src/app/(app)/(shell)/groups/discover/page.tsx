@@ -90,7 +90,7 @@ export default async function DiscoverPage({
             description="Try another name or exam, or create a squad for it."
           />
         ) : (
-          <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {directory.map((g) => {
               const mode = joinModeOf(g);
               return (

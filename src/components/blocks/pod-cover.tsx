@@ -1,9 +1,32 @@
-import { meshBackground, type PodCover as Cover } from "@/lib/pods/covers";
+import {
+  COVER_GRAIN,
+  meshBackground,
+  meshCss,
+  type Mesh,
+  type PodCover as Cover,
+} from "@/lib/pods/covers";
 import { cn } from "@/lib/utils/cn";
 
-// Film grain over the gradient, so it reads as soft paint rather than a flat CSS blend.
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E\")";
+/** A mesh gradient with the film grain over it. Decorative on its own. */
+export function MeshArt({
+  mesh,
+  className,
+}: {
+  mesh: Mesh | string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn("relative block size-full", className)}
+      style={{ background: typeof mesh === "string" ? mesh : meshCss(mesh) }}
+    >
+      <span
+        className="absolute inset-0 opacity-40 mix-blend-overlay"
+        style={{ backgroundImage: COVER_GRAIN }}
+      />
+    </span>
+  );
+}
 
 /** A pod not made yet: soft stripes, drifting while its syllabus is being read. */
 export type PlaceholderCover = { kind: "placeholder"; moving: boolean };
@@ -29,15 +52,7 @@ export function PodCover({
         // eslint-disable-next-line @next/next/no-img-element -- user uploads come through signed URLs
         <img src={cover.url} alt="" className="size-full object-cover" />
       ) : (
-        <span
-          className="relative block size-full"
-          style={{ background: meshBackground(cover.preset) }}
-        >
-          <span
-            className="absolute inset-0 opacity-40 mix-blend-overlay"
-            style={{ backgroundImage: GRAIN }}
-          />
-        </span>
+        <MeshArt mesh={meshBackground(cover.preset)} />
       )}
     </span>
   );

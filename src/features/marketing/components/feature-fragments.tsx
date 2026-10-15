@@ -1,46 +1,47 @@
 import {
-  Camera,
   Check,
   FileText,
   Flame,
-  Link2,
+  Hash,
   Lock,
+  Megaphone,
+  MessageCircle,
   NotebookPen,
+  Trophy,
   X,
 } from "lucide-react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
 import { cn } from "@/lib/utils/cn";
 
-// Small, decorative pictures for the features bento. Sample content, not data.
+// Small, decorative pictures for the feature cards. Sample content, not data. Each one
+// is drawn to sit in a 160px-tall card well, so the cards line up across the rail.
 
 const chip =
-  "flex items-center gap-2 rounded-control border border-border bg-surface px-3 py-2 text-small";
+  "flex items-center gap-2 rounded-chip border border-border bg-surface px-2.5 py-1.5 text-small";
 
 /** A subject pod: its cover, its topics, and the material mapped to them. */
 export function PodFragment() {
   const items = [
     { icon: NotebookPen, label: "Notes · Preamble", tone: "text-accent-ink" },
     { icon: FileText, label: "Fundamental rights.pdf", tone: "text-ink-muted" },
-    { icon: Link2, label: "prsindia.org · Articles", tone: "text-ink-muted" },
-    { icon: Camera, label: "Notebook page, 2 photos", tone: "text-ink-muted" },
   ];
   return (
-    <div className="relative isolate overflow-hidden rounded-[18px] border border-border bg-surface">
+    <div className="overflow-hidden rounded-card border border-border bg-surface">
       <PodCover
         cover={{ kind: "gradient", preset: "blurple" }}
-        className="absolute inset-x-0 top-0 -z-10 h-20"
+        className="h-8"
       />
-      <div className="mt-12 rounded-t-[16px] bg-surface p-4">
+      <div className="p-2.5">
         <div className="flex items-baseline justify-between gap-2">
-          <p className="font-heading text-body font-medium text-ink">
+          <p className="truncate font-heading text-small font-medium text-ink">
             Indian Constitution
           </p>
-          <p className="font-mono text-small text-ink-muted tabular-nums">
-            12/30 topics
+          <p className="shrink-0 font-mono text-micro text-ink-muted tabular-nums">
+            12/30
           </p>
         </div>
-        <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <ul className="mt-1.5 flex flex-col gap-1.5">
           {items.map((item) => (
             <li key={item.label} className={chip}>
               <item.icon
@@ -131,7 +132,7 @@ export function ReplanFragment() {
 export function StreakFragment() {
   const week = [true, true, true, "freeze", true, true, false] as const;
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col items-start gap-3">
       <span className="flex items-center gap-1.5 rounded-full bg-streak-soft px-3 py-1.5 font-mono text-body font-medium text-streak-ink">
         <Flame className="size-4 text-streak" aria-hidden /> 13
       </span>
@@ -148,6 +149,70 @@ export function StreakFragment() {
           />
         ))}
       </div>
+      <p className="text-micro text-ink-muted">
+        One freeze a week, on the house
+      </p>
+    </div>
+  );
+}
+
+/** A squad's channel list: the same shape as the app's sidebar. */
+export function SquadFragment() {
+  const channels = [
+    { icon: Hash, label: "general", active: true },
+    { icon: Megaphone, label: "announcements", active: false },
+    { icon: FileText, label: "material", active: false },
+    { icon: MessageCircle, label: "doubts", active: false },
+  ];
+  return (
+    <ul className="flex flex-col gap-1">
+      {channels.map((c) => (
+        <li
+          key={c.label}
+          className={cn(
+            "flex items-center gap-2 rounded-chip px-2.5 py-1.5 text-small",
+            c.active ? "bg-accent-soft text-accent-ink" : "text-ink-muted",
+          )}
+        >
+          <c.icon className="size-4 shrink-0" aria-hidden />
+          <span className="truncate">{c.label}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** This week's top of a squad, by XP. */
+export function RankFragment() {
+  const top = [
+    ["1", "Anjali N", "1,240"],
+    ["2", "Rahul M", "1,105"],
+    ["3", "Fathima S", "980"],
+  ];
+  return (
+    <div className="flex flex-col gap-1.5">
+      {top.map(([rank, name, xp], i) => (
+        <div
+          key={rank}
+          className={cn(
+            chip,
+            "gap-3",
+            i === 0 && "border-accent/30 bg-accent-soft",
+          )}
+        >
+          {i === 0 ? (
+            <Trophy className="size-4 shrink-0 text-accent-ink" aria-hidden />
+          ) : (
+            <span className="w-4 shrink-0 text-center font-mono text-ink-muted">
+              {rank}
+            </span>
+          )}
+          <span className="min-w-0 flex-1 truncate text-ink">{name}</span>
+          <span className="shrink-0 font-mono text-ink-muted tabular-nums">
+            {xp}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -155,15 +220,15 @@ export function StreakFragment() {
 /** Mock tests written from your own notes: a paid feature, locked during launch. */
 export function MaterialFragment() {
   return (
-    <div className="flex items-center gap-3">
-      <div className={cn(chip, "min-w-0 flex-1")}>
+    <div className="flex flex-col gap-2">
+      <div className={chip}>
         <NotebookPen className="size-4 shrink-0 text-accent-ink" aria-hidden />
         <span className="truncate text-ink">Your notes, 14 pages</span>
       </div>
-      <span className="text-ink-subtle" aria-hidden>
-        →
+      <span className="text-center text-ink-subtle" aria-hidden>
+        ↓
       </span>
-      <div className={cn(chip, "min-w-0 flex-1")}>
+      <div className={chip}>
         <Lock className="size-4 shrink-0 text-ink-muted" aria-hidden />
         <span className="truncate text-ink">25-question mock</span>
       </div>

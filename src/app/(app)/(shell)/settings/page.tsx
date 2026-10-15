@@ -1,14 +1,23 @@
+import { Bell, CreditCard, HardDrive, Link2, Trash2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/shell/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CoverButton } from "@/features/profile/components/cover-button";
+import { EditProfileButton } from "@/features/profile/components/profile-editor";
+import { ProfileBanner } from "@/features/profile/components/profile-banner";
+import { ShareProfile } from "@/features/profile/components/share-profile";
+import { NotifyForm } from "@/features/settings/components/notify-form";
+import { SettingsSection } from "@/features/settings/components/settings-section";
 import { requireUser } from "@/server/auth/session";
+import { env } from "@/server/env";
 import { billingEnabled, planOf } from "@/server/entitlements";
 import { notifyService } from "@/server/services/notifications/notify";
-import { publicVapidKey } from "@/server/push";
 import { fileService } from "@/server/services/pods";
-import { NotifyForm } from "@/features/settings/components/notify-form";
+import { profileService } from "@/server/services/profile";
+import { publicVapidKey } from "@/server/push";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -21,9 +30,10 @@ function size(bytes: number) {
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const [{ used, limit }, prefs] = await Promise.all([
+  const [{ used, limit }, prefs, profile] = await Promise.all([
     fileService.usage(user),
     notifyService.prefsOf(user),
+    profileService.get(user),
   ]);
   const percent =
     Number.isFinite(limit) && limit > 0
@@ -31,44 +41,98 @@ export default async function SettingsPage() {
       : 0;
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-2xl">
       <PageHeader
         title="Settings"
-        description="Profile, timezone, notifications and theme."
+        description="Your profile, what you share, reminders and storage."
       />
-      <div className="flex flex-col gap-6">
-        <section
-          aria-labelledby="plan"
-          className="flex max-w-xl flex-col gap-3 rounded-card border border-border bg-surface p-4"
-        >
-          <h2 id="plan" className="text-h3">
-            Your plan
-          </h2>
-          <p className="text-body text-ink-muted">
-            {billingEnabled()
+
+      <div className="flex flex-col gap-4">
+        {profile ? (
+          <>
+            <ProfileBanner
+              user={profile}
+              joinedAt={profile.joinedAt}
+              overlay={
+                <CoverButton
+                  userId={user.id}
+                  selection={profile.coverSelection}
+                  cover={profile.cover}
+                />
+              }
+              actions={
+                <EditProfileButton
+                  initial={{
+                    displayName: profile.displayName,
+                    bio: profile.bio,
+                    avatarUrl: profile.avatarUrl,
+                    hasAvatar: profile.hasAvatar,
+                  }}
+                />
+              }
+            />
+
+            <SettingsSection
+              title="Sharing"
+              description="Your profile is private until you turn this on."
+              icon={<Link2 className="size-4" />}
+              actions={
+                profile.profilePublic ? (
+                  <Badge tone="outline">Shared</Badge>
+                ) : null
+              }
+            >
+              <ShareProfile
+                origin={env.APP_URL}
+                initial={{
+                  profilePublic: profile.profilePublic,
+                  handle: profile.handle,
+                  suggestedHandle: profile.suggestedHandle,
+                }}
+              />
+            </SettingsSection>
+          </>
+        ) : null}
+
+        <SettingsSection
+          title="Your plan"
+          description={
+            billingEnabled()
               ? `You are on ${planOf(user).toLowerCase()}.`
-              : `Everything is free during launch, so you have ${planOf(user).toLowerCase()}.`}
-          </p>
-          <Button asChild variant="secondary" className="self-start">
-            <Link href="/settings/plan">See the plans</Link>
-          </Button>
-        </section>
-        <NotifyForm
-          initial={prefs}
-          pushAvailable={Boolean(publicVapidKey())}
-          vapidKey={publicVapidKey()}
+              : `Everything is free during launch, so you have ${planOf(user).toLowerCase()}.`
+          }
+          icon={<CreditCard className="size-4" />}
+          actions={
+            <Button asChild variant="secondary" size="sm">
+              <Link href="/settings/plan">See the plans</Link>
+            </Button>
+          }
         />
-        <section
-          aria-labelledby="storage"
-          className="flex max-w-xl flex-col gap-3 rounded-card border border-border bg-surface p-4"
+
+        <SettingsSection
+          title="Reminders"
+          description="Three, at most, and never during your quiet hours."
+          icon={<Bell className="size-4" />}
         >
-          <h2 id="storage" className="text-h3">
-            Storage
-          </h2>
-          <p className="text-body text-ink-muted">
-            {size(used)} of {size(limit)} used by files and photos in your pods.
-            The trash counts until it empties.
-          </p>
+          <NotifyForm
+            initial={prefs}
+            pushAvailable={Boolean(publicVapidKey())}
+            vapidKey={publicVapidKey()}
+          />
+        </SettingsSection>
+
+        <SettingsSection
+          title="Storage"
+          description={`${size(used)} of ${size(limit)} used by files and photos in your pods. The trash counts until it empties.`}
+          icon={<HardDrive className="size-4" />}
+          actions={
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/pods/trash">
+                <Trash2 aria-hidden /> Trash
+              </Link>
+            </Button>
+          }
+        >
           <div
             className="h-2 overflow-hidden rounded-full bg-surface-muted"
             role="progressbar"
@@ -82,14 +146,8 @@ export default async function SettingsPage() {
               style={{ width: `${percent}%` }}
             />
           </div>
-          <Link
-            href="/pods/trash"
-            className="text-small font-medium text-accent-ink hover:underline"
-          >
-            Open the trash
-          </Link>
-        </section>
+        </SettingsSection>
       </div>
-    </>
+    </div>
   );
 }

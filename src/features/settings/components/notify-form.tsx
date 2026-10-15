@@ -71,20 +71,9 @@ export function NotifyForm({
       }
     });
 
+  // The heading and the card around this live in the settings section that holds it.
   return (
-    <section
-      aria-labelledby="reminders"
-      className="flex max-w-xl flex-col gap-4 rounded-card border border-border bg-surface p-4"
-    >
-      <div className="flex flex-col gap-1">
-        <h2 id="reminders" className="text-h3">
-          Reminders
-        </h2>
-        <p className="text-small text-ink-muted">
-          Three, at most, and never during your quiet hours.
-        </p>
-      </div>
-
+    <div className="flex flex-col gap-4">
       {REMINDERS.map((r) => (
         <div key={r.key} className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1">
@@ -190,6 +179,6 @@ export function NotifyForm({
       >
         Save reminders
       </Button>
-    </section>
+    </div>
   );
 }

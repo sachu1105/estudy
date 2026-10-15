@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 
-export function FinalCta({ href }: { href: string }) {
+import { ctaHref, ctaLabel } from "./section-heading";
+
+export function FinalCta({ signedIn }: { signedIn: boolean }) {
   return (
     <section
       aria-labelledby="cta-title"
@@ -11,7 +13,9 @@ export function FinalCta({ href }: { href: string }) {
     >
       <Reveal className="flex flex-col items-center gap-5 rounded-card border border-border bg-surface px-5 py-12 text-center sm:px-10">
         <h2 id="cta-title" className="max-w-xl text-h1 sm:text-display">
-          Your exam date is set. Your plan can be ready in five minutes.
+          {signedIn
+            ? "Your pods are waiting. Pick up where you left off."
+            : "Your exam date is set. Your plan can be ready in five minutes."}
         </h2>
         <Button
           asChild
@@ -19,7 +23,7 @@ export function FinalCta({ href }: { href: string }) {
           size="lg"
           className="w-full sm:w-auto"
         >
-          <Link href={href}>Get started free</Link>
+          <Link href={ctaHref(signedIn)}>{ctaLabel(signedIn)}</Link>
         </Button>
       </Reveal>
     </section>

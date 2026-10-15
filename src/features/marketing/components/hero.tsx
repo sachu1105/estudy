@@ -4,7 +4,7 @@ import { PodCover } from "@/components/blocks/pod-cover";
 import { Button } from "@/components/ui/button";
 
 import { HeroWindow } from "./hero-window";
-import { ctaHref } from "./section-heading";
+import { ctaHref, ctaLabel } from "./section-heading";
 
 /**
  * Quiet on purpose: the promise on the left, what it does on the right, one button,
@@ -28,7 +28,7 @@ export function Hero({ signedIn }: { signedIn: boolean }) {
               size="lg"
               className="w-full sm:w-auto"
             >
-              <Link href={ctaHref(signedIn)}>Get started free</Link>
+              <Link href={ctaHref(signedIn)}>{ctaLabel(signedIn)}</Link>
             </Button>
             <Button
               asChild
@@ -47,9 +47,11 @@ export function Hero({ signedIn }: { signedIn: boolean }) {
             notes, PDFs and links where they belong, and watch your progress
             grow. On Pro, AI writes mock tests from your own notes.
           </p>
-          <p className="text-small text-ink-muted">
-            Free during launch. No card needed.
-          </p>
+          {signedIn ? null : (
+            <p className="text-small text-ink-muted">
+              Free during launch. No card needed.
+            </p>
+          )}
         </div>
       </div>
 

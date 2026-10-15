@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 
 import { ExamStrip } from "@/features/marketing/components/exam-strip";
 import { Faq, faqs } from "@/features/marketing/components/faq";
-import { FeaturesBento } from "@/features/marketing/components/features-bento";
+import { FeaturesRail } from "@/features/marketing/components/features-rail";
 import { FinalCta } from "@/features/marketing/components/final-cta";
-import { GroupsSection } from "@/features/marketing/components/groups-section";
 import { Hero } from "@/features/marketing/components/hero";
 import { HowItWorks } from "@/features/marketing/components/how-it-works";
 import { Testimonials } from "@/features/marketing/components/testimonials";
@@ -68,15 +67,14 @@ export default async function LandingPage() {
       <JsonLd />
       <Hero signedIn={signedIn} />
       <ExamStrip />
-      <FeaturesBento />
+      <FeaturesRail />
       <HowItWorks />
-      <GroupsSection />
       {showTestimonials(process.env.NODE_ENV === "production") ? (
         <Testimonials />
       ) : null}
       <PricingTeaser billingEnabled={billingEnabled()} ctaHref={href} />
       <Faq />
-      <FinalCta href={href} />
+      <FinalCta signedIn={signedIn} />
     </>
   );
 }

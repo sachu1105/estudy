@@ -1,5 +1,6 @@
 import "server-only";
 
+import { Prisma } from "@/server/db/generated/prisma/client";
 import { prisma } from "@/server/db";
 
 const sessionUserSelect = {
@@ -63,6 +64,87 @@ export const userRepository = {
 
   updatePassword(id: string, passwordHash: string) {
     return prisma.user.update({ where: { id }, data: { passwordHash } });
+  },
+
+  /** Everything the settings page and the owner's own profile card need. */
+  profileOf(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        displayName: true,
+        bio: true,
+        avatarUrl: true,
+        avatarKey: true,
+        profileCover: true,
+        handle: true,
+        profilePublic: true,
+        timezone: true,
+        createdAt: true,
+      },
+    });
+  },
+
+  updateProfile(id: string, data: { displayName: string; bio: string | null }) {
+    return prisma.user.update({ where: { id }, data });
+  },
+
+  /** The photo and the path that serves it move together, so they never disagree. */
+  setAvatar(id: string, avatar: { key: string; url: string } | null) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        avatarKey: avatar?.key ?? null,
+        avatarUrl: avatar?.url ?? null,
+      },
+    });
+  },
+
+  setProfileCover(id: string, cover: unknown) {
+    return prisma.user.update({
+      where: { id },
+      data: { profileCover: cover === null ? Prisma.DbNull : cover },
+    });
+  },
+
+  setSharing(
+    id: string,
+    data: { handle: string | null; profilePublic: boolean },
+  ) {
+    return prisma.user.update({ where: { id }, data });
+  },
+
+  handleTaken(handle: string, exceptUserId: string) {
+    return prisma.user.findFirst({
+      where: { handle, id: { not: exceptUserId } },
+      select: { id: true },
+    });
+  },
+
+  /** A shared profile, by its handle. Only ever returns one that is actually shared. */
+  findSharedByHandle(handle: string) {
+    return prisma.user.findFirst({
+      where: { handle, profilePublic: true, status: "ACTIVE" },
+      select: {
+        id: true,
+        displayName: true,
+        bio: true,
+        avatarUrl: true,
+        profileCover: true,
+        handle: true,
+        timezone: true,
+        streakResetAt: true,
+        createdAt: true,
+      },
+    });
+  },
+
+  /** The key behind a profile image, for the route that serves it. */
+  imageKeysOf(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: { avatarKey: true, profileCover: true, profilePublic: true },
+    });
   },
 
   upsertSuperAdmin(data: {

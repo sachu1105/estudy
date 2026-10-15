@@ -2,17 +2,22 @@ import { Check, FileText, Star, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
 
-// Small, decorative pictures of each step. Sample content, not data.
+// Small, decorative pictures of each step. Sample content, not data. They sit on the
+// card's surface, below its cover art, so they use the ordinary tokens and look like
+// the real product rather than a graphic.
+
+const row =
+  "flex items-center gap-2.5 rounded-control border border-border bg-surface px-3 py-2 text-small";
 
 export function UploadVisual() {
   return (
     <div className="flex w-full flex-col gap-2">
-      <div className="flex items-center gap-2.5 rounded-control border border-border bg-surface p-2.5">
+      <div className={cn(row, "p-2.5")}>
         <span className="grid size-8 shrink-0 place-items-center rounded-chip bg-accent-soft text-accent-ink">
           <FileText className="size-4" aria-hidden />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="truncate text-small font-medium text-ink">
+        <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <span className="truncate font-medium text-ink">
             ldc_syllabus.pdf
           </span>
           <span className="h-1 overflow-hidden rounded-full bg-surface-muted">
@@ -36,17 +41,14 @@ export function RateVisual() {
   return (
     <ul className="flex w-full flex-col gap-1.5">
       {rows.map(([name, stars]) => (
-        <li
-          key={name}
-          className="flex items-center justify-between gap-2 rounded-control border border-border bg-surface px-2.5 py-2"
-        >
-          <span className="truncate text-small text-ink">{name}</span>
+        <li key={name} className={cn(row, "justify-between")}>
+          <span className="truncate text-ink">{name}</span>
           <span className="flex shrink-0 gap-0.5">
             {Array.from({ length: 5 }, (_, i) => (
               <Star
                 key={i}
                 className={cn(
-                  "size-3",
+                  "size-3.5",
                   i < stars ? "fill-streak text-streak" : "text-border",
                 )}
                 aria-hidden
@@ -68,10 +70,7 @@ export function PlanVisual() {
   return (
     <ul className="flex w-full flex-col gap-1.5">
       {tasks.map(([title, minutes, done]) => (
-        <li
-          key={title}
-          className="flex items-center gap-2.5 rounded-control border border-border bg-surface px-2.5 py-2"
-        >
+        <li key={title} className={row}>
           <span
             className={cn(
               "grid size-4 shrink-0 place-items-center rounded-[5px] border",
@@ -82,7 +81,7 @@ export function PlanVisual() {
           </span>
           <span
             className={cn(
-              "min-w-0 flex-1 truncate text-small",
+              "min-w-0 flex-1 truncate",
               done ? "text-ink-muted line-through" : "text-ink",
             )}
           >
@@ -98,19 +97,19 @@ export function PlanVisual() {
 export function SquadVisual() {
   return (
     <div className="flex w-full flex-col gap-2">
-      <div className="flex items-center justify-between rounded-control border border-border bg-surface px-3 py-2.5">
-        <span className="text-small text-ink">Check test</span>
-        <span className="flex items-center gap-1.5 font-mono text-small font-medium text-success-ink">
+      <div className={cn(row, "justify-between")}>
+        <span className="text-ink">Check test</span>
+        <span className="flex items-center gap-1.5 font-mono font-medium text-success-ink">
           <Check className="size-3.5" aria-hidden /> 4/5
         </span>
       </div>
-      <div className="flex items-center justify-between rounded-control border border-accent/30 bg-accent-soft px-3 py-2.5">
-        <span className="flex items-center gap-1.5 text-small text-accent-ink">
+      <div
+        className={cn(row, "justify-between border-accent/30 bg-accent-soft")}
+      >
+        <span className="flex items-center gap-1.5 text-accent-ink">
           <Users className="size-3.5" aria-hidden /> Squad, this week
         </span>
-        <span className="font-mono text-small font-medium text-accent-ink">
-          #3
-        </span>
+        <span className="font-mono font-medium text-accent-ink">#3</span>
       </div>
     </div>
   );

@@ -10,7 +10,8 @@ import { z } from "zod";
 export type PodCover =
   { kind: "gradient"; preset: CoverPreset } | { kind: "image"; url: string };
 
-type Mesh = {
+/** A grainy gradient: three soft blobs over a base colour. */
+export type Mesh = {
   /** The colour under everything. */
   base: string;
   /** Three soft blobs, top-left, right and bottom. */
@@ -37,9 +38,13 @@ export function coverFor(id: string): PodCover {
   return { kind: "gradient", preset: NAMES[Math.abs(hash) % NAMES.length]! };
 }
 
-/** The CSS background for a preset: three radial blobs over a base colour. */
+/** The CSS background for a preset. */
 export function meshBackground(preset: CoverPreset) {
-  const { base, blobs } = COVER_PRESETS[preset];
+  return meshCss(COVER_PRESETS[preset]);
+}
+
+/** The CSS background for any mesh: three radial blobs over a base colour. */
+export function meshCss({ base, blobs }: Mesh) {
   return [
     `radial-gradient(60% 80% at 15% 20%, ${blobs[0]} 0%, transparent 70%)`,
     `radial-gradient(55% 75% at 90% 30%, ${blobs[1]} 0%, transparent 70%)`,
@@ -86,3 +91,11 @@ export function parseStoredCover(value: unknown): StoredCover | null {
   const parsed = storedCoverSchema.safeParse(value);
   return parsed.success ? parsed.data : null;
 }
+
+/**
+ * Film grain over a mesh gradient, so it reads as soft paint rather than a flat CSS
+ * blend. Used as a background layer under `mix-blend-overlay` (PodCover) or as the first
+ * layer of a multi-background with `background-blend-mode: overlay` (the footer wordmark).
+ */
+export const COVER_GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E\")";

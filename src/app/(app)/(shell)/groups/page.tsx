@@ -1,4 +1,4 @@
-import { ArrowRight, Compass, Users } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -9,6 +9,7 @@ import { UpgradeCard } from "@/features/billing/components/upgrade-card";
 import { CreateGroupDialog } from "@/features/groups/components/create-group-dialog";
 import { GroupCard } from "@/features/groups/components/group-card";
 import { JoinCodeDialog } from "@/features/groups/components/join-controls";
+import { NewSquadTile } from "@/features/groups/components/new-squad-tile";
 import { QuickJoin } from "@/features/groups/components/quick-join";
 import { joinModeOf } from "@/lib/squads/access";
 import { requireUser } from "@/server/auth/session";
@@ -28,7 +29,7 @@ export default async function GroupsPage() {
     chatService.squadsWithUnread(user),
   ]);
   const joined = new Set(mine.map((m) => m.group.id));
-  const suggested = directory.filter((g) => !joined.has(g.id)).slice(0, 4);
+  const suggested = directory.filter((g) => !joined.has(g.id)).slice(0, 6);
   // Only when they have actually reached it (rule: prompts at a limit, never a wall).
   const owned = mine.filter((m) => m.role === "OWNER").length;
   const maxOwned = limit(user, "groupsCreated");
@@ -60,24 +61,29 @@ export default async function GroupsPage() {
             Your squads
           </h2>
           {mine.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title="No squads yet"
-              description="Create one and invite a friend, or join one below."
-            />
-          ) : (
-            <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {mine.map((m) => (
-                <li key={m.group.id} className="flex">
-                  <GroupCard
-                    group={m.group}
-                    role={m.role}
-                    unread={unread.has(m.group.id)}
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
+            <p className="text-body text-ink-muted">
+              You&apos;re not in a squad yet. Make one and invite a friend, or
+              join an open one below.
+            </p>
+          ) : null}
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {mine.map((m) => (
+              <li key={m.group.id} className="flex">
+                <GroupCard
+                  group={m.group}
+                  role={m.role}
+                  unread={unread.has(m.group.id)}
+                />
+              </li>
+            ))}
+            {owned < maxOwned ? (
+              <li className="flex">
+                <NewSquadTile
+                  exams={exams.map((e) => ({ id: e.id, name: e.name }))}
+                />
+              </li>
+            ) : null}
+          </ul>
         </section>
 
         <section aria-labelledby="discover" className="flex flex-col gap-3">
@@ -98,7 +104,7 @@ export default async function GroupsPage() {
               description="Create the first one, and others preparing for your exam can find it."
             />
           ) : (
-            <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {suggested.map((g) => (
                 <li key={g.id} className="flex">
                   <GroupCard

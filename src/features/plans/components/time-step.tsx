@@ -78,6 +78,10 @@ export function TimeStep({
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-3">
         <h2 className="text-h3">How much time do you have?</h2>
+        <p className="text-small text-ink-muted">
+          This is your time, not this exam&apos;s. Every exam you prepare for is
+          planned from it.
+        </p>
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((p) => (
             <Chip
