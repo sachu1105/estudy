@@ -10,12 +10,13 @@ export const ADMIN_AREAS = {
   settings: { label: "Site", href: "/admin/settings" },
   plans: { label: "Plans and limits", href: "/admin/plans" },
   jobs: { label: "Jobs and AI", href: "/admin/jobs" },
+  ai: { label: "AI", href: "/admin/ai" },
   audit: { label: "Audit log", href: "/admin/audit" },
 } as const;
 
 /** "exams": adding exams, building and promoting syllabuses; reviewing is moderation.
- * "ai": the AI switch, which spends money, so super admins only. */
-export type AdminArea = keyof typeof ADMIN_AREAS | "roles" | "exams" | "ai";
+ * "ai" (the switch, model, key and prompts) spends money, so it is super admins only. */
+export type AdminArea = keyof typeof ADMIN_AREAS | "roles" | "exams";
 type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 
 // MODERATOR: moderation only. ADMIN: everything except roles and billing.

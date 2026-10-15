@@ -40,8 +40,8 @@ AI does four jobs and nothing else: reading a syllabus that isn't already cached
 mock test questions, parsing previous year papers, and suggesting notes and websites for
 a topic. The plan, progress, streaks, XP and the squad rank are plain algorithms.
 
-AI is off by default and runs only while a super admin switches it on (Admin > Site > AI,
-AppSetting `ai`). The whole app works with it off: a syllabus is read by its own headings
+AI is off by default and runs only while a super admin switches it on (Admin > AI,
+AppSetting `ai`, with a switch per job). The whole app works with it off: a syllabus is read by its own headings
 and lists (`server/services/syllabus/rules.ts`, deterministic, no model), and admins build
 each exam's catalogue syllabus in the admin panel (Catalogue > Build a syllabus: paste the
 text or fill it from a PDF, fix the tree, approve). Users pick that exam, set their time,
@@ -70,9 +70,13 @@ Auth:      Custom JWT with jose. Access token 15 min, refresh token 30 days with
            rotation and reuse detection. argon2 for passwords (@node-rs/argon2).
            Tokens in httpOnly, Secure, SameSite=Lax cookies. Never in localStorage.
 Files:     S3-compatible storage. MinIO locally, Cloudflare R2 or S3 in production.
-AI:        Provider interface with two implementations: Ollama (local dev) and a hosted
-           API (production), chosen by AI_PROVIDER env var. Server and worker only.
-           The admin AI switch decides per job whether any model is called at all.
+AI:        Provider interface with three implementations: Claude (Anthropic Messages
+           API, reads PDF pages), any OpenAI-compatible API, and Ollama (local dev).
+           Set in Admin > AI (super admins): provider, model, URL, prices, the API key
+           (sealed with AES-256-GCM under AI_SECRET_KEY, never sent to a browser) and
+           the prompt per task (an edit gets its own version, the cache key). The env
+           AI_* values are only the fallback before an admin saves a provider. The
+           worker builds the provider per job. Server and worker only.
 Realtime:  Server-Sent Events from Route Handlers, fan-out through Redis pub/sub.
            No WebSocket server.
 Email:     SMTP adapter. Mailpit locally.

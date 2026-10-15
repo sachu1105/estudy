@@ -287,6 +287,115 @@ describe("admin: syllabus builder", () => {
   });
 });
 
+describe("admin: AI settings", () => {
+  const provider = {
+    kind: "anthropic" as const,
+    model: "claude-sonnet-5-5",
+    baseUrl: null,
+    priceInputPerMTok: 3,
+    priceOutputPerMTok: 15,
+  };
+
+  it("stores the API key sealed, shows only a hint, and opens it on the server", async () => {
+    const { aiSettings } = await import("@/server/services/admin");
+    const { providerConfig } = await import("@/server/ai/config");
+    const top = await makeUser("top@example.com", "SUPER_ADMIN");
+    await loadSettings(true);
+
+    expect(
+      await aiSettings.saveProvider(as(top), {
+        ...provider,
+        apiKey: { action: "replace", value: "sk-ant-api03-SECRETVALUE-9f2c" },
+      }),
+    ).toEqual({ ok: true });
+    const row = await prisma.appSetting.findUnique({
+      where: { key: "aiProvider" },
+    });
+    expect(JSON.stringify(row!.value)).not.toContain("SECRETVALUE");
+    expect((await providerConfig()).apiKey).toBe(
+      "sk-ant-api03-SECRETVALUE-9f2c",
+    );
+
+    const view = await aiSettings.view();
+    expect(JSON.stringify(view)).not.toContain("SECRETVALUE");
+    expect(view.provider).toMatchObject({ keyHint: "…9f2c", source: "admin" });
+    expect(view.missing).toBeNull();
+
+    // Saving other fields keeps the key; Remove drops it.
+    await aiSettings.saveProvider(as(top), {
+      ...provider,
+      model: "claude-haiku-5-5",
+      apiKey: { action: "keep" },
+    });
+    expect((await providerConfig()).apiKey).toBe(
+      "sk-ant-api03-SECRETVALUE-9f2c",
+    );
+    await aiSettings.saveProvider(as(top), {
+      ...provider,
+      apiKey: { action: "remove" },
+    });
+    expect((await aiSettings.view()).missing).toBe("Add the API key.");
+
+    const audit = await prisma.auditLog.findMany({
+      where: { action: "admin.ai.provider" },
+    });
+    expect(audit).toHaveLength(3);
+    expect(JSON.stringify(audit)).not.toContain("SECRETVALUE");
+  });
+
+  it("reads syllabuses by rules while AI is on but the key is missing", async () => {
+    const { aiSettings } = await import("@/server/services/admin");
+    const { syllabusDeps } = await import("@/server/services/syllabus");
+    const top = await makeUser("top@example.com", "SUPER_ADMIN");
+    await saveSetting("ai", { enabled: true, jobs: {} }, top.id);
+    await aiSettings.saveProvider(as(top), {
+      ...provider,
+      apiKey: { action: "remove" },
+    });
+    expect(await syllabusDeps.reader()).toMatchObject({
+      ai: false,
+      readsDocuments: true,
+    });
+    await aiSettings.saveProvider(as(top), {
+      ...provider,
+      apiKey: { action: "replace", value: "sk-ant-api03-another-key" },
+    });
+    expect((await syllabusDeps.reader()).ai).toBe(true);
+    // The job's own switch counts too.
+    await saveSetting(
+      "ai",
+      { enabled: true, jobs: { syllabus: false } },
+      top.id,
+    );
+    expect((await syllabusDeps.reader()).ai).toBe(false);
+  });
+
+  it("saves an edited prompt under its own version; the built-in text resets it", async () => {
+    const { aiSettings } = await import("@/server/services/admin");
+    const { PROMPT_DEFAULTS } = await import("@/server/ai/prompts");
+    const top = await makeUser("top@example.com", "SUPER_ADMIN");
+    await aiSettings.savePrompts(as(top), {
+      structureSyllabus: "List every topic of this exam syllabus exactly.",
+    });
+    let prompt = (await aiSettings.view()).prompts.find(
+      (p) => p.key === "structureSyllabus",
+    )!;
+    expect(prompt).toMatchObject({ custom: true });
+    expect(prompt.version).toMatch(/^structure-syllabus@4~/);
+
+    await aiSettings.savePrompts(as(top), {
+      structureSyllabus: PROMPT_DEFAULTS.structureSyllabus.system,
+    });
+    prompt = (await aiSettings.view()).prompts.find(
+      (p) => p.key === "structureSyllabus",
+    )!;
+    expect(prompt).toMatchObject({
+      custom: false,
+      version: "structure-syllabus@4",
+    });
+  });
+});
+
 describe("admin: settings", () => {
   it("changes a plan limit for everyone without a restart", async () => {
     const top = await makeUser("top@example.com", "SUPER_ADMIN");

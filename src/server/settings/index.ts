@@ -3,6 +3,7 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import {
   settingSchemas,
+  type AiJob,
   type FeatureFlag,
   type SettingKey,
   type SettingValue,
@@ -69,7 +70,12 @@ export async function flagOn(flag: FeatureFlag) {
   return (await getSetting("flags"))?.[flag] ?? true;
 }
 
-/** AI is the one switch that defaults to off: nothing calls a model until an admin says so. */
-export async function aiOn() {
-  return (await getSetting("ai"))?.enabled ?? false;
+/**
+ * AI is the one switch that defaults to off: nothing calls a model until an admin says so.
+ * With `job`, that job's own switch counts too (jobs default to on under the master).
+ */
+export async function aiOn(job?: AiJob) {
+  const ai = await getSetting("ai");
+  if (!ai?.enabled) return false;
+  return job ? (ai.jobs[job] ?? true) : true;
 }

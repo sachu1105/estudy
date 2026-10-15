@@ -28,6 +28,8 @@ export const envSchema = z
     /** Host browsers upload to, when it differs from S3_ENDPOINT (e.g. a phone on the LAN). */
     S3_PUBLIC_ENDPOINT: optionalString.pipe(z.url().optional()),
 
+    /** Seals the API key an admin saves in Admin > AI. Without it no key can be saved. */
+    AI_SECRET_KEY: optionalString.pipe(z.string().min(32).optional()),
     AI_PROVIDER: z.enum(["ollama", "hosted"]),
     OLLAMA_BASE_URL: z.url(),
     OLLAMA_MODEL: z.string().min(1),

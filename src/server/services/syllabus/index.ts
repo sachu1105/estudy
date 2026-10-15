@@ -3,8 +3,10 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { can, limit } from "@/server/entitlements";
-import { aiOn, flagOn } from "@/server/settings";
-import { env } from "@/server/env";
+import { AI_PROVIDERS } from "@/lib/settings/schemas";
+import { missingSetup, providerConfig } from "@/server/ai/config";
+import { syllabusPrompts } from "@/server/ai/prompts";
+import { aiOn, flagOn, getSetting } from "@/server/settings";
 import { parseQueue } from "@/server/queue";
 import { publisher } from "@/server/realtime";
 import { aiUsageRepository } from "@/server/repositories/ai-usage-repository";
@@ -36,10 +38,20 @@ export const syllabusDeps: SyllabusDeps = {
   uploadsOpen: () => flagOn("syllabusUploads"),
   clock: systemClock,
   ids: randomIds,
-  reader: async (): Promise<Reader> => ({
-    ai: await aiOn(),
-    readsDocuments: env.AI_PROVIDER === "hosted",
-  }),
+  // AI reads only when switched on for syllabuses and the model is set up; a missing key
+  // falls back to the rules rather than failing every upload (Admin > AI says so).
+  reader: async (): Promise<Reader> => {
+    const [on, config, prompts] = await Promise.all([
+      aiOn("syllabus"),
+      providerConfig(),
+      getSetting("aiPrompts"),
+    ]);
+    return {
+      ai: on && missingSetup(config) === null,
+      readsDocuments: AI_PROVIDERS[config.kind].readsDocuments,
+      prompts: syllabusPrompts(prompts),
+    };
+  },
 };
 
 export const uploadService = createUploadService(syllabusDeps);

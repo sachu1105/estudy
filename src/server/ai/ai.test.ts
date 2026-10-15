@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { chunkText, normaliseText } from "./chunk";
 import { costMicros, createHostedProvider } from "./hosted";
 import { createOllamaProvider } from "./ollama";
+import { createOpenAiProvider } from "./openai";
 import {
   extractJson,
   generateValidated,
@@ -530,6 +531,42 @@ describe("providers", () => {
     expect(init.body as string).not.toContain("secret");
     expect(reply.costMicros).toBe(costMicros(1000, 500, 3, 15));
     expect(reply.costMicros).toBe(10_500);
+  });
+
+  it("the OpenAI-compatible provider sends a bearer key, JSON mode, and prices the call", async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        choices: [{ message: { content: valid } }],
+        usage: { prompt_tokens: 1000, completion_tokens: 500 },
+      }),
+    );
+    const openai = createOpenAiProvider({
+      apiKey: "secret",
+      model: "gpt-x",
+      baseUrl: "https://example.test/v1/",
+      priceInputPerMTok: 3,
+      priceOutputPerMTok: 15,
+      fetch: fetchMock,
+    });
+    const reply = await openai.generate(request);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ];
+    expect(url).toBe("https://example.test/v1/chat/completions");
+    expect((init.headers as Record<string, string>).Authorization).toBe(
+      "Bearer secret",
+    );
+    const body = JSON.parse(init.body as string);
+    expect(body).toMatchObject({
+      model: "gpt-x",
+      temperature: 0,
+      response_format: { type: "json_object" },
+    });
+    expect(init.body as string).not.toContain("secret");
+    expect(reply.text).toBe(valid);
+    expect(reply.costMicros).toBe(10_500);
+    expect(openai.readsDocuments).toBe(false);
   });
 
   it("the hosted provider sends a PDF as a document block before the prompt", async () => {

@@ -15,6 +15,7 @@ import { createAdminService } from "./admin-service";
 import { createQuestionAdmin } from "./question-admin";
 
 export type { Admin } from "./admin-service";
+export { aiSettings } from "./ai-settings";
 export { THIN_BELOW } from "./question-admin";
 
 export const questionAdmin = createQuestionAdmin({

@@ -47,6 +47,9 @@ function describeIssues(error: z.ZodError) {
 
 type CallOptions = { onUsage: (entry: AiUsageEntry) => Promise<void> };
 
+/** An admin's edited instructions and their version (server/ai/prompts); built-in if left out. */
+type PromptOption = { prompt?: { system: string; version: string } };
+
 /**
  * One model call validated with zod (CLAUDE.md rule 5): invalid output is retried once with
  * the problems spelled out, then the call fails with AiOutputError. Every attempt is logged.
@@ -190,13 +193,20 @@ export interface PieceCache {
   set(key: string, subjects: CachedPiece): Promise<void>;
 }
 
-/** Same heading and same words (ignoring case, spacing and punctuation) -> same key. */
-export function pieceKey(heading: string | null, chunk: string) {
+/**
+ * Same heading and same words (ignoring case, spacing and punctuation) under the same
+ * prompt version -> same key.
+ */
+export function pieceKey(
+  heading: string | null,
+  chunk: string,
+  version = STRUCTURE_SYLLABUS_VERSION,
+) {
   const normal = `${heading ?? ""}\n${chunk}`
     .toLowerCase()
     .replace(/[^\p{L}\p{M}\p{N}]+/gu, " ")
     .trim();
-  return `${STRUCTURE_SYLLABUS_VERSION}:${createHash("sha256").update(normal).digest("hex")}`;
+  return `${version}:${createHash("sha256").update(normal).digest("hex")}`;
 }
 
 type Piece = {
@@ -216,12 +226,15 @@ type Piece = {
 export async function structureSyllabus(
   provider: AIProvider,
   text: string,
-  options: CallOptions & {
-    title?: string | null;
-    onProgress?: (done: number, total: number) => Promise<void>;
-    pieceCache?: PieceCache;
-  },
+  options: CallOptions &
+    PromptOption & {
+      title?: string | null;
+      onProgress?: (done: number, total: number) => Promise<void>;
+      pieceCache?: PieceCache;
+    },
 ): Promise<StructureResult> {
+  const system = options.prompt?.system ?? structureSyllabusSystem;
+  const version = options.prompt?.version ?? STRUCTURE_SYLLABUS_VERSION;
   const sections = splitSections(text);
   const structured = sections.some((s) => s.heading || s.part);
   const work = sections
@@ -252,8 +265,8 @@ export async function structureSyllabus(
       provider,
       {
         purpose: "STRUCTURE_SYLLABUS",
-        promptVersion: STRUCTURE_SYLLABUS_VERSION,
-        system: structureSyllabusSystem,
+        promptVersion: version,
+        system,
         prompt:
           structureSyllabusPrompt({ ...piece, title: options.title }) +
           (nudge ?? ""),
@@ -291,7 +304,7 @@ export async function structureSyllabus(
       };
       // Most PSC syllabuses share whole sections word for word (Simple Arithmetic, English
       // grammar): one seen before in any syllabus is reused without an AI call.
-      const cacheKey = pieceKey(section.heading, chunk);
+      const cacheKey = pieceKey(section.heading, chunk, version);
       const cached = await options.pieceCache?.get(cacheKey);
       if (cached) {
         results.push({
@@ -355,7 +368,7 @@ export async function structureSyllabus(
   }
   return {
     tree: mergeChunks(results),
-    promptVersion: STRUCTURE_SYLLABUS_VERSION,
+    promptVersion: version,
     chunks: total,
   };
 }
@@ -368,14 +381,15 @@ export async function structureSyllabus(
 export async function structureDocument(
   provider: AIProvider,
   attachment: AiAttachment,
-  options: CallOptions & { title?: string | null },
+  options: CallOptions & PromptOption & { title?: string | null },
 ): Promise<StructureResult> {
+  const version = options.prompt?.version ?? STRUCTURE_DOCUMENT_VERSION;
   const reply = await generateValidated(
     provider,
     {
       purpose: "STRUCTURE_SYLLABUS",
-      promptVersion: STRUCTURE_DOCUMENT_VERSION,
-      system: structureDocumentSystem,
+      promptVersion: version,
+      system: options.prompt?.system ?? structureDocumentSystem,
       prompt: structureDocumentPrompt(options.title),
       jsonSchema: chunkJsonSchema as unknown as Record<string, unknown>,
       // A full Kerala PSC syllabus runs to several hundred topics.
@@ -387,7 +401,7 @@ export async function structureDocument(
   );
   return {
     tree: mergeChunks([reply]),
-    promptVersion: STRUCTURE_DOCUMENT_VERSION,
+    promptVersion: version,
     chunks: 1,
   };
 }

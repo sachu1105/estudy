@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
 
-import { createAiProvider } from "@/server/ai";
+import { currentAiProvider } from "@/server/ai";
 import { env } from "@/server/env";
 import {
   PARSE_QUEUE,
@@ -13,17 +13,17 @@ import { unavailableOcr } from "@/server/services/syllabus/extract";
 import { createParseService } from "@/server/services/syllabus/parse-service";
 
 export function startParseWorker() {
-  const ai = createAiProvider();
-  const parser = createParseService({
-    ...syllabusDeps,
-    ai,
-    ocr: unavailableOcr,
-  });
-
   const worker = new Worker<ParseJobData>(
     PARSE_QUEUE,
     async (job) => {
       const { parseJobId } = parseJobDataSchema.parse(job.data);
+      // Built per job from Admin > AI, so a new model, key or switch applies to the next
+      // job without restarting the worker. With AI off it is never called.
+      const parser = createParseService({
+        ...syllabusDeps,
+        ai: await currentAiProvider(),
+        ocr: unavailableOcr,
+      });
       await parser.run(parseJobId, {
         attempt: job.attemptsMade + 1,
         maxAttempts: job.opts.attempts ?? 1,
@@ -46,7 +46,7 @@ export function startParseWorker() {
     ),
   );
   console.log(
-    `[worker] ${PARSE_QUEUE}: rules, or ${ai.name} (${ai.model}) while AI is on; concurrency ${env.WORKER_CONCURRENCY}`,
+    `[worker] ${PARSE_QUEUE}: rules, or the model set in Admin > AI while AI is on; concurrency ${env.WORKER_CONCURRENCY}`,
   );
   return worker;
 }

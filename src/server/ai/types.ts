@@ -34,9 +34,9 @@ export type AiResponse = {
   durationMs: number;
 };
 
-/** One model behind one API. Chosen by AI_PROVIDER; see server/ai/index.ts. */
+/** One model behind one API. Chosen in Admin > AI (env as fallback); see server/ai/config.ts. */
 export interface AIProvider {
-  readonly name: "ollama" | "hosted" | "fake";
+  readonly name: "ollama" | "hosted" | "openai" | "fake";
   readonly model: string;
   /** Can take a PDF or an image as an attachment and read its pages. */
   readonly readsDocuments: boolean;

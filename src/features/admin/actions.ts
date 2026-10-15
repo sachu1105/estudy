@@ -9,6 +9,8 @@ import {
   billingSchema,
   entitlementOverridesSchema,
   featuredPlanSchema,
+  AI_PROMPTS,
+  AI_PROVIDERS,
   aiSettingSchema,
   featureFlagsSchema,
   maintenanceSchema,
@@ -18,6 +20,7 @@ import { editableTreeSchema } from "@/lib/syllabus/tree";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import {
   adminService,
+  aiSettings,
   questionAdmin,
   requireAdmin,
 } from "@/server/services/admin";
@@ -371,4 +374,89 @@ export async function decideReportAction(input: unknown): Promise<AdminResult> {
     "/admin/reports",
     "/admin",
   );
+}
+
+// ---- AI (super admins only) -------------------------------------------------------
+
+const price = z.coerce
+  .number({ error: "Prices are numbers, in US dollars per million tokens." })
+  .min(0)
+  .max(10_000);
+
+export async function saveAiProviderAction(
+  input: unknown,
+): Promise<AdminResult> {
+  const by = await requireAdmin("ai");
+  const parsed = z
+    .object({
+      kind: z.enum(
+        Object.keys(AI_PROVIDERS) as [
+          keyof typeof AI_PROVIDERS,
+          ...(keyof typeof AI_PROVIDERS)[],
+        ],
+      ),
+      model: z.string().trim().min(1, "Enter the model name.").max(200),
+      baseUrl: z
+        .string()
+        .trim()
+        .max(500)
+        .transform((s) => s || null)
+        .pipe(z.url("Enter a full URL, starting with https://").nullable()),
+      priceInputPerMTok: price,
+      priceOutputPerMTok: price,
+      apiKey: z.discriminatedUnion("action", [
+        z.object({ action: z.literal("keep") }),
+        z.object({ action: z.literal("remove") }),
+        z.object({
+          action: z.literal("replace"),
+          value: z
+            .string()
+            .trim()
+            .min(8, "That doesn't look like an API key.")
+            .max(500),
+        }),
+      ]),
+    })
+    .safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  return done(await aiSettings.saveProvider(by, parsed.data), "/admin/ai");
+}
+
+export async function saveAiPromptsAction(
+  input: unknown,
+): Promise<AdminResult> {
+  const by = await requireAdmin("ai");
+  const parsed = z
+    .partialRecord(
+      z.enum(
+        Object.keys(AI_PROMPTS) as [
+          keyof typeof AI_PROMPTS,
+          ...(keyof typeof AI_PROMPTS)[],
+        ],
+      ),
+      z
+        .string()
+        .max(20_000, "Keep a prompt under 20,000 characters.")
+        .nullable(),
+    )
+    .safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  const short = Object.values(parsed.data).find(
+    (text) => text && text.trim().length > 0 && text.trim().length < 20,
+  );
+  if (short)
+    return {
+      ok: false,
+      error:
+        "A prompt that short can't guide the model. Write more, or reset it.",
+    };
+  return done(await aiSettings.savePrompts(by, parsed.data), "/admin/ai");
 }

@@ -9,7 +9,7 @@ import { startPodWorker } from "./jobs/pods";
 
 async function main() {
   // The switch is read again for every job; this line only says how it starts.
-  const ai = (await aiOn().catch(() => false)) ? env.AI_PROVIDER : "off";
+  const ai = (await aiOn().catch(() => false)) ? "on" : "off";
   console.log(`[worker] started (${env.NODE_ENV}, ai=${ai}).`);
   workers.push(startParseWorker(), await startPodWorker());
 }

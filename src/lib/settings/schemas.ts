@@ -78,10 +78,85 @@ export const featureFlagsSchema = z.partialRecord(
 );
 
 /**
- * The AI master switch. Off by default: syllabuses are read by headings and lists (no
- * model), and every other part of the app runs on plain algorithms anyway.
+ * The four jobs AI may do (CLAUDE.md rule 17). `built` is false until the feature exists;
+ * its switch is shown, disabled, so the admin sees what is coming.
  */
-export const aiSettingSchema = z.object({ enabled: z.boolean() });
+export const AI_JOBS = {
+  syllabus: { label: "Reading syllabuses", built: true },
+  questions: { label: "Writing mock test questions", built: false },
+  pyq: { label: "Parsing previous year papers", built: false },
+  suggestions: { label: "Suggesting notes and websites", built: false },
+} as const;
+export type AiJob = keyof typeof AI_JOBS;
+const aiJobNames = Object.keys(AI_JOBS) as [AiJob, ...AiJob[]];
+
+/**
+ * The AI master switch. Off by default: syllabuses are read by headings and lists (no
+ * model), and every other part of the app runs on plain algorithms anyway. While it is
+ * on, each job can still be turned off by itself (jobs default to on).
+ */
+export const aiSettingSchema = z.object({
+  enabled: z.boolean(),
+  jobs: z.partialRecord(z.enum(aiJobNames), z.boolean()).default({}),
+});
+
+export const AI_PROVIDERS = {
+  anthropic: {
+    label: "Claude (Anthropic)",
+    readsDocuments: true,
+    needsKey: true,
+    defaultUrl: "https://api.anthropic.com",
+  },
+  openai: {
+    label: "OpenAI-compatible",
+    readsDocuments: false,
+    needsKey: true,
+    defaultUrl: "https://api.openai.com/v1",
+  },
+  ollama: {
+    label: "Ollama (local)",
+    readsDocuments: false,
+    needsKey: false,
+    defaultUrl: "http://127.0.0.1:11434",
+  },
+} as const;
+export type AiProviderKind = keyof typeof AI_PROVIDERS;
+
+/**
+ * Which model the AI jobs call. The API key is stored only sealed (AES-GCM, see
+ * server/crypto/secret-box) with a short hint for the admin; it is never sent to a
+ * browser, not even to the admin who saved it (rule 1).
+ */
+export const aiProviderSchema = z.object({
+  kind: z.enum(
+    Object.keys(AI_PROVIDERS) as [AiProviderKind, ...AiProviderKind[]],
+  ),
+  model: z.string().trim().min(1).max(200),
+  baseUrl: z.url().max(500).nullable(),
+  priceInputPerMTok: z.number().min(0).max(10_000),
+  priceOutputPerMTok: z.number().min(0).max(10_000),
+  apiKey: z
+    .object({ sealed: z.string().min(1), hint: z.string().max(20) })
+    .nullable(),
+});
+
+/** The instructions (system prompt) each AI task runs with. Left out = the built-in one. */
+export const AI_PROMPTS = {
+  structureSyllabus: {
+    label: "Reading a syllabus from its text",
+    job: "syllabus",
+  },
+  structureDocument: {
+    label: "Reading a syllabus from PDF pages or a photo",
+    job: "syllabus",
+  },
+} as const satisfies Record<string, { label: string; job: AiJob }>;
+export type AiPromptKey = keyof typeof AI_PROMPTS;
+
+export const aiPromptsSchema = z.partialRecord(
+  z.enum(Object.keys(AI_PROMPTS) as [AiPromptKey, ...AiPromptKey[]]),
+  z.string().trim().min(20).max(20_000),
+);
 
 export const settingSchemas = {
   entitlements: entitlementOverridesSchema,
@@ -91,6 +166,8 @@ export const settingSchemas = {
   maintenance: maintenanceSchema,
   flags: featureFlagsSchema,
   ai: aiSettingSchema,
+  aiProvider: aiProviderSchema,
+  aiPrompts: aiPromptsSchema,
 } as const;
 
 export type SettingKey = keyof typeof settingSchemas;

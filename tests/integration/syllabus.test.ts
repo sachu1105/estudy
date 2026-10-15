@@ -17,6 +17,7 @@ import { parseJobRepository } from "@/server/repositories/parse-job-repository";
 import { sectionCacheRepository } from "@/server/repositories/section-cache-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import type { SyllabusDeps } from "@/server/services/syllabus/deps";
+import { syllabusPrompts } from "@/server/ai/prompts";
 import { unavailableOcr } from "@/server/services/syllabus/extract";
 import { createParseService } from "@/server/services/syllabus/parse-service";
 import { createReviewService } from "@/server/services/syllabus/review-service";
@@ -131,7 +132,10 @@ function build({
   const events: JobEvent[] = [];
   const clock = fixedClock("2026-10-05T04:30:00Z");
   /** The admin's AI switch, flipped mid-test like an admin would. */
-  const aiSwitch = { on: aiEnabled };
+  const aiSwitch = {
+    on: aiEnabled,
+    prompts: {} as Parameters<typeof syllabusPrompts>[0],
+  };
   const deps: SyllabusDeps = {
     syllabuses: syllabusRepository,
     parseJobs: parseJobRepository,
@@ -154,6 +158,7 @@ function build({
     reader: async () => ({
       ai: aiSwitch.on,
       readsDocuments: ai.readsDocuments,
+      prompts: syllabusPrompts(aiSwitch.prompts),
     }),
   };
   const parser = createParseService({ ...deps, ai, ocr: unavailableOcr });
@@ -522,6 +527,35 @@ describe("with AI switched off", () => {
     expect(await t.review.reread(user as never, versionId)).toMatchObject({
       code: "UP_TO_DATE",
     });
+  });
+});
+
+describe("an admin-edited prompt", () => {
+  it("runs with the edited instructions under its own version, so caches never mix", async () => {
+    const t = build();
+    const user = await makeUser();
+    const first = await uploadPdf(t, user);
+    await t.drain();
+    const versionId = (first as { versionId: string }).versionId;
+
+    t.aiSwitch.prompts = {
+      structureSyllabus:
+        "You read Indian exam syllabuses. List every topic exactly as written.",
+    };
+    // The edit offers a fresh reading, made with the new instructions.
+    expect(await t.review.reread(user as never, versionId)).toMatchObject({
+      ok: true,
+    });
+    const before = t.ai.calls;
+    await t.drain();
+    expect(t.ai.calls).toBeGreaterThan(before);
+    expect(t.ai.prompts.at(-1)!.system).toMatch(/exactly as written/);
+    const parse = (await t.review.get(user as never, versionId))!.parse!;
+    expect(parse.promptVersion).toMatch(/^structure-syllabus@4~[0-9a-f]{10}$/);
+    const usage = await prisma.aiUsage.findFirst({
+      orderBy: { createdAt: "desc" },
+    });
+    expect(usage!.promptVersion).toBe(parse.promptVersion);
   });
 });
 

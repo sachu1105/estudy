@@ -221,11 +221,12 @@ export function createParseService(deps: ParseDeps) {
               mediaType: kind === "PDF" ? "application/pdf" : imageMime(bytes),
               base64: Buffer.from(bytes).toString("base64"),
             },
-            { title: version.title, onUsage },
+            { title: version.title, onUsage, prompt: parser.prompt! },
           )
         : await structureSyllabus(deps.ai, text, {
             title: version.title,
             onUsage,
+            prompt: parser.prompt!,
             pieceCache: deps.sectionCache,
             onProgress: async (done, total) => {
               if (await deps.syllabuses.isDeleted(version.id))

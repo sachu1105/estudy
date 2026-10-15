@@ -26,6 +26,8 @@ test.describe("admin panel", () => {
     await seedAndLogin(page, `admin-${test.info().project.name}`, "ADMIN");
     const response = await page.goto("/admin/plans");
     expect(response?.status()).toBe(404);
+    // The AI model, key and prompts are super admin only too.
+    expect((await page.goto("/admin/ai"))?.status()).toBe(404);
   });
 
   test("an admin finds a user, suspends and restores them, and it's all logged", async ({
@@ -167,11 +169,20 @@ test.describe("admin panel", () => {
       "/admin/audit",
       "/admin/users",
       "/admin/catalogue",
+      "/admin/ai",
     ]) {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       expect(await noSideScroll(page), path).toBeLessThanOrEqual(0);
     }
+
+    // Read only: the suite shares the dev database, so it never changes the AI setup.
+    await page.goto("/admin/ai");
+    await expect(page.getByRole("status")).toContainText(/AI is (off|on)/);
+    await expect(page.getByLabel("Model", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Reading a syllabus from its text" }),
+    ).not.toBeEmpty();
 
     const text = `Notice ${test.info().project.name} ${Date.now()}`;
     await page.goto("/admin/settings");
