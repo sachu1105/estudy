@@ -68,3 +68,8 @@ export async function saveSetting<K extends SettingKey>(
 export async function flagOn(flag: FeatureFlag) {
   return (await getSetting("flags"))?.[flag] ?? true;
 }
+
+/** AI is the one switch that defaults to off: nothing calls a model until an admin says so. */
+export async function aiOn() {
+  return (await getSetting("ai"))?.enabled ?? false;
+}

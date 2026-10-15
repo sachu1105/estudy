@@ -13,8 +13,9 @@ export const ADMIN_AREAS = {
   audit: { label: "Audit log", href: "/admin/audit" },
 } as const;
 
-/** "exams": adding exams and promoting uploads; reviewing is moderation. */
-export type AdminArea = keyof typeof ADMIN_AREAS | "roles" | "exams";
+/** "exams": adding exams, building and promoting syllabuses; reviewing is moderation.
+ * "ai": the AI switch, which spends money, so super admins only. */
+export type AdminArea = keyof typeof ADMIN_AREAS | "roles" | "exams" | "ai";
 type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 
 // MODERATOR: moderation only. ADMIN: everything except roles and billing.
@@ -45,6 +46,7 @@ const ACCESS: Record<Role, readonly AdminArea[]> = {
     "jobs",
     "audit",
     "roles",
+    "ai",
   ],
 };
 

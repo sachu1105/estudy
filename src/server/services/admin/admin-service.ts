@@ -6,7 +6,11 @@ import type { AuditLogRepository } from "@/server/repositories/audit-log-reposit
 import type { RefreshTokenRepository } from "@/server/repositories/refresh-token-repository";
 import type { SyllabusRepository } from "@/server/repositories/syllabus-repository";
 
-import { failure, type Result } from "../syllabus/deps";
+import { normaliseText } from "@/server/ai/chunk";
+import { minhash, postOf } from "@/server/ai/fingerprint";
+
+import { failure, sha256Hex, type Result } from "../syllabus/deps";
+import { RULES_VERSION, structureByRules } from "../syllabus/rules";
 
 type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 export type Admin = { id: string; role: Role; ip?: string | null };
@@ -234,6 +238,89 @@ export function createAdminService(deps: AdminDeps) {
       await deps.syllabuses.replaceTree(copy.id, tree);
       await log(by, "admin.catalogue.promote", copy.id, { from: source.id });
       return { ok: true, id: copy.id };
+    },
+
+    /**
+     * The admin's own syllabus builder, with no AI: pasted text is read by its headings and
+     * lists (or the admin starts blank), and the tree waits in review, editable, until it's
+     * approved. Works the same whether the AI switch is on or off.
+     */
+    async buildSyllabus(
+      by: Admin,
+      input: { title: string; examId: string; text: string | null },
+    ): Promise<Result<{ id: string }>> {
+      const exams = await deps.admin.listExams();
+      if (!exams.some((e) => e.id === input.examId))
+        return failure("NO_EXAM", "Pick the exam this syllabus is for.");
+      const text = input.text ? normaliseText(input.text) : "";
+      let parse: { id: string; tree: unknown } | null = null;
+      if (text) {
+        const tree = structureByRules(text, input.title);
+        if (!tree)
+          return failure(
+            "NO_TREE",
+            "No subjects or topics found in that text. Check it's the syllabus, or start blank.",
+          );
+        parse = await deps.syllabuses.saveParse({
+          fileHash: await sha256Hex(new TextEncoder().encode(text)),
+          sourceKind: "TEXT",
+          extractedText: text,
+          tree,
+          provider: "rules",
+          model: "headings and lists",
+          promptVersion: RULES_VERSION,
+          warnings: [],
+          minhash: minhash(text),
+          post: postOf(text),
+        });
+      }
+      const version = await deps.admin.createCatalogueCopy({
+        title: input.title,
+        examId: input.examId,
+        parseId: null,
+        fileHash: null,
+      });
+      if (parse) await deps.syllabuses.attachParse(version.id, parse);
+      else
+        await deps.syllabuses.replaceTree(version.id, {
+          subjects: [
+            {
+              id: deps.newId(),
+              name: "First subject",
+              topics: [
+                {
+                  id: deps.newId(),
+                  name: "First topic",
+                  weight: 3,
+                  difficulty: 3,
+                  foundational: false,
+                },
+              ],
+            },
+          ],
+        });
+      await log(by, "admin.catalogue.build", version.id, {
+        exam: input.examId,
+        blank: !parse,
+      });
+      return { ok: true, id: version.id };
+    },
+
+    /** Autosave while a built or promoted syllabus waits in review; approved ones are fixed. */
+    async saveCatalogueTree(
+      id: string,
+      tree: EditableTree,
+    ): Promise<Result<object>> {
+      const version = await deps.admin.versionForReview(id);
+      if (!version || version.visibility !== "CATALOGUE")
+        return failure("NOT_FOUND", "That isn't a catalogue syllabus.");
+      if (version.status !== "PENDING")
+        return failure(
+          "READ_ONLY",
+          "Only a syllabus waiting for review can be edited.",
+        );
+      await deps.syllabuses.replaceTree(id, tree);
+      return { ok: true };
     },
 
     async review(

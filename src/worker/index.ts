@@ -2,13 +2,15 @@
 import "dotenv/config";
 
 import { env } from "@/server/env";
+import { aiOn } from "@/server/settings";
 
 import { startParseWorker } from "./jobs/parse-syllabus";
 import { startPodWorker } from "./jobs/pods";
 
-console.log(`[worker] started (${env.NODE_ENV}, ai=${env.AI_PROVIDER}).`);
-
 async function main() {
+  // The switch is read again for every job; this line only says how it starts.
+  const ai = (await aiOn().catch(() => false)) ? env.AI_PROVIDER : "off";
+  console.log(`[worker] started (${env.NODE_ENV}, ai=${ai}).`);
   workers.push(startParseWorker(), await startPodWorker());
 }
 

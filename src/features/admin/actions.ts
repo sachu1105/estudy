@@ -9,10 +9,13 @@ import {
   billingSchema,
   entitlementOverridesSchema,
   featuredPlanSchema,
+  aiSettingSchema,
   featureFlagsSchema,
   maintenanceSchema,
 } from "@/lib/settings/schemas";
 import { questionInputSchema } from "@/lib/questions/questions";
+import { editableTreeSchema } from "@/lib/syllabus/tree";
+import { rateLimit, retryMessage } from "@/server/ratelimit";
 import {
   adminService,
   questionAdmin,
@@ -169,6 +172,55 @@ export async function promoteAction(input: unknown) {
   );
 }
 
+/** Builds a catalogue syllabus from pasted text (read by rules, no AI) or from blank. */
+export async function buildSyllabusAction(input: unknown) {
+  const by = await requireAdmin("exams");
+  const parsed = z
+    .object({
+      title: z.string().trim().min(2, "Give it a title.").max(200),
+      examId: z.uuid("Pick the exam this syllabus is for."),
+      text: z
+        .string()
+        .max(200_000, "That's more text than a syllabus usually has.")
+        .nullable(),
+    })
+    .safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false as const,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  return done(
+    await adminService.buildSyllabus(by, parsed.data),
+    "/admin/catalogue",
+  );
+}
+
+/** The builder's autosave. No audit row per save; building and approving are logged. */
+export async function saveCatalogueTreeAction(
+  input: unknown,
+): Promise<AdminResult> {
+  const by = await requireAdmin("exams");
+  const parsed = z
+    .object({ versionId: z.uuid(), tree: editableTreeSchema })
+    .safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  const limited = await rateLimit([["syllabusSavePerUser", by.id]]);
+  if (!limited.ok)
+    return { ok: false, error: retryMessage(limited.retryAfterMs) };
+  return done(
+    await adminService.saveCatalogueTree(
+      parsed.data.versionId,
+      parsed.data.tree,
+    ),
+    "/admin/catalogue",
+  );
+}
+
 export async function reviewAction(input: unknown) {
   const by = await requireAdmin("catalogue");
   const parsed = z
@@ -198,6 +250,7 @@ const settings = {
   entitlements: { area: "plans", schema: entitlementOverridesSchema },
   billing: { area: "plans", schema: billingSchema },
   featuredPlan: { area: "plans", schema: featuredPlanSchema },
+  ai: { area: "ai", schema: aiSettingSchema },
 } as const;
 
 export async function saveSettingAction(

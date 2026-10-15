@@ -40,6 +40,13 @@ AI does four jobs and nothing else: reading a syllabus that isn't already cached
 mock test questions, parsing previous year papers, and suggesting notes and websites for
 a topic. The plan, progress, streaks, XP and the squad rank are plain algorithms.
 
+AI is off by default and runs only while a super admin switches it on (Admin > Site > AI,
+AppSetting `ai`). The whole app works with it off: a syllabus is read by its own headings
+and lists (`server/services/syllabus/rules.ts`, deterministic, no model), and admins build
+each exam's catalogue syllabus in the admin panel (Catalogue > Build a syllabus: paste the
+text or fill it from a PDF, fix the tree, approve). Users pick that exam, set their time,
+confidence and intensity, and the plan engine does the rest.
+
 Beginner mode exists for people who are new to PSC: gentler ramp, fundamentals first,
 explanations on every question.
 
@@ -65,6 +72,7 @@ Auth:      Custom JWT with jose. Access token 15 min, refresh token 30 days with
 Files:     S3-compatible storage. MinIO locally, Cloudflare R2 or S3 in production.
 AI:        Provider interface with two implementations: Ollama (local dev) and a hosted
            API (production), chosen by AI_PROVIDER env var. Server and worker only.
+           The admin AI switch decides per job whether any model is called at all.
 Realtime:  Server-Sent Events from Route Handlers, fan-out through Redis pub/sub.
            No WebSocket server.
 Email:     SMTP adapter. Mailpit locally.
@@ -130,7 +138,9 @@ Run test, lint and typecheck before declaring any task done.
    src/lib/plan-engine, is pure, takes `today` as a parameter, and the same input
    always produces byte-identical output. It is tested against fixtures/plan-engine.
 
-4. PARSE EACH SYLLABUS ONCE, AND CALL AI ONLY ON A CACHE MISS. Hash every uploaded
+4. PARSE EACH SYLLABUS ONCE, AND CALL AI ONLY ON A CACHE MISS (and only while the admin
+   AI switch is on; otherwise the rules read it, still reusing any earlier AI reading of
+   the same file, and an AI reading is never replaced by a rule-based one). Hash every uploaded
    file (SHA-256). Before any AI call, reuse in this order: the same file, a
    near-identical syllabus (the same syllabus for another post, matched by a text
    fingerprint), and every section an earlier syllabus already had. Catalogue
@@ -197,7 +207,8 @@ Run test, lint and typecheck before declaring any task done.
     Playwright tests run on both the desktop and mobile projects.
 
 17. AI HAS FOUR JOBS ONLY: syllabus extraction on a cache miss, mock test questions,
-    previous year paper parsing, and topic suggestions. Each runs as a BullMQ job (rule
+    previous year paper parsing, and topic suggestions, and none of them runs while the
+    admin AI switch is off. Every feature needs a no-AI path. Each runs as a BullMQ job (rule
     2), logs its cost in AiUsage, and caches its result so the same request never pays
     twice. Suggested links are fetched server-side before they are shown (SSRF-safe,
     dead links dropped), are labelled as suggestions with where they came from, and

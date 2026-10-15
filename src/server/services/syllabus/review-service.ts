@@ -2,7 +2,7 @@ import type { EditableTree } from "@/lib/syllabus/tree";
 import { jobChannel, type JobEvent } from "@/server/realtime/types";
 
 import { failure, type Actor, type Result, type SyllabusDeps } from "./deps";
-import { parserFor } from "./parser-version";
+import { canUpgrade } from "./parser-version";
 
 const NOT_FOUND = failure(
   "NOT_FOUND",
@@ -114,12 +114,7 @@ export function createReviewService(deps: SyllabusDeps) {
     async reread(user: Actor, id: string): Promise<Result<{ jobId: string }>> {
       const version = await owned(user, id);
       if (!version) return NOT_FOUND;
-      if (
-        !version.parse ||
-        !version.sourceKind ||
-        version.parse.promptVersion ===
-          parserFor(deps.readsDocuments, version.sourceKind).version
-      )
+      if (!canUpgrade(await deps.reader(), version))
         return failure(
           "UP_TO_DATE",
           "This syllabus was read with the latest reader.",

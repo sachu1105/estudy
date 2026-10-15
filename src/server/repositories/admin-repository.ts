@@ -333,7 +333,8 @@ export const adminRepository = {
     examId: string | null;
     parseId: string | null;
     fileHash: string | null;
-    promotedFromId: string;
+    /** Left out for a syllabus an admin built here rather than promoted. */
+    promotedFromId?: string;
   }) {
     return prisma.syllabusVersion.create({
       data: { ...data, visibility: "CATALOGUE", status: "PENDING" },

@@ -63,7 +63,7 @@ export default async function SyllabusVersionPage({
         description={subtitle}
         actions={<DeleteSyllabusButton versionId={version.id} />}
       />
-      {canReadAgain(version) ? (
+      {(await canReadAgain(version)) ? (
         <div className="mb-5">
           <RereadNote versionId={version.id} />
         </div>

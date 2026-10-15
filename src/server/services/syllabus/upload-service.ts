@@ -77,7 +77,7 @@ export function createUploadService(deps: SyllabusDeps) {
 
     const existing = await deps.syllabuses.findParse(
       fileHash,
-      parserFor(deps.readsDocuments, file.kind).version,
+      parserFor(await deps.reader(), file.kind).reuses,
     );
     if (existing) {
       await deps.syllabuses.attachParse(version.id, existing);

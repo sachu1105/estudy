@@ -92,7 +92,7 @@ export default async function PodsPage({ searchParams }: PageProps<"/pods">) {
         <AddExamButton
           uploads={usage}
           exams={catalogueExams.map((e) => ({ id: e.id, name: e.name }))}
-          photos={photosSupported}
+          photos={await photosSupported()}
           readerOnline={readerOnline}
           // Links elsewhere (the catalogue, Today) open the upload straight away.
           initialStep={query.add === "upload" ? "upload" : undefined}

@@ -117,11 +117,21 @@ function pagesAi() {
   });
 }
 
-function build({ billingEnabled = false, ai = fakeAi() } = {}) {
+function build({
+  billingEnabled = false,
+  ai = fakeAi(),
+  aiEnabled = true,
+}: {
+  billingEnabled?: boolean;
+  ai?: ReturnType<typeof fakeAi>;
+  aiEnabled?: boolean;
+} = {}) {
   const { storage, objects } = createMemoryStorage();
   const queued: ParseJobData[] = [];
   const events: JobEvent[] = [];
   const clock = fixedClock("2026-10-05T04:30:00Z");
+  /** The admin's AI switch, flipped mid-test like an admin would. */
+  const aiSwitch = { on: aiEnabled };
   const deps: SyllabusDeps = {
     syllabuses: syllabusRepository,
     parseJobs: parseJobRepository,
@@ -141,7 +151,10 @@ function build({ billingEnabled = false, ai = fakeAi() } = {}) {
     entitlements: createEntitlements({ billingEnabled, clock }),
     clock,
     ids: randomIds,
-    readsDocuments: ai.readsDocuments,
+    reader: async () => ({
+      ai: aiSwitch.on,
+      readsDocuments: ai.readsDocuments,
+    }),
   };
   const parser = createParseService({ ...deps, ai, ocr: unavailableOcr });
   return {
@@ -149,6 +162,7 @@ function build({ billingEnabled = false, ai = fakeAi() } = {}) {
     queued,
     events,
     ai,
+    aiSwitch,
     upload: createUploadService(deps),
     review: createReviewService(deps),
     /** Runs every queued job, like the worker would. */
@@ -451,6 +465,63 @@ describe("parse caches", () => {
     expect(version!.subjects.map((s) => s.name)).toEqual(SUBJECTS);
     expect(version!.subjects.map((s) => s.topics[0].weight)).toEqual([4, 3, 2]); // 50, 20, 10 marks around the median 20;
     expect(version!.parse?.promptVersion).toBe("structure-document@1");
+  });
+});
+
+describe("with AI switched off", () => {
+  it("reads the syllabus by its headings and lists, with no AI call", async () => {
+    const t = build({ aiEnabled: false });
+    const user = await makeUser();
+    const created = await uploadPdf(t, user);
+    await t.drain();
+
+    expect(t.ai.calls).toBe(0);
+    expect(await prisma.aiUsage.count()).toBe(0);
+    const version = (await t.review.get(
+      user as never,
+      (created as { versionId: string }).versionId,
+    ))!;
+    expect(version.subjects.map((s) => s.name)).toEqual(SUBJECTS);
+    expect(version.subjects[0]!.topics.map((t) => t.name)).toContain(
+      "Rivers of Kerala",
+    );
+    expect(version.parse).toMatchObject({ promptVersion: "rules@1" });
+    expect(t.events.at(-1)).toMatchObject({ status: "READY" });
+  });
+
+  it("reuses an earlier AI reading of the same file instead of the plainer rules", async () => {
+    const withAi = build();
+    await uploadPdf(withAi, await makeUser());
+    await withAi.drain();
+
+    const off = build({ aiEnabled: false });
+    const result = await uploadPdf(off, await makeUser("ravi@example.com"));
+    expect(result).toMatchObject({ ok: true, reused: true });
+    expect(off.queued).toHaveLength(0);
+    expect(await prisma.syllabusParse.count()).toBe(1);
+  });
+
+  it("offers a fresh reading once AI is on, never a downgrade to the rules", async () => {
+    const t = build({ aiEnabled: false });
+    const user = await makeUser();
+    const created = await uploadPdf(t, user);
+    await t.drain();
+    const versionId = (created as { versionId: string }).versionId;
+    expect(await t.review.reread(user as never, versionId)).toMatchObject({
+      code: "UP_TO_DATE",
+    });
+
+    t.aiSwitch.on = true;
+    expect(await t.review.reread(user as never, versionId)).toMatchObject({
+      ok: true,
+    });
+    await t.drain();
+    expect(t.ai.calls).toBeGreaterThan(0);
+    // Off again: an AI reading is never replaced by the rules.
+    t.aiSwitch.on = false;
+    expect(await t.review.reread(user as never, versionId)).toMatchObject({
+      code: "UP_TO_DATE",
+    });
   });
 });
 

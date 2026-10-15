@@ -90,11 +90,9 @@ test.describe("admin panel", () => {
     await page.getByRole("option").nth(1).click();
     await page.getByRole("button", { name: "Send for review" }).click();
     await expect(page).toHaveURL(/\/admin\/catalogue\/[0-9a-f-]{36}$/);
+    // Waiting for review, it opens in the editor: subjects can still be fixed.
     await expect(
-      page.getByRole("heading", { name: "Subjects and topics" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Indian Constitution" }),
+      page.getByRole("button", { name: /^Indian Constitution/ }),
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
@@ -102,6 +100,46 @@ test.describe("admin panel", () => {
     await expect(page).toHaveURL(/\/admin\/catalogue$/);
     await page.goto("/admin/catalogue?status=APPROVED");
     // Listed under Approved, and live on its exam's card.
+    await expect(
+      page
+        .getByRole("region", { name: "Syllabuses" })
+        .getByRole("link", { name: new RegExp(title) }),
+    ).toBeVisible();
+  });
+
+  test("builds an exam's syllabus from pasted text with no AI, fixes it, approves it", async ({
+    page,
+  }) => {
+    const title = `Built ${test.info().project.name} ${Date.now()}`;
+    await seedAndLogin(page, `builder-${test.info().project.name}`, "ADMIN");
+    await page.goto("/admin/catalogue");
+    await page.getByRole("link", { name: "Build a syllabus" }).click();
+    await expect(page).toHaveURL(/\/admin\/catalogue\/new$/);
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    await page.getByRole("combobox", { name: "Exam" }).click();
+    await page.getByRole("option").first().click();
+    await page.getByLabel("Title users see").fill(title);
+    await page
+      .getByLabel("Syllabus text")
+      .fill(
+        `Part I: General Knowledge (50 marks)\nHistory: Kerala renaissance, freedom struggle\nPart II: General English (10 marks)\nTenses, articles, prepositions\nRun ${Date.now()}`,
+      );
+    await page
+      .getByRole("button", { name: "Read subjects and topics" })
+      .click();
+    await expect(page).toHaveURL(/\/admin\/catalogue\/[0-9a-f-]{36}$/);
+    await expect(page.getByRole("heading", { name: title })).toBeVisible();
+
+    const english = page.getByRole("button", { name: /^General English/ });
+    await expect(english).toBeVisible();
+    await english.click();
+    await expect(page.getByText("prepositions").first()).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    await page.getByRole("button", { name: "Approve" }).click();
+    await expect(page).toHaveURL(/\/admin\/catalogue$/);
+    await page.goto("/admin/catalogue?status=APPROVED");
     await expect(
       page
         .getByRole("region", { name: "Syllabuses" })

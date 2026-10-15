@@ -13,6 +13,8 @@ import {
 import { editableTreeSchema, type EditableTree } from "@/lib/syllabus/tree";
 import { cn } from "@/lib/utils/cn";
 
+import { saveCatalogueTreeAction } from "@/features/admin/actions";
+
 import { saveDraftAction } from "../actions";
 import { topicCount, treeReducer } from "../tree-reducer";
 import { useAutosave } from "../use-autosave";
@@ -24,18 +26,21 @@ import { TopicsEditor } from "./topics-editor";
 /**
  * A confirmed syllabus, edited where it lives: inside its exam pod. One line per
  * subject; open one to fix its topics right there. Everything autosaves, and the
- * subject pods follow (ticks and material are kept).
+ * subject pods follow (ticks and material are kept). `catalogue` is the admin's builder:
+ * the same editor, saving a catalogue syllabus that waits for review.
  */
 export function SyllabusEditor({
   versionId,
   initialTree,
   sourceText,
   warnings,
+  catalogue = false,
 }: {
   versionId: string;
   initialTree: EditableTree;
   sourceText: string;
   warnings: string[];
+  catalogue?: boolean;
 }) {
   const [tree, dispatch] = useReducer(treeReducer, initialTree);
   // One subject open at a time keeps a 17-subject syllabus to a screen or two.
@@ -44,7 +49,8 @@ export function SyllabusEditor({
   const save = useAutosave(
     tree,
     async (value) => {
-      const result = await saveDraftAction({ versionId, tree: value });
+      const save = catalogue ? saveCatalogueTreeAction : saveDraftAction;
+      const result = await save({ versionId, tree: value });
       return result.ok ? null : result.error;
     },
     { valid: editableTreeSchema.safeParse(tree).success },
@@ -67,7 +73,9 @@ export function SyllabusEditor({
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="overflow-y-auto">
-              <SheetTitle>Text from your file</SheetTitle>
+              <SheetTitle>
+                {catalogue ? "Syllabus text" : "Text from your file"}
+              </SheetTitle>
               <p className="text-small break-words whitespace-pre-wrap text-ink-muted">
                 {sourceText}
               </p>

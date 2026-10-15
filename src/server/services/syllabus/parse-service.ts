@@ -18,6 +18,7 @@ import {
   type SourceKind,
 } from "./extract";
 import { parserFor } from "./parser-version";
+import { structureByRules } from "./rules";
 
 const MESSAGES = {
   noTree:
@@ -35,8 +36,9 @@ class StoppedError extends Error {}
 type Attempt = { attempt: number; maxAttempts: number };
 
 /**
- * The worker pipeline (CLAUDE.md rule 2): read -> extract text -> structure with AI ->
- * validate -> save as a DRAFT for the user's review. Never runs inside a web request.
+ * The worker pipeline (CLAUDE.md rule 2): read -> extract text -> structure (by rules
+ * while AI is off, else with AI) -> validate -> save as a DRAFT for the user's review.
+ * Never runs inside a web request.
  */
 export function createParseService(deps: ParseDeps) {
   async function update(
@@ -98,13 +100,13 @@ export function createParseService(deps: ParseDeps) {
 
   /** An already parsed syllabus that is the same one (another post, a re-typeset copy). */
   async function findTwin(
-    version: string,
+    versions: string[],
     fingerprint: number[],
     post: string | null,
   ) {
     if (fingerprint.length === 0) return null;
     const candidates = await deps.syllabuses.findSimilarCandidates(
-      version,
+      versions,
       post,
     );
     let best: (typeof candidates)[number] | null = null;
@@ -137,11 +139,11 @@ export function createParseService(deps: ParseDeps) {
     );
     try {
       const kind = version.sourceKind;
-      const parser = parserFor(deps.ai.readsDocuments, kind);
+      const parser = parserFor(await deps.reader(), kind);
       // 1. Someone may have uploaded the same file while this job waited in the queue.
       const existing = await deps.syllabuses.findParse(
         version.fileHash,
-        parser.version,
+        parser.reuses,
       );
       if (existing) {
         await deps.syllabuses.attachParse(version.id, existing);
@@ -156,7 +158,12 @@ export function createParseService(deps: ParseDeps) {
       const post = text ? postOf(text) : null;
       const save = (
         tree: SyllabusTree,
-        extra: { provider: string; model: string; copiedFromId?: string },
+        extra: {
+          provider: string;
+          model: string;
+          copiedFromId?: string;
+          promptVersion?: string;
+        },
       ) =>
         deps.syllabuses.saveParse({
           fileHash: version.fileHash!,
@@ -171,18 +178,35 @@ export function createParseService(deps: ParseDeps) {
         });
 
       // 2. The same syllabus already read for another post or upload: no AI call at all.
-      const twin = await findTwin(parser.version, fingerprint, post);
+      //    The copy keeps the parser that made it, so it is never mistaken for a fresh one.
+      const twin = await findTwin(parser.reuses, fingerprint, post);
       if (twin) {
         const parse = await save(twin.tree as SyllabusTree, {
           provider: "cache",
           model: "near-duplicate",
           copiedFromId: twin.id,
+          promptVersion: twin.promptVersion,
         });
         await deps.syllabuses.attachParse(version.id, parse);
         return ready(job.id, true);
       }
 
-      // 3. Read it: the pages themselves when the AI can, else the text section by section,
+      // 3. AI off: the rules read the text's own headings and lists. No model, no cost.
+      if (!parser.ai) {
+        await update(job.id, { stage: "STRUCTURING", progress: 50 });
+        const tree = structureByRules(text, version.title);
+        if (await deps.syllabuses.isDeleted(version.id))
+          throw new StoppedError();
+        if (!tree) return fail(job.id, MESSAGES.noTree);
+        const parse = await save(tree, {
+          provider: "rules",
+          model: "headings and lists",
+        });
+        await deps.syllabuses.attachParse(version.id, parse);
+        return ready(job.id, false);
+      }
+
+      // 4. Read it: the pages themselves when the AI can, else the text section by section,
       //    reusing every section any earlier syllabus already had. The user may delete it
       //    meanwhile: checked before the AI starts and after every section.
       if (await deps.syllabuses.isDeleted(version.id)) throw new StoppedError();

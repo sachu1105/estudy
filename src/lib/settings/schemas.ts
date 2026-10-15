@@ -77,6 +77,12 @@ export const featureFlagsSchema = z.partialRecord(
   z.boolean(),
 );
 
+/**
+ * The AI master switch. Off by default: syllabuses are read by headings and lists (no
+ * model), and every other part of the app runs on plain algorithms anyway.
+ */
+export const aiSettingSchema = z.object({ enabled: z.boolean() });
+
 export const settingSchemas = {
   entitlements: entitlementOverridesSchema,
   billing: billingSchema,
@@ -84,6 +90,7 @@ export const settingSchemas = {
   announcement: announcementSchema,
   maintenance: maintenanceSchema,
   flags: featureFlagsSchema,
+  ai: aiSettingSchema,
 } as const;
 
 export type SettingKey = keyof typeof settingSchemas;

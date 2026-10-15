@@ -191,6 +191,102 @@ describe("admin: catalogue", () => {
   });
 });
 
+describe("admin: syllabus builder", () => {
+  const exam = () =>
+    prisma.exam.create({
+      data: { slug: "ldc", name: "LDC", board: "Kerala PSC", order: 1 },
+    });
+
+  it("reads pasted text into a pending catalogue syllabus with no AI, editable until approved", async () => {
+    const boss = await makeUser("boss@example.com", "ADMIN");
+    const ldc = await exam();
+    const built = await admin.buildSyllabus(as(boss), {
+      title: "LDC 2026",
+      examId: ldc.id,
+      text: [
+        "Part I: General Knowledge (50 marks)",
+        "History: Kerala renaissance, freedom struggle",
+        "Part II: General English (10 marks)",
+        "Tenses, synonyms and antonyms",
+      ].join("\n"),
+    });
+    expect(built).toMatchObject({ ok: true });
+    const versionId = (built as { id: string }).id;
+    const version = (await admin.forReview(versionId))!;
+    expect(version).toMatchObject({
+      visibility: "CATALOGUE",
+      status: "PENDING",
+      examId: ldc.id,
+      parse: { provider: "rules", promptVersion: "rules@1" },
+    });
+    expect(version.subjects.map((s) => s.name)).toEqual([
+      "General Knowledge",
+      "General English",
+    ]);
+    expect(await prisma.aiUsage.count()).toBe(0);
+    expect(
+      await syllabusRepository.findApprovedCatalogue(versionId),
+    ).toBeNull();
+
+    // The admin fixes a name while it waits; ids stay put.
+    const tree: EditableTree = {
+      subjects: version.subjects.map((s, i) => ({
+        id: s.id,
+        name: i === 0 ? "General knowledge" : s.name,
+        topics: s.topics.map((t) => ({
+          id: t.id,
+          name: t.name,
+          weight: t.weight,
+          difficulty: t.difficulty,
+          foundational: t.foundational,
+        })),
+      })),
+    };
+    expect(await admin.saveCatalogueTree(versionId, tree)).toEqual({
+      ok: true,
+    });
+    expect(
+      await admin.review(as(boss), versionId, { approve: true, note: null }),
+    ).toEqual({ ok: true });
+    const live = (await syllabusRepository.findApprovedCatalogue(versionId))!;
+    expect(live.subjects[0]).toMatchObject({
+      id: tree.subjects[0]!.id,
+      name: "General knowledge",
+    });
+    // Approved is fixed.
+    expect(await admin.saveCatalogueTree(versionId, tree)).toMatchObject({
+      ok: false,
+      code: "READ_ONLY",
+    });
+    expect(
+      await prisma.auditLog.count({
+        where: { action: "admin.catalogue.build" },
+      }),
+    ).toBe(1);
+  });
+
+  it("starts blank, and needs a real exam", async () => {
+    const boss = await makeUser("boss@example.com", "ADMIN");
+    const ldc = await exam();
+    expect(
+      await admin.buildSyllabus(as(boss), {
+        title: "LDC",
+        examId: crypto.randomUUID(),
+        text: null,
+      }),
+    ).toMatchObject({ ok: false, code: "NO_EXAM" });
+    const blank = await admin.buildSyllabus(as(boss), {
+      title: "LDC",
+      examId: ldc.id,
+      text: null,
+    });
+    const version = (await admin.forReview((blank as { id: string }).id))!;
+    expect(version.parse).toBeNull();
+    expect(version.subjects).toHaveLength(1);
+    expect(version.subjects[0]!.topics).toHaveLength(1);
+  });
+});
+
 describe("admin: settings", () => {
   it("changes a plan limit for everyone without a restart", async () => {
     const top = await makeUser("top@example.com", "SUPER_ADMIN");

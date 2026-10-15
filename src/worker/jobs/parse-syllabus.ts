@@ -46,7 +46,7 @@ export function startParseWorker() {
     ),
   );
   console.log(
-    `[worker] ${PARSE_QUEUE}: ${ai.name} (${ai.model}), concurrency ${env.WORKER_CONCURRENCY}`,
+    `[worker] ${PARSE_QUEUE}: rules, or ${ai.name} (${ai.model}) while AI is on; concurrency ${env.WORKER_CONCURRENCY}`,
   );
   return worker;
 }

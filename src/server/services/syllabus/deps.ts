@@ -13,6 +13,7 @@ import type { SyllabusRepository } from "@/server/repositories/syllabus-reposito
 import type { ObjectStorage } from "@/server/storage/types";
 
 import type { OcrProvider } from "./extract";
+import type { Reader } from "./parser-version";
 
 export type SyllabusDeps = {
   syllabuses: SyllabusRepository;
@@ -29,8 +30,9 @@ export type SyllabusDeps = {
   };
   clock: Clock;
   ids: IdGenerator;
-  /** The configured AI reads PDF pages and photos itself (decides which cached parse fits). */
-  readsDocuments: boolean;
+  /** Whether AI reads syllabuses now (the admin's switch), and whether it reads pages
+   * itself. Decides which parser runs and which cached parse fits. */
+  reader: () => Promise<Reader>;
   /** The admin's "new syllabus uploads" switch (milestone 15); on when left out. */
   uploadsOpen?: () => Promise<boolean>;
 };

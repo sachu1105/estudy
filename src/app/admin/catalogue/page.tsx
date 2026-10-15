@@ -1,9 +1,10 @@
-import { ChevronRight, Library } from "lucide-react";
+import { ChevronRight, Library, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { AddSyllabusDialog } from "@/features/admin/components/add-syllabus-dialog";
 import { ExamForm } from "@/features/admin/components/exam-form";
 import { canAdmin } from "@/lib/admin/access";
@@ -20,7 +21,7 @@ const TABS = [
 ] as const;
 
 const EMPTY = {
-  PENDING: "Nothing waiting. Add a syllabus to send one for review.",
+  PENDING: "Nothing waiting. Build a syllabus for an exam to start one.",
   APPROVED: "No approved syllabuses yet.",
   REJECTED: "Nothing rejected.",
 };
@@ -55,6 +56,11 @@ export default async function AdminCatalogue({
         actions={
           editor ? (
             <div className="flex flex-wrap gap-2">
+              <Button asChild variant="primary">
+                <Link href="/admin/catalogue/new">
+                  <Plus aria-hidden /> Build a syllabus
+                </Link>
+              </Button>
               <ExamForm />
               <AddSyllabusDialog
                 uploads={uploads}
@@ -100,6 +106,13 @@ export default async function AdminCatalogue({
                       >
                         {live[0].title}
                         {live.length > 1 ? ` +${live.length - 1} more` : ""}
+                      </Link>
+                    ) : editor ? (
+                      <Link
+                        href={`/admin/catalogue/new?exam=${e.id}`}
+                        className="truncate text-small text-accent-ink hover:underline"
+                      >
+                        {e.board} · no syllabus yet. Build one
                       </Link>
                     ) : (
                       <span className="truncate text-small text-ink-muted">

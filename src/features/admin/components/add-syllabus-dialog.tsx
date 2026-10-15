@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Search } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,8 @@ type Upload = {
 };
 
 /**
- * How a syllabus gets into the catalogue: pick a confirmed upload and promote a copy,
- * which then waits for review. Opens by itself when the page was searched (`?q=`).
+ * The other way into the catalogue (besides building one): pick a user's confirmed upload
+ * and promote a copy, which then waits for review. Opens by itself when the page was searched (`?q=`).
  */
 export function AddSyllabusDialog({
   uploads,
@@ -43,13 +43,13 @@ export function AddSyllabusDialog({
   );
   return (
     <>
-      <Button variant="primary" onClick={() => setOpen(true)}>
-        <Plus aria-hidden /> Add a syllabus
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        <Upload aria-hidden /> Promote an upload
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Add a syllabus</DialogTitle>
+            <DialogTitle>Promote an upload</DialogTitle>
             <DialogDescription>
               Upload and confirm it as a normal user first, then promote it
               here. The copy waits for review before anyone sees it.

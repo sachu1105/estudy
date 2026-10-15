@@ -24,7 +24,9 @@ export default async function ExamSyllabusPage({
 
   return (
     <div className="flex flex-col gap-5">
-      {canReadAgain(version) ? <RereadNote versionId={version.id} /> : null}
+      {(await canReadAgain(version)) ? (
+        <RereadNote versionId={version.id} />
+      ) : null}
       <SyllabusEditor
         versionId={version.id}
         initialTree={toEditableTree(version.subjects)}

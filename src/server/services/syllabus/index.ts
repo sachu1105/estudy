@@ -3,7 +3,7 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { can, limit } from "@/server/entitlements";
-import { flagOn } from "@/server/settings";
+import { aiOn, flagOn } from "@/server/settings";
 import { env } from "@/server/env";
 import { parseQueue } from "@/server/queue";
 import { publisher } from "@/server/realtime";
@@ -16,7 +16,7 @@ import { storage } from "@/server/storage";
 
 import type { Actor, SyllabusDeps } from "./deps";
 import type { SourceKind } from "./extract";
-import { parserFor } from "./parser-version";
+import { canUpgrade, type Reader } from "./parser-version";
 import { createReviewService } from "./review-service";
 import { createUploadService } from "./upload-service";
 
@@ -36,24 +36,24 @@ export const syllabusDeps: SyllabusDeps = {
   uploadsOpen: () => flagOn("syllabusUploads"),
   clock: systemClock,
   ids: randomIds,
-  readsDocuments: env.AI_PROVIDER === "hosted",
+  reader: async (): Promise<Reader> => ({
+    ai: await aiOn(),
+    readsDocuments: env.AI_PROVIDER === "hosted",
+  }),
 };
 
 export const uploadService = createUploadService(syllabusDeps);
 /** True when a better parser than the one that read this syllabus is now available. */
-export const canReadAgain = (version: {
+export const canReadAgain = async (version: {
   sourceKind: SourceKind | null;
   parse: { promptVersion: string } | null;
-}) =>
-  Boolean(
-    version.parse &&
-    version.sourceKind &&
-    version.parse.promptVersion !==
-      parserFor(syllabusDeps.readsDocuments, version.sourceKind).version,
-  );
+}) => canUpgrade(await syllabusDeps.reader(), version);
 
-/** Photos of a printed syllabus can be read only when the AI reads pages itself. */
-export const photosSupported = syllabusDeps.readsDocuments;
+/** Photos of a printed syllabus can be read only when the AI is on and reads pages itself. */
+export const photosSupported = async () => {
+  const reader = await syllabusDeps.reader();
+  return reader.ai && reader.readsDocuments;
+};
 export const reviewService = createReviewService(syllabusDeps);
 
 export const catalogueService = {

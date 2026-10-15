@@ -120,11 +120,19 @@ export const syllabusRepository = {
     return prisma.syllabusVersion.create({ data });
   },
 
-  /** The parse of this file by the current parser, if there is one (rule 4). */
-  findParse(fileHash: string, promptVersion: string) {
-    return prisma.syllabusParse.findUnique({
-      where: { fileHash_promptVersion: { fileHash, promptVersion } },
+  /**
+   * The best earlier parse of this file (rule 4): the first of `promptVersions`, in that
+   * order, that exists.
+   */
+  async findParse(fileHash: string, promptVersions: string[]) {
+    const rows = await prisma.syllabusParse.findMany({
+      where: { fileHash, promptVersion: { in: promptVersions } },
     });
+    for (const version of promptVersions) {
+      const row = rows.find((r) => r.promptVersion === version);
+      if (row) return row;
+    }
+    return null;
   },
 
   /** Saves a parse once per file and parser. If another job won the race, returns that one. */
@@ -164,12 +172,16 @@ export const syllabusRepository = {
    * Parses by the same parser that might be the same syllabus: the newest first, those for
    * the same post ahead of the rest. Signatures are compared in the service.
    */
-  findSimilarCandidates(promptVersion: string, post: string | null) {
+  findSimilarCandidates(promptVersions: string[], post: string | null) {
     return prisma.syllabusParse
       .findMany({
-        where: { promptVersion, NOT: { minhash: { isEmpty: true } } },
+        where: {
+          promptVersion: { in: promptVersions },
+          NOT: { minhash: { isEmpty: true } },
+        },
         select: {
           id: true,
+          promptVersion: true,
           minhash: true,
           post: true,
           tree: true,
