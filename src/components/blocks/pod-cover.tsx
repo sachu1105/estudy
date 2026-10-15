@@ -1,5 +1,8 @@
+import { Check } from "lucide-react";
+
 import {
   COVER_GRAIN,
+  initialsOf,
   meshBackground,
   meshCss,
   type Mesh,
@@ -54,6 +57,39 @@ export function PodCover({
       ) : (
         <MeshArt mesh={meshBackground(cover.preset)} />
       )}
+    </span>
+  );
+}
+
+/**
+ * A pod's face in a list: its cover as a small square with the name's initials. A done
+ * pod gets a check in the corner. Decorative; the name sits beside it.
+ */
+export function PodMark({
+  cover,
+  name,
+  done = false,
+  className,
+}: {
+  cover: Cover;
+  name: string;
+  done?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden
+      className={cn("relative grid size-10 shrink-0 place-items-center", className)}
+    >
+      <PodCover cover={cover} className="absolute inset-0 rounded-[10px]" />
+      <span className="relative font-heading text-small font-semibold text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.4)]">
+        {initialsOf(name)}
+      </span>
+      {done ? (
+        <span className="absolute -right-1 -bottom-1 grid size-4 place-items-center rounded-full bg-success text-surface ring-2 ring-surface">
+          <Check className="size-3" strokeWidth={3} />
+        </span>
+      ) : null}
     </span>
   );
 }

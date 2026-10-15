@@ -235,7 +235,10 @@ export const syllabusRepository = {
         status: "APPROVED",
         deletedAt: null,
       },
-      include: { ...treeInclude, exam: { select: { id: true, name: true } } },
+      include: {
+        ...treeInclude,
+        exam: { select: { id: true, name: true, board: true } },
+      },
     });
   },
 

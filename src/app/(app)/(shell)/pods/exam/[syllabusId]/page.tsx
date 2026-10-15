@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PodBoard } from "@/features/pods/components/pod-board";
 import { loadExam } from "@/features/pods/load-exam";
 import { toBoard, POD_STAGES, type Board } from "@/lib/pods/stages";
+import { coverService } from "@/server/services/pods";
 
 export const metadata: Metadata = { title: "Exam" };
 
@@ -16,6 +17,9 @@ export default async function ExamSubjectsPage({
   const board = Object.fromEntries(
     POD_STAGES.map((s) => [s, columns[s].map((p) => p.id)]),
   ) as Board;
+  const covers = await Promise.all(
+    exam.pods.map((p) => coverService.resolve(p.cover, p.id)),
+  );
 
   return (
     <section aria-label="Subjects" className="flex flex-col gap-3">
@@ -25,12 +29,13 @@ export default async function ExamSubjectsPage({
       </p>
       <PodBoard
         syllabusId={exam.id}
-        pods={exam.pods.map((p) => ({
+        pods={exam.pods.map((p, i) => ({
           id: p.id,
           name: p.name,
           topics: p.topics.length,
           topicsDone: p.topicsDone,
           items: p.items,
+          cover: covers[i]!,
         }))}
         initialBoard={board}
       />

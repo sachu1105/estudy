@@ -20,6 +20,7 @@ export const catalogueRepository = {
             title: true,
             approvedAt: true,
             _count: { select: { subjects: true } },
+            subjects: { select: { _count: { select: { topics: true } } } },
           },
         },
       },

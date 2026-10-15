@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   COVER_PRESETS,
   coverFor,
+  initialsOf,
   meshBackground,
   parseStoredCover,
 } from "./covers";
@@ -39,5 +40,13 @@ describe("pod covers", () => {
       parseStoredCover({ kind: "image", key: "covers/u/1", mime: "image/gif" }),
     ).toBeNull();
     expect(parseStoredCover(null)).toBeNull();
+  });
+
+  it("marks a pod with up to two initials, skipping small words", () => {
+    expect(initialsOf("Current Affairs")).toBe("CA");
+    expect(initialsOf("Economics")).toBe("E");
+    expect(initialsOf("Mental Ability & Reasoning")).toBe("MA");
+    expect(initialsOf("Basics of Computer")).toBe("BC");
+    expect(initialsOf("  ")).toBe("");
   });
 });

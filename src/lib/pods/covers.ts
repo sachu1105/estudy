@@ -38,6 +38,19 @@ export function coverFor(id: string): PodCover {
   return { kind: "gradient", preset: NAMES[Math.abs(hash) % NAMES.length]! };
 }
 
+const MINOR_WORDS = new Set(["and", "of", "the", "in", "for", "&"]);
+
+/** Up to two letters for a pod's mark: "Current Affairs" -> "CA", "Economics" -> "E". */
+export function initialsOf(name: string) {
+  const words = name
+    .split(/[\s/,-]+/)
+    .filter((w) => /\p{L}|\p{N}/u.test(w) && !MINOR_WORDS.has(w.toLowerCase()));
+  return words
+    .slice(0, 2)
+    .map((w) => [...w][0]!.toUpperCase())
+    .join("");
+}
+
 /** The CSS background for a preset. */
 export function meshBackground(preset: CoverPreset) {
   return meshCss(COVER_PRESETS[preset]);

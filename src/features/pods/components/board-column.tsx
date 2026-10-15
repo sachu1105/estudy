@@ -12,10 +12,12 @@ import { stageHints, stageLabels, type PodStage } from "@/lib/pods/stages";
 import { cn } from "@/lib/utils/cn";
 
 import { BoardCard, type BoardPod } from "./board-card";
+import { StageIcon } from "./stage-icon";
 
 /**
  * One column of the exam board. Empty columns still take a drop. On a phone the columns
  * stack, so each folds to its heading; from lg they sit side by side, always open.
+ * Studying is the lane the plan works from, so it alone carries a tint of the accent.
  */
 export function BoardColumn({
   stage,
@@ -34,18 +36,23 @@ export function BoardColumn({
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage });
   const headingId = `board-${stage}`;
+  const focus = stage === "STUDYING";
   return (
     <section
       // The whole column takes a drop, so a folded one on a phone still does.
       ref={setNodeRef}
       aria-labelledby={headingId}
       className={cn(
-        "flex min-w-0 flex-col gap-2 rounded-card border border-border bg-surface-muted/60 p-2 transition-colors duration-[120ms]",
+        "flex min-w-0 flex-col gap-2 rounded-card border p-2 transition-colors duration-[120ms]",
+        focus
+          ? "border-accent/25 bg-accent-soft/60"
+          : "border-transparent bg-surface-muted/70",
         isOver && "border-accent bg-accent-soft/40",
       )}
     >
       <div className="relative flex min-h-11 flex-col justify-center px-2 py-1">
         <div className="flex items-center gap-2">
+          <StageIcon stage={stage} />
           <h3 id={headingId} className="text-h3">
             {/* The whole heading row is the toggle on a phone. */}
             <button
@@ -58,7 +65,12 @@ export function BoardColumn({
             </button>
             <span className="hidden lg:inline">{stageLabels[stage]}</span>
           </h3>
-          <span className="rounded-full bg-surface px-2 font-mono text-small text-ink-muted tabular-nums">
+          <span
+            className={cn(
+              "rounded-full bg-surface px-2 font-mono text-small tabular-nums",
+              focus ? "text-accent-ink" : "text-ink-muted",
+            )}
+          >
             {pods.length}
           </span>
           <ChevronDown
@@ -71,7 +83,7 @@ export function BoardColumn({
         </div>
         <p
           className={cn(
-            "text-small text-ink-muted",
+            "pl-6 text-small text-ink-muted",
             !open && "hidden lg:block",
           )}
         >
