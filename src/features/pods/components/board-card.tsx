@@ -33,8 +33,7 @@ export type BoardPod = {
 /**
  * A subject pod on the exam board. Drag the card itself (long-press on a phone); there
  * is no handle. The menu does the same with a tap or the keyboard: up, down, or to
- * another column. `dense` is the one-line card a crowded column uses: the name and
- * "done/total" only, so a 17-subject syllabus stays short.
+ * another column.
  */
 export function BoardCard({
   pod,
@@ -43,11 +42,9 @@ export function BoardCard({
   last,
   onMove,
   onShift,
-  dense = false,
 }: {
   pod: BoardPod;
   stage: PodStage;
-  dense?: boolean;
   first: boolean;
   last: boolean;
   onMove: (stage: PodStage) => void;
@@ -71,8 +68,7 @@ export function BoardCard({
       }}
       {...pointer}
       className={cn(
-        "group relative flex cursor-grab touch-manipulation items-center gap-2.5 rounded-control border border-border bg-surface pr-1 pl-2 shadow-sm transition-[translate,rotate,box-shadow] duration-[120ms] select-none [-webkit-touch-callout:none] hover:-translate-y-px hover:shadow-md active:cursor-grabbing [@media(hover:hover)]:pr-3",
-        dense ? "min-h-11 py-1" : "min-h-16 py-2",
+        "group relative flex min-h-16 cursor-grab touch-manipulation items-center gap-2.5 rounded-control border border-border bg-surface py-2 pr-1 pl-2 [@media(hover:hover)]:pr-3 shadow-sm transition-[translate,rotate,box-shadow] duration-[120ms] select-none [-webkit-touch-callout:none] hover:-translate-y-px hover:shadow-md active:cursor-grabbing",
         isDragging && "z-10 rotate-[1.5deg] shadow-lg",
       )}
     >
@@ -80,33 +76,25 @@ export function BoardCard({
         cover={pod.cover}
         name={pod.name}
         done={stage === "DONE"}
-        className={dense ? "size-7" : "size-9"}
+        className="size-9"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         {/* The link covers the card, so the whole card opens the pod. */}
         <Link
           href={`/pods/${pod.id}`}
           draggable={false}
-          className={cn(
-            "font-heading text-body font-medium text-ink after:absolute after:inset-0 after:rounded-control hover:text-accent-ink",
-            dense ? "truncate" : "line-clamp-2 break-words",
-          )}
+          className="line-clamp-2 font-heading text-body font-medium break-words text-ink after:absolute after:inset-0 after:rounded-control hover:text-accent-ink"
         >
           {pod.name}
         </Link>
-        <span
-          className={cn(
-            "truncate text-small text-ink-muted",
-            dense && "sr-only",
-          )}
-        >
+        <span className="truncate text-small text-ink-muted">
           {pod.topicsDone} of {pod.topics} topic{pod.topics === 1 ? "" : "s"}
           {pod.items > 0
             ? ` · ${pod.items} item${pod.items === 1 ? "" : "s"}`
             : null}
         </span>
         {/* Only once something is done: a row of empty bars is just noise. */}
-        {pod.topicsDone > 0 && !dense ? (
+        {pod.topicsDone > 0 ? (
           <span
             aria-hidden
             className="mt-1 h-1 overflow-hidden rounded-full bg-surface-muted"
@@ -121,19 +109,6 @@ export function BoardCard({
           </span>
         ) : null}
       </div>
-      {dense ? (
-        <span
-          aria-hidden
-          className={cn(
-            "shrink-0 font-mono text-small tabular-nums",
-            pod.topics > 0 && pod.topicsDone >= pod.topics
-              ? "text-success"
-              : "text-ink-muted",
-          )}
-        >
-          {pod.topicsDone}/{pod.topics}
-        </span>
-      ) : null}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
