@@ -6,8 +6,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Play } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { stageHints, stageLabels, type PodStage } from "@/lib/pods/stages";
 import { cn } from "@/lib/utils/cn";
 
@@ -18,7 +19,13 @@ import { StageIcon } from "./stage-icon";
  * One column of the exam board. Empty columns still take a drop. On a phone the columns
  * stack, so each folds to its heading; from lg they sit side by side, always open.
  * Studying is the lane the plan works from, so it alone carries a tint of the accent.
+ * A crowded column switches to one-line cards and, side by side on a wide screen,
+ * scrolls inside itself, so a long syllabus keeps the board one screen tall.
  */
+
+/** More subjects than this in one column and its cards go to one line. */
+const DENSE_FROM = 6;
+
 export function BoardColumn({
   stage,
   pods,
@@ -26,6 +33,7 @@ export function BoardColumn({
   onShift,
   open,
   onToggle,
+  quickStart,
 }: {
   stage: PodStage;
   pods: BoardPod[];
@@ -33,7 +41,10 @@ export function BoardColumn({
   onShift: (podId: string, delta: -1 | 1) => void;
   open: boolean;
   onToggle: () => void;
+  /** Offered while this column is empty: moves the first few to-study subjects in. */
+  quickStart?: { count: number; run: () => void };
 }) {
+  const dense = pods.length > DENSE_FROM;
   const { setNodeRef, isOver } = useDroppable({ id: stage });
   const headingId = `board-${stage}`;
   const focus = stage === "STUDYING";
@@ -97,7 +108,11 @@ export function BoardColumn({
       >
         <ul
           className={cn(
-            "min-h-14 flex-col gap-2",
+            "min-h-14 flex-col",
+            dense
+              ? // The padding keeps the cards' shadow and hover lift inside the scroll box.
+                "gap-1.5 lg:-m-1 lg:max-h-[calc(100dvh-10rem)] lg:overflow-y-auto lg:overscroll-contain lg:p-1"
+              : "gap-2",
             open ? "flex" : "hidden lg:flex",
           )}
         >
@@ -110,10 +125,19 @@ export function BoardColumn({
                 last={i === pods.length - 1}
                 onMove={(to) => onMove(pod.id, to)}
                 onShift={(delta) => onShift(pod.id, delta)}
+                dense={dense}
               />
             </li>
           ))}
-          {pods.length === 0 ? (
+          {pods.length === 0 && quickStart ? (
+            <li className="flex flex-col items-center gap-2 rounded-control border border-dashed border-border px-3 py-4 text-center text-small text-ink-muted">
+              Most people study two or three subjects at a time. Drag them here,
+              or
+              <Button variant="secondary" size="sm" onClick={quickStart.run}>
+                <Play aria-hidden /> Start the top {quickStart.count}
+              </Button>
+            </li>
+          ) : pods.length === 0 ? (
             <li className="grid min-h-14 place-items-center rounded-control border border-dashed border-border px-3 text-center text-small text-ink-muted">
               Drop a subject here
             </li>

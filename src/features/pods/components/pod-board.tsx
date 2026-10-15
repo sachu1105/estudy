@@ -25,6 +25,9 @@ import { arrangeBoardAction } from "../actions";
 import type { BoardPod } from "./board-card";
 import { BoardColumn } from "./board-column";
 
+/** How many subjects "Start the top 3" moves into Studying. */
+const QUICK_START = 3;
+
 const isStage = (id: unknown): id is PodStage =>
   POD_STAGES.includes(id as PodStage);
 
@@ -44,9 +47,12 @@ export function PodBoard({
   const dndId = useId();
   const [board, setBoard] = useState(initialBoard);
   // On a phone, open the column being worked on: Studying, else the first with pods.
+  // A fresh exam opens Studying too, empty, so "Start the top 3" is the first thing
+  // seen rather than a long To study list.
   const [open, setOpen] = useState<Record<PodStage, boolean>>(() => {
     const first =
-      initialBoard.STUDYING.length > 0
+      initialBoard.STUDYING.length > 0 ||
+      initialBoard.TO_STUDY.length > QUICK_START
         ? "STUDYING"
         : (POD_STAGES.find((s) => initialBoard[s].length > 0) ?? "TO_STUDY");
     return Object.fromEntries(
@@ -122,6 +128,23 @@ export function PodBoard({
     toast.success(`${name(podId)} moved to ${stageLabels[to].toLowerCase()}`);
   };
 
+  // A fresh exam has everything waiting in To study: start its first few in one tap.
+  const canQuickStart =
+    board.STUDYING.length === 0 && board.TO_STUDY.length > QUICK_START;
+  const quickStart = () => {
+    const first = board.TO_STUDY.slice(0, QUICK_START);
+    save(
+      {
+        ...board,
+        TO_STUDY: board.TO_STUDY.slice(QUICK_START),
+        STUDYING: first,
+      },
+      board,
+    );
+    reveal("STUDYING");
+    toast.success(`${first.map(name).join(", ")} moved to studying`);
+  };
+
   const shift = (podId: string, delta: -1 | 1) => {
     const stage = stageOf(board, podId);
     if (!stage) return;
@@ -165,6 +188,11 @@ export function PodBoard({
             onShift={shift}
             open={open[stage]}
             onToggle={() => setOpen((o) => ({ ...o, [stage]: !o[stage] }))}
+            quickStart={
+              stage === "STUDYING" && canQuickStart
+                ? { count: QUICK_START, run: quickStart }
+                : undefined
+            }
           />
         ))}
       </div>
