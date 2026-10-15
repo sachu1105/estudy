@@ -43,18 +43,13 @@ export default async function TodayPage() {
       </>
     );
 
-  const examOf = new Map(view.plans.map((p) => [p.id, p.title]));
   const tasks = view.tasks.map((t) => ({
     id: t.id,
+    examId: t.examId,
     title: taskTitle(t, t.topicName ?? "Topic", t.subjectName ?? "Subject"),
     step: taskStep(t, t.subjectName ?? "Subject"),
-    subject: [
+    subject:
       t.type === "FULL_MOCK" ? "Every subject" : (t.subjectName ?? "Your task"),
-      // With more than one exam planned, say which one.
-      view.plans.length > 1 ? examOf.get(t.planId) : null,
-    ]
-      .filter(Boolean)
-      .join(" · "),
     minutes: t.minutes,
     done: t.done,
     topicId: t.topicId,
@@ -62,8 +57,19 @@ export default async function TodayPage() {
     timed: TIMED.has(t.type),
     test: TESTS.has(t.type),
   }));
-  const next = tasks.find((t) => !t.done);
-  const left = tasks.filter((t) => !t.done).length;
+  // The focus exam's work is the page; the rest is gathered under it. With one exam running
+  // `others` is empty and nothing below changes.
+  const focusTasks = view.focusExamId
+    ? tasks.filter((t) => t.examId === view.focusExamId)
+    : tasks;
+  const others = view.exams
+    .filter((e) => !e.focus)
+    .map((e) => ({ ...e, tasks: tasks.filter((t) => t.examId === e.examId) }))
+    .filter((e) => e.tasks.length > 0);
+  const focusExam = view.exams.find((e) => e.focus) ?? null;
+  // Next up follows the focus exam, falling back to whatever else is left today.
+  const next = focusTasks.find((t) => !t.done) ?? tasks.find((t) => !t.done);
+  const left = focusTasks.filter((t) => !t.done).length;
 
   return (
     <>
@@ -86,6 +92,7 @@ export default async function TodayPage() {
           streak={view.streak}
           frozen={view.streak.frozen.map((d) => formatDay(d, false))}
           today={view.today}
+          focusExam={others.length > 0 ? (focusExam?.title ?? null) : null}
         />
 
         <section className="flex flex-col gap-3">
@@ -95,8 +102,8 @@ export default async function TodayPage() {
             </h2>
             <Link
               href={
-                view.plans[0]!.examId
-                  ? `/pods/exam/${view.plans[0]!.examId}/plan`
+                view.focusExamId
+                  ? `/pods/exam/${view.focusExamId}/plan`
                   : "/pods"
               }
               className="text-small font-medium text-accent-ink hover:underline"
@@ -104,16 +111,36 @@ export default async function TodayPage() {
               Whole plan
             </Link>
           </div>
-          {tasks.length === 0 ? (
+          {others.length > 0 && focusExam ? (
+            <p className="-mt-1 text-small text-ink-muted">
+              {focusExam.title} · your focus
+            </p>
+          ) : null}
+          {focusTasks.length === 0 ? (
             <Card className="p-6">
               <p className="text-center text-body text-ink-muted">
                 Nothing planned today. Rest, or read ahead in a pod.
               </p>
             </Card>
           ) : (
-            <TodayTasks tasks={tasks} />
+            <TodayTasks tasks={focusTasks} />
           )}
         </section>
+
+        {others.map((exam) => (
+          <section key={exam.examId} className="flex flex-col gap-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="text-h3">{exam.title}</h2>
+              <Link
+                href={`/pods/exam/${exam.examId}/plan`}
+                className="text-small font-medium text-accent-ink hover:underline"
+              >
+                Whole plan
+              </Link>
+            </div>
+            <TodayTasks tasks={exam.tasks} />
+          </section>
+        ))}
 
         {view.nextMock ? (
           <Link

@@ -85,6 +85,7 @@ model User {
   topicCompletions   TopicCompletion[]
   planDrafts         PlanDraft[]
   studyAvailability  StudyAvailability?
+  examPriorities     ExamPriority[]
   studyPlans         StudyPlan[]
   taskCompletions    TaskCompletion[]
   studySessions      StudySession[]
@@ -379,12 +380,13 @@ model SyllabusVersion {
   updatedAt      DateTime           @updatedAt @db.Timestamptz(6)
   deletedAt      DateTime?          @db.Timestamptz(6)
 
-  subjects   Subject[]
-  parseJobs  ParseJob[]
-  pods       Pod[]
-  planDrafts PlanDraft[]
-  studyPlans StudyPlan[]
-  examCovers ExamCover[]
+  subjects       Subject[]
+  parseJobs      ParseJob[]
+  pods           Pod[]
+  planDrafts     PlanDraft[]
+  studyPlans     StudyPlan[]
+  examPriorities ExamPriority[]
+  examCovers     ExamCover[]
 
   @@index([ownerId, deletedAt])
   @@index([visibility, status])
@@ -614,6 +616,40 @@ model TopicCompletion {
 enum StudyPlanStatus {
   ACTIVE
   ARCHIVED
+  /// The user set this exam aside. The plan, its tasks and everything logged against them
+  /// stay; it simply stops being ACTIVE, which is what takes it off Today, the calendar and
+  /// the mock strip without a single query changing. Resuming builds a fresh plan from it.
+  PAUSED
+}
+
+/// What an exam is to the user right now. Exactly one exam is the FOCUS: it leads Today and
+/// takes the larger share of the day (lib/plans/shares).
+enum ExamRole {
+  FOCUS
+  ALONGSIDE
+  PAUSED
+}
+
+/// How one user ranks one exam. Kept apart from StudyPlan because a pause has to outlive the
+/// plan it paused, an exam pod can exist before any plan does, and every re-plan writes a new
+/// StudyPlan row that a role would have to be copied onto. No row means ALONGSIDE.
+model ExamPriority {
+  id                String          @id @default(uuid()) @db.Uuid
+  userId            String          @db.Uuid
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  syllabusVersionId String          @db.Uuid
+  syllabusVersion   SyllabusVersion @relation(fields: [syllabusVersionId], references: [id], onDelete: Cascade)
+  role              ExamRole        @default(ALONGSIDE)
+  /// A share of the day the user pinned by hand (rule 14). Null means derived from the roles.
+  sharePercent      Int?
+  /// When it was paused. The days spent paused are added to the plan's timelineStart on
+  /// resume, so a pause never eats the learning days out of the final review window.
+  pausedAt          DateTime?       @db.Timestamptz(6)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, syllabusVersionId])
+  @@index([userId, role])
 }
 
 enum PlanTaskType {
@@ -686,6 +722,11 @@ model StudyPlan {
   availableMinutes  Int
   requiredMinutes   Int
   plannedMinutes    Int
+  /// SNAPSHOT, NOT STATE. The role and share of the day this plan was built with, for the
+  /// "Why this?" screens and for an archived plan's own story. Never read these to find out
+  /// what an exam is now: that is ExamPriority.
+  role              ExamRole?
+  sharePercent      Int?
   /// Per-topic confidence changes from the last re-plan, fed into the next one.
   adjustments       Json             @default("[]")
   /// What the re-plan that made this plan changed; shown once as a card.

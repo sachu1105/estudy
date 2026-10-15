@@ -15,6 +15,7 @@ export default async function SubjectsPage({
       syllabusId={draft.syllabus.id}
       initial={draft.data}
       today={draft.today}
+      sharing={draft.sharing}
       subjects={draft.subjects.map((s) => ({
         id: s.subjectId,
         name: s.name,

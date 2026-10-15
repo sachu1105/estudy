@@ -25,7 +25,7 @@ export default async function ExamPodLayout({
   children,
 }: LayoutProps<"/pods/exam/[syllabusId]">) {
   const { syllabusId } = await params;
-  const { user, exam, plan, cover } = await loadExam(syllabusId);
+  const { user, exam, plan, cover, rank } = await loadExam(syllabusId);
   const today = progressService.today(user);
 
   const percent = exam.topics
@@ -50,7 +50,7 @@ export default async function ExamPodLayout({
         }
         actions={
           <div className="flex items-center gap-2">
-            {plan.kind === "active" ? null : (
+            {plan.kind === "active" || plan.kind === "paused" ? null : (
               <ExamPlanCta syllabusId={exam.id} draft={plan.kind === "draft"} />
             )}
             <ExamMenu
@@ -60,6 +60,7 @@ export default async function ExamPodLayout({
               items={exam.items}
               ownUpload={exam.editable}
               hasPlan={plan.kind === "active"}
+              rank={rank}
               cover={cover}
             />
           </div>
@@ -87,7 +88,18 @@ export default async function ExamPodLayout({
           <StatCell
             label="Days left"
             value={daysLeft!}
-            hint={`Plan ends ${shortDate(plan.endDate)}`}
+            hint={
+              // Only worth saying when something else is competing for the day.
+              rank?.shared
+                ? `${rank.sharePercent}% of your day${rank.role === "FOCUS" ? ", your focus" : ""}`
+                : `Plan ends ${shortDate(plan.endDate)}`
+            }
+          />
+        ) : plan.kind === "paused" ? (
+          <StatCell
+            label="Plan"
+            value="Paused"
+            hint="Your time goes to your other exams"
           />
         ) : (
           <StatCell

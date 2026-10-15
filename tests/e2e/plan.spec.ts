@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { seedAndLogin } from "./support/auth";
 import { seedParsedDraft } from "./support/db";
 
 async function examPod(page: Page, title: string) {
@@ -21,11 +22,16 @@ const noSideScroll = (page: Page) =>
   );
 
 test.describe("study plan", () => {
+  // Its own user per project: exams share one day now, so two projects making exam pods on
+  // the shared account would re-plan each other's tasks out from under them mid-test.
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   test("from the exam pod through four steps to a plan that explains itself", async ({
     page,
   }) => {
     // The longest flow in the suite: setup, edits, re-plans, calendar and a topic.
     test.setTimeout(90_000);
+    await seedAndLogin(page, `plan-${test.info().project.name}`);
     const title = `Plan ${test.info().project.name} ${Date.now()}`;
     const examId = await examPod(page, title);
 

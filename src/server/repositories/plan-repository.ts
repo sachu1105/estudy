@@ -3,7 +3,7 @@ import "server-only";
 import type { PlanOutput } from "@/lib/plan-engine";
 import type { StudyAvailability } from "@/lib/plans/draft";
 import { prisma } from "@/server/db";
-import { Prisma } from "@/server/db/generated/prisma/client";
+import { Prisma, type ExamRole } from "@/server/db/generated/prisma/client";
 
 /** "YYYY-MM-DD" <-> a Postgres date column. */
 export const toDbDate = (iso: string) => new Date(`${iso}T00:00:00Z`);
@@ -18,6 +18,9 @@ export type NewPlan = {
   output: PlanOutput;
   adjustments?: unknown;
   replanDiff?: unknown;
+  /** Snapshot of the role and share of the day this plan was built with. */
+  role?: ExamRole | null;
+  sharePercent?: number | null;
 };
 
 export const planRepository = {
@@ -59,6 +62,65 @@ export const planRepository = {
           },
         },
       },
+    });
+  },
+
+  /** How the user ranks each exam. No row for an exam means it runs alongside the focus. */
+  prioritiesFor(userId: string) {
+    return prisma.examPriority.findMany({ where: { userId } });
+  },
+
+  setPriority(
+    userId: string,
+    syllabusVersionId: string,
+    role: ExamRole,
+    pausedAt: Date | null,
+  ) {
+    return prisma.examPriority.upsert({
+      where: { userId_syllabusVersionId: { userId, syllabusVersionId } },
+      create: { userId, syllabusVersionId, role, pausedAt },
+      update: { role, pausedAt },
+    });
+  },
+
+  /**
+   * The exams the user's day is divided between: the newest plan for each, running or set
+   * aside. Archived plans are history and never compete for time.
+   */
+  plannedExams(userId: string) {
+    return prisma.studyPlan.findMany({
+      where: {
+        userId,
+        status: { in: ["ACTIVE", "PAUSED"] },
+        syllabusVersionId: { not: null },
+      },
+      orderBy: [{ syllabusVersionId: "asc" }, { createdAt: "desc" }],
+      distinct: ["syllabusVersionId"],
+      select: planSummary,
+    });
+  },
+
+  /** Sets an exam aside. Its plan, tasks and everything logged against them stay put. */
+  pauseActivePlan(userId: string, syllabusVersionId: string) {
+    return prisma.studyPlan.updateMany({
+      where: { userId, syllabusVersionId, status: "ACTIVE" },
+      data: { status: "PAUSED" },
+    });
+  },
+
+  pausedPlanFor(userId: string, syllabusVersionId: string) {
+    return prisma.studyPlan.findFirst({
+      where: { userId, syllabusVersionId, status: "PAUSED" },
+      orderBy: { createdAt: "desc" },
+      select: { ...planSummary, inputs: true, adjustments: true },
+    });
+  },
+
+  /** Brings a set-aside plan back, with the timeline it should now be measured against. */
+  resumePlan(id: string, inputs: unknown) {
+    return prisma.studyPlan.update({
+      where: { id },
+      data: { status: "ACTIVE", inputs: inputs as Prisma.InputJsonValue },
     });
   },
 
@@ -364,6 +426,8 @@ export const planRepository = {
           availableMinutes: output.availableMinutes,
           requiredMinutes: output.requiredMinutes,
           plannedMinutes: output.plannedMinutes,
+          role: plan.role ?? null,
+          sharePercent: plan.sharePercent ?? null,
           adjustments: (plan.adjustments ?? []) as Prisma.InputJsonValue,
           ...(plan.replanDiff
             ? { replanDiff: plan.replanDiff as Prisma.InputJsonValue }
@@ -422,6 +486,8 @@ const planSummary = {
   availableMinutes: true,
   requiredMinutes: true,
   plannedMinutes: true,
+  role: true,
+  sharePercent: true,
   createdAt: true,
 } as const;
 

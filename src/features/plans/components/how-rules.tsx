@@ -7,6 +7,7 @@ import {
   FULL_MOCK_MINUTES,
   INTENSITY_PCT,
   MAX_BLOCK,
+  MIN_BLOCK,
   REVIEW_PCT,
   SECTION_MOCK_MINUTES,
 } from "@/lib/plan-engine";
@@ -21,6 +22,8 @@ export function HowRules() {
     `Once every topic of a subject is studied and revised twice, a ${SECTION_MOCK_MINUTES}-minute section mock follows.`,
     `The last ${REVIEW_PCT}% of your time is for revision and ${FULL_MOCK_MINUTES}-minute full mock tests.`,
     `${BUFFER_PCT}% of each day stays free, so a slow day doesn't break the plan.`,
+    `Your day is one day, however many exams you are preparing for. Your focus exam gets 70% of it with one other exam, 60% with two or more, and the rest share what's left. A share too small to hold a ${MIN_BLOCK}-minute block goes to your focus exam instead of fragmenting the day.`,
+    "Pausing an exam gives its time to the others and takes nothing away: its plan, topics and progress wait, and the days it spends paused are added back to its timeline when you resume.",
     "If the work doesn't fit, the plan is never squeezed: you see the numbers and choose.",
     "Every Sunday the plan is made fresh from that day, using what you actually did. Missed tasks are never carried over as a backlog.",
   ];

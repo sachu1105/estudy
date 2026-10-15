@@ -1,5 +1,6 @@
 import { toLocalDate, today as todayIn, type Clock } from "@/lib/clock";
 import { addDays, toDay, type PlanInput } from "@/lib/plan-engine";
+import { scheduledExams, type ExamRole } from "@/lib/plans/shares";
 import { computeStreak, STREAK_MINUTES } from "@/lib/progress/streak";
 import { streakXp, TASK_XP } from "@/lib/progress/xp";
 import { fromDbDate } from "@/server/repositories/plan-repository";
@@ -69,6 +70,11 @@ export function createProgressService(deps: ProgressDeps) {
     ): Promise<Result<{ streak: number }>> {
       const task = await deps.progress.findTask(taskId, user.id);
       if (!task) return failure("NOT_FOUND", "That task isn't in your plan.");
+      if (task.plan.status === "PAUSED")
+        return failure(
+          "PAUSED",
+          "This exam is paused. Resume it to tick its tasks off again.",
+        );
       if (task.plan.status !== "ACTIVE")
         return failure(
           "REPLACED",
@@ -201,51 +207,107 @@ export function createProgressService(deps: ProgressDeps) {
       };
     },
 
-    /** Everything the Today screen shows, across the user's active plans. */
+    /**
+     * Everything the Today screen shows. The focus exam leads: its tasks come first and the
+     * day's figures are its own, with the other exams gathered below it. With one exam
+     * running there is nothing to gather, so the screen is exactly what it always was.
+     */
     async todayView(user: User) {
       const today = todayFor(user);
-      const plans = await deps.plans.listActiveWithInputs(user.id);
-      const planned = await deps.progress.tasksOn(user.id, today);
-      // Ticked today on a plan that a re-plan has since replaced: still today's work.
-      const earlier = (await deps.progress.doneTasksOn(user.id, today)).filter(
-        (t) => !planned.some((p) => p.id === t.id),
+      const [plans, priorities] = await Promise.all([
+        deps.plans.listActiveWithInputs(user.id),
+        deps.plans.prioritiesFor(user.id),
+      ]);
+
+      // Paused exams have no active plan, so they are already absent here.
+      const roleOf = new Map(
+        priorities.map((p) => [p.syllabusVersionId, p.role]),
       );
-      const tasks = [...planned, ...earlier];
+      const order = scheduledExams(
+        plans.map((p) => ({
+          id: p.syllabusVersionId!,
+          role: (roleOf.get(p.syllabusVersionId!) ?? "ALONGSIDE") as ExamRole,
+          endDate: fromDbDate(p.endDate),
+        })),
+      );
+      const rankOf = new Map(order.map((e, i) => [e.id, i]));
+      const focusExamId = order[0]?.id ?? null;
+
+      const planned = await deps.progress.tasksOn(user.id, today);
+      const ticked = await deps.progress.doneTasksOn(user.id, today);
+      const all = [...planned, ...ticked];
       const states = await deps.progress.taskStates(
         user.id,
-        tasks.map((t) => t.id),
+        all.map((t) => t.id),
+      );
+
+      // Which exam each task belongs to. A task ticked earlier today may sit on a plan a
+      // re-plan has since replaced, so those are looked up one by one.
+      const examOfPlan = new Map(
+        plans.map((p) => [p.id, p.syllabusVersionId!]),
       );
       const names = new Map(plans.map((p) => [p.id, namesOf(p.inputs)]));
-      // Replaced plans keep the same names; borrow them from the exam's active plan.
-      const byExam = new Map(plans.map((p) => [p.syllabusVersionId, p.id]));
-      for (const t of tasks)
-        if (!names.has(t.planId)) {
-          const owner = await deps.plans.findOwned(t.planId, user.id);
-          const active = owner && byExam.get(owner.syllabusVersionId);
-          if (active) names.set(t.planId, names.get(active)!);
-        }
-      const allTopics = [
-        ...new Set(plans.flatMap((p) => names.get(p.id)!.topicIds)),
-      ];
+      for (const t of all) {
+        if (examOfPlan.has(t.planId)) continue;
+        const owner = await deps.plans.findOwned(t.planId, user.id);
+        if (!owner?.syllabusVersionId) continue;
+        examOfPlan.set(t.planId, owner.syllabusVersionId);
+        // Replaced plans keep the same names; borrow them from the exam's active plan.
+        const active = plans.find(
+          (p) => p.syllabusVersionId === owner.syllabusVersionId,
+        );
+        if (active) names.set(t.planId, names.get(active.id)!);
+      }
+
+      /**
+       * One row per piece of work, not one per plan row. A re-plan gives a task a new id
+       * but the same key, so a task ticked this morning would otherwise show twice: once
+       * done on the old plan and once undone on the new one.
+       */
+      const byWork = new Map<string, (typeof all)[number]>();
+      for (const task of all) {
+        const examId = examOfPlan.get(task.planId);
+        const slot = `${examId ?? task.planId}:${task.key}`;
+        const kept = byWork.get(slot);
+        if (!kept || (states.get(task.id) && !states.get(kept.id)))
+          byWork.set(slot, task);
+      }
+
+      const rows = [...byWork.values()]
+        .map((t) => {
+          const n = names.get(t.planId);
+          const examId = examOfPlan.get(t.planId) ?? null;
+          return {
+            ...t,
+            done: states.get(t.id) ?? false,
+            examId,
+            examTitle:
+              plans.find((p) => p.syllabusVersionId === examId)?.title ?? null,
+            subjectName: (t.subjectId && n?.subjects.get(t.subjectId)) || null,
+            topicName: (t.topicId && n?.topics.get(t.topicId)) || null,
+          };
+        })
+        .sort(
+          (a, b) =>
+            (rankOf.get(a.examId ?? "") ?? 99) -
+              (rankOf.get(b.examId ?? "") ?? 99) ||
+            a.planId.localeCompare(b.planId) ||
+            a.position - b.position,
+        );
+
+      // The day's figures belong to the focus exam: a progress bar averaged across two
+      // syllabuses tells the user nothing about either.
+      const focusPlan =
+        plans.find((p) => p.syllabusVersionId === focusExamId) ?? plans[0];
+      const focusTopics = focusPlan ? names.get(focusPlan.id)!.topicIds : [];
       const [streak, topicsDone, nextMock, studied, xp] = await Promise.all([
         streakOf(user, today),
-        deps.completions.doneAmong(user.id, allTopics),
+        deps.completions.doneAmong(user.id, focusTopics),
         deps.progress.nextMock(user.id, today),
         deps.progress.studyMinutesOn(user.id, today),
         deps.progress.xpTotal(user.id),
       ]);
-      const rows = tasks.map((t) => {
-        const n = names.get(t.planId);
-        return {
-          ...t,
-          done: states.get(t.id) ?? false,
-          subjectName: (t.subjectId && n?.subjects.get(t.subjectId)) || null,
-          topicName: (t.topicId && n?.topics.get(t.topicId)) || null,
-        };
-      });
-      const ending = plans
-        .map((p) => fromDbDate(p.endDate))
-        .sort((a, b) => toDay(a) - toDay(b))[0];
+
       return {
         today,
         hasPlan: plans.length > 0,
@@ -255,14 +317,23 @@ export function createProgressService(deps: ProgressDeps) {
           examId: p.syllabusVersionId,
           diff: p.replanDiff && !p.diffSeenAt ? p.replanDiff : null,
         })),
+        /** Every running exam, the focus first, for the sections on screen. */
+        exams: order.map((e) => ({
+          examId: e.id,
+          title: plans.find((p) => p.syllabusVersionId === e.id)?.title ?? "",
+          focus: e.id === focusExamId,
+        })),
+        focusExamId,
         tasks: rows,
         minutesPlanned: rows.reduce((n, t) => n + t.minutes, 0),
         minutesDone: rows
           .filter((t) => t.done)
           .reduce((n, t) => n + t.minutes, 0),
         studiedMinutes: studied,
-        daysLeft: ending ? toDay(ending) - toDay(today) + 1 : null,
-        coverage: { done: topicsDone.size, total: allTopics.length },
+        daysLeft: focusPlan
+          ? toDay(fromDbDate(focusPlan.endDate)) - toDay(today) + 1
+          : null,
+        coverage: { done: topicsDone.size, total: focusTopics.length },
         nextMock: nextMock
           ? {
               type: nextMock.type,

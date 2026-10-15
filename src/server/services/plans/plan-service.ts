@@ -1,5 +1,6 @@
-import { today as todayIn, type Clock } from "@/lib/clock";
+import { today as todayIn, toLocalDate, type Clock } from "@/lib/clock";
 import {
+  addDays,
   generatePlan,
   pinOverrideSchema,
   planInputSchema,
@@ -18,10 +19,19 @@ import {
   daysLeft,
   defaultDraft,
   planDraftSchema,
+  planEnd,
   studyAvailabilitySchema,
   type PlanDraft,
   type StudyAvailability,
 } from "@/lib/plans/draft";
+import {
+  focusOf,
+  percentagesFor,
+  scheduledExams,
+  splitMinutes,
+  type ExamRole,
+  type ShareExam,
+} from "@/lib/plans/shares";
 import type { Actor } from "@/server/services/syllabus/deps";
 import {
   fromDbDate,
@@ -178,18 +188,25 @@ export function createPlanService(deps: PlanDeps) {
     return { row, data, subjects, availability };
   }
 
-  /** The engine input for a draft. The copy saved with the plan includes every name. */
+  /**
+   * The engine input for a draft. The copy saved with the plan includes every name.
+   *
+   * `minutesByWeekday` is this exam's slice of the user's day, never the whole of it: the
+   * engine plans one exam at a time and has no idea the others exist, so the division has to
+   * have happened before it is called (CLAUDE.md rule 3).
+   */
   function buildInput(
     draft: PlanDraft,
     subjects: ExamSubject[],
     today: string,
+    minutesByWeekday: number[],
   ): PlanInput {
     return {
       today,
       ...(draft.examDate ? { examDate: draft.examDate } : {}),
       ...(draft.targetDays ? { targetDays: draft.targetDays } : {}),
       availability: {
-        minutesByWeekday: draft.minutesByWeekday,
+        minutesByWeekday,
         preferredWindows: draft.preferredWindows,
       },
       beginnerMode: draft.beginnerMode,
@@ -298,6 +315,11 @@ export function createPlanService(deps: PlanDeps) {
   async function replanExam(
     user: PlanUser,
     syllabusId: string,
+    /**
+     * Whether this re-plan announces itself with a diff card. Re-planning one exam re-plans
+     * its siblings, and a card from each would bury the one the user actually caused.
+     */
+    announce = true,
   ): Promise<Result<{ planId: string } | { warning: CoverageWarning }>> {
     const summary = await deps.plans.activeFor(user.id, syllabusId);
     if (!summary) return NO_PLAN;
@@ -314,13 +336,19 @@ export function createPlanService(deps: PlanDeps) {
       );
     const subjects = await examSubjects(user, syllabusId);
     const leftOut = existing.leftOut as LeftOutTopic[];
-    const availability = await availabilityOf(user);
+    // The split is recomputed here, not passed in, so that no caller can re-plan an exam at
+    // the whole of the day and quietly double-book it.
+    const shares = await dayShares(user);
+    const slice = shares.slices.get(syllabusId);
+    if (!slice) return NO_PLAN;
+    if (slice.every((m) => m === 0)) return NO_TIME_LEFT(shares.running.length);
     const input = withoutLeftOut(
       {
         ...buildInput(
-          reconcile(parsed.data, subjects, availability),
+          reconcile(parsed.data, subjects, shares.availability),
           subjects,
           today,
+          slice,
         ),
         // Keep the end date: the days that remain, not "N days from now" again.
         examDate: undefined,
@@ -339,11 +367,299 @@ export function createPlanService(deps: PlanDeps) {
       title: existing.title,
       inputs: { ...input, timelineStart: timelineStartOf(existing) },
       leftOut,
+      role: shares.ranked.find((e) => e.id === syllabusId)?.role ?? null,
+      sharePercent: shares.percentOf(syllabusId),
       output: result.plan,
       adjustments: result.adjustments,
-      replanDiff: result.diff,
+      replanDiff: announce ? result.diff : null,
     });
     return { ok: true, planId: plan.id };
+  }
+
+  /**
+   * The exams the user's day is divided between, with the role they gave each. Exams with
+   * only a draft are not here: nothing is scheduled for them yet, so they take no time.
+   */
+  async function examRoles(user: PlanUser) {
+    const [planned, priorities] = await Promise.all([
+      deps.plans.plannedExams(user.id),
+      deps.plans.prioritiesFor(user.id),
+    ]);
+    const byExam = new Map(priorities.map((p) => [p.syllabusVersionId, p]));
+    return planned.map((plan) => {
+      const examId = plan.syllabusVersionId!;
+      const saved = byExam.get(examId);
+      return {
+        id: examId,
+        title: plan.title,
+        endDate: fromDbDate(plan.endDate),
+        // A plan set aside is paused whatever the role row says, so the two can never
+        // disagree about whether an exam is running.
+        role: (plan.status === "PAUSED"
+          ? "PAUSED"
+          : (saved?.role ?? "ALONGSIDE")) as ExamRole,
+        pausedAt: saved?.pausedAt ?? null,
+        planId: plan.id,
+      };
+    });
+  }
+  type RankedExam = Awaited<ReturnType<typeof examRoles>>[number];
+
+  /**
+   * Exactly one exam leads. Naming a new focus steps the old one down; pausing or demoting
+   * the leader hands it to the exam sat soonest, so the user is never left without one.
+   */
+  function withRole(
+    exams: RankedExam[],
+    examId: string,
+    role: ExamRole,
+  ): RankedExam[] {
+    const next = exams.map((e) => {
+      if (e.id === examId) return { ...e, role };
+      if (role === "FOCUS" && e.role === "FOCUS")
+        return { ...e, role: "ALONGSIDE" as ExamRole };
+      return e;
+    });
+    if (next.some((e) => e.role === "FOCUS")) return next;
+    const lead = focusOf(next as ShareExam[]);
+    return lead
+      ? next.map((e) => (e.id === lead.id ? { ...e, role: "FOCUS" } : e))
+      : next;
+  }
+
+  const NO_TIME_LEFT = (count: number) =>
+    failure(
+      "NO_TIME",
+      `Your day doesn't stretch to ${count} exams. Pause one, or give yourself more time.`,
+    );
+
+  /**
+   * How the user's day divides right now: one slice of each weekday per exam. `pending` is an
+   * exam whose plan is about to be made, so it is counted before it exists.
+   */
+  async function dayShares(user: PlanUser, pending?: ShareExam) {
+    const [ranked, availability] = await Promise.all([
+      examRoles(user),
+      availabilityOf(user),
+    ]);
+    const exams: ShareExam[] = ranked.map((e) => ({
+      id: e.id,
+      role: e.role,
+      endDate: e.endDate,
+    }));
+    if (pending && !exams.some((e) => e.id === pending.id)) exams.push(pending);
+    const running = scheduledExams(exams);
+    const pct = percentagesFor(Math.max(0, running.length - 1));
+    const slices = splitMinutes(availability.minutesByWeekday, exams);
+    return {
+      ranked,
+      running,
+      availability,
+      slices,
+      /** Nominal share of the day, for the copy. Paused exams get none. */
+      percentOf: (examId: string) => {
+        const at = running.findIndex((e) => e.id === examId);
+        return at < 0 ? 0 : pct[at];
+      },
+      /** An exam left with no usable minute on any day: the split has been stretched too far. */
+      starved: running.filter((e) =>
+        (slices.get(e.id) ?? []).every((m) => m === 0),
+      ),
+    };
+  }
+
+  /**
+   * Someone has to lead. A newly planned exam leaves the roles alone if a focus is already
+   * set, and otherwise the exam sat soonest takes it.
+   */
+  async function ensureFocus(user: PlanUser) {
+    const exams = await examRoles(user);
+    const running = exams.filter((e) => e.role !== "PAUSED");
+    if (running.length === 0 || running.some((e) => e.role === "FOCUS")) return;
+    const lead = focusOf(exams as ShareExam[]);
+    if (lead) await deps.plans.setPriority(user.id, lead.id, "FOCUS", null);
+  }
+
+  /** Writes back only the exams whose role actually moved. */
+  async function saveRoles(
+    user: PlanUser,
+    before: RankedExam[],
+    after: RankedExam[],
+    now: Date,
+  ) {
+    const was = new Map(before.map((e) => [e.id, e.role]));
+    for (const exam of after) {
+      if (was.get(exam.id) === exam.role) continue;
+      await deps.plans.setPriority(
+        user.id,
+        exam.id,
+        exam.role,
+        exam.role === "PAUSED" ? (exam.pausedAt ?? now) : null,
+      );
+    }
+  }
+
+  /**
+   * Re-plans every exam the user is running, leader first. Changing one exam's role changes
+   * every other exam's share of the day, so they have to be re-planned together or the ones
+   * nobody touched keep booking time they no longer have.
+   *
+   * The roles are already committed when this runs, so each plan is independently correct
+   * for them: if one exam fails, the rest are still right and the failure is reported rather
+   * than swallowed. They are not wrapped in one transaction because each runs the engine,
+   * and a transaction held open across all of them would be long enough to time out.
+   */
+  async function replanUser(
+    user: PlanUser,
+    opts: {
+      /** Already built against the current split: re-planning it would only undo that. */
+      skip?: string;
+      /** The exam the user acted on: the only one that announces a diff. */
+      announce?: string | null;
+    } = {},
+  ) {
+    const { ranked, running } = await dayShares(user);
+    const planned = new Set(ranked.map((e) => e.id));
+    const failures: { examId: string; message: string }[] = [];
+    let remade = 0;
+    for (const exam of running) {
+      if (!planned.has(exam.id)) continue; // no plan yet: nothing to re-plan
+      if (exam.id === opts.skip) continue;
+      const result = await replanExam(
+        user,
+        exam.id,
+        opts.announce === undefined || exam.id === opts.announce,
+      ).catch((error: unknown) => ({
+        ok: false as const,
+        code: "FAILED",
+        message: error instanceof Error ? error.message : "Re-plan failed.",
+      }));
+      if (result.ok && "planId" in result) remade++;
+      else if (!result.ok)
+        failures.push({ examId: exam.id, message: result.message });
+    }
+    return { remade, failures };
+  }
+
+  /** Makes an exam the focus, or steps it back alongside the one that is. */
+  async function setExamRole(
+    user: PlanUser,
+    syllabusId: string,
+    role: "FOCUS" | "ALONGSIDE",
+  ): Promise<Result<object>> {
+    const exams = await examRoles(user);
+    const exam = exams.find((e) => e.id === syllabusId);
+    if (!exam) return NO_PLAN;
+    if (exam.role === "PAUSED")
+      return failure(
+        "PAUSED",
+        "This exam is paused. Resume it before changing its share of your day.",
+      );
+    await saveRoles(
+      user,
+      exams,
+      withRole(exams, syllabusId, role),
+      deps.clock.now(),
+    );
+    await replanUser(user, { announce: syllabusId });
+    return { ok: true };
+  }
+
+  /**
+   * Sets an exam aside. Its plan, topics, notes and everything logged against them stay;
+   * it just stops taking any of the day, which is what lifts it off Today.
+   */
+  async function pauseExam(
+    user: PlanUser,
+    syllabusId: string,
+  ): Promise<Result<object>> {
+    const exams = await examRoles(user);
+    const exam = exams.find((e) => e.id === syllabusId);
+    if (!exam) return NO_PLAN;
+    if (exam.role === "PAUSED") return { ok: true };
+    await deps.plans.pauseActivePlan(user.id, syllabusId);
+    await saveRoles(
+      user,
+      exams,
+      withRole(exams, syllabusId, "PAUSED"),
+      deps.clock.now(),
+    );
+    // The time this exam was taking is now the others', so they are re-planned to use it.
+    // None announces a diff: the user paused one exam, they did not re-plan the rest.
+    await replanUser(user, { announce: null });
+    return { ok: true };
+  }
+
+  /**
+   * Brings a paused exam back. The days it spent paused are added to its timeline, so the
+   * final revision window is measured against the study time the user actually had: a
+   * pause must never quietly eat the days they had left to learn in.
+   */
+  async function resumeExam(
+    user: PlanUser,
+    syllabusId: string,
+  ): Promise<Result<object>> {
+    const exams = await examRoles(user);
+    const exam = exams.find((e) => e.id === syllabusId);
+    if (!exam) return NO_PLAN;
+    if (exam.role !== "PAUSED") return { ok: true };
+
+    // Pausing is not a way around the plan limit.
+    const used = await deps.plans.countActiveElsewhere(user.id, syllabusId);
+    if (used >= deps.activePlanLimit(user))
+      return failure(
+        "LIMIT",
+        "Your plan allows no more active study plans. Pause another exam to resume this one.",
+      );
+
+    const paused = await deps.plans.pausedPlanFor(user.id, syllabusId);
+    if (!paused) return NO_PLAN;
+    const today = todayFor(user);
+    if (toDay(fromDbDate(paused.endDate)) < toDay(today))
+      return failure(
+        "ENDED",
+        "This plan has ended. Set a new date for this exam to start it again.",
+      );
+
+    const inputs = paused.inputs as PlanInput;
+    const start = inputs.timelineStart ?? inputs.today;
+    const pausedDays = exam.pausedAt
+      ? toDay(today) - toDay(toLocalDate(exam.pausedAt, user.timezone))
+      : 0;
+    await deps.plans.resumePlan(paused.id, {
+      ...inputs,
+      // Clamped to today: the timeline can never start in the future.
+      timelineStart: addDays(start, Math.max(0, pausedDays)),
+    });
+    await saveRoles(
+      user,
+      exams,
+      withRole(exams, syllabusId, "ALONGSIDE"),
+      deps.clock.now(),
+    );
+    // It comes back to a day it now shares, so every running exam is re-planned.
+    await replanUser(user, { announce: syllabusId });
+    return { ok: true };
+  }
+
+  /**
+   * The one way in from the UI. A paused exam is resumed first, so "make this my focus" does
+   * the obvious thing instead of refusing because the exam is asleep.
+   */
+  async function setRoleOrResume(
+    user: PlanUser,
+    syllabusId: string,
+    role: "FOCUS" | "ALONGSIDE",
+  ): Promise<Result<object>> {
+    const exams = await examRoles(user);
+    const exam = exams.find((e) => e.id === syllabusId);
+    if (!exam) return NO_PLAN;
+    if (exam.role === "PAUSED") {
+      const resumed = await resumeExam(user, syllabusId);
+      if (!resumed.ok) return resumed;
+      if (role === "ALONGSIDE") return resumed;
+    }
+    return setExamRole(user, syllabusId, role);
   }
 
   /** A task of the user's active plan that may be pinned by hand, or null. */
@@ -385,12 +701,52 @@ export function createPlanService(deps: PlanDeps) {
     async getDraft(user: PlanUser, draftId: string) {
       const loaded = await loadDraft(user, draftId);
       if (!loaded) return null;
+      const today = todayFor(user);
+      const examId = loaded.row.syllabusVersionId;
+      // This exam counts against the day as it will once planned, so the setup shows the
+      // time it will actually get rather than the whole day it cannot have.
+      const shares = await dayShares(user, {
+        id: examId,
+        role: "ALONGSIDE",
+        endDate: planEnd(loaded.data, today),
+      });
+      const lead = shares.running[0] ?? null;
+      const myEnd = planEnd(loaded.data, today);
       return {
         id: loaded.row.id,
         syllabus: loaded.row.syllabusVersion,
         data: loaded.data,
         subjects: loaded.subjects,
-        today: todayFor(user),
+        today,
+        sharing: {
+          examId,
+          exams: shares.running.map((e) => ({
+            id: e.id,
+            role: e.role,
+            endDate: e.endDate,
+          })),
+          titles: Object.fromEntries(
+            shares.running.map((e) => [
+              e.id,
+              e.id === examId
+                ? loaded.row.syllabusVersion.title
+                : (shares.ranked.find((r) => r.id === e.id)?.title ??
+                  "Your other exam"),
+            ]),
+          ),
+          /**
+           * The exam leading today, when it is not this one and this one is sat sooner: the
+           * user is offered the swap at review rather than it being made for them.
+           */
+          shouldLead:
+            lead && lead.id !== examId && myEnd && (lead.endDate ?? "") > myEnd
+              ? {
+                  title:
+                    shares.ranked.find((r) => r.id === lead.id)?.title ??
+                    "Your other exam",
+                }
+              : null,
+        },
       };
     },
 
@@ -420,6 +776,8 @@ export function createPlanService(deps: PlanDeps) {
       user: PlanUser,
       draftId: string,
       fit: "ALL" | "PARTIAL",
+      /** The user accepted the offer to make this exam their focus at the review step. */
+      makeFocus = false,
     ): Promise<Result<GenerateOutcome>> {
       const loaded = await loadDraft(user, draftId);
       if (!loaded) return NO_DRAFT;
@@ -434,7 +792,24 @@ export function createPlanService(deps: PlanDeps) {
       if (daysLeft(loaded.data, today) === 0)
         return failure("NO_TIME", "Pick an exam date after today.");
 
-      let input: PlanInput = buildInput(loaded.data, loaded.subjects, today);
+      // This exam counts against the day from now on, even though its plan does not exist
+      // yet, so the split it is built against is the one it will live with.
+      const end = planEnd(loaded.data, today);
+      const shares = await dayShares(user, {
+        id: syllabusId,
+        role: "ALONGSIDE",
+        endDate: end,
+      });
+      const slice = shares.slices.get(syllabusId)!;
+      if (slice.every((m) => m === 0))
+        return NO_TIME_LEFT(shares.running.length);
+
+      let input: PlanInput = buildInput(
+        loaded.data,
+        loaded.subjects,
+        today,
+        slice,
+      );
       if (!planInputSchema.safeParse(input).success)
         return failure(
           "TOO_BIG",
@@ -479,30 +854,83 @@ export function createPlanService(deps: PlanDeps) {
           ? { ...input, timelineStart: timelineStartOf(existing) }
           : input,
         leftOut,
+        role: shares.ranked.find((e) => e.id === syllabusId)?.role ?? null,
+        sharePercent: shares.percentOf(syllabusId),
         output: result,
         adjustments: run.adjustments,
         replanDiff: run.diff,
       });
+      await ensureFocus(user);
+      // A new exam takes time off every other one, so they are re-planned against what they
+      // actually have left rather than left booking a day that is no longer theirs. Taking
+      // the focus re-plans everything too, so it stands in for that.
+      if (makeFocus) await setExamRole(user, syllabusId, "FOCUS");
+      else if (shares.running.length > 1)
+        // The new plan was built against this split already; only its siblings moved.
+        await replanUser(user, { skip: syllabusId, announce: null });
       return { ok: true, outcome: "PLAN", planId: plan.id };
     },
 
+    /** The exams competing for the user's day, focus first, with the share each one gets. */
+    async roles(user: PlanUser) {
+      const { ranked, running, percentOf, slices } = await dayShares(user);
+      const lead = running[0] ?? null;
+      return ranked
+        .map((e) => ({
+          examId: e.id,
+          title: e.title,
+          role: e.role,
+          endDate: e.endDate,
+          focus: e.id === lead?.id,
+          sharePercent: percentOf(e.id),
+          /** Minutes this exam gets across the week, for the copy. */
+          weeklyMinutes: (slices.get(e.id) ?? []).reduce((n, m) => n + m, 0),
+          /** More than one exam is running, so the share is worth showing at all. */
+          shared: running.length > 1,
+        }))
+        .sort(
+          (a, b) =>
+            Number(b.focus) - Number(a.focus) ||
+            a.endDate.localeCompare(b.endDate),
+        );
+    },
+
+    setRole: setExamRole,
+    setRoleOrResume,
+    pause: pauseExam,
+    resume: resumeExam,
+
     replan: replanExam,
 
-    /** The Sunday job: every active plan of every user, one at a time. */
+    /**
+     * The Sunday job: every user with a plan, one user at a time. Per user, not per plan:
+     * someone's two exams share one day, so re-planning them independently would have each
+     * one planned against the other's stale share.
+     */
     async replanAll() {
-      let remade = 0;
+      const byUser = new Map<string, PlanUser>();
       for (const p of await deps.plans.allActive()) {
         const { subscriptions, ...rest } = p.user;
-        const user = { ...rest, subscription: subscriptions[0] ?? null };
-        const result = await replanExam(user, p.syllabusVersionId!).catch(
-          () => null,
-        );
-        if (result?.ok && "planId" in result) remade++;
+        byUser.set(rest.id, {
+          ...rest,
+          subscription: subscriptions[0] ?? null,
+        });
+      }
+      let remade = 0;
+      for (const user of byUser.values()) {
+        const result = await replanUser(user).catch(() => null);
+        remade += result?.remade ?? 0;
       }
       return remade;
     },
 
-    /** Move, resize or lock a task: stored as an override, then the plan is re-made. */
+    /**
+     * Move, resize or lock a task: stored as an override, then the plan is re-made.
+     *
+     * One exam, not replanUser: moving a task around inside an exam leaves every exam's
+     * share of the day exactly where it was, so there is nothing for the others to react to.
+     * The same goes for resetTask and addCustomTask below.
+     */
     async editTask(user: PlanUser, taskId: string, edit: TaskEdit) {
       const task = await editableTask(user, taskId);
       if (!task)

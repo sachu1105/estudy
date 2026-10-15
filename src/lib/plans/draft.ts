@@ -17,6 +17,7 @@ import {
   toDay,
   weekdayOf,
 } from "@/lib/plan-engine";
+import type { ShareExam } from "@/lib/plans/shares";
 
 export const PLAN_STEPS = ["timeline", "time", "subjects", "review"] as const;
 export type PlanStep = (typeof PLAN_STEPS)[number];
@@ -50,6 +51,21 @@ export const studyAvailabilitySchema = z.object({
 });
 
 export type StudyAvailability = z.infer<typeof studyAvailabilitySchema>;
+
+/**
+ * How one exam's setup sees the day it shares with the user's other exams. The exams are
+ * handed over whole rather than a finished split, so the steps can re-divide the day with
+ * `splitMinutes` as the user drags the minutes about and see the real answer, not an
+ * estimate of it.
+ */
+export type DraftSharing = {
+  examId: string;
+  /** Every exam that counts against the day, this one included. */
+  exams: ShareExam[];
+  titles: Record<string, string>;
+  /** The exam leading now, when this one is sat sooner and should be offered the lead. */
+  shouldLead: { title: string } | null;
+};
 
 export const DEFAULT_AVAILABILITY: StudyAvailability = {
   minutesByWeekday: [180, 120, 120, 120, 120, 120, 180],
@@ -133,6 +149,11 @@ export function estimate(
   draft: PlanDraft,
   today: string,
   subjects: { id: string; stage: string; topics: EstimateTopic[] }[],
+  /**
+   * This exam's slice of each weekday. With another exam running the user does not have
+   * their whole day for this one, and saying otherwise would promise time that is not there.
+   */
+  minutesByWeekday: readonly number[] = draft.minutesByWeekday,
 ) {
   let needed = 0;
   for (const subject of subjects) {
@@ -160,7 +181,7 @@ export function estimate(
   let available = 0;
   for (let i = 0; i < days; i++)
     available += dayCapacity(
-      draft.minutesByWeekday[weekdayOf(toDay(today) + i)],
+      minutesByWeekday[weekdayOf(toDay(today) + i)] ?? 0,
     );
   return {
     neededHours: Math.round(needed / 60),

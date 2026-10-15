@@ -3,17 +3,20 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/toast";
 import type { CoverageWarning as Warning } from "@/lib/plan-engine";
 import {
   daysLeft,
   MAX_DAY_MINUTES,
   planEnd,
+  type DraftSharing,
   type PlanDraft,
 } from "@/lib/plans/draft";
 import { formatDay, formatMinutes } from "@/lib/plans/format";
 
 import { generatePlanAction, savePlanDraftAction } from "../actions";
+import { useShare } from "../use-share";
 import { CoverageWarning } from "./coverage-warning";
 import { StepFooter } from "./step-footer";
 
@@ -30,14 +33,20 @@ export function ReviewStep({
   initial,
   today,
   subjects,
+  sharing,
 }: {
   draftId: string;
   initial: PlanDraft;
   today: string;
   subjects: number;
+  sharing: DraftSharing;
 }) {
   const router = useRouter();
   const [draft, setDraft] = useState(initial);
+  // Offered, never done for them: an exam sat sooner is usually the one to lead, but it is
+  // the user's call which exam their days belong to.
+  const [takeFocus, setTakeFocus] = useState(false);
+  const share = useShare(sharing, draft.minutesByWeekday);
   const [warning, setWarning] = useState<{
     warning: Warning;
     extraDays: number;
@@ -56,7 +65,11 @@ export function ReviewStep({
         if (!saved.ok) return void toast.error(saved.error);
         setDraft(next);
       }
-      const result = await generatePlanAction({ draftId, fit });
+      const result = await generatePlanAction({
+        draftId,
+        fit,
+        focus: takeFocus,
+      });
       if (!result.ok) return void toast.error(result.error);
       if (result.outcome === "WARNING") {
         setWarning({ warning: result.warning, extraDays: result.extraDays });
@@ -80,7 +93,11 @@ export function ReviewStep({
     ],
     [
       "Time",
-      `${formatMinutes(draft.minutesByWeekday.reduce((a, b) => a + b, 0))} a week`,
+      share.shared
+        ? `${formatMinutes(share.mineWeekly)} a week, your share of ${formatMinutes(
+            draft.minutesByWeekday.reduce((a, b) => a + b, 0),
+          )}`
+        : `${formatMinutes(draft.minutesByWeekday.reduce((a, b) => a + b, 0))} a week`,
     ],
     [
       "Best time",
@@ -105,6 +122,26 @@ export function ReviewStep({
           </div>
         ))}
       </dl>
+      {sharing.shouldLead ? (
+        <label className="flex cursor-pointer items-start gap-3 rounded-card border border-border bg-surface p-4">
+          <Checkbox
+            checked={takeFocus}
+            onCheckedChange={(on) => setTakeFocus(on === true)}
+            aria-describedby="focus-why"
+          />
+          <span className="flex flex-col gap-1">
+            <span className="text-body font-medium">
+              Make this exam my focus
+            </span>
+            <span id="focus-why" className="text-small text-ink-muted">
+              It comes before {sharing.shouldLead.title}, which leads your days
+              at the moment. Your focus gets the bigger share of every day, and
+              Today starts with it. You can swap them whenever you like.
+            </span>
+          </span>
+        </label>
+      ) : null}
+
       <p className="text-small text-ink-muted">
         The plan is worked out by a fixed set of rules, not AI. Every task will
         show why it&apos;s there, and you can change any of it.

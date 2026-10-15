@@ -7,12 +7,14 @@ import { Chip } from "@/components/ui/chip";
 import type { TimeWindow } from "@/lib/plan-engine";
 import {
   MAX_DAY_MINUTES,
+  type DraftSharing,
   stepProblem,
   type PlanDraft,
 } from "@/lib/plans/draft";
 import { formatMinutes } from "@/lib/plans/format";
 
 import { usePlanDraft } from "../use-plan-draft";
+import { useShare } from "../use-share";
 import { StepFooter } from "./step-footer";
 
 const PRESETS: { label: string; minutes: number[] }[] = [
@@ -47,16 +49,19 @@ export function TimeStep({
   draftId,
   initial,
   today,
+  sharing,
 }: {
   draftId: string;
   initial: PlanDraft;
   today: string;
+  sharing: DraftSharing;
 }) {
   const { draft, update, state, error, goTo, moving } = usePlanDraft(
     draftId,
     initial,
   );
   const week = draft.minutesByWeekday.reduce((a, b) => a + b, 0);
+  const share = useShare(sharing, draft.minutesByWeekday);
 
   const setDay = (day: number, minutes: number) =>
     update({
@@ -130,9 +135,28 @@ export function TimeStep({
             );
           })}
         </ul>
-        <p className="text-small text-ink-muted">
+        <p className="text-small text-ink-muted" aria-live="polite">
           {formatMinutes(week)} a week. The plan keeps 10% of it free for life.
         </p>
+        {share.shared ? (
+          // With another exam running, say what this one actually gets: seeing 3 h here and
+          // 2 h in the plan would read as a bug rather than a share.
+          <p
+            className="rounded-card bg-surface-muted px-4 py-3 text-small text-ink-muted"
+            aria-live="polite"
+          >
+            Split across your exams: this one gets{" "}
+            <span className="font-medium text-ink">
+              {formatMinutes(share.mineWeekly)} a week
+            </span>
+            {share.others.map((o) => (
+              <span key={o.id}>
+                , {o.title} {formatMinutes(o.weeklyMinutes)}
+              </span>
+            ))}
+            .
+          </p>
+        ) : null}
       </section>
 
       <section className="flex flex-col gap-3">

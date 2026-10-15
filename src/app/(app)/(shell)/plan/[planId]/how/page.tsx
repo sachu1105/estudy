@@ -26,6 +26,8 @@ export default async function HowPage({
   const { input } = plan;
   const days = toDay(plan.endDate) - toDay(plan.startDate) + 1;
   const week = input.availability.minutesByWeekday;
+  const share = plan.sharePercent;
+  const timelineStart = input.timelineStart ?? null;
   const facts: [string, string][] = [
     [
       "Plan runs",
@@ -43,9 +45,22 @@ export default async function HowPage({
         ? formatDay(plan.reviewStartDate)
         : "No separate review window",
     ],
+    ...(timelineStart && timelineStart !== plan.startDate
+      ? ([
+          [
+            "Timeline measured from",
+            `${formatDay(timelineStart)}. The review window is the last 15% of the whole timeline, not of what's left, so it doesn't move every week. Pausing this exam shifts this date forward by the days it spent paused, so a pause never shortens the time you have to learn in.`,
+          ],
+        ] as [string, string][])
+      : []),
     [
       "Time each week",
-      `${week.map((m, i) => `${WEEK[i]} ${m ? formatMinutes(m) : "rest"}`).join(", ")}. The plan fills ${100 - BUFFER_PCT}% of it.`,
+      // Rule 14: a user who entered 3 h and sees 2 h 6 m here must be able to find out why
+      // in one click, and see the arithmetic that got there.
+      `${week.map((m, i) => `${WEEK[i]} ${m ? formatMinutes(m) : "rest"}`).join(", ")}. The plan fills ${100 - BUFFER_PCT}% of it.` +
+        (share !== null && share < 100
+          ? ` That is this exam's ${share}% share of your day${plan.role === "FOCUS" ? ", as your focus exam" : ""}; the rest goes to your other exams.`
+          : ""),
     ],
     [
       "Best times",

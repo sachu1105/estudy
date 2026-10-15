@@ -14,6 +14,7 @@ export default async function ReviewPage({
       draftId={draft.id}
       initial={draft.data}
       today={draft.today}
+      sharing={draft.sharing}
       subjects={draft.subjects.length}
     />
   );

@@ -23,6 +23,8 @@ type TodayStatsProps = {
   streak: { current: number; todayDone: boolean; freezeLeft: boolean };
   frozen: string[];
   today: string;
+  /** The focus exam, named only when another exam is running too. */
+  focusExam: string | null;
 };
 
 /**
@@ -38,6 +40,7 @@ export function TodayStats({
   streak,
   frozen,
   today,
+  focusExam,
 }: TodayStatsProps) {
   const covered = coverage.total
     ? Math.round((coverage.done / coverage.total) * 100)
@@ -72,13 +75,17 @@ export function TodayStats({
       <Cell
         label="Covered"
         value={`${covered}%`}
-        hint={`${coverage.done} of ${coverage.total} topics`}
+        hint={
+          // These two follow the focus exam: averaging them across two syllabuses would
+          // describe neither.
+          focusExam ?? `${coverage.done} of ${coverage.total} topics`
+        }
         bar={covered}
       />
       <Cell
         label="Days left"
         value={daysLeft ?? "–"}
-        hint="Until your plan ends"
+        hint={focusExam ? `Of ${focusExam}` : "Until your plan ends"}
       />
     </StatStrip>
   );

@@ -6,11 +6,13 @@ import Link from "next/link";
 import type { PodStage } from "@/lib/pods/stages";
 import {
   estimate,
+  type DraftSharing,
   type EstimateTopic,
   type PlanDraft,
 } from "@/lib/plans/draft";
 
 import { usePlanDraft } from "../use-plan-draft";
+import { useShare } from "../use-share";
 import { StepFooter } from "./step-footer";
 import { SubjectSetting } from "./subject-setting";
 
@@ -28,21 +30,27 @@ export function SubjectsStep({
   initial,
   today,
   subjects,
+  sharing,
 }: {
   draftId: string;
   syllabusId: string;
   initial: PlanDraft;
   today: string;
   subjects: StepSubject[];
+  sharing: DraftSharing;
 }) {
   const { draft, update, state, error, goTo, moving } = usePlanDraft(
     draftId,
     initial,
   );
+  const share = useShare(sharing, draft.minutesByWeekday);
+  // Against this exam's slice, not the whole day: promising time another exam has would
+  // make "that fits" a lie.
   const { neededHours, availableHours, days } = estimate(
     draft,
     today,
     subjects,
+    share.mine,
   );
   const fits = neededHours <= availableHours;
 
@@ -72,7 +80,7 @@ export function SubjectsStep({
           <span className="font-mono font-medium tabular-nums">
             {availableHours} h
           </span>{" "}
-          in {days} days.{" "}
+          in {days} days{share.shared ? " for this exam" : ""}.{" "}
           {fits
             ? "That fits."
             : "That's tight; the next step shows your options."}

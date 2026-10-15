@@ -3,7 +3,10 @@
 import {
   ImageIcon,
   MoreHorizontal,
+  Pause,
+  Play,
   SlidersHorizontal,
+  Target,
   Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,10 +28,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/toast";
-import { startPlanAction } from "@/features/plans/actions";
+import { setExamRoleAction, startPlanAction } from "@/features/plans/actions";
 import type { PodCover } from "@/lib/pods/covers";
 
 import { deleteExamAction } from "../actions";
+import type { ExamRank } from "../load-exam";
 import { CoverPicker, type CoverSelection } from "./cover-picker";
 
 /** The exam pod's less frequent actions: its cover, the plan, deleting the exam. */
@@ -39,6 +43,7 @@ export function ExamMenu({
   items,
   ownUpload,
   hasPlan,
+  rank,
   cover,
 }: {
   examId: string;
@@ -48,6 +53,8 @@ export function ExamMenu({
   /** The user uploaded this syllabus (rather than adding it from the catalogue). */
   ownUpload: boolean;
   hasPlan: boolean;
+  /** Null until the exam has a plan: nothing competes for the day before then. */
+  rank: ExamRank | null;
   cover: { selection: CoverSelection; view: PodCover };
 }) {
   const router = useRouter();
@@ -60,6 +67,14 @@ export function ExamMenu({
       const result = await startPlanAction({ syllabusId: examId });
       if (!result.ok) return void toast.error(result.error);
       router.push(`/plan/new/${result.draftId}/timeline`);
+    });
+
+  const setRole = (role: "FOCUS" | "ALONGSIDE" | "PAUSED", done: string) =>
+    start(async () => {
+      const result = await setExamRoleAction({ syllabusId: examId, role });
+      if (!result.ok) return void toast.error(result.error);
+      toast.success(done);
+      router.refresh();
     });
 
   const remove = () =>
@@ -86,6 +101,32 @@ export function ExamMenu({
           <DropdownMenuItem onSelect={() => setPicking(true)}>
             <ImageIcon aria-hidden /> Change cover
           </DropdownMenuItem>
+          {rank && rank.role !== "FOCUS" ? (
+            <DropdownMenuItem
+              disabled={pending}
+              onSelect={() => setRole("FOCUS", `${title} is your focus now`)}
+            >
+              <Target aria-hidden /> Make this my focus
+            </DropdownMenuItem>
+          ) : null}
+          {rank && rank.role !== "PAUSED" ? (
+            <DropdownMenuItem
+              disabled={pending}
+              onSelect={() =>
+                setRole("PAUSED", `${title} paused. Your time goes elsewhere.`)
+              }
+            >
+              <Pause aria-hidden /> Pause this exam
+            </DropdownMenuItem>
+          ) : null}
+          {rank?.role === "PAUSED" ? (
+            <DropdownMenuItem
+              disabled={pending}
+              onSelect={() => setRole("ALONGSIDE", `${title} is back on`)}
+            >
+              <Play aria-hidden /> Resume this exam
+            </DropdownMenuItem>
+          ) : null}
           {hasPlan ? (
             <DropdownMenuItem disabled={pending} onSelect={changePlan}>
               <SlidersHorizontal aria-hidden /> Change plan

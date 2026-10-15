@@ -12,6 +12,7 @@ import { PodCard } from "@/features/pods/components/pod-card";
 import { SetupTile } from "@/features/syllabus/components/setup-tile";
 import { syllabusState } from "@/features/syllabus/state";
 import { requireUser } from "@/server/auth/session";
+import { planService } from "@/server/services/plans";
 import { coverService, podService } from "@/server/services/pods";
 import {
   catalogueService,
@@ -30,14 +31,28 @@ export const metadata: Metadata = { title: "Pods" };
 export default async function PodsPage({ searchParams }: PageProps<"/pods">) {
   const user = await requireUser();
   const query = await searchParams;
-  const [{ exams, own }, syllabuses, usage, catalogueExams, readerOnline] =
-    await Promise.all([
-      podService.exams(user),
-      reviewService.list(user),
-      uploadUsage(user),
-      catalogueService.listExams(),
-      jobService.readerOnline(),
-    ]);
+  const [
+    { exams, own },
+    syllabuses,
+    usage,
+    catalogueExams,
+    readerOnline,
+    roles,
+  ] = await Promise.all([
+    podService.exams(user),
+    reviewService.list(user),
+    uploadUsage(user),
+    catalogueService.listExams(),
+    jobService.readerOnline(),
+    planService.roles(user),
+  ]);
+  // Only worth marking which exam leads when more than one is competing for the day.
+  const ranked = new Map(
+    roles.map((r) => [
+      r.examId,
+      { focus: r.focus && r.shared, paused: r.role === "PAUSED" },
+    ]),
+  );
   // Covers as each user chose them; images come back as short-lived signed links.
   const [examCovers, ownCovers] = await Promise.all([
     coverService.examCovers(
@@ -118,6 +133,7 @@ export default async function PodsPage({ searchParams }: PageProps<"/pods">) {
                       topicsDone={e.topicsDone}
                       items={e.items}
                       cover={examCovers.get(e.id)!}
+                      rank={ranked.get(e.id) ?? null}
                     />
                   </li>
                 ))}

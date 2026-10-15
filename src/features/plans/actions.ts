@@ -79,6 +79,7 @@ export async function generatePlanAction(
     user,
     parsed.data.draftId,
     parsed.data.fit,
+    parsed.data.focus,
   );
   if (!result.ok) return { ok: false, error: result.message };
   if (result.outcome === "PLAN") {
@@ -131,6 +132,35 @@ export async function replanAction(input: unknown): Promise<Replanned> {
   const blocked = await limited("planGeneratePerUser", user.id);
   if (blocked) return blocked;
   return replanned(await planService.replan(user, parsed.data.syllabusId));
+}
+
+const roleSchema = z.object({
+  syllabusId: z.uuid(),
+  role: z.enum(["FOCUS", "ALONGSIDE", "PAUSED"]),
+});
+
+/**
+ * Which exam leads the user's day, and which are set aside. Every one of these changes what
+ * share the others get, so the service re-plans them all; the whole app is revalidated.
+ */
+export async function setExamRoleAction(
+  input: unknown,
+): Promise<ActionResult<object>> {
+  const user = await requireUser();
+  const parsed = roleSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited("planGeneratePerUser", user.id);
+  if (blocked) return blocked;
+  const { syllabusId, role } = parsed.data;
+  const result =
+    role === "PAUSED"
+      ? await planService.pause(user, syllabusId)
+      : await planService.setRoleOrResume(user, syllabusId, role);
+  if (!result.ok) return { ok: false, error: result.message };
+  revalidatePath("/plan", "layout");
+  revalidatePath("/pods", "layout");
+  revalidatePath("/today");
+  return { ok: true };
 }
 
 export async function editTaskAction(input: unknown): Promise<Replanned> {

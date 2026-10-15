@@ -1,8 +1,10 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixedClock } from "@/lib/clock";
+import { dayCapacity } from "@/lib/plan-engine";
 import type { EditableTree } from "@/lib/syllabus/tree";
 import { prisma } from "@/server/db";
+import { Prisma } from "@/server/db/generated/prisma/client";
 import { redis } from "@/server/redis";
 import { planRepository } from "@/server/repositories/plan-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
@@ -31,6 +33,10 @@ const pods = createPodService({
 });
 
 const id = () => crypto.randomUUID();
+const addDaysIso = (iso: string, days: number) =>
+  new Date(new Date(`${iso}T00:00:00Z`).getTime() + days * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
 const topic = (name: string, weight = 3) => ({
   id: id(),
   name,
@@ -264,6 +270,189 @@ describe("study plans", () => {
     expect(draft.data.minutesByWeekday).toEqual([
       180, 120, 120, 120, 120, 120, 180,
     ]);
+  });
+
+  /** Two exams, each with a plan. Returns their syllabus ids. */
+  async function twoPlannedExams(user: User) {
+    const ldc = await exam(user, "LDC");
+    const lgs = await exam(user, "LGS");
+    for (const id of [ldc, lgs]) {
+      const made = await plans.generate(user, await generous(user, id), "ALL");
+      if (!made.ok) throw new Error(made.message);
+    }
+    return { ldc, lgs };
+  }
+
+  /** Minutes planned on each of the first `days` days, across every active plan. */
+  async function plannedPerDay(user: User, days = 7) {
+    const rows = await prisma.planDay.findMany({
+      where: { plan: { userId: user.id, status: "ACTIVE" } },
+      orderBy: { date: "asc" },
+      select: { date: true, plannedMinutes: true, capacityMinutes: true },
+    });
+    const byDate = new Map<string, number>();
+    for (const r of rows) {
+      const key = r.date.toISOString().slice(0, 10);
+      byDate.set(key, (byDate.get(key) ?? 0) + r.capacityMinutes);
+    }
+    return [...byDate.entries()].slice(0, days);
+  }
+
+  it("two exams share one day instead of booking it twice", async () => {
+    const user = await makeUser();
+    const ldc = await exam(user, "LDC");
+
+    // One exam: the whole 120-minute day is its own.
+    await plans.generate(user, await generous(user, ldc), "ALL");
+    const alone = await plannedPerDay(user);
+    expect(alone.length).toBeGreaterThan(0);
+    for (const [, capacity] of alone) expect(capacity).toBe(dayCapacity(120));
+
+    // A second exam: the day is divided, never doubled.
+    const lgs = await exam(user, "LGS");
+    await plans.generate(user, await generous(user, lgs), "ALL");
+    const shared = await plannedPerDay(user);
+    for (const [date, capacity] of shared) {
+      // 120 split 70/30 is 85/35; each plan buffers its own slice, so the total sits at or
+      // just under what one plan would have had.
+      expect(capacity, date).toBeLessThanOrEqual(dayCapacity(120));
+      expect(capacity, date).toBeGreaterThan(dayCapacity(120) - 5);
+    }
+
+    // And each plan records the share it was built with.
+    const built = await prisma.studyPlan.findMany({
+      where: { userId: user.id, status: "ACTIVE" },
+      select: { syllabusVersionId: true, sharePercent: true, role: true },
+    });
+    expect(built.map((p) => p.sharePercent).sort()).toEqual([30, 70]);
+    expect(built.filter((p) => p.role === "FOCUS")).toHaveLength(1);
+  });
+
+  it("hands the time back when an exam is paused", async () => {
+    const user = await makeUser();
+    const { ldc } = await twoPlannedExams(user);
+    const shared = await plannedPerDay(user);
+    await plans.pause(user, ldc);
+    const alone = await plannedPerDay(user);
+    // One exam was taking 30% of every day; paused, the other gets it back.
+    expect(alone[0][1]).toBeGreaterThan(shared[0][1] * 0.6);
+    expect(alone[0][1]).toBe(dayCapacity(120));
+  });
+
+  it("only the exam the user acted on announces a re-plan", async () => {
+    const user = await makeUser();
+    const { ldc, lgs } = await twoPlannedExams(user);
+    await prisma.studyPlan.updateMany({
+      where: { userId: user.id },
+      data: { replanDiff: Prisma.DbNull },
+    });
+
+    await plans.setRole(user, lgs, "FOCUS");
+
+    const active = await prisma.studyPlan.findMany({
+      where: { userId: user.id, status: "ACTIVE" },
+      select: { syllabusVersionId: true, replanDiff: true },
+    });
+    // Both were re-planned, because the shares moved for both...
+    expect(active).toHaveLength(2);
+    // ...but only the one the user touched gets a card on Today.
+    expect(
+      active.find((p) => p.syllabusVersionId === lgs)!.replanDiff,
+    ).not.toBeNull();
+    expect(
+      active.find((p) => p.syllabusVersionId === ldc)!.replanDiff,
+    ).toBeNull();
+  });
+
+  it("gives one exam the focus and lets the user hand it over", async () => {
+    const user = await makeUser();
+    const { ldc, lgs } = await twoPlannedExams(user);
+
+    // Both end on the same day here, so the first planned leads; either way exactly one does.
+    const before = await plans.roles(user);
+    expect(before.filter((e) => e.role === "FOCUS")).toHaveLength(1);
+
+    expect(await plans.setRole(user, lgs, "FOCUS")).toMatchObject({ ok: true });
+    const after = await plans.roles(user);
+    expect(after.find((e) => e.examId === lgs)!.role).toBe("FOCUS");
+    expect(after.find((e) => e.examId === ldc)!.role).toBe("ALONGSIDE");
+    expect(after[0].examId).toBe(lgs);
+  });
+
+  it("pausing lifts an exam off the day and hands the focus on", async () => {
+    const user = await makeUser();
+    const { ldc, lgs } = await twoPlannedExams(user);
+    await plans.setRole(user, ldc, "FOCUS");
+
+    expect(await plans.pause(user, ldc)).toMatchObject({ ok: true });
+    const roles = await plans.roles(user);
+    expect(roles.find((e) => e.examId === ldc)!.role).toBe("PAUSED");
+    // Someone has to lead, so the other exam takes it over.
+    expect(roles.find((e) => e.examId === lgs)!.role).toBe("FOCUS");
+
+    // The plan and everything logged against it stay; it is simply no longer active.
+    const active = await plans.listActive(user);
+    expect(active.map((p) => p.syllabusVersionId)).toEqual([lgs]);
+    expect(
+      await prisma.studyPlan.count({
+        where: { userId: user.id, syllabusVersionId: ldc, status: "PAUSED" },
+      }),
+    ).toBe(1);
+    expect(
+      await prisma.planTask.count({
+        where: { plan: { syllabusVersionId: ldc } },
+      }),
+    ).toBeGreaterThan(0);
+  });
+
+  it("a pause does not eat the days left to learn in", async () => {
+    const user = await makeUser();
+    const ldc = await exam(user, "LDC");
+    const made = await plans.generate(user, await generous(user, ldc), "ALL");
+    expect(made).toMatchObject({ ok: true });
+    const timelineOf = async (status: "ACTIVE" | "PAUSED") => {
+      const row = await prisma.studyPlan.findFirstOrThrow({
+        where: { userId: user.id, syllabusVersionId: ldc, status },
+      });
+      return row.inputs as unknown as {
+        today: string;
+        timelineStart?: string;
+      };
+    };
+    const before = await timelineOf("ACTIVE");
+    const started = before.timelineStart ?? before.today;
+
+    await plans.pause(user, ldc);
+    clock.advance(20 * 24 * 60 * 60 * 1000);
+    expect(await plans.resume(user, ldc)).toMatchObject({ ok: true });
+    clock.set("2026-10-06T04:30:00Z");
+
+    const after = await timelineOf("ACTIVE");
+    // The 20 days paused move the timeline, so the final review window is still measured
+    // against the study time the user actually had, not the calendar.
+    expect(after.timelineStart).toBe(addDaysIso(started, 20));
+    expect((await plans.roles(user)).find((e) => e.examId === ldc)!.role).toBe(
+      "FOCUS",
+    );
+  });
+
+  it("pausing is not a way around the active plan limit", async () => {
+    planLimit = 1;
+    const user = await makeUser();
+    const ldc = await exam(user, "LDC");
+    const lgs = await exam(user, "LGS");
+    expect(
+      await plans.generate(user, await generous(user, ldc), "ALL"),
+    ).toMatchObject({ ok: true });
+    await plans.pause(user, ldc);
+    expect(
+      await plans.generate(user, await generous(user, lgs), "ALL"),
+    ).toMatchObject({ ok: true });
+    // Both active would be two plans on a one-plan allowance.
+    expect(await plans.resume(user, ldc)).toMatchObject({
+      ok: false,
+      code: "LIMIT",
+    });
   });
 
   it("enforces the active plan limit across exams", async () => {

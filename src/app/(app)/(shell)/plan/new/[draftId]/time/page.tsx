@@ -10,6 +10,11 @@ export default async function TimePage({
 }: PageProps<"/plan/new/[draftId]/time">) {
   const draft = await loadDraft((await params).draftId);
   return (
-    <TimeStep draftId={draft.id} initial={draft.data} today={draft.today} />
+    <TimeStep
+      draftId={draft.id}
+      initial={draft.data}
+      today={draft.today}
+      sharing={draft.sharing}
+    />
   );
 }

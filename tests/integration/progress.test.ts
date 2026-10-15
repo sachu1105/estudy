@@ -324,6 +324,35 @@ describe("re-planning", () => {
     ).toBeGreaterThan(0);
   });
 
+  it("shows a task ticked today once, not twice, after a same-day re-plan", async () => {
+    const { user, planId } = await userWithPlan();
+    const before = await progress.todayView(user);
+    const task = before.tasks.find((t) => !t.done)!;
+    await progress.setTaskDone(user, task.id, true);
+
+    // A re-plan on the same day replaces today's rows: the same work gets a new task id but
+    // keeps its key. Deduping by id alone would show it twice, done and not done at once.
+    const exam = (
+      await prisma.studyPlan.findUniqueOrThrow({
+        where: { id: planId },
+      })
+    ).syllabusVersionId!;
+    expect(await plans.replan(user, exam)).toMatchObject({ ok: true });
+
+    // The ambiguity is real: two rows now carry this key, on two different plans.
+    const rows = await prisma.planTask.findMany({
+      where: { key: task.key, plan: { userId: user.id } },
+    });
+    expect(rows.length).toBeGreaterThan(1);
+
+    const after = await progress.todayView(user);
+    const sameWork = after.tasks.filter((t) => t.key === task.key);
+    expect(sameWork).toHaveLength(1);
+    expect(sameWork[0]!.done).toBe(true);
+    // And the minutes are not counted twice either.
+    expect(after.minutesDone).toBeLessThanOrEqual(after.minutesPlanned);
+  });
+
   it("gives a valid plan after a fully missed week", async () => {
     const { user, planId } = await userWithPlan();
     const first = await prisma.studyPlan.findUniqueOrThrow({

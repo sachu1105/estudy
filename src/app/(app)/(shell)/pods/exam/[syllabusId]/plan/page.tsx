@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
+import { PausedPlan } from "@/features/pods/components/paused-plan";
 import { PlanInvite } from "@/features/pods/components/plan-invite";
 import { loadExam } from "@/features/pods/load-exam";
 import { PlanDay } from "@/features/plans/components/plan-day";
@@ -30,7 +31,9 @@ export default async function ExamPlanPage({
   searchParams,
 }: PageProps<"/pods/exam/[syllabusId]/plan">) {
   const { syllabusId } = await params;
-  const { user, exam, plan: state } = await loadExam(syllabusId);
+  const { user, exam, plan: state, rank } = await loadExam(syllabusId);
+  if (state.kind === "paused")
+    return <PausedPlan syllabusId={exam.id} title={exam.title} />;
   if (state.kind !== "active")
     return <PlanInvite syllabusId={exam.id} draft={state.kind === "draft"} />;
 
@@ -57,6 +60,8 @@ export default async function ExamPlanPage({
   const warning = plan.replanWarning as CoverageWarning | null;
   const facts = [
     `${Math.round(plan.plannedMinutes / 60)} h planned`,
+    // Only when something else is competing for the day; alone, it would read as noise.
+    rank?.shared ? `${rank.sharePercent}% of your day` : null,
     `from ${formatDay(plan.startDate, false)}`,
     plan.reviewStartDate
       ? `review from ${formatDay(plan.reviewStartDate, false)}`
