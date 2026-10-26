@@ -3,9 +3,10 @@
 import { ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import { toast } from "@/components/ui/toast";
 import {
   blankMarks,
   markedCount,
@@ -19,13 +20,15 @@ import { ClearSheetButton } from "./clear-sheet-button";
 import { OmrGrid } from "./omr-grid";
 import { OmrTimer } from "./omr-timer";
 import { PdfPages } from "./pdf-pages";
+import { useOmrTimer } from "./use-omr-timer";
 import { useSavedMarks } from "./use-saved-marks";
 
 type View = "paper" | "sheet";
 
 /**
  * The paper on the left, the OMR sheet on the right. On a phone they share the screen
- * one at a time, switched from the bar at the bottom. Marks save as you go.
+ * one at a time, switched from the bar at the bottom. Marks save as you go. The timer
+ * comes first: a tap before it runs asks to start it, then counts.
  */
 export function OmrWorkspace({
   id,
@@ -44,13 +47,35 @@ export function OmrWorkspace({
     initialMarks,
   );
   const [view, setView] = useState<View>("paper");
+  const count = markedCount(marks);
+  const timer = useOmrTimer(id, initialTimer, () =>
+    toast(`Time's up. You marked ${count} of ${marks.length}.`),
+  );
+  const [timerOpen, setTimerOpen] = useState(false);
+  // The bubble tapped before the timer ran; it counts once the timer starts.
+  const [waiting, setWaiting] = useState<[number, number] | null>(null);
+  const timerOn = useRef(timer.view.on);
+  useEffect(() => {
+    timerOn.current = timer.view.on;
+  }, [timer.view.on]);
 
   const onMark = useCallback(
-    (question: number, option: number) =>
-      setMarks((m) => toggleMark(m, question, option)),
+    (question: number, option: number) => {
+      if (!timerOn.current) {
+        setWaiting([question, option]);
+        return setTimerOpen(true);
+      }
+      setMarks((m) => toggleMark(m, question, option));
+    },
     [setMarks],
   );
-  const count = markedCount(marks);
+  const startTimer = (limitMin: number | null) => {
+    timer.run({ op: "start", limitMin });
+    timerOn.current = true;
+    if (waiting) setMarks((m) => toggleMark(m, ...waiting));
+    setWaiting(null);
+    setTimerOpen(false);
+  };
 
   return (
     <div className="flex h-dvh flex-col">
@@ -90,7 +115,16 @@ export function OmrWorkspace({
         >
           {count}/{marks.length}
         </span>
-        <OmrTimer sheetId={id} initial={initialTimer} marked={count} />
+        <OmrTimer
+          timer={timer}
+          open={timerOpen}
+          onOpenChange={(open) => {
+            setTimerOpen(open);
+            if (!open) setWaiting(null);
+          }}
+          prompted={waiting !== null}
+          onStart={startTimer}
+        />
         <ClearSheetButton
           disabled={count === 0}
           onClear={() => setMarks(blankMarks())}

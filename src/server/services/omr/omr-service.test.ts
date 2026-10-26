@@ -190,13 +190,6 @@ describe("omr sheets", () => {
     s.clock.advance(90_000);
     expect((await s.service.get(user, sheetId))?.timer.elapsedSec).toBe(90);
 
-    await s.service.timer(user, sheetId, { op: "pause" });
-    s.clock.advance(600_000);
-    expect((await s.service.get(user, sheetId))?.timer).toMatchObject({
-      elapsedSec: 90,
-      running: false,
-    });
-    await s.service.timer(user, sheetId, { op: "resume" });
     s.clock.advance(10_000);
     expect((await s.service.list(user))[0]?.timer.elapsedSec).toBe(100);
 

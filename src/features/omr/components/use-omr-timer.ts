@@ -7,14 +7,12 @@ import type { TimerView } from "@/lib/omr/timer";
 
 import { timerAction } from "../actions";
 
-type Op =
-  | { op: "start"; limitMin: number | null }
-  | { op: "pause" | "resume" | "reset" };
+type Op = { op: "start"; limitMin: number | null } | { op: "reset" };
 
 /**
  * The timer as the server last reported it, ticking on from the moment it arrived.
- * Pause and resume show at once and roll back if the server says no. `onTimeUp` runs
- * when a countdown reaches zero while the sheet is open.
+ * Starting shows at once and rolls back if the server says no. `onTimeUp` runs when a
+ * countdown reaches zero while the sheet is open.
  */
 export function useOmrTimer(
   sheetId: string,
@@ -54,10 +52,7 @@ export function useOmrTimer(
   }
 
   function run(input: Op) {
-    const previous = { view: { ...view, elapsedSec: elapsed }, at: Date.now() };
-    if (input.op === "pause")
-      show({ ...view, elapsedSec: elapsed, running: false });
-    if (input.op === "resume") show({ ...view, running: true });
+    const previous = { ...view, elapsedSec: elapsed };
     if (input.op === "start")
       show({
         on: true,
@@ -69,7 +64,7 @@ export function useOmrTimer(
       const result = await timerAction({ id: sheetId, timer: input });
       if (!result.ok) {
         toast.error(result.error);
-        return show(previous.view);
+        return show(previous);
       }
       show(result.timer);
     });
@@ -77,3 +72,5 @@ export function useOmrTimer(
 
   return { view, elapsed, pending, run };
 }
+
+export type OmrTimerState = ReturnType<typeof useOmrTimer>;

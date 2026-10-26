@@ -1,14 +1,7 @@
 import type { Clock } from "@/lib/clock";
 import type { IdGenerator } from "@/lib/ids";
 import { blankMarks, normaliseMarks } from "@/lib/omr/marks";
-import {
-  OFF,
-  pause,
-  resume,
-  start,
-  viewAt,
-  type TimerState,
-} from "@/lib/omr/timer";
+import { OFF, start, viewAt, type TimerState } from "@/lib/omr/timer";
 import type { EntitlementSubject } from "@/server/entitlements/resolve";
 import type { LimitFeature } from "@/server/entitlements/config";
 import type { OmrSheetRepository } from "@/server/repositories/omr-sheet-repository";
@@ -48,8 +41,7 @@ type TimerColumns = {
 };
 
 export type TimerOp =
-  | { op: "start"; limitMin: number | null }
-  | { op: "pause" | "resume" | "reset" };
+  { op: "start"; limitMin: number | null } | { op: "reset" };
 
 const fromColumns = (row: TimerColumns): TimerState => ({
   on: row.timerOn,
@@ -108,20 +100,12 @@ export function createOmrService(deps: OmrDeps) {
       };
     },
 
-    /** Start (with a limit in minutes, or none), pause, resume or reset the timer. */
+    /** Start the timer (with a limit in minutes, or none), or reset it. No pausing. */
     async timer(user: User, id: string, input: TimerOp) {
       const sheet = await deps.sheets.findOwned(id, user.id);
       if (!sheet) return null;
       const now = deps.clock.now();
-      const current = fromColumns(sheet);
-      const next =
-        input.op === "start"
-          ? start(now, input.limitMin)
-          : input.op === "pause"
-            ? pause(current, now)
-            : input.op === "resume"
-              ? resume(current, now)
-              : OFF;
+      const next = input.op === "start" ? start(now, input.limitMin) : OFF;
       await deps.sheets.setTimer(id, user.id, {
         timerOn: next.on,
         timerLimitSec: next.limitSec,

@@ -1,21 +1,21 @@
 import { describe, expect, it } from "vitest";
 
-import { OFF, clock, elapsedAt, face, pause, resume, start } from "./timer";
+import { clock, elapsedAt, face, start, viewAt } from "./timer";
 
 const at = (s: number) => new Date(Date.UTC(2026, 9, 26, 4, 30, s));
 
 describe("omr timer", () => {
-  it("counts from the start, stops while paused, and picks up again", () => {
-    let t = start(at(0), 75);
+  it("counts from the start and never stops", () => {
+    const t = start(at(0), 75);
     expect(t.limitSec).toBe(4500);
     expect(elapsedAt(t, at(40))).toBe(40);
-    t = pause(t, at(40));
-    expect(elapsedAt(t, at(59))).toBe(40);
-    expect(pause(t, at(59))).toBe(t);
-    t = resume(t, at(50));
-    expect(elapsedAt(t, at(55))).toBe(45);
-    expect(resume(t, at(57))).toBe(t);
-    expect(pause(OFF, at(1))).toBe(OFF);
+    expect(viewAt(t, at(59))).toEqual({
+      on: true,
+      limitSec: 4500,
+      elapsedSec: 59,
+      running: true,
+    });
+    expect(start(at(0), null).limitSec).toBeNull();
   });
 
   it("shows time left, then time over; with no limit, time used", () => {

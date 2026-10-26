@@ -1,5 +1,6 @@
-// The answer sheet's timer. Pure: `now` is passed in (rule 12). Time runs on the
-// server's clock, so a reload or a closed tab doesn't lose it.
+// The answer sheet's timer, as in the exam hall: started before the first answer, never
+// paused, only reset. Pure: `now` is passed in (rule 12). Time runs on the server's
+// clock, so a reload or a closed tab doesn't lose it.
 
 export type TimerState = {
   on: boolean;
@@ -7,7 +8,7 @@ export type TimerState = {
   limitSec: number | null;
   /** Seconds banked by earlier runs, before the current one. */
   elapsedSec: number;
-  /** When the current run started; null while paused (or not started). */
+  /** When the clock started; null when it is off. */
   runningSince: Date | null;
 };
 
@@ -57,16 +58,6 @@ export function start(now: Date, limitMin: number | null): TimerState {
     elapsedSec: 0,
     runningSince: now,
   };
-}
-
-export function pause(state: TimerState, now: Date): TimerState {
-  if (!state.on || !state.runningSince) return state;
-  return { ...state, elapsedSec: elapsedAt(state, now), runningSince: null };
-}
-
-export function resume(state: TimerState, now: Date): TimerState {
-  if (!state.on || state.runningSince) return state;
-  return { ...state, runningSince: now };
 }
 
 /** What the clock face shows: time left (or over) with a limit, time used without. */

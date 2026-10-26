@@ -55,11 +55,11 @@ const timerSchema = z.object({
       op: z.literal("start"),
       limitMin: z.int().min(1).max(MAX_LIMIT_MIN).nullable(),
     }),
-    z.object({ op: z.enum(["pause", "resume", "reset"]) }),
+    z.object({ op: z.literal("reset") }),
   ]),
 });
 
-/** Start, pause, resume or reset the sheet's timer; returns it as the server sees it. */
+/** Start or reset the sheet's timer; returns it as the server sees it. */
 export async function timerAction(
   input: unknown,
 ): Promise<{ ok: true; timer: TimerView } | { ok: false; error: string }> {

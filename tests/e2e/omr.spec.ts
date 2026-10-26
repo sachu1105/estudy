@@ -68,7 +68,13 @@ test.describe("question papers", () => {
       await page.getByRole("radio", { name: /Answer sheet/ }).click();
     const bubble = (q: number, o: string) =>
       page.getByRole("button", { name: `Question ${q}, option ${o}` });
+    // The first tap asks for the timer, as in the exam; once it runs, the tap counts.
     await bubble(1, "B").click();
+    await expect(
+      page.getByText(/Start the clock before you mark your first answer/),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Start timer" }).click();
+    await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "true");
     await bubble(100, "D").click();
     await bubble(1, "C").click();
     await expect(bubble(1, "C")).toHaveAttribute("aria-pressed", "true");
@@ -102,8 +108,9 @@ test.describe("question papers", () => {
     await expect(page.getByText("No question papers yet")).toBeVisible();
   });
 
-  test("a timer counts down, pauses across a reload, and says when time's up", async ({
+  test("the timer can't be paused, survives a reload, resets, and says when time's up", async ({
     page,
+    isMobile,
   }) => {
     test.setTimeout(90_000);
     await page.clock.install();
@@ -116,6 +123,7 @@ test.describe("question papers", () => {
     });
     await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
     const timer = page.getByRole("banner").getByRole("timer");
+    const bubble = page.getByRole("button", { name: "Question 3, option A" });
 
     // 75 minutes is picked to start with.
     await page.getByRole("button", { name: "Start a timer" }).click();
@@ -129,35 +137,38 @@ test.describe("question papers", () => {
     await page.clock.fastForward("05:00");
     await expect(timer).toHaveText(/^1:(09|10):\d\d$/);
 
-    // Paused, it stays put, even after a reload. (The fake clock only moves the
-    // browser; the pause takes the server's reading, so wait for it.)
-    await page.getByRole("button", { name: /Open timer controls/ }).click();
-    const answered = page.waitForResponse(
-      (r) => r.request().method() === "POST" && r.url().includes("/omr/"),
-    );
-    await page.getByRole("button", { name: "Pause" }).click();
-    await answered;
-    await expect(page.getByRole("button", { name: "Resume" })).toBeEnabled();
+    // No pause: only a reset, and that asks first. A reload keeps it running.
+    await page.getByRole("button", { name: /Open timer/ }).click();
+    await expect(page.getByRole("button", { name: /Pause/ })).toHaveCount(0);
     await page.keyboard.press("Escape");
-    await expect(
-      page.getByRole("button", { name: /paused\. Open timer controls/ }),
-    ).toBeVisible();
-    const paused = await timer.textContent();
     await page.reload();
-    await expect(timer).toHaveText(paused!);
-
-    // Reset, then a one-minute countdown runs out.
-    await page.getByRole("button", { name: /Open timer controls/ }).click();
+    await expect(timer).toHaveText(/^1:1[45]:\d\d$/);
+    await page.getByRole("button", { name: /Open timer/ }).click();
+    await page.getByRole("button", { name: "Reset timer" }).click();
     await page.getByRole("button", { name: "Reset timer" }).click();
     await expect(
-      page.getByRole("heading", { name: "Set a timer" }),
+      page.getByRole("heading", { name: "Start the timer" }),
     ).toBeVisible();
+    await page.keyboard.press("Escape");
+
+    // Reset, the sheet asks for the timer again before a mark counts.
+    if (isMobile)
+      await page.getByRole("radio", { name: /Answer sheet/ }).click();
+    await bubble.click();
+    await expect(
+      page.getByRole("heading", { name: "Start the timer" }),
+    ).toBeVisible();
+    // Closed without starting, the tap doesn't count.
+    await page.keyboard.press("Escape");
+    await expect(bubble).toHaveAttribute("aria-pressed", "false");
+    await bubble.click();
     await page.getByLabel("Or your own, in minutes").fill("1");
     await page.getByRole("button", { name: "Start timer" }).click();
+    await expect(bubble).toHaveAttribute("aria-pressed", "true");
     await expect(timer).toHaveText(/^0[01]:\d\d$/);
     await page.clock.fastForward("01:05");
     await expect(
-      page.getByText("Time's up. You marked 0 of 100."),
+      page.getByText("Time's up. You marked 1 of 100."),
     ).toBeVisible();
     await expect(timer).toHaveText(/^\+00:\d\d$/);
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
