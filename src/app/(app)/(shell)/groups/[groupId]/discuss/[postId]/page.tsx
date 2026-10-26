@@ -92,7 +92,9 @@ export default async function ThreadPage({
             {timeAgo(post.createdAt, now, user.timezone)}
           </span>
         </div>
-        <PostBody source={post.body} mentions={post.mentions} />
+        {post.body ? (
+          <PostBody source={post.body} mentions={post.mentions} />
+        ) : null}
         <ReactionBar
           groupId={groupId}
           postId={postId}

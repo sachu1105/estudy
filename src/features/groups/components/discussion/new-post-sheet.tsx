@@ -48,7 +48,7 @@ export function NewPostSheet({
   const [kind, setKind] = useState<NewPost["kind"]>("DISCUSSION");
   const [topic, setTopic] = useState("none");
   const [picked, setPicked] = useState<Mention[]>([]);
-  const ready = title.trim().length >= 3 && body.trim().length > 0;
+  const ready = title.trim().length >= 3;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -112,7 +112,10 @@ export function NewPostSheet({
             </div>
           ) : null}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="post-body">Details</Label>
+            <Label htmlFor="post-body">
+              Details{" "}
+              <span className="font-normal text-ink-muted">(optional)</span>
+            </Label>
             <MentionTextarea
               id="post-body"
               rows={5}

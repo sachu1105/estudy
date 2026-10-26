@@ -3,7 +3,6 @@
 import { Search } from "lucide-react";
 import {
   cloneElement,
-  useRef,
   useState,
   type ReactElement,
   type ReactNode,
@@ -56,7 +55,6 @@ export function ItemPicker({
 }: Props) {
   const wide = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
-  const anchor = useRef<HTMLSpanElement>(null);
   const pick = (id: string) => {
     setOpen(false);
     body.onPick(id);
@@ -73,19 +71,17 @@ export function ItemPicker({
 
   return (
     <>
-      <Popover open={open && wide} onOpenChange={setOpen}>
+      {/* Modal so it holds the scroll lock: inside a sheet or dialog, the parent's lock
+          would otherwise swallow wheel scrolling in this portalled list. */}
+      <Popover modal open={open && wide} onOpenChange={setOpen}>
         <PopoverAnchor asChild>
-          <span ref={anchor} className="inline-flex">
+          <span className="inline-flex">
             {opener}
           </span>
         </PopoverAnchor>
         <PopoverContent
           side={side}
           align={align}
-          // The trigger toggles it; a click there isn't a click outside.
-          onInteractOutside={(e) => {
-            if (anchor.current?.contains(e.target as Node)) e.preventDefault();
-          }}
           className="flex max-h-[min(440px,70dvh)] w-[360px] flex-col overflow-hidden"
         >
           <PickerBody {...body} onPick={pick} heading="h3" />

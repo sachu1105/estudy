@@ -61,7 +61,8 @@ export async function createPostAction(
         .trim()
         .min(3, "Give it a title of 3 letters or more.")
         .max(140),
-      body,
+      // A post's title can say it all; replies still need text.
+      body: z.string().trim().max(5000, "Keep it under 5000 characters."),
       mentionIds,
       subjectName: z.string().trim().max(200).nullable(),
       topicName: z.string().trim().max(200).nullable(),
