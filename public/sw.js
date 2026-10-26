@@ -1,7 +1,7 @@
 // Service worker: web push, and enough caching that Today still opens without a
 // connection (milestone 16). Deliberately small — no framework, no precache manifest.
 
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = `shell-${VERSION}`;
 const PAGES = `pages-${VERSION}`;
 const OFFLINE_URL = "/offline";
@@ -10,7 +10,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(SHELL)
-      .then((cache) => cache.addAll([OFFLINE_URL, "/icon.svg"]))
+      .then((cache) => cache.addAll([OFFLINE_URL, "/icon-192.png"]))
       .then(() => self.skipWaiting()),
   );
 });

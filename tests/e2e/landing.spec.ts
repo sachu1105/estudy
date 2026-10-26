@@ -106,8 +106,11 @@ test.describe("landing, signed out", () => {
     for (const path of [
       "/robots.txt",
       "/sitemap.xml",
-      "/icon.svg",
-      "/apple-icon",
+      "/icon.png",
+      "/apple-icon.png",
+      "/icon-192.png",
+      "/icon-512-maskable.png",
+      "/logo/mark.png",
     ]) {
       expect((await request.get(path)).status(), path).toBe(200);
     }

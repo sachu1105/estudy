@@ -1,5 +1,12 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { ImageResponse } from "next/og";
 import { site } from "@/lib/site";
+
+/** The logo mark as a data URL: the card renders without fetching anything. */
+const mark = () =>
+  `data:image/png;base64,${readFileSync(join(process.cwd(), "public/logo/mark.png")).toString("base64")}`;
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
@@ -21,32 +28,8 @@ export function renderOg(title: string, subtitle: string) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        <div
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: 18,
-            background: "#5865F2",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <svg
-            width="34"
-            height="34"
-            viewBox="0 0 20 20"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2.4"
-          >
-            <path
-              d="M4 10.5 8 14.5 16 5.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse needs a plain img */}
+        <img src={mark()} width={64} height={64} alt="" />
         <div style={{ fontSize: 34, fontWeight: 600 }}>{site.name}</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
