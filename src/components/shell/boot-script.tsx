@@ -3,11 +3,7 @@
 // components/shell/sidebar.tsx.
 const script = `(function(){try{
 var d=document.documentElement;d.setAttribute("data-js","");
-var p=localStorage.getItem("theme");if(p!=="light"&&p!=="dark")p="system";
-var q=matchMedia("(prefers-color-scheme: dark)");
-var t=p==="system"?(q.matches?"dark":"light"):p;
-d.setAttribute("data-theme",t);d.setAttribute("data-theme-pref",p);
-q.addEventListener("change",function(e){if(d.getAttribute("data-theme-pref")==="system")d.setAttribute("data-theme",e.matches?"dark":"light")});
+d.setAttribute("data-theme",localStorage.getItem("theme")==="dark"?"dark":"light");
 if(localStorage.getItem("sidebar")==="collapsed")d.setAttribute("data-sidebar","collapsed");
 }catch(e){}})()`;
 

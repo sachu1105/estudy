@@ -1,38 +1,22 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
-import { SegmentedControl } from "@/components/ui/segmented-control";
-import {
-  setThemePreference,
-  useThemePreference,
-  type ThemePreference,
-} from "@/lib/theme";
+import { Button } from "@/components/ui/button";
+import { setThemePreference, useThemePreference } from "@/lib/theme";
 
-const options = [
-  {
-    value: "system",
-    label: <Monitor aria-hidden />,
-    ariaLabel: "System theme",
-  },
-  { value: "light", label: <Sun aria-hidden />, ariaLabel: "Light theme" },
-  { value: "dark", label: <Moon aria-hidden />, ariaLabel: "Dark theme" },
-] satisfies {
-  value: ThemePreference;
-  label: React.ReactNode;
-  ariaLabel: string;
-}[];
-
+// One button: shows the theme it switches to.
 export function ThemeToggle({ className }: { className?: string }) {
-  const preference = useThemePreference();
+  const dark = useThemePreference() === "dark";
   return (
-    <SegmentedControl
-      ariaLabel="Theme"
-      size="sm"
-      value={preference}
-      onValueChange={setThemePreference}
-      options={options}
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+      onClick={() => setThemePreference(dark ? "light" : "dark")}
       className={className}
-    />
+    >
+      {dark ? <Sun aria-hidden /> : <Moon aria-hidden />}
+    </Button>
   );
 }

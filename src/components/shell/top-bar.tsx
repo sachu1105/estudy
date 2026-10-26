@@ -2,7 +2,6 @@
 
 import {
   LogOut,
-  Monitor,
   Moon,
   Search,
   Settings,
@@ -67,12 +66,6 @@ export function TopBar({ viewer, logout }: TopBarProps) {
     {
       heading: "Theme",
       items: [
-        {
-          id: "theme-system",
-          label: "Use system theme",
-          icon: Monitor,
-          onSelect: () => setThemePreference("system"),
-        },
         {
           id: "theme-light",
           label: "Switch to light theme",

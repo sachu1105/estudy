@@ -38,7 +38,9 @@ export function PublicPlanCards({
   headingLevel?: 2 | 3;
 }) {
   return (
-    <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3 md:gap-5">
+    // From md each card is a subgrid over shared rows (header, then one row per
+    // feature), so the cards end level and the same feature sits on the same line.
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
       {plans.map((p) => (
         <PlanCard
           key={p.plan}
@@ -76,10 +78,16 @@ function PlanCard({
   return (
     <section
       aria-labelledby={id}
+      style={
+        {
+          "--rows": rows.length + 1,
+          "--items": rows.length,
+        } as React.CSSProperties
+      }
       className={cn(
-        "flex flex-col gap-5 rounded-[24px] border bg-surface p-2 pb-6",
+        "flex flex-col gap-5 rounded-[24px] border bg-surface p-2 pb-6 md:row-span-(--rows) md:grid md:grid-rows-subgrid md:gap-y-3",
         featured
-          ? "border-accent/40 shadow-lg md:-translate-y-3"
+          ? "border-accent/40 shadow-lg"
           : "border-border shadow-sm",
       )}
     >
@@ -138,11 +146,11 @@ function PlanCard({
           {blurbs[plan]}
         </p>
         {/* On the cover a plain raised button reads best; colour is the cover's job. */}
-        <Button asChild variant="secondary" size="lg" className="w-full">
+        <Button asChild variant="secondary" size="lg" className="mt-auto w-full">
           <Link href={href}>{cta}</Link>
         </Button>
       </div>
-      <ul className="flex flex-col gap-3 px-4">
+      <ul className="flex flex-col gap-3 px-4 md:row-span-(--items) md:mt-2 md:grid md:grid-rows-subgrid">
         {rows.map((row) => (
           <li
             key={row.label}
