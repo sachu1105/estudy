@@ -193,6 +193,24 @@
   --animate-sheet-out-left: sheet-out-left 200ms var(--ease-out);
   --animate-sheet-in-bottom: sheet-in-bottom 300ms var(--ease-out);
   --animate-sheet-out-bottom: sheet-out-bottom 200ms var(--ease-out);
+  /* The exam start: a soft ring that breathes around the one thing to press. */
+  --animate-pulse-ring: pulse-ring 1.8s var(--ease-out) infinite;
+  --animate-count-in: count-in 400ms var(--ease-out);
+}
+
+@keyframes pulse-ring {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 16px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+@keyframes count-in {
+  from {
+    opacity: 0;
+    transform: scale(1.5);
+  }
 }
 
 /* Landing marquees: the track holds its items twice, so -50% loops seamlessly. */

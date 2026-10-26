@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,12 @@ import {
   SheetDescription,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { clock, face } from "@/lib/omr/timer";
+import { face } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
-import { TimerSetup } from "./timer-setup";
+import { ExamStart } from "./exam-start";
+import { StartCountdown } from "./start-countdown";
+import { TimerPanel } from "./timer-panel";
 import type { OmrTimerState } from "./use-omr-timer";
 
 /**
@@ -22,27 +24,35 @@ import type { OmrTimerState } from "./use-omr-timer";
  * it when a bubble is tapped first); on, it shows time left, or time used with no limit.
  */
 export function OmrTimer({
+  title,
   timer,
   open,
   onOpenChange,
+  onDismiss,
   prompted,
   onStart,
 }: {
+  title: string;
   timer: OmrTimerState;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** The person closed the sheet without starting. */
+  onDismiss: () => void;
   /** Opened by a tap on the sheet before the timer was started. */
   prompted: boolean;
   onStart: (limitMin: number | null) => void;
 }) {
   const { view, elapsed, pending, run } = timer;
-  const [confirming, setConfirming] = useState(false);
+  // The limit chosen, while the 3-2-1 runs; the clock starts when it ends.
+  const [starting, setStarting] = useState<{ limit: number | null } | null>(
+    null,
+  );
   const shown = face(view.limitSec, elapsed);
   const left = view.limitSec === null ? null : view.limitSec - elapsed;
   const urgent = left !== null && left <= 60;
   const change = (next: boolean) => {
-    setConfirming(false);
     onOpenChange(next);
+    if (!next) onDismiss();
   };
 
   return (
@@ -52,6 +62,7 @@ export function OmrTimer({
           variant="ghost"
           className="h-11 px-2 md:h-10"
           aria-label={`Timer ${shown.text}${shown.over ? ", over time" : ""}. Open timer`}
+          aria-busy={pending || undefined}
           onClick={() => change(true)}
         >
           <span
@@ -68,83 +79,73 @@ export function OmrTimer({
         <Button
           variant="ghost"
           className="h-11 px-2 md:h-10"
-          aria-label="Start a timer"
+          aria-label="Start the exam timer"
           onClick={() => change(true)}
         >
-          <Timer aria-hidden />
-          <span className="hidden sm:inline">Start timer</span>
+          <span className="relative">
+            <Timer aria-hidden />
+            <span
+              aria-hidden
+              className="absolute -top-0.5 -right-0.5 size-2 animate-pulse-ring rounded-full bg-accent"
+            />
+          </span>
+          <span className="hidden sm:inline">Start exam</span>
         </Button>
       )}
 
       <Sheet open={open} onOpenChange={change}>
-        <SheetContent side="bottom">
-          <SheetTitle>{view.on ? "Timer" : "Start the timer"}</SheetTitle>
+        <SheetContent
+          side="bottom"
+          // Focus the one action, not the first chip (its ring reads as "chosen").
+          onOpenAutoFocus={(e) => {
+            const start = (
+              e.currentTarget as HTMLElement
+            ).querySelector<HTMLElement>("[data-autofocus]");
+            if (!start) return;
+            e.preventDefault();
+            start.focus();
+          }}
+        >
+          {view.on ? null : (
+            <p className="text-micro text-ink-muted uppercase">Exam mode</p>
+          )}
+          <SheetTitle className={view.on ? undefined : "-mt-3"}>
+            {view.on ? "Timer" : "Ready to start?"}
+          </SheetTitle>
           {view.on ? (
-            <>
-              <SheetDescription>
-                {view.limitSec === null
-                  ? "Counting up, no limit."
-                  : `${clock(Math.min(elapsed, view.limitSec))} used of ${clock(view.limitSec)}.`}{" "}
-                Like the exam hall clock, it can&apos;t be paused.
-              </SheetDescription>
-              <p
-                className={cn(
-                  "text-center font-mono text-[40px] leading-[48px] font-medium tabular-nums",
-                  urgent ? "text-danger-ink" : "text-ink",
-                )}
-              >
-                {shown.text}
-              </p>
-              {shown.over ? (
-                <p className="text-center text-small text-ink-muted">
-                  Time&apos;s up. The extra time shows with a plus.
-                </p>
-              ) : null}
-              {confirming ? (
-                <div className="flex flex-col gap-3 rounded-card border border-border p-4">
-                  <p className="text-body">
-                    Reset the timer? It goes back to the start, and your marks
-                    stay.
-                  </p>
-                  <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                    <Button onClick={() => setConfirming(false)}>
-                      Keep it running
-                    </Button>
-                    <Button
-                      variant="danger"
-                      disabled={pending}
-                      onClick={() => {
-                        run({ op: "reset" });
-                        setConfirming(false);
-                      }}
-                    >
-                      Reset timer
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <Button
-                  className="self-end"
-                  onClick={() => setConfirming(true)}
-                >
-                  <RotateCcw aria-hidden /> Reset timer
-                </Button>
-              )}
-            </>
+            <TimerPanel
+              view={view}
+              elapsed={elapsed}
+              pending={pending}
+              onReset={() => run({ op: "reset" })}
+            />
           ) : (
             <>
-              <SheetDescription>
-                {prompted
-                  ? "Start the clock before you mark your first answer, as in the exam. "
-                  : ""}
-                It counts down and keeps running if you leave the paper. It
-                can&apos;t be paused, only reset.
+              <SheetDescription className="sr-only">
+                Choose how long the paper gets, then start the exam.
               </SheetDescription>
-              <TimerSetup pending={pending} onStart={onStart} />
+              <ExamStart
+                title={title}
+                prompted={prompted}
+                pending={pending}
+                onStart={(limit) => {
+                  setStarting({ limit });
+                  onOpenChange(false);
+                }}
+              />
             </>
           )}
         </SheetContent>
       </Sheet>
+      {starting ? (
+        <StartCountdown
+          title={title}
+          onDone={() => {
+            onStart(starting.limit);
+            setStarting(null);
+          }}
+        />
+      ) : null}
     </>
   );
 }

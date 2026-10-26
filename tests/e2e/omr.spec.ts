@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 import { makePdf } from "../support/pdf";
 
@@ -31,6 +31,11 @@ test.describe("question papers", () => {
       ),
     });
     await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
+    // A fresh paper opens on the exam start; it can wait while you look around.
+    await expect(
+      page.getByRole("heading", { name: "Ready to start?" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     await expect(
       page.getByRole("heading", { name: "LDC 2024 paper" }),
     ).toBeVisible();
@@ -54,6 +59,10 @@ test.describe("question papers", () => {
       .toBeLessThan(fitWidth * 0.7);
     await page.reload();
     await expect(
+      page.getByRole("heading", { name: "Ready to start?" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(
       page.getByRole("button", { name: "Fit the page to the width" }),
     ).toHaveText("67%");
     await page
@@ -71,9 +80,12 @@ test.describe("question papers", () => {
     // The first tap asks for the timer, as in the exam; once it runs, the tap counts.
     await bubble(1, "B").click();
     await expect(
-      page.getByText(/Start the clock before you mark your first answer/),
+      page.getByText(/Start the clock to mark your first answer/),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Start timer" }).click();
+    await page.getByRole("button", { name: "Start exam" }).click();
+    await expect(
+      page.getByRole("dialog", { name: "Exam starting" }),
+    ).toBeVisible();
     await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "true");
     await bubble(100, "D").click();
     await bubble(1, "C").click();
@@ -124,15 +136,29 @@ test.describe("question papers", () => {
     await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
     const timer = page.getByRole("banner").getByRole("timer");
     const bubble = page.getByRole("button", { name: "Question 3, option A" });
+    // The fake clock only moves the browser: let the server's start land before
+    // fast-forwarding, or its reply rewinds the display.
+    const startNow = async (button: Locator) => {
+      await button.click();
+      await expect(
+        page.getByRole("button", { name: /Open timer/ }),
+      ).not.toHaveAttribute("aria-busy", "true");
+    };
 
-    // 75 minutes is picked to start with.
-    await page.getByRole("button", { name: "Start a timer" }).click();
+    // The exam start opens by itself, with 75 minutes picked; then 3, 2, 1.
+    await expect(
+      page.getByRole("heading", { name: "Ready to start?" }),
+    ).toBeVisible();
     await expect(
       page.getByRole("group", { name: "Time limit" }).getByRole("button", {
         name: "75 min",
       }),
     ).toHaveAttribute("aria-pressed", "true");
-    await page.getByRole("button", { name: "Start timer" }).click();
+    await page.getByRole("button", { name: "Start exam" }).click();
+    const countdown = page.getByRole("dialog", { name: "Exam starting" });
+    await expect(countdown).toBeVisible();
+    await startNow(countdown.getByRole("button", { name: "Start now" }));
+    await expect(countdown).toBeHidden();
     await expect(timer).toHaveText(/^1:1[45]:\d\d$/);
     await page.clock.fastForward("05:00");
     await expect(timer).toHaveText(/^1:(09|10):\d\d$/);
@@ -147,7 +173,7 @@ test.describe("question papers", () => {
     await page.getByRole("button", { name: "Reset timer" }).click();
     await page.getByRole("button", { name: "Reset timer" }).click();
     await expect(
-      page.getByRole("heading", { name: "Start the timer" }),
+      page.getByRole("heading", { name: "Ready to start?" }),
     ).toBeVisible();
     await page.keyboard.press("Escape");
 
@@ -156,14 +182,16 @@ test.describe("question papers", () => {
       await page.getByRole("radio", { name: /Answer sheet/ }).click();
     await bubble.click();
     await expect(
-      page.getByRole("heading", { name: "Start the timer" }),
+      page.getByRole("heading", { name: "Ready to start?" }),
     ).toBeVisible();
     // Closed without starting, the tap doesn't count.
     await page.keyboard.press("Escape");
     await expect(bubble).toHaveAttribute("aria-pressed", "false");
     await bubble.click();
-    await page.getByLabel("Or your own, in minutes").fill("1");
-    await page.getByRole("button", { name: "Start timer" }).click();
+    await page.getByRole("button", { name: "Custom" }).click();
+    await page.getByLabel("Minutes").fill("1");
+    await page.getByRole("button", { name: "Start exam" }).click();
+    await startNow(page.getByRole("button", { name: "Start now" }));
     await expect(bubble).toHaveAttribute("aria-pressed", "true");
     await expect(timer).toHaveText(/^0[01]:\d\d$/);
     await page.clock.fastForward("01:05");

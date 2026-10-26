@@ -51,7 +51,8 @@ export function OmrWorkspace({
   const timer = useOmrTimer(id, initialTimer, () =>
     toast(`Time's up. You marked ${count} of ${marks.length}.`),
   );
-  const [timerOpen, setTimerOpen] = useState(false);
+  // A paper whose clock hasn't started opens on the exam start, as the hall would.
+  const [timerOpen, setTimerOpen] = useState(!initialTimer.on);
   // The bubble tapped before the timer ran; it counts once the timer starts.
   const [waiting, setWaiting] = useState<[number, number] | null>(null);
   const timerOn = useRef(timer.view.on);
@@ -116,12 +117,11 @@ export function OmrWorkspace({
           {count}/{marks.length}
         </span>
         <OmrTimer
+          title={title}
           timer={timer}
           open={timerOpen}
-          onOpenChange={(open) => {
-            setTimerOpen(open);
-            if (!open) setWaiting(null);
-          }}
+          onOpenChange={setTimerOpen}
+          onDismiss={() => setWaiting(null)}
           prompted={waiting !== null}
           onStart={startTimer}
         />
