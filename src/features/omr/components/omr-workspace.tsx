@@ -1,8 +1,6 @@
 "use client";
 
-import { ArrowLeft, Check } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { SegmentedControl } from "@/components/ui/segmented-control";
@@ -17,6 +15,7 @@ import type { TimerView } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
 import { ClearSheetButton } from "./clear-sheet-button";
+import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
 import { OmrTimer } from "./omr-timer";
 import { PdfPages } from "./pdf-pages";
@@ -28,7 +27,8 @@ type View = "paper" | "sheet";
 /**
  * The paper on the left, the OMR sheet on the right. On a phone they share the screen
  * one at a time, switched from the bar at the bottom. Marks save as you go. The timer
- * comes first: a tap before it runs asks to start it, then counts.
+ * comes first: a tap before it runs asks to start it, then counts. Leaving during the
+ * exam ends the sitting and resets the timer.
  */
 export function OmrWorkspace({
   id,
@@ -41,7 +41,6 @@ export function OmrWorkspace({
   initialMarks: Marks;
   initialTimer: TimerView;
 }) {
-  const router = useRouter();
   const { marks, setMarks, saving, dirty, flush } = useSavedMarks(
     id,
     initialMarks,
@@ -51,8 +50,9 @@ export function OmrWorkspace({
   const timer = useOmrTimer(id, initialTimer, () =>
     toast(`Time's up. You marked ${count} of ${marks.length}.`),
   );
-  // A paper whose clock hasn't started opens on the exam start, as the hall would.
-  const [timerOpen, setTimerOpen] = useState(!initialTimer.on);
+  // Every sitting begins on the exam start, as the hall would (a running clock on
+  // opening means the last sitting was left, and the hook has reset it).
+  const [timerOpen, setTimerOpen] = useState(true);
   // The bubble tapped before the timer ran; it counts once the timer starts.
   const [waiting, setWaiting] = useState<[number, number] | null>(null);
   const timerOn = useRef(timer.view.on);
@@ -81,19 +81,12 @@ export function OmrWorkspace({
   return (
     <div className="flex h-dvh flex-col">
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2 md:px-4">
-        <Link
-          href="/tests"
-          aria-label="Back to tests (your marks are kept)"
-          onClick={(e) => {
-            // Let the last mark land first, so the list shows it.
-            if (!dirty() || e.metaKey || e.ctrlKey) return;
-            e.preventDefault();
-            void flush().then(() => router.push("/tests"));
-          }}
-          className="grid size-11 shrink-0 place-items-center rounded-control text-ink-muted hover:bg-surface-muted hover:text-ink"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </Link>
+        <LeaveExam
+          inExam={timer.view.on}
+          dirty={dirty}
+          flush={flush}
+          endSitting={timer.reset}
+        />
         <h1 className="min-w-0 flex-1 truncate font-heading text-h3">
           {title}
         </h1>
@@ -122,7 +115,13 @@ export function OmrWorkspace({
           open={timerOpen}
           onOpenChange={setTimerOpen}
           onDismiss={() => setWaiting(null)}
-          prompted={waiting !== null}
+          note={
+            waiting
+              ? "Start the clock to mark your first answer, as in the exam."
+              : timer.abandoned
+                ? "You left your last sitting, so its clock was reset. Your marks are kept."
+                : null
+          }
           onStart={startTimer}
         />
         <ClearSheetButton

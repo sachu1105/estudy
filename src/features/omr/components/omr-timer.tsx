@@ -20,7 +20,7 @@ import type { OmrTimerState } from "./use-omr-timer";
 
 /**
  * The paper's clock in the header, run like the exam hall's: started before the first
- * answer, never paused, only reset. Off, it offers to start one (and the sheet asks for
+ * answer, never paused, only reset (leaving the paper resets it too). Off, it offers to start one (and the sheet asks for
  * it when a bubble is tapped first); on, it shows time left, or time used with no limit.
  */
 export function OmrTimer({
@@ -29,7 +29,7 @@ export function OmrTimer({
   open,
   onOpenChange,
   onDismiss,
-  prompted,
+  note,
   onStart,
 }: {
   title: string;
@@ -38,8 +38,8 @@ export function OmrTimer({
   onOpenChange: (open: boolean) => void;
   /** The person closed the sheet without starting. */
   onDismiss: () => void;
-  /** Opened by a tap on the sheet before the timer was started. */
-  prompted: boolean;
+  /** Why the start card is up, shown at its top. */
+  note: string | null;
   onStart: (limitMin: number | null) => void;
 }) {
   const { view, elapsed, pending, run } = timer;
@@ -126,7 +126,7 @@ export function OmrTimer({
               </SheetDescription>
               <ExamStart
                 title={title}
-                prompted={prompted}
+                note={note}
                 pending={pending}
                 onStart={(limit) => {
                   setStarting({ limit });

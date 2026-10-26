@@ -19,6 +19,8 @@ test.describe("question papers", () => {
     isMobile,
   }) => {
     test.setTimeout(90_000);
+    // A reload during the exam gets the browser's "Leave site?"; say yes.
+    page.on("dialog", (dialog) => void dialog.accept());
     await seedAndLogin(page, `omr-${test.info().project.name}`);
 
     await page.goto("/tests");
@@ -94,22 +96,31 @@ test.describe("question papers", () => {
     await expect(page.getByLabel("2 of 100 marked")).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    // Marks save as you go and come back after a reload.
+    // Marks save as you go. A reload leaves the sitting: the clock resets, the marks
+    // stay, and the start card says why.
     await expect(page.getByRole("banner").getByRole("status")).toHaveText(
       "Saved",
     );
     await page.reload();
+    await expect(
+      page.getByText(/You left your last sitting, so its clock was reset/),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     if (isMobile)
       await page.getByRole("radio", { name: /Answer sheet/ }).click();
     await expect(bubble(100, "D")).toHaveAttribute("aria-pressed", "true");
     await expect(bubble(1, "C")).toHaveAttribute("aria-pressed", "true");
 
-    // Tapping a marked bubble rubs it out.
+    // A new sitting; tapping a marked bubble rubs it out.
     await bubble(1, "C").click();
+    await page.getByRole("button", { name: "Start exam" }).click();
+    await page.getByRole("button", { name: "Start now" }).click();
     await expect(page.getByLabel("1 of 100 marked")).toBeVisible();
 
-    // The list shows it; a paper can be deleted with its marks.
-    await page.getByRole("link", { name: /Back to tests/ }).click();
+    // Leaving asks first, then lists the paper with its marks.
+    await page.getByRole("link", { name: "Leave the exam" }).click();
+    await page.getByRole("button", { name: "Leave and reset timer" }).click();
+    await expect(page).toHaveURL(/\/tests$/);
     const papers = page.getByRole("list", { name: "Question papers" });
     await expect(papers.getByText("LDC 2024 paper")).toBeVisible();
     await expect(papers.getByText(/1\/100\s+marked/)).toBeVisible();
@@ -120,7 +131,7 @@ test.describe("question papers", () => {
     await expect(page.getByText("No question papers yet")).toBeVisible();
   });
 
-  test("the timer can't be paused, survives a reload, resets, and says when time's up", async ({
+  test("the timer can't be paused, leaving asks first, it resets, and says when time's up", async ({
     page,
     isMobile,
   }) => {
@@ -163,12 +174,25 @@ test.describe("question papers", () => {
     await page.clock.fastForward("05:00");
     await expect(timer).toHaveText(/^1:(09|10):\d\d$/);
 
-    // No pause: only a reset, and that asks first. A reload keeps it running.
+    // No pause: only a reset, and that asks first.
     await page.getByRole("button", { name: /Open timer/ }).click();
     await expect(page.getByRole("button", { name: /Pause/ })).toHaveCount(0);
     await page.keyboard.press("Escape");
-    await page.reload();
-    await expect(timer).toHaveText(/^1:1[45]:\d\d$/);
+
+    // Leaving, by the back arrow or the browser's back button, asks first.
+    await page.getByRole("link", { name: "Leave the exam" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Leave the exam?" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Stay in the exam" }).click();
+    await page.goBack({ waitUntil: "commit" });
+    await expect(
+      page.getByRole("heading", { name: "Leave the exam?" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Stay in the exam" }).click();
+    await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
+    await expect(timer).toHaveText(/^1:(09|10):\d\d$/);
+
     await page.getByRole("button", { name: /Open timer/ }).click();
     await page.getByRole("button", { name: "Reset timer" }).click();
     await page.getByRole("button", { name: "Reset timer" }).click();
@@ -200,6 +224,17 @@ test.describe("question papers", () => {
     ).toBeVisible();
     await expect(timer).toHaveText(/^\+00:\d\d$/);
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // The browser's back button, confirmed, ends the sitting: next time it starts
+    // fresh, with no note about a sitting left behind.
+    await page.goBack({ waitUntil: "commit" });
+    await page.getByRole("button", { name: "Leave and reset timer" }).click();
+    await expect(page).toHaveURL(/\/tests$/);
+    await page.getByRole("link", { name: /Timed paper/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "Ready to start?" }),
+    ).toBeVisible();
+    await expect(page.getByText(/You left your last sitting/)).toHaveCount(0);
   });
 
   test("someone else's paper is not found", async ({ page }) => {

@@ -9,17 +9,31 @@ import { timerAction } from "../actions";
 
 type Op = { op: "start"; limitMin: number | null } | { op: "reset" };
 
+const OFF: TimerView = {
+  on: false,
+  limitSec: null,
+  elapsedSec: 0,
+  running: false,
+};
+
 /**
  * The timer as the server last reported it, ticking on from the moment it arrived.
  * Starting shows at once and rolls back if the server says no. `onTimeUp` runs when a
  * countdown reaches zero while the sheet is open.
+ *
+ * Leaving a sitting ends it, so a paper that opens with its clock still running was
+ * left (closed, reloaded, the phone died): the clock is reset and `abandoned` is true.
  */
 export function useOmrTimer(
   sheetId: string,
   initial: TimerView,
   onTimeUp: () => void,
 ) {
-  const [base, setBase] = useState(() => ({ view: initial, at: Date.now() }));
+  const [abandoned] = useState(initial.on);
+  const [base, setBase] = useState(() => ({
+    view: initial.on ? OFF : initial,
+    at: Date.now(),
+  }));
   const [now, setNow] = useState(base.at);
   const [pending, startTransition] = useTransition();
   const { view } = base;
@@ -44,6 +58,10 @@ export function useOmrTimer(
       if (elapsed >= limit) timeUp.current();
     before.current = elapsed;
   }, [elapsed, view.limitSec, view.running]);
+
+  useEffect(() => {
+    if (abandoned) void timerAction({ id: sheetId, timer: { op: "reset" } });
+  }, [abandoned, sheetId]);
 
   function show(next: TimerView) {
     const at = Date.now();
@@ -70,7 +88,14 @@ export function useOmrTimer(
     });
   }
 
-  return { view, elapsed, pending, run };
+  /** Reset and wait for it: leaving the exam does this before it navigates. */
+  async function reset() {
+    const result = await timerAction({ id: sheetId, timer: { op: "reset" } });
+    if (result.ok) show(result.timer);
+    return result.ok;
+  }
+
+  return { view, elapsed, pending, abandoned, run, reset };
 }
 
 export type OmrTimerState = ReturnType<typeof useOmrTimer>;

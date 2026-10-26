@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleDot, RotateCcw, Save, Timer } from "lucide-react";
+import { CircleDot, LogOut, Save, Timer } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,11 @@ import { cn } from "@/lib/utils/cn";
 const RULES = [
   [Timer, "The clock runs until time's up. No pause, as in the hall."],
   [CircleDot, "Tap a bubble to mark it, tap it again to clear it."],
-  [Save, "Every mark saves as you go, even if you leave."],
-  [RotateCcw, "A reset starts the clock over. Your marks stay."],
+  [Save, "Every mark saves as you go."],
+  [
+    LogOut,
+    "Leaving the paper ends the sitting and resets the clock. Your marks stay.",
+  ],
 ] as const;
 
 const short = (min: number) =>
@@ -30,13 +33,13 @@ const short = (min: number) =>
  */
 export function ExamStart({
   title,
-  prompted,
+  note,
   pending,
   onStart,
 }: {
   title: string;
-  /** A bubble was tapped before the clock ran. */
-  prompted: boolean;
+  /** Why the card is up, when it isn't the paper simply opening. */
+  note: string | null;
   pending: boolean;
   onStart: (limitMin: number | null) => void;
 }) {
@@ -66,10 +69,10 @@ export function ExamStart({
       }}
     >
       <p className="-mt-2 truncate text-small text-ink-muted">{title}</p>
-      {prompted ? (
+      {note ? (
         <p className="flex items-center gap-2 rounded-control bg-surface-muted px-3 py-2 text-small">
           <Timer className="size-4 shrink-0 text-ink-muted" aria-hidden />
-          Start the clock to mark your first answer, as in the exam.
+          {note}
         </p>
       ) : null}
 
