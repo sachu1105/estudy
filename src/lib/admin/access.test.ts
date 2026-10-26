@@ -7,7 +7,6 @@ describe("admin access", () => {
     expect(adminNav("MODERATOR").map((a) => a.area)).toEqual([
       "dashboard",
       "catalogue",
-      "questions",
       "reports",
     ]);
     expect(canAdmin("ADMIN", "users")).toBe(true);

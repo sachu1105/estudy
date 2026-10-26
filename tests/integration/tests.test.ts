@@ -1,17 +1,16 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixedClock } from "@/lib/clock";
+import { parseImport, topicKey } from "@/lib/questions/questions";
 import type { EditableTree } from "@/lib/syllabus/tree";
 import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
-import { auditLogRepository } from "@/server/repositories/audit-log-repository";
 import { planRepository } from "@/server/repositories/plan-repository";
 import { podRepository } from "@/server/repositories/pod-repository";
 import { progressRepository } from "@/server/repositories/progress-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { topicCompletionRepository } from "@/server/repositories/topic-completion-repository";
-import { createQuestionAdmin } from "@/server/services/admin/question-admin";
 import { createPlanService } from "@/server/services/plans/plan-service";
 import { createPodService } from "@/server/services/pods/pod-service";
 import { createProgressService } from "@/server/services/progress/progress-service";
@@ -50,12 +49,6 @@ const tests = createTestService({
   completeTask: (user, taskId, accuracy) =>
     progress.setTaskDone(user, taskId, true, accuracy),
 });
-const admin = createQuestionAdmin({
-  questions: questionRepository,
-  audit: auditLogRepository,
-  clock,
-});
-
 const id = () => crypto.randomUUID();
 
 async function makeUser(role: "USER" | "ADMIN" = "USER") {
@@ -140,7 +133,16 @@ async function preamblePool(by: User) {
     (_, i) =>
       `preamble,2,Preamble question number ${i + 1}?,Right ${i},Wrong ${i}a,Wrong ${i}b,Wrong ${i}c,A,Because.,Test`,
   ).join("\n");
-  return admin.import({ id: by.id, role: "ADMIN" }, csv, true);
+  const { questions } = parseImport(csv);
+  return questionRepository.createMany(
+    questions.map((q) => ({
+      ...q,
+      topicKey: topicKey(q.topicName),
+      topicId: null,
+    })),
+    { id: by.id, status: "VERIFIED", source: "ADMIN" },
+    clock.now(),
+  );
 }
 
 beforeEach(async () => {
@@ -151,29 +153,6 @@ beforeEach(async () => {
 afterAll(async () => {
   await prisma.$disconnect();
   redis.disconnect();
-});
-
-describe("question pool", () => {
-  it("imports as pending to review, or verified when the admin says so", async () => {
-    const boss = await makeUser("ADMIN");
-    const pending = await admin.import(
-      { id: boss.id, role: "ADMIN" },
-      "Rivers,3,Longest river in Kerala?,Periyar,Pamba,Chaliyar,Kabini,A,,\nRivers,9,bad,a,b,c,d,A,,",
-      false,
-    );
-    expect(pending.added).toBe(1);
-    expect(pending.errors.map((e) => e.line)).toEqual([2]);
-    const [rows] = await admin.list("PENDING", "rivers", 0);
-    expect(rows).toHaveLength(1);
-    await admin.decide(
-      { id: boss.id, role: "ADMIN" },
-      [rows[0]!.id],
-      "VERIFIED",
-    );
-    expect((await questionRepository.find(rows[0]!.id))?.status).toBe(
-      "VERIFIED",
-    );
-  });
 });
 
 describe("check tests", () => {

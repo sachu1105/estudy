@@ -27,6 +27,7 @@ const PROTECTED = [
   "/settings",
   "/study",
   "/test",
+  "/omr",
   "/admin",
   "/notifications",
 ];

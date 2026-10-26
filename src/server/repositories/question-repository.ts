@@ -4,7 +4,6 @@ import type { QuestionInput } from "@/lib/questions/questions";
 import { prisma } from "@/server/db";
 import type {
   MockTestType,
-  Prisma,
   QuestionStatus,
   ReportReason,
 } from "@/server/db/generated/prisma/client";
@@ -13,7 +12,6 @@ import { toDbDate } from "./plan-repository";
 
 /** Three reports take a question out of tests until an admin looks (milestone 8). */
 export const SUPPRESS_AFTER = 3;
-const PAGE = 25;
 
 /** The stored columns of a question (the topic name becomes topicKey). */
 const fields = (q: QuestionInput & { topicKey: string }) => ({
@@ -60,94 +58,8 @@ export const questionRepository = {
     });
   },
 
-  update(id: string, q: QuestionInput & { topicKey: string }) {
-    return prisma.question.update({ where: { id }, data: fields(q) });
-  },
-
-  setStatus(ids: string[], status: QuestionStatus, by: string, at: Date) {
-    return prisma.question.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        status,
-        ...(status === "VERIFIED"
-          ? { verifiedById: by, verifiedAt: at, reportCount: 0 }
-          : {}),
-      },
-    });
-  },
-
-  /** Resolves open reports when an admin decides about a reported question. */
-  resolveReports(questionIds: string[], at: Date) {
-    return prisma.questionReport.updateMany({
-      where: { questionId: { in: questionIds }, resolvedAt: null },
-      data: { resolvedAt: at },
-    });
-  },
-
-  remove(ids: string[]) {
-    return prisma.question.deleteMany({ where: { id: { in: ids } } });
-  },
-
   find(id: string) {
     return prisma.question.findUnique({ where: { id } });
-  },
-
-  adminList(filters: { status: QuestionStatus; topic: string }, page: number) {
-    const where: Prisma.QuestionWhereInput = {
-      status: filters.status,
-      ...(filters.topic ? { topicKey: { contains: filters.topic } } : {}),
-    };
-    return prisma.$transaction([
-      prisma.question.findMany({
-        where,
-        orderBy:
-          filters.status === "SUPPRESSED"
-            ? [{ reportCount: "desc" }, { updatedAt: "desc" }]
-            : { createdAt: "desc" },
-        skip: page * PAGE,
-        take: PAGE,
-        include: {
-          reports: {
-            where: { resolvedAt: null },
-            select: { reason: true, note: true },
-          },
-        },
-      }),
-      prisma.question.count({ where }),
-    ]);
-  },
-
-  /** Verified questions per topic key, for the thin-pool report. */
-  async verifiedCounts(keys: string[]) {
-    if (keys.length === 0) return new Map<string, number>();
-    const rows = await prisma.question.groupBy({
-      by: ["topicKey"],
-      where: { status: "VERIFIED", topicKey: { in: keys } },
-      _count: true,
-    });
-    return new Map(rows.map((r) => [r.topicKey, r._count]));
-  },
-
-  /** Topics of approved catalogue syllabuses: what the pool ought to cover. */
-  catalogueTopics() {
-    return prisma.topic.findMany({
-      where: {
-        subject: {
-          syllabusVersion: {
-            visibility: "CATALOGUE",
-            status: "APPROVED",
-            deletedAt: null,
-          },
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        subject: {
-          select: { name: true, syllabusVersion: { select: { title: true } } },
-        },
-      },
-    });
   },
 
   /** Verified questions for any of these topics (by id or by shared name). */

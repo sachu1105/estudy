@@ -92,12 +92,6 @@ test.describe("mock tests", () => {
     await page.getByRole("button", { name: "Report question 1" }).click();
     await page.getByRole("button", { name: "Send report" }).click();
     await expect(page.getByText("Thanks, it's reported")).toBeVisible();
-
-    // The task is done on Today, and the result is in Tests.
-    await page.goto("/tests");
-    await expect(
-      page.getByRole("link", { name: /Check: .*3 of 5 right/ }),
-    ).toBeVisible();
   });
 
   test("section mocks are timed with negative marking; topics can be practised alone", async ({
@@ -107,56 +101,31 @@ test.describe("mock tests", () => {
     await seedQuestions(TOPICS);
     await userWithPlan(page, `mocks-${test.info().project.name}`);
 
-    await page.goto("/tests");
-    await page.getByRole("button", { name: "Section mock" }).first().click();
+    const openPod = async () => {
+      await page.goto("/pods");
+      await page
+        .getByRole("region", { name: "Your exams" })
+        .getByRole("link")
+        .first()
+        .click();
+      await page
+        .getByRole("link", { name: "Indian Constitution", exact: true })
+        .click();
+    };
+
+    // A section mock starts from the subject pod's tests.
+    await openPod();
+    await page.getByRole("tab", { name: "Tests" }).click();
+    await page.getByRole("button", { name: "Section mock" }).click();
     await expect(page).toHaveURL(/\/test\/[0-9a-f-]{36}$/);
     await expect(page.getByRole("timer")).toBeVisible();
     await expect(page.getByText(/a third of a mark off/)).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    await page.goto("/pods");
-    await page
-      .getByRole("region", { name: "Your exams" })
-      .getByRole("link")
-      .first()
-      .click();
-    await page
-      .getByRole("link", { name: "Indian Constitution", exact: true })
-      .click();
+    await openPod();
     await page.getByRole("link", { name: /^Preamble/ }).click();
     await page.getByRole("button", { name: "Practice 5 questions" }).click();
     await expect(page).toHaveURL(/\/test\/[0-9a-f-]{36}$/);
     await expect(page.getByText("1 of 5")).toBeVisible();
-  });
-
-  test("an admin imports questions, which wait to be checked, then verifies them", async ({
-    page,
-  }) => {
-    await seedAndLogin(page, `qadmin-${test.info().project.name}`, "ADMIN");
-    const tag = `${test.info().project.name}${Date.now()}`;
-    await page.goto("/admin/questions");
-    await page.getByRole("button", { name: "Import" }).click();
-    await page
-      .getByRole("textbox", { name: "Questions" })
-      .fill(`Topic ${tag},2,What is ${tag}?,Yes,No,Maybe,Never,A,Because,Test`);
-    await page
-      .getByRole("dialog")
-      .getByRole("button", { name: "Import" })
-      .click();
-    await expect(page.getByText("1 imported")).toBeVisible();
-
-    await page.goto(
-      `/admin/questions?status=PENDING&topic=${encodeURIComponent(`topic ${tag}`)}`,
-    );
-    await expect(page.getByText(`What is ${tag}?`)).toBeVisible();
-    await page.getByRole("button", { name: "Verify", exact: true }).click();
-    await expect(
-      page.getByText("Verified", { exact: true }).last(),
-    ).toBeVisible();
-    await page.goto(
-      `/admin/questions?status=VERIFIED&topic=${encodeURIComponent(`topic ${tag}`)}`,
-    );
-    await expect(page.getByText(`What is ${tag}?`)).toBeVisible();
-    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
   });
 });

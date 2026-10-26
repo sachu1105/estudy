@@ -143,10 +143,8 @@ export default async function TodayPage() {
         ))}
 
         {view.nextMock ? (
-          <Link
-            href="/tests"
-            className="flex items-center gap-3 rounded-card border border-border px-4 py-3 text-small text-ink-muted transition-colors duration-[120ms] hover:bg-surface-muted hover:text-ink"
-          >
+          // Informational: the mock shows up as a task on its day.
+          <p className="flex items-center gap-3 rounded-card border border-border px-4 py-3 text-small text-ink-muted">
             <ClipboardCheck className="size-4 shrink-0" aria-hidden />
             <span className="min-w-0 flex-1 truncate">
               Next mock test ·{" "}
@@ -157,7 +155,7 @@ export default async function TodayPage() {
             <span className="shrink-0">
               {formatDay(view.nextMock.date, false)}
             </span>
-          </Link>
+          </p>
         ) : null}
       </div>
     </>
