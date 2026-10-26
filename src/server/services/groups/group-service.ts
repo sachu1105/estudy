@@ -171,6 +171,55 @@ export function createGroupService(deps: GroupDeps) {
       return { ok: true, joined: true };
     },
 
+    /**
+     * What an invite link opens, before joining: enough to decide, nothing more. A private
+     * squad's own banner stays for its members; the invitee sees its gradient.
+     */
+    async previewInvite(
+      user: User,
+      code: string,
+    ): Promise<
+      Result<{
+        member: boolean;
+        group: {
+          id: string;
+          name: string;
+          description: string | null;
+          exam: string | null;
+          members: number;
+          cover: unknown;
+        };
+      }>
+    > {
+      const invite = await deps.groups.invitePreview(code.trim().toUpperCase());
+      const expired = invite?.expiresAt && invite.expiresAt <= now();
+      const usedUp = invite?.maxUses != null && invite.uses >= invite.maxUses;
+      if (!invite || invite.revokedAt || expired || invite.group.deletedAt)
+        return failure(
+          "BAD_CODE",
+          "That invite doesn't work any more. Ask for a new one.",
+        );
+      const member = !!(await deps.groups.membership(invite.groupId, user.id));
+      if (usedUp && !member)
+        return failure(
+          "FULL",
+          "That invite has been used up. Ask for a new one.",
+        );
+      const { group } = invite;
+      return {
+        ok: true,
+        member,
+        group: {
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          exam: group.exam?.name ?? null,
+          members: group._count.members,
+          cover: member || group.visibility === "PUBLIC" ? group.cover : null,
+        },
+      };
+    },
+
     /** An invite opens any group, private ones too, while it's valid. */
     async joinByCode(
       user: User,

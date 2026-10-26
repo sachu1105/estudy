@@ -160,6 +160,25 @@ export async function joinGroupAction(
   );
 }
 
+/** The "Join this squad?" prompt behind an invite link in a chat. Joins nothing. */
+export async function previewInviteAction(input: unknown) {
+  const g = await guard(
+    input,
+    z.object({
+      code: z
+        .string()
+        .trim()
+        .regex(/^[A-Za-z0-9]{6,12}$/),
+    }),
+  );
+  if (g.fail) return g.fail;
+  const result = await groupService.previewInvite(
+    g.user,
+    (g.data as { code: string }).code,
+  );
+  return result.ok ? result : { ok: false as const, error: result.message };
+}
+
 export async function joinByCodeAction(
   input: unknown,
 ): Promise<Result<{ groupId: string }>> {

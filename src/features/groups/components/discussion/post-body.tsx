@@ -5,6 +5,12 @@ import {
   type Inline,
   type Mention,
 } from "@/lib/markdown/markdown";
+import { inviteCodeOf } from "@/lib/squads/invite-link";
+
+import { InviteLink } from "../invite-link";
+
+const LINK =
+  "[overflow-wrap:anywhere] text-accent-ink underline underline-offset-2";
 
 // Renders the markdown subset element by element: no HTML string, no
 // dangerouslySetInnerHTML, so nothing a member types can run in another's browser.
@@ -37,18 +43,27 @@ function Inlines({ nodes }: { nodes: Inline[] }) {
             {node.text}
           </code>
         );
-      case "link":
+      case "link": {
+        // A squad invite asks "Join this squad?" in place instead of opening a tab.
+        const code = inviteCodeOf(node.href);
+        if (code)
+          return (
+            <InviteLink key={i} href={node.href} code={code} className={LINK}>
+              {node.text}
+            </InviteLink>
+          );
         return (
           <a
             key={i}
             href={node.href}
             target="_blank"
             rel="noopener noreferrer nofollow ugc"
-            className="[overflow-wrap:anywhere] text-accent-ink underline underline-offset-2"
+            className={LINK}
           >
             {node.text}
           </a>
         );
+      }
       case "mention":
         return (
           <span key={i} className="font-medium text-accent-ink">

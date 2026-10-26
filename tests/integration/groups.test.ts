@@ -120,9 +120,24 @@ describe("groups", () => {
       days: 7,
       maxUses: 1,
     })) as { code: string };
+    // The "Join this squad?" prompt: what it opens, and joining nothing yet.
+    expect(await groups.previewInvite(a, once.code)).toMatchObject({
+      ok: true,
+      member: false,
+      group: { id: g, name: "Closed", members: 1, cover: null },
+    });
+    expect((await groups.view(a, g))?.role ?? null).toBeNull();
     expect(await groups.joinByCode(a, once.code.toLowerCase())).toEqual({
       ok: true,
       groupId: g,
+    });
+    expect(await groups.previewInvite(a, once.code)).toMatchObject({
+      ok: true,
+      member: true,
+    });
+    expect(await groups.previewInvite(b, once.code)).toMatchObject({
+      ok: false,
+      code: "FULL",
     });
     expect(await groups.joinByCode(b, once.code)).toMatchObject({
       ok: false,

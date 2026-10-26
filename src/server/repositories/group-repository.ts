@@ -282,6 +282,27 @@ export const groupRepository = {
     });
   },
 
+  /** What an invite opens, for the "Join this squad?" prompt before anyone joins. */
+  invitePreview(code: string) {
+    return prisma.groupInvite.findUnique({
+      where: { code },
+      include: {
+        group: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            visibility: true,
+            cover: true,
+            deletedAt: true,
+            exam: { select: { name: true } },
+            _count: { select: { members: true } },
+          },
+        },
+      },
+    });
+  },
+
   /** Counts a use only while uses remain: two people can't take the last seat. */
   async useInvite(id: string, maxUses: number | null) {
     const result = await prisma.groupInvite.updateMany({

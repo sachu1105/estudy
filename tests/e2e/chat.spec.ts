@@ -47,6 +47,61 @@ async function menuOf(page: Page, text: string) {
 test.describe("squad chat", () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
+  test("an invite link in a message asks to join right there, in the same tab", async ({
+    page,
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const project = test.info().project.name;
+    const tag = `${project}${Date.now()}`;
+    await seedAndLogin(page, `invite-owner-${project}`);
+
+    const create = async (name: string) => {
+      await page.goto("/groups");
+      await page.getByRole("button", { name: "Create squad" }).click();
+      await page.getByLabel("Name").fill(name);
+      await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Create squad" })
+        .click();
+      await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+      const url = page.url();
+      await open(page, url, "Members");
+      await page.getByRole("button", { name: "New invite" }).click();
+      const code = (await page.locator("li .font-mono").first().textContent())!;
+      return { url, code: code.trim() };
+    };
+    const lobby = await create(`Lobby ${tag}`);
+    const cpo = await create(`CPO ${tag}`);
+
+    const member = await person(browser, `invite-member-${project}`);
+    await member.goto(`/groups/join/${lobby.code}`);
+    await expect(member).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+
+    await open(page, lobby.url, "general");
+    await send(
+      page,
+      `http://localhost:3000/groups/join/${cpo.code} join this one`,
+    );
+
+    await open(member, lobby.url, "general");
+    await member
+      .getByRole("link", {
+        name: `http://localhost:3000/groups/join/${cpo.code}`,
+      })
+      .click();
+    const dialog = member.getByRole("dialog");
+    await expect(
+      dialog.getByRole("heading", { name: `Join CPO ${tag}?` }),
+    ).toBeVisible();
+    await expect(dialog.getByText("1 member")).toBeVisible();
+    expect(await noSideScroll(member)).toBeLessThanOrEqual(0);
+    await dialog.getByRole("button", { name: "Join squad" }).click();
+
+    await expect(member).toHaveURL(cpo.url);
+    expect(member.context().pages()).toHaveLength(1);
+  });
+
   test("messages arrive live, with replies, reactions, edits and unread marks", async ({
     page,
     browser,
