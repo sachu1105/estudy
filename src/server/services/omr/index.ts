@@ -1,5 +1,6 @@
 import "server-only";
 
+import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { limit } from "@/server/entitlements";
 import { omrSheetRepository } from "@/server/repositories/omr-sheet-repository";
@@ -15,6 +16,7 @@ export const omrService = createOmrService({
   podBytesUsed: (ownerId) => podFileRepository.bytesUsed(ownerId),
   storage,
   ids: randomIds,
+  clock: systemClock,
   limit,
   pageCount: async (bytes) => {
     const { getDocumentProxy } = await import("unpdf");

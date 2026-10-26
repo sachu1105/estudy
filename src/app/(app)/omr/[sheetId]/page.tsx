@@ -19,6 +19,7 @@ export default async function OmrPage({ params }: PageProps<"/omr/[sheetId]">) {
       id={sheet.id}
       title={sheet.title}
       initialMarks={sheet.marks}
+      initialTimer={sheet.timer}
     />
   );
 }

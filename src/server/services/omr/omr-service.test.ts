@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { fixedClock } from "@/lib/clock";
 import { sequentialIds } from "@/lib/ids";
 import { BLANK } from "@/lib/omr/marks";
 import { createMemoryStorage } from "@/server/storage/memory";
@@ -13,18 +14,30 @@ type Row = {
   storageKey: string;
   sizeBytes: number;
   marks: number[];
+  timerOn: boolean;
+  timerLimitSec: number | null;
+  timerElapsedSec: number;
+  timerRunningSince: Date | null;
 };
 
 function setup(room = 10_000) {
   const { storage, objects } = createMemoryStorage();
   const rows = new Map<string, Row>();
   const ids = sequentialIds();
+  const clock = fixedClock("2026-10-26T04:30:00Z");
   const mine = (id: string, ownerId: string) =>
     rows.get(id)?.ownerId === ownerId ? rows.get(id)! : null;
   const sheets = {
-    async create(data: Omit<Row, "id">) {
+    async create(data: Omit<Row, "id" | `timer${string}`>) {
       const id = ids.next();
-      rows.set(id, { id, ...data });
+      rows.set(id, {
+        id,
+        ...data,
+        timerOn: false,
+        timerLimitSec: null,
+        timerElapsedSec: 0,
+        timerRunningSince: null,
+      });
       return { id };
     },
     async listOwned(ownerId: string) {
@@ -36,6 +49,11 @@ function setup(room = 10_000) {
     async setMarks(id: string, ownerId: string, marks: number[]) {
       const row = mine(id, ownerId);
       if (row) row.marks = marks;
+      return !!row;
+    },
+    async setTimer(id: string, ownerId: string, timer: Partial<Row>) {
+      const row = mine(id, ownerId);
+      if (row) Object.assign(row, timer);
       return !!row;
     },
     async rename(id: string, ownerId: string, title: string) {
@@ -57,10 +75,11 @@ function setup(room = 10_000) {
     podBytesUsed: async () => 0,
     storage,
     ids,
+    clock,
     limit: () => room,
     pageCount: async () => 3,
   });
-  return { service, objects, rows };
+  return { service, objects, rows, clock };
 }
 
 const user = { id: "00000000-0000-4000-8000-0000000000aa" } as never;
@@ -147,5 +166,46 @@ describe("omr sheets", () => {
     expect(await s.service.remove(user, sheetId)).toBe(true);
     expect(s.objects.has(key)).toBe(false);
     expect(s.rows.size).toBe(0);
+  });
+
+  it("keeps time on the server: a reload sees the clock still running", async () => {
+    const s = setup();
+    const key = await uploaded(s);
+    const { sheetId } = (await s.service.completeUpload(user, {
+      key,
+      name: "p.pdf",
+    })) as { sheetId: string };
+    expect((await s.service.get(user, sheetId))?.timer.on).toBe(false);
+
+    const started = await s.service.timer(user, sheetId, {
+      op: "start",
+      limitMin: 75,
+    });
+    expect(started).toEqual({
+      on: true,
+      limitSec: 4500,
+      elapsedSec: 0,
+      running: true,
+    });
+    s.clock.advance(90_000);
+    expect((await s.service.get(user, sheetId))?.timer.elapsedSec).toBe(90);
+
+    await s.service.timer(user, sheetId, { op: "pause" });
+    s.clock.advance(600_000);
+    expect((await s.service.get(user, sheetId))?.timer).toMatchObject({
+      elapsedSec: 90,
+      running: false,
+    });
+    await s.service.timer(user, sheetId, { op: "resume" });
+    s.clock.advance(10_000);
+    expect((await s.service.list(user))[0]?.timer.elapsedSec).toBe(100);
+
+    expect(await s.service.timer(other, sheetId, { op: "reset" })).toBeNull();
+    expect(await s.service.timer(user, sheetId, { op: "reset" })).toEqual({
+      on: false,
+      limitSec: null,
+      elapsedSec: 0,
+      running: false,
+    });
   });
 });

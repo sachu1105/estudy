@@ -12,10 +12,12 @@ import {
   toggleMark,
   type Marks,
 } from "@/lib/omr/marks";
+import type { TimerView } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
 import { ClearSheetButton } from "./clear-sheet-button";
 import { OmrGrid } from "./omr-grid";
+import { OmrTimer } from "./omr-timer";
 import { PdfPages } from "./pdf-pages";
 import { useSavedMarks } from "./use-saved-marks";
 
@@ -29,10 +31,12 @@ export function OmrWorkspace({
   id,
   title,
   initialMarks,
+  initialTimer,
 }: {
   id: string;
   title: string;
   initialMarks: Marks;
+  initialTimer: TimerView;
 }) {
   const router = useRouter();
   const { marks, setMarks, saving, dirty, flush } = useSavedMarks(
@@ -80,11 +84,13 @@ export function OmrWorkspace({
           )}
         </span>
         <span
-          className="shrink-0 font-mono text-small tabular-nums"
+          // On phones the count rides on the bottom bar's "Answer sheet" tab instead.
+          className="sr-only shrink-0 font-mono text-small tabular-nums sm:not-sr-only"
           aria-label={`${count} of ${marks.length} marked`}
         >
           {count}/{marks.length}
         </span>
+        <OmrTimer sheetId={id} initial={initialTimer} marked={count} />
         <ClearSheetButton
           disabled={count === 0}
           onClear={() => setMarks(blankMarks())}

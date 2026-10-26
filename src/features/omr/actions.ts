@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { OMR_QUESTIONS } from "@/lib/omr/marks";
+import { MAX_LIMIT_MIN, type TimerView } from "@/lib/omr/timer";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { omrService } from "@/server/services/omr";
@@ -45,6 +46,30 @@ export async function saveMarksAction(input: unknown): Promise<Done> {
     parsed.data.marks,
   );
   return saved ? { ok: true } : missing;
+}
+
+const timerSchema = z.object({
+  id: z.uuid(),
+  timer: z.discriminatedUnion("op", [
+    z.object({
+      op: z.literal("start"),
+      limitMin: z.int().min(1).max(MAX_LIMIT_MIN).nullable(),
+    }),
+    z.object({ op: z.enum(["pause", "resume", "reset"]) }),
+  ]),
+});
+
+/** Start, pause, resume or reset the sheet's timer; returns it as the server sees it. */
+export async function timerAction(
+  input: unknown,
+): Promise<{ ok: true; timer: TimerView } | { ok: false; error: string }> {
+  const user = await requireUser();
+  const parsed = timerSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const timer = await omrService.timer(user, parsed.data.id, parsed.data.timer);
+  return timer ? { ok: true, timer } : missing;
 }
 
 export async function renameSheetAction(input: unknown): Promise<Done> {

@@ -8,6 +8,7 @@ import { SheetMenu } from "@/features/omr/components/sheet-menu";
 import { UploadPaperButton } from "@/features/omr/components/upload-paper-button";
 import { systemClock } from "@/lib/clock";
 import { timeAgo } from "@/lib/format/ago";
+import { formatMinutes } from "@/lib/plans/format";
 import { markedCount, OMR_QUESTIONS } from "@/lib/omr/marks";
 import { requireUser } from "@/server/auth/session";
 import { omrService } from "@/server/services/omr";
@@ -54,7 +55,11 @@ export default async function TestsPage() {
                     <span className="font-mono tabular-nums">
                       {markedCount(sheet.marks)}/{OMR_QUESTIONS}
                     </span>{" "}
-                    marked · {timeAgo(sheet.updatedAt, now, user.timezone)}
+                    marked
+                    {sheet.timer.on
+                      ? ` · ${formatMinutes(Math.max(1, Math.round(sheet.timer.elapsedSec / 60)))} used`
+                      : ""}{" "}
+                    · {timeAgo(sheet.updatedAt, now, user.timezone)}
                   </span>
                 </span>
                 <ChevronRight

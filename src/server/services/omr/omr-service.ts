@@ -1,5 +1,14 @@
+import type { Clock } from "@/lib/clock";
 import type { IdGenerator } from "@/lib/ids";
 import { blankMarks, normaliseMarks } from "@/lib/omr/marks";
+import {
+  OFF,
+  pause,
+  resume,
+  start,
+  viewAt,
+  type TimerState,
+} from "@/lib/omr/timer";
 import type { EntitlementSubject } from "@/server/entitlements/resolve";
 import type { LimitFeature } from "@/server/entitlements/config";
 import type { OmrSheetRepository } from "@/server/repositories/omr-sheet-repository";
@@ -15,6 +24,7 @@ export type OmrDeps = {
     | "listOwned"
     | "findOwned"
     | "setMarks"
+    | "setTimer"
     | "rename"
     | "delete"
     | "bytesUsed"
@@ -23,11 +33,30 @@ export type OmrDeps = {
   podBytesUsed: (ownerId: string) => Promise<number>;
   storage: ObjectStorage;
   ids: IdGenerator;
+  clock: Clock;
   limit: (user: EntitlementSubject, feature: LimitFeature) => number;
   pageCount: (bytes: Uint8Array) => Promise<number | null>;
 };
 
 type User = EntitlementSubject & { id: string };
+
+type TimerColumns = {
+  timerOn: boolean;
+  timerLimitSec: number | null;
+  timerElapsedSec: number;
+  timerRunningSince: Date | null;
+};
+
+export type TimerOp =
+  | { op: "start"; limitMin: number | null }
+  | { op: "pause" | "resume" | "reset" };
+
+const fromColumns = (row: TimerColumns): TimerState => ({
+  on: row.timerOn,
+  limitSec: row.timerLimitSec,
+  elapsedSec: row.timerElapsedSec,
+  runningSince: row.timerRunningSince,
+});
 
 export const PAPER_MAX_BYTES = 25 * 1024 * 1024;
 /** Signed links to a paper last this long (rule 15). */
@@ -57,7 +86,14 @@ export function createOmrService(deps: OmrDeps) {
   return {
     async list(user: User) {
       const sheets = await deps.sheets.listOwned(user.id);
-      return sheets.map((s) => ({ ...s, marks: normaliseMarks(s.marks) }));
+      const now = deps.clock.now();
+      return sheets.map((s) => ({
+        id: s.id,
+        title: s.title,
+        updatedAt: s.updatedAt,
+        marks: normaliseMarks(s.marks),
+        timer: viewAt(fromColumns(s), now),
+      }));
     },
 
     async get(user: User, id: string) {
@@ -68,7 +104,31 @@ export function createOmrService(deps: OmrDeps) {
         title: sheet.title,
         pageCount: sheet.pageCount,
         marks: normaliseMarks(sheet.marks),
+        timer: viewAt(fromColumns(sheet), deps.clock.now()),
       };
+    },
+
+    /** Start (with a limit in minutes, or none), pause, resume or reset the timer. */
+    async timer(user: User, id: string, input: TimerOp) {
+      const sheet = await deps.sheets.findOwned(id, user.id);
+      if (!sheet) return null;
+      const now = deps.clock.now();
+      const current = fromColumns(sheet);
+      const next =
+        input.op === "start"
+          ? start(now, input.limitMin)
+          : input.op === "pause"
+            ? pause(current, now)
+            : input.op === "resume"
+              ? resume(current, now)
+              : OFF;
+      await deps.sheets.setTimer(id, user.id, {
+        timerOn: next.on,
+        timerLimitSec: next.limitSec,
+        timerElapsedSec: next.elapsedSec,
+        timerRunningSince: next.runningSince,
+      });
+      return viewAt(next, now);
     },
 
     /** A presigned PUT for one PDF; checks type, size and the plan's room. */

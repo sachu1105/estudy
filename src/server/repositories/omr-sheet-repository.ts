@@ -6,6 +6,10 @@ const LIST_SELECT = {
   id: true,
   title: true,
   marks: true,
+  timerOn: true,
+  timerLimitSec: true,
+  timerElapsedSec: true,
+  timerRunningSince: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -39,6 +43,23 @@ export const omrSheetRepository = {
     const { count } = await prisma.omrSheet.updateMany({
       where: { id, ownerId },
       data: { marks },
+    });
+    return count === 1;
+  },
+
+  async setTimer(
+    id: string,
+    ownerId: string,
+    timer: {
+      timerOn: boolean;
+      timerLimitSec: number | null;
+      timerElapsedSec: number;
+      timerRunningSince: Date | null;
+    },
+  ) {
+    const { count } = await prisma.omrSheet.updateMany({
+      where: { id, ownerId },
+      data: timer,
     });
     return count === 1;
   },

@@ -78,6 +78,67 @@ test.describe("question papers", () => {
     await expect(page.getByText("No question papers yet")).toBeVisible();
   });
 
+  test("a timer counts down, pauses across a reload, and says when time's up", async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    await page.clock.install();
+    await seedAndLogin(page, `omr-timer-${test.info().project.name}`);
+    await page.goto("/tests");
+    await page.getByLabel("Question paper PDF").setInputFiles({
+      name: "Timed paper.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from(makePdf(["1. A question"])),
+    });
+    await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
+    const timer = page.getByRole("banner").getByRole("timer");
+
+    // 75 minutes is picked to start with.
+    await page.getByRole("button", { name: "Start a timer" }).click();
+    await expect(
+      page.getByRole("group", { name: "Time limit" }).getByRole("button", {
+        name: "75 min",
+      }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: "Start timer" }).click();
+    await expect(timer).toHaveText(/^1:1[45]:\d\d$/);
+    await page.clock.fastForward("05:00");
+    await expect(timer).toHaveText(/^1:(09|10):\d\d$/);
+
+    // Paused, it stays put, even after a reload. (The fake clock only moves the
+    // browser; the pause takes the server's reading, so wait for it.)
+    await page.getByRole("button", { name: /Open timer controls/ }).click();
+    const answered = page.waitForResponse(
+      (r) => r.request().method() === "POST" && r.url().includes("/omr/"),
+    );
+    await page.getByRole("button", { name: "Pause" }).click();
+    await answered;
+    await expect(page.getByRole("button", { name: "Resume" })).toBeEnabled();
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("button", { name: /paused\. Open timer controls/ }),
+    ).toBeVisible();
+    const paused = await timer.textContent();
+    await page.reload();
+    await expect(timer).toHaveText(paused!);
+
+    // Reset, then a one-minute countdown runs out.
+    await page.getByRole("button", { name: /Open timer controls/ }).click();
+    await page.getByRole("button", { name: "Reset timer" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Set a timer" }),
+    ).toBeVisible();
+    await page.getByLabel("Or your own, in minutes").fill("1");
+    await page.getByRole("button", { name: "Start timer" }).click();
+    await expect(timer).toHaveText(/^0[01]:\d\d$/);
+    await page.clock.fastForward("01:05");
+    await expect(
+      page.getByText("Time's up. You marked 0 of 100."),
+    ).toBeVisible();
+    await expect(timer).toHaveText(/^\+00:\d\d$/);
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+  });
+
   test("someone else's paper is not found", async ({ page }) => {
     await seedAndLogin(page, `omr-other-${test.info().project.name}`);
     const response = await page.goto(
