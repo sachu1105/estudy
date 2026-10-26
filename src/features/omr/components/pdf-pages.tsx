@@ -11,7 +11,20 @@ import { PdfPage } from "./pdf-page";
 
 type Doc = Awaited<ReturnType<typeof getDocumentProxy>>;
 
-const ZOOMS = [1, 1.25, 1.5, 2] as const;
+/** Sizes relative to the pane's width: 100% fills it, smaller leaves room around. */
+const ZOOMS = [0.5, 0.67, 0.75, 0.9, 1, 1.25, 1.5, 2] as const;
+const FIT = ZOOMS.indexOf(1);
+const ZOOM_KEY = "omr-zoom";
+
+/** The size this viewer picked last time, if storage allows it. */
+function storedZoom() {
+  try {
+    const i = ZOOMS.indexOf(Number(localStorage.getItem(ZOOM_KEY)) as never);
+    return i === -1 ? FIT : i;
+  } catch {
+    return FIT;
+  }
+}
 
 /**
  * The question paper, drawn page by page with PDF.js, so it scrolls the same on a phone
@@ -22,7 +35,16 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
   const [doc, setDoc] = useState<Doc | null>(null);
   const [failed, setFailed] = useState(false);
   const [width, setWidth] = useState(0);
-  const [zoom, setZoom] = useState(0);
+  const [zoom, setZoomIndex] = useState(FIT);
+  const setZoom = (next: number) => {
+    const i = Math.min(ZOOMS.length - 1, Math.max(0, next));
+    setZoomIndex(i);
+    try {
+      localStorage.setItem(ZOOM_KEY, String(ZOOMS[i]));
+    } catch {
+      // Storage blocked: the size still applies for this visit.
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -34,6 +56,7 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
       const { getDocumentProxy } = await import("unpdf");
       loaded = await getDocumentProxy(bytes);
       if (cancelled) return void loaded.loadingTask.destroy();
+      setZoomIndex(storedZoom());
       setDoc(loaded);
     })().catch(() => !cancelled && setFailed(true));
     return () => {
@@ -68,19 +91,25 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
           size="icon"
           aria-label="Zoom out"
           disabled={zoom === 0}
-          onClick={() => setZoom((z) => Math.max(0, z - 1))}
+          onClick={() => setZoom(zoom - 1)}
         >
           <Minus aria-hidden />
         </Button>
-        <span className="w-12 text-center font-mono text-small tabular-nums">
+        <button
+          type="button"
+          aria-label="Fit the page to the width"
+          title="Fit to width"
+          onClick={() => setZoom(FIT)}
+          className="h-11 w-14 cursor-pointer rounded-control text-center font-mono text-small tabular-nums hover:bg-surface-muted md:h-10"
+        >
           {Math.round(ZOOMS[zoom] * 100)}%
-        </span>
+        </button>
         <Button
           variant="ghost"
           size="icon"
           aria-label="Zoom in"
           disabled={zoom === ZOOMS.length - 1}
-          onClick={() => setZoom((z) => Math.min(ZOOMS.length - 1, z + 1))}
+          onClick={() => setZoom(zoom + 1)}
         >
           <Plus aria-hidden />
         </Button>

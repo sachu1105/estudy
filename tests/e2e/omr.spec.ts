@@ -36,8 +36,32 @@ test.describe("question papers", () => {
     ).toBeVisible();
 
     // The paper is drawn in the page, on phones too.
-    await expect(page.getByRole("img", { name: "Page 1" })).toBeVisible();
+    const page1 = page.getByRole("img", { name: "Page 1" });
+    await expect(page1).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // It can be made smaller than the pane, and the size is remembered.
+    const fitWidth = (await page1.boundingBox())!.width;
+    const zoomOut = page.getByRole("button", { name: "Zoom out" });
+    await zoomOut.click();
+    await zoomOut.click();
+    await zoomOut.click();
+    await expect(
+      page.getByRole("button", { name: "Fit the page to the width" }),
+    ).toHaveText("67%");
+    await expect
+      .poll(async () => (await page1.boundingBox())!.width)
+      .toBeLessThan(fitWidth * 0.7);
+    await page.reload();
+    await expect(
+      page.getByRole("button", { name: "Fit the page to the width" }),
+    ).toHaveText("67%");
+    await page
+      .getByRole("button", { name: "Fit the page to the width" })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Fit the page to the width" }),
+    ).toHaveText("100%");
 
     // On a phone the sheet is one tap away; on a laptop it sits beside the paper.
     if (isMobile)
