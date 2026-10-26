@@ -12,10 +12,12 @@ import type { ParseJobData } from "@/server/queue/types";
 import type { JobEvent } from "@/server/realtime/types";
 import { redis } from "@/server/redis";
 import { aiUsageRepository } from "@/server/repositories/ai-usage-repository";
+import { auditLogRepository } from "@/server/repositories/audit-log-repository";
 import { catalogueRepository } from "@/server/repositories/catalogue-repository";
 import { parseJobRepository } from "@/server/repositories/parse-job-repository";
 import { sectionCacheRepository } from "@/server/repositories/section-cache-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
+import { createCatalogueReadService } from "@/server/services/syllabus/catalogue-read-service";
 import type { SyllabusDeps } from "@/server/services/syllabus/deps";
 import { syllabusPrompts } from "@/server/ai/prompts";
 import { unavailableOcr } from "@/server/services/syllabus/extract";
@@ -168,15 +170,19 @@ function build({
     events,
     ai,
     aiSwitch,
+    parser,
     upload: createUploadService(deps),
     review: createReviewService(deps),
+    catalogueRead: createCatalogueReadService({
+      ...deps,
+      audit: auditLogRepository,
+    }),
     /** Runs every queued job, like the worker would. */
     async drain() {
-      while (queued.length)
-        await parser.run(queued.shift()!.parseJobId, {
-          attempt: 1,
-          maxAttempts: 3,
-        });
+      while (queued.length) {
+        const { parseJobId, fresh } = queued.shift()!;
+        await parser.run(parseJobId, { attempt: 1, maxAttempts: 3, fresh });
+      }
     },
   };
 }
@@ -427,6 +433,52 @@ describe("parse caches", () => {
     });
     expect(copy.copiedFromId).not.toBeNull();
     expect(copy.post).toMatch(/^ASSISTANT GRADE II/);
+  });
+
+  it("hands a near-identical syllabus over at upload, with nothing queued", async () => {
+    const t = build();
+    await submit(t, await makeUser("a@example.com"), ldcText);
+    await t.drain();
+    const calls = t.ai.calls;
+
+    const created = await submit(
+      t,
+      await makeUser("b@example.com"),
+      ldcText.replace("LD CLERK [KWA]", "ASSISTANT GRADE II"),
+    );
+    expect(created).toMatchObject({ ok: true, reused: true });
+    expect(t.queued).toHaveLength(0);
+    expect(t.ai.calls).toBe(calls);
+    expect(
+      await prisma.subject.count({
+        where: {
+          syllabusVersionId: (created as { versionId: string }).versionId,
+        },
+      }),
+    ).toBeGreaterThan(0);
+  });
+
+  it("reuses an AI reading made by another prompt or model; only Read again pays", async () => {
+    const t = build();
+    await uploadPdf(t, await makeUser("a@example.com"));
+    await t.drain();
+    const calls = t.ai.calls;
+
+    // The admin edits the prompt (a new version): the same syllabus is still not paid twice.
+    t.aiSwitch.prompts = { structureSyllabus: "List every topic as written." };
+    const user = await makeUser("b@example.com");
+    const again = await uploadPdf(t, user);
+    expect(again).toMatchObject({ ok: true, reused: true });
+    expect(t.ai.calls).toBe(calls);
+
+    // The user may still ask for a reading by the current prompt.
+    const versionId = (again as { versionId: string }).versionId;
+    expect(await t.review.reread(user as never, versionId)).toMatchObject({
+      ok: true,
+    });
+    await t.drain();
+    expect(t.ai.calls).toBeGreaterThan(calls);
+    expect(t.ai.prompts.at(-1)!.system).toMatch(/as written/);
   });
 
   it("sends only the sections no earlier syllabus had", async () => {
@@ -682,6 +734,36 @@ describe("review", () => {
     expect(await prisma.syllabusParse.count()).toBe(0);
   });
 
+  it("closes a job the queue gave up on mid-read, instead of 'structuring' forever", async () => {
+    const t = build();
+    const user = await makeUser();
+    const created = await uploadPdf(t, user);
+    const versionId = (created as { versionId: string }).versionId;
+    // The worker took it, then was restarted mid-read: BullMQ fails it as stalled.
+    await prisma.parseJob.updateMany({
+      where: { syllabusVersionId: versionId },
+      data: {
+        status: "RUNNING",
+        stage: "STRUCTURING",
+        progress: 56,
+        createdAt: new Date("2026-10-05T04:00:00Z"),
+      },
+    });
+    expect(await t.parser.sweep(async () => false)).toBe(0);
+    expect(await t.parser.sweep(async () => true)).toBe(1);
+    const job = await prisma.parseJob.findFirstOrThrow({
+      where: { syllabusVersionId: versionId },
+    });
+    expect(job).toMatchObject({ status: "FAILED", stage: "FAILED" });
+    expect(job.error).toMatch(/stopped while reading/);
+    expect(t.events.at(-1)).toMatchObject({ status: "FAILED" });
+
+    // It can be tried again like any failed reading.
+    expect(await t.review.retry(user as never, versionId)).toMatchObject({
+      ok: true,
+    });
+  });
+
   it("retries a failed parse with a fresh job", async () => {
     const t = build({ ai: fakeAi("x", "y") });
     const user = await makeUser();
@@ -694,5 +776,126 @@ describe("review", () => {
     const version = (await t.review.get(user as never, versionId))!;
     expect(version.parseJobs[0].status).toBe("READY");
     expect(version.subjects.map((s) => s.name)).toEqual(SUBJECTS);
+  });
+});
+
+describe("an admin's catalogue syllabus read by AI", () => {
+  const exam = () =>
+    prisma.exam.create({
+      data: { slug: "ldc", name: "LDC", board: "Kerala PSC", order: 1 },
+    });
+  const read = (
+    t: ReturnType<typeof build>,
+    by: { id: string },
+    examId: string,
+    file: { name: string; bytes: Uint8Array } | null = {
+      name: "ldc.pdf",
+      bytes: makePdf(sampleSyllabus),
+    },
+  ) =>
+    t.catalogueRead.start(by, { title: "LDC 2026", examId, file, text: null });
+
+  it("is refused while the admin AI switch is off", async () => {
+    const t = build({ aiEnabled: false });
+    const boss = await makeUser("boss@example.com");
+    const ldc = await exam();
+    expect(await read(t, boss, ldc.id)).toMatchObject({
+      ok: false,
+      code: "AI_OFF",
+    });
+    expect(await prisma.syllabusVersion.count()).toBe(0);
+    expect(t.queued).toHaveLength(0);
+  });
+
+  it("reads the file in the background into a PENDING catalogue syllabus (rules 2 and 5)", async () => {
+    const t = build();
+    const boss = await makeUser("boss@example.com");
+    const ldc = await exam();
+    const started = await read(t, boss, ldc.id);
+    expect(started).toMatchObject({ ok: true, reused: false });
+    expect(t.queued).toHaveLength(1);
+    await t.drain();
+
+    const id = (started as { id: string }).id;
+    const version = await prisma.syllabusVersion.findUniqueOrThrow({
+      where: { id },
+      include: { subjects: { orderBy: { order: "asc" } }, parse: true },
+    });
+    expect(version).toMatchObject({
+      visibility: "CATALOGUE",
+      status: "PENDING",
+      ownerId: null,
+      examId: ldc.id,
+      sourceKind: "PDF",
+      parse: { provider: "fake" },
+    });
+    expect(version.subjects.map((s) => s.name)).toEqual(SUBJECTS);
+    expect(await prisma.aiUsage.count({ where: { userId: boss.id } })).toBe(3);
+    expect(await syllabusRepository.findApprovedCatalogue(id)).toBeNull();
+    expect(
+      await prisma.auditLog.count({
+        where: { action: "admin.catalogue.read" },
+      }),
+    ).toBe(1);
+  });
+
+  it("reuses an earlier reading of the same file with no AI call (rule 4)", async () => {
+    const t = build();
+    const boss = await makeUser("boss@example.com");
+    const ldc = await exam();
+    await uploadPdf(t, await makeUser());
+    await t.drain();
+    const calls = t.ai.calls;
+
+    expect(await read(t, boss, ldc.id)).toMatchObject({
+      ok: true,
+      reused: true,
+    });
+    expect(t.queued).toHaveLength(0);
+    expect(t.ai.calls).toBe(calls);
+  });
+
+  it("takes a photo only when the model reads pages", async () => {
+    const t = build();
+    const boss = await makeUser("boss@example.com");
+    const ldc = await exam();
+    const png = new Uint8Array([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0,
+    ]);
+    expect(
+      await read(t, boss, ldc.id, { name: "page.png", bytes: png }),
+    ).toMatchObject({ ok: false, code: "UNSUPPORTED" });
+  });
+
+  it("retries a failed reading with a fresh job, only while AI is on", async () => {
+    const t = build({ ai: fakeAi("x", "y") });
+    const boss = await makeUser("boss@example.com");
+    const ldc = await exam();
+    const id = ((await read(t, boss, ldc.id)) as { id: string }).id;
+    await t.drain();
+    expect(
+      await prisma.parseJob.findFirstOrThrow({
+        where: { syllabusVersionId: id },
+      }),
+    ).toMatchObject({ status: "FAILED" });
+
+    t.aiSwitch.on = false;
+    expect(await t.catalogueRead.retry(boss, id)).toMatchObject({
+      code: "AI_OFF",
+    });
+    t.aiSwitch.on = true;
+    expect(await t.catalogueRead.retry(boss, id)).toMatchObject({ ok: true });
+    await t.drain();
+    expect(
+      (
+        await prisma.subject.findMany({
+          where: { syllabusVersionId: id },
+          orderBy: { order: "asc" },
+        })
+      ).map((s) => s.name),
+    ).toEqual(SUBJECTS);
+    expect(await t.catalogueRead.retry(boss, id)).toMatchObject({
+      code: "NOT_FAILED",
+    });
   });
 });

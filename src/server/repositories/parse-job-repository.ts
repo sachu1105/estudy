@@ -23,9 +23,35 @@ export const parseJobRepository = {
     });
   },
 
+  /** A catalogue syllabus's job, which any admin who reviews the catalogue may watch. */
+  findForCatalogue(id: string) {
+    return prisma.parseJob.findFirst({
+      where: { id, syllabusVersion: { visibility: "CATALOGUE" } },
+    });
+  },
+
+  /** The latest job of a catalogue syllabus, for a retry after it failed. */
+  latestForVersion(syllabusVersionId: string) {
+    return prisma.parseJob.findFirst({
+      where: { syllabusVersionId },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+
   /** Only the user who started a job may watch it (rule 9). */
   findForUser(id: string, userId: string) {
     return prisma.parseJob.findFirst({ where: { id, userId } });
+  },
+
+  /** Jobs still queued or running that were started before `before`. */
+  listOpen(before: Date) {
+    return prisma.parseJob.findMany({
+      where: {
+        status: { in: ["QUEUED", "RUNNING"] },
+        createdAt: { lt: before },
+      },
+      select: { id: true },
+    });
   },
 
   update(id: string, data: Prisma.ParseJobUpdateInput) {

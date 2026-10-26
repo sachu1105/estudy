@@ -37,13 +37,14 @@ export function createReviewService(deps: SyllabusDeps) {
   async function startJob(
     user: Actor,
     id: string,
+    fresh = false,
   ): Promise<Result<{ jobId: string }>> {
     const job = await deps.parseJobs.create({
       syllabusVersionId: id,
       userId: user.id,
     });
     await deps.queue.enqueue(
-      { parseJobId: job.id },
+      { parseJobId: job.id, ...(fresh ? { fresh } : {}) },
       {
         priority: deps.entitlements.can(user, "priorityParsing")
           ? "high"
@@ -120,7 +121,7 @@ export function createReviewService(deps: SyllabusDeps) {
           "This syllabus was read with the latest reader.",
         );
       await deps.syllabuses.resetForReparse(id);
-      return startJob(user, id);
+      return startJob(user, id, true);
     },
 
     /** Removes it from the list and deletes the uploaded file; it no longer counts. */

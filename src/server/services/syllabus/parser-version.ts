@@ -1,3 +1,4 @@
+import { ANY_AI_READING } from "@/lib/syllabus/readings";
 import { PROMPT_DEFAULTS, type SyllabusPrompts } from "@/server/ai/prompts";
 
 import type { SourceKind } from "./extract";
@@ -16,13 +17,18 @@ export type Reader = {
 /**
  * Which parser reads a file, and so which cached parse counts as "already read". With AI
  * off, the rules read the text. With AI on, a provider that reads pages takes PDFs and
- * photos itself; everything else goes through the text. An edited prompt has its own
- * version, so it reads files afresh rather than reusing another prompt's reading.
+ * photos itself; everything else goes through the text.
  *
- * `reuses` lists every cached parse good enough to reuse, best first (rule 4): with AI off,
- * a file the AI already read keeps that reading rather than a plainer one.
+ * `reuses` lists every cached parse good enough to reuse, best first (rule 4): any AI
+ * reading of the same syllabus, whichever model or prompt made it, so nobody pays for a
+ * syllabus someone already had read; with AI off, an AI reading beats the plainer rules.
+ * `fresh` is "Read again": only a reading by the current prompt will do.
  */
-export function parserFor(reader: Reader, kind: SourceKind) {
+export function parserFor(
+  reader: Reader,
+  kind: SourceKind,
+  { fresh = false }: { fresh?: boolean } = {},
+) {
   if (!reader.ai)
     return {
       ai: false,
@@ -35,6 +41,7 @@ export function parserFor(reader: Reader, kind: SourceKind) {
           reader.prompts.syllabus.version,
           PROMPT_DEFAULTS.structureDocument.version,
           PROMPT_DEFAULTS.structureSyllabus.version,
+          ANY_AI_READING,
           RULES_VERSION,
         ]),
       ],
@@ -46,7 +53,7 @@ export function parserFor(reader: Reader, kind: SourceKind) {
     pages,
     version: prompt.version,
     prompt,
-    reuses: [prompt.version],
+    reuses: fresh ? [prompt.version] : [prompt.version, ANY_AI_READING],
   };
 }
 
@@ -62,6 +69,6 @@ export function canUpgrade(
   },
 ) {
   if (!version.parse || !version.sourceKind) return false;
-  const parser = parserFor(reader, version.sourceKind);
+  const parser = parserFor(reader, version.sourceKind, { fresh: true });
   return parser.ai && version.parse.promptVersion !== parser.version;
 }

@@ -300,6 +300,7 @@ export const adminRepository = {
           orderBy: { order: "asc" },
           include: { topics: { orderBy: { order: "asc" } } },
         },
+        parseJobs: { orderBy: { createdAt: "desc" }, take: 1 },
       },
     });
   },

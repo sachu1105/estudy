@@ -1,9 +1,4 @@
-import {
-  minhash,
-  postOf,
-  SAME_SYLLABUS,
-  similarity,
-} from "@/server/ai/fingerprint";
+import { minhash, postOf } from "@/server/ai/fingerprint";
 import { checkMalayalam, repairMalayalam } from "@/server/ai/malayalam";
 import { structureDocument, structureSyllabus } from "@/server/ai/structure";
 import type { SyllabusTree } from "@/server/ai/syllabus-tree";
@@ -19,6 +14,7 @@ import {
 } from "./extract";
 import { parserFor } from "./parser-version";
 import { structureByRules } from "./rules";
+import { attachTwin, findTwin } from "./similar";
 
 const MESSAGES = {
   noTree:
@@ -28,12 +24,18 @@ const MESSAGES = {
   unavailable:
     "The syllabus reader is unavailable right now. Try again in a few minutes.",
   changed: "The uploaded file changed after it was checked. Upload it again.",
+  stopped: "The syllabus reader stopped while reading this one. Try again.",
 };
 
 /** The user deleted the syllabus while it was being read. */
 class StoppedError extends Error {}
 
-type Attempt = { attempt: number; maxAttempts: number };
+type Attempt = {
+  attempt: number;
+  maxAttempts: number;
+  /** "Read again": skip earlier readings by other models or prompts. */
+  fresh?: boolean;
+};
 
 /**
  * The worker pipeline (CLAUDE.md rule 2): read -> extract text -> structure (by rules
@@ -98,27 +100,10 @@ export function createParseService(deps: ParseDeps) {
     }
   }
 
-  /** An already parsed syllabus that is the same one (another post, a re-typeset copy). */
-  async function findTwin(
-    versions: string[],
-    fingerprint: number[],
-    post: string | null,
+  async function run(
+    parseJobId: string,
+    { attempt, maxAttempts, fresh = false }: Attempt,
   ) {
-    if (fingerprint.length === 0) return null;
-    const candidates = await deps.syllabuses.findSimilarCandidates(
-      versions,
-      post,
-    );
-    let best: (typeof candidates)[number] | null = null;
-    let bestScore = 0;
-    for (const c of candidates) {
-      const score = similarity(fingerprint, c.minhash);
-      if (score > bestScore) [best, bestScore] = [c, score];
-    }
-    return best && bestScore >= SAME_SYLLABUS ? best : null;
-  }
-
-  async function run(parseJobId: string, { attempt, maxAttempts }: Attempt) {
     const job = await deps.parseJobs.findById(parseJobId);
     if (!job || job.status === "READY" || job.status === "FAILED") return;
     const version = job.syllabusVersion;
@@ -139,7 +124,7 @@ export function createParseService(deps: ParseDeps) {
     );
     try {
       const kind = version.sourceKind;
-      const parser = parserFor(await deps.reader(), kind);
+      const parser = parserFor(await deps.reader(), kind, { fresh });
       // 1. Someone may have uploaded the same file while this job waited in the queue.
       const existing = await deps.syllabuses.findParse(
         version.fileHash,
@@ -158,12 +143,7 @@ export function createParseService(deps: ParseDeps) {
       const post = text ? postOf(text) : null;
       const save = (
         tree: SyllabusTree,
-        extra: {
-          provider: string;
-          model: string;
-          copiedFromId?: string;
-          promptVersion?: string;
-        },
+        extra: { provider: string; model: string },
       ) =>
         deps.syllabuses.saveParse({
           fileHash: version.fileHash!,
@@ -178,16 +158,22 @@ export function createParseService(deps: ParseDeps) {
         });
 
       // 2. The same syllabus already read for another post or upload: no AI call at all.
-      //    The copy keeps the parser that made it, so it is never mistaken for a fresh one.
-      const twin = await findTwin(parser.reuses, fingerprint, post);
+      const twin = await findTwin(
+        deps.syllabuses,
+        parser.reuses,
+        fingerprint,
+        post,
+      );
       if (twin) {
-        const parse = await save(twin.tree as SyllabusTree, {
-          provider: "cache",
-          model: "near-duplicate",
-          copiedFromId: twin.id,
-          promptVersion: twin.promptVersion,
+        await attachTwin(deps.syllabuses, twin, {
+          versionId: version.id,
+          fileHash: version.fileHash,
+          kind,
+          text,
+          warnings,
+          fingerprint,
+          post,
         });
-        await deps.syllabuses.attachParse(version.id, parse);
         return ready(job.id, true);
       }
 
@@ -262,7 +248,31 @@ export function createParseService(deps: ParseDeps) {
     }
   }
 
-  return { run };
+  /**
+   * A job the queue gave up on without our code seeing it: the worker was stopped or
+   * restarted mid-read (BullMQ calls it stalled). Without this its status would say
+   * "structuring" forever (rule 2).
+   */
+  async function abandon(parseJobId: string) {
+    const job = await deps.parseJobs.findById(parseJobId);
+    if (!job || job.status === "READY" || job.status === "FAILED") return;
+    await fail(job.id, MESSAGES.stopped);
+  }
+
+  /** At worker start: closes every open job the queue no longer holds. */
+  async function sweep(isGone: (parseJobId: string) => Promise<boolean>) {
+    // Older than a minute: a job created this instant may not be on the queue yet.
+    const before = new Date(deps.clock.now().getTime() - 60_000);
+    let closed = 0;
+    for (const { id } of await deps.parseJobs.listOpen(before))
+      if (await isGone(id)) {
+        await abandon(id);
+        closed++;
+      }
+    return closed;
+  }
+
+  return { run, abandon, sweep };
 }
 
 export type ParseService = ReturnType<typeof createParseService>;

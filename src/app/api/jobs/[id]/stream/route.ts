@@ -15,7 +15,7 @@ const MAX_STREAM_MS = 5 * 60_000;
 export const GET = withUser<RouteContext<"/api/jobs/[id]/stream">>(
   async (request, user, context) => {
     const { id } = await context.params;
-    const job = isId(id) ? await jobService.findForUser(id, user.id) : null;
+    const job = isId(id) ? await jobService.findForUser(id, user) : null;
     if (!job)
       return NextResponse.json({ error: "No such job." }, { status: 404 });
 
@@ -59,7 +59,7 @@ export const GET = withUser<RouteContext<"/api/jobs/[id]/stream">>(
         request.signal.addEventListener("abort", () => void close());
 
         // Re-read after subscribing so no update between the two is lost.
-        const fresh = await jobService.findForUser(id, user.id);
+        const fresh = await jobService.findForUser(id, user);
         send("retry: 3000\n\n");
         if (fresh)
           emit({

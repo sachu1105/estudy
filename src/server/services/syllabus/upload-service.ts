@@ -10,6 +10,7 @@ import {
 } from "./deps";
 import { MAX_TEXT_CHARS, sniffKind, type SourceKind } from "./extract";
 import { parserFor } from "./parser-version";
+import { reuseSimilarNow } from "./similar";
 
 export const UPLOAD_MAX_BYTES = 15 * 1024 * 1024;
 
@@ -75,12 +76,20 @@ export function createUploadService(deps: SyllabusDeps) {
       sizeBytes: file.bytes.byteLength,
     });
 
-    const existing = await deps.syllabuses.findParse(
-      fileHash,
-      parserFor(await deps.reader(), file.kind).reuses,
-    );
-    if (existing) {
-      await deps.syllabuses.attachParse(version.id, existing);
+    const { reuses } = parserFor(await deps.reader(), file.kind);
+    const existing = await deps.syllabuses.findParse(fileHash, reuses);
+    if (existing) await deps.syllabuses.attachParse(version.id, existing);
+    // The same syllabus read for someone else (another post, another copy): ready at once.
+    const similar =
+      !existing &&
+      (await reuseSimilarNow(deps.syllabuses, {
+        versionId: version.id,
+        fileHash,
+        kind: file.kind,
+        bytes: file.bytes,
+        reuses,
+      }));
+    if (existing || similar) {
       const job = await deps.parseJobs.create({
         syllabusVersionId: version.id,
         userId: user.id,

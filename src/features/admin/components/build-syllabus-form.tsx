@@ -5,30 +5,36 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input, Label } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Label } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 
 import { buildSyllabusAction } from "../actions";
+import { useSyllabusFile } from "../use-syllabus-file";
+import { ExamTitleFields } from "./exam-title-fields";
+import {
+  ReadMethodPicker,
+  type CatalogueReader,
+  type ReadMethod,
+} from "./read-method";
+
+const DOCS =
+  ".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const PHOTOS = ",image/jpeg,image/png,image/webp";
 
 /**
- * The admin's syllabus builder, step one: which exam, and the syllabus text (pasted, or
- * pulled out of a PDF or Word file to check first). The text is read by its headings and
- * lists, with no AI; the next screen is where the subjects and topics are fixed.
+ * The admin's syllabus builder, step one: which exam, the syllabus (pasted, or filled from
+ * a file to check first) and how to read it: by its headings and lists, or by the AI while
+ * it is switched on. The next screen is where the subjects and topics are fixed.
  */
 export function BuildSyllabusForm({
   exams,
   examId: initialExam,
+  reader,
 }: {
   exams: { id: string; name: string }[];
   examId: string | null;
+  reader: CatalogueReader;
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -37,34 +43,36 @@ export function BuildSyllabusForm({
     exams.find((e) => e.id === initialExam)?.name ?? "",
   );
   const [text, setText] = useState("");
-  const [reading, setReading] = useState(false);
+  const [method, setMethod] = useState<ReadMethod>("rules");
+  const ai = reader.on && method === "ai";
+  const readsPages = reader.on && reader.readsPages;
+  const source = useSyllabusFile({ setText, keepFile: ai, readsPages });
   const [pending, start] = useTransition();
 
-  async function readFile(file: File) {
-    setReading(true);
-    try {
-      const body = new FormData();
-      body.set("file", file);
-      const response = await fetch("/api/admin/syllabus-text", {
-        method: "POST",
-        body,
-      });
-      const json = (await response.json().catch(() => ({}))) as {
-        text?: string;
-        error?: string;
-      };
-      if (!response.ok || !json.text)
-        return void toast.error(json.error ?? "Couldn't read that file.");
-      setText(json.text);
-      toast.success("Text added. Check it, then read it");
-    } finally {
-      setReading(false);
-      if (fileRef.current) fileRef.current.value = "";
-    }
-  }
+  const readByAi = async () => {
+    const body = new FormData();
+    body.set("examId", examId);
+    body.set("title", title);
+    if (source.file) body.set("file", source.file);
+    else body.set("text", text);
+    const response = await fetch("/api/admin/syllabus-read", {
+      method: "POST",
+      body,
+    });
+    const json = (await response.json().catch(() => ({}))) as {
+      id?: string;
+      reused?: boolean;
+      error?: string;
+    };
+    if (!response.ok || !json.id)
+      return void toast.error(json.error ?? "Couldn't start the reading.");
+    toast.success(json.reused ? "Read before: reused" : "Reading started");
+    router.push(`/admin/catalogue/${json.id}`);
+  };
 
   const build = (withText: boolean) =>
     start(async () => {
+      if (withText && ai) return readByAi();
       const result = await buildSyllabusAction({
         examId,
         title,
@@ -75,6 +83,7 @@ export function BuildSyllabusForm({
       router.push(`/admin/catalogue/${result.id}`);
     });
 
+  const ready = (ai && source.file) || text.trim().length >= 40;
   return (
     <form
       className="flex flex-col gap-5"
@@ -83,38 +92,20 @@ export function BuildSyllabusForm({
         build(true);
       }}
     >
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="build-exam">Exam</Label>
-          <Select
-            value={examId}
-            onValueChange={(id) => {
-              setExamId(id);
-              if (!title) setTitle(exams.find((e) => e.id === id)?.name ?? "");
-            }}
-          >
-            <SelectTrigger id="build-exam">
-              <SelectValue placeholder="Pick the exam" />
-            </SelectTrigger>
-            <SelectContent>
-              {exams.map((e) => (
-                <SelectItem key={e.id} value={e.id}>
-                  {e.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="build-title">Title users see</Label>
-          <Input
-            id="build-title"
-            value={title}
-            maxLength={200}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="LDC 2026 (Kerala PSC)"
-          />
-        </div>
+      <ExamTitleFields
+        exams={exams}
+        examId={examId}
+        title={title}
+        onExam={(id) => {
+          setExamId(id);
+          if (!title) setTitle(exams.find((e) => e.id === id)?.name ?? "");
+        }}
+        onTitle={setTitle}
+      />
+
+      <div className="flex flex-col gap-2">
+        <Label>How to read it</Label>
+        <ReadMethodPicker reader={reader} value={method} onChange={setMethod} />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -124,22 +115,23 @@ export function BuildSyllabusForm({
             type="button"
             variant="ghost"
             size="sm"
-            disabled={reading}
+            disabled={source.reading}
             onClick={() => fileRef.current?.click()}
           >
             <FileUp aria-hidden />{" "}
-            {reading ? "Reading file" : "Fill from a file"}
+            {source.reading ? "Reading file" : "Fill from a file"}
           </Button>
           <input
             ref={fileRef}
             type="file"
-            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept={ai && readsPages ? DOCS + PHOTOS : DOCS}
             className="sr-only"
             tabIndex={-1}
             aria-hidden
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) void readFile(file);
+              if (file) void source.pick(file);
+              e.target.value = "";
             }}
           />
         </div>
@@ -148,17 +140,22 @@ export function BuildSyllabusForm({
           rows={14}
           value={text}
           maxLength={200_000}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            source.clearFile();
+          }}
           placeholder={
             "Part I: General knowledge (50 marks)\nHistory: Kerala renaissance, freedom struggle\n..."
           }
           className="font-mono text-base md:text-small"
         />
-        <p className="text-small text-ink-muted">
-          Headings (Part I, (i) History, Module 1, a line ending in a colon)
-          become subjects; the lists under them become topics. Stated marks set
-          topic weights. You fix everything on the next screen.
-        </p>
+        {ai ? (
+          <p className="text-small text-ink-muted">
+            {source.file
+              ? `The AI reads ${source.file.name} itself. Edit the text to have it read your text instead.`
+              : "The AI reads the text above."}
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -174,9 +171,13 @@ export function BuildSyllabusForm({
           type="submit"
           variant="primary"
           size="lg"
-          disabled={pending || !examId || text.trim().length < 40}
+          disabled={pending || source.reading || !examId || !ready}
         >
-          {pending ? "Reading" : "Read subjects and topics"}
+          {pending
+            ? "Reading"
+            : ai
+              ? "Read with AI"
+              : "Read subjects and topics"}
         </Button>
       </div>
     </form>

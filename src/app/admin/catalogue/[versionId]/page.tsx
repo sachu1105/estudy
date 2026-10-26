@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
+import { CatalogueReadStatus } from "@/features/admin/components/catalogue-read-status";
 import { ReviewActions } from "@/features/admin/components/review-actions";
 import { BackLink } from "@/features/pods/components/back-link";
 import { SyllabusEditor } from "@/features/syllabus/components/syllabus-editor";
@@ -10,6 +11,7 @@ import { toEditableTree } from "@/features/syllabus/to-tree";
 import { canAdmin } from "@/lib/admin/access";
 import { isId } from "@/lib/ids";
 import { adminService, requireAdmin } from "@/server/services/admin";
+import { jobService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Review · Admin" };
 
@@ -28,6 +30,9 @@ export default async function ReviewPage({
     : null;
   if (!version || version.visibility !== "CATALOGUE") notFound();
   const topics = version.subjects.reduce((n, s) => n + s.topics.length, 0);
+  // Given to the AI and not read yet: the job's status stands in for the tree.
+  const job = version.parseId ? null : (version.parseJobs[0] ?? null);
+  const readerOnline = job ? await jobService.readerOnline() : true;
   const editing = version.status === "PENDING" && canAdmin(admin.role, "exams");
   const sourceText =
     version.parse?.extractedText ||
@@ -43,12 +48,14 @@ export default async function ReviewPage({
           `${version.subjects.length} subjects, ${topics} topics`,
           version.parse
             ? `read by ${version.parse.model} (${version.parse.promptVersion})`
-            : "typed by hand",
+            : job
+              ? "being read by AI"
+              : "typed by hand",
         ]
           .filter(Boolean)
           .join(" · ")}
         actions={
-          version.status === "PENDING" ? (
+          version.status === "PENDING" && !job ? (
             <ReviewActions versionId={version.id} />
           ) : null
         }
@@ -74,7 +81,21 @@ export default async function ReviewPage({
           </span>
         ) : null}
       </div>
-      {editing ? (
+      {job ? (
+        <CatalogueReadStatus
+          versionId={version.id}
+          examId={version.examId}
+          job={{
+            id: job.id,
+            status: job.status,
+            stage: job.stage,
+            progress: job.progress,
+            error: job.error,
+            reused: job.reused,
+          }}
+          readerOnline={readerOnline}
+        />
+      ) : editing ? (
         <SyllabusEditor
           catalogue
           versionId={version.id}

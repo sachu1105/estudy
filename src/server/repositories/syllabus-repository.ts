@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  ANY_AI_READING,
+  isRulesReading,
+  RULES_PREFIX,
+} from "@/lib/syllabus/readings";
 import type { EditableTree } from "@/lib/syllabus/tree";
 import { prisma } from "@/server/db";
 import { Prisma } from "@/server/db/generated/prisma/client";
@@ -94,6 +99,14 @@ function withIds(tree: SyllabusTree): EditableTree {
   };
 }
 
+/** Parses made by one of these versions; ANY_AI_READING adds every non-rules parse. */
+function readingFilter(promptVersions: string[]) {
+  const exact = { promptVersion: { in: promptVersions } };
+  return promptVersions.includes(ANY_AI_READING)
+    ? { OR: [exact, { NOT: { promptVersion: { startsWith: RULES_PREFIX } } }] }
+    : exact;
+}
+
 export const syllabusRepository = {
   /** Uploads count against limit(user, 'syllabusUploads'); deleted ones don't. */
   countUploads(ownerId: string) {
@@ -120,16 +133,50 @@ export const syllabusRepository = {
     return prisma.syllabusVersion.create({ data });
   },
 
+  /** A file an admin gave the AI to read for the catalogue: PENDING until approved (rule 5). */
+  createCatalogueUpload(data: {
+    title: string;
+    examId: string;
+    fileHash: string;
+    sourceFileKey: string;
+    sourceKind: Kind;
+    sourceName: string | null;
+    sizeBytes: number;
+  }) {
+    return prisma.syllabusVersion.create({
+      data: { ...data, visibility: "CATALOGUE", status: "PENDING" },
+    });
+  },
+
+  /** A catalogue syllabus waiting for review that was made from a file or pasted text. */
+  findCatalogueSource(id: string) {
+    return prisma.syllabusVersion.findFirst({
+      where: {
+        id,
+        visibility: "CATALOGUE",
+        status: "PENDING",
+        deletedAt: null,
+        sourceFileKey: { not: null },
+      },
+      select: { id: true, parseId: true },
+    });
+  },
+
   /**
    * The best earlier parse of this file (rule 4): the first of `promptVersions`, in that
-   * order, that exists.
+   * order, that exists. ANY_AI_READING there matches the newest AI reading of any version.
    */
   async findParse(fileHash: string, promptVersions: string[]) {
     const rows = await prisma.syllabusParse.findMany({
-      where: { fileHash, promptVersion: { in: promptVersions } },
+      where: { fileHash, ...readingFilter(promptVersions) },
+      orderBy: { createdAt: "desc" },
     });
     for (const version of promptVersions) {
-      const row = rows.find((r) => r.promptVersion === version);
+      const row = rows.find((r) =>
+        version === ANY_AI_READING
+          ? !isRulesReading(r.promptVersion)
+          : r.promptVersion === version,
+      );
       if (row) return row;
     }
     return null;
@@ -176,7 +223,7 @@ export const syllabusRepository = {
     return prisma.syllabusParse
       .findMany({
         where: {
-          promptVersion: { in: promptVersions },
+          ...readingFilter(promptVersions),
           NOT: { minhash: { isEmpty: true } },
         },
         select: {

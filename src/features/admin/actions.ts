@@ -22,6 +22,7 @@ import {
   aiSettings,
   requireAdmin,
 } from "@/server/services/admin";
+import { catalogueReadService } from "@/server/services/syllabus";
 import { saveSetting } from "@/server/settings";
 
 // Every action: the staff role and area first (rule 9), zod on input (rule 11), and an
@@ -193,6 +194,20 @@ export async function buildSyllabusAction(input: unknown) {
     };
   return done(
     await adminService.buildSyllabus(by, parsed.data),
+    "/admin/catalogue",
+  );
+}
+
+/** A fresh AI reading after a failed one (rule 13: it may call the AI again). */
+export async function retryCatalogueReadAction(input: unknown) {
+  const by = await requireAdmin("exams");
+  const parsed = z.object({ versionId: z.uuid() }).safeParse(input);
+  if (!parsed.success) return invalid;
+  const limited = await rateLimit([["parsePerUser", by.id]]);
+  if (!limited.ok)
+    return { ok: false as const, error: retryMessage(limited.retryAfterMs) };
+  return done(
+    await catalogueReadService.retry(by, parsed.data.versionId),
     "/admin/catalogue",
   );
 }

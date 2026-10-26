@@ -9,7 +9,7 @@ import { jobService } from "@/server/services/syllabus";
 export const GET = withUser<RouteContext<"/api/jobs/[id]">>(
   async (_request, user, context) => {
     const { id } = await context.params;
-    const job = isId(id) ? await jobService.findForUser(id, user.id) : null;
+    const job = isId(id) ? await jobService.findForUser(id, user) : null;
     if (!job)
       return NextResponse.json({ error: "No such job." }, { status: 404 });
     const event: JobEvent = {

@@ -74,7 +74,8 @@ AI:        Provider interface with three implementations: Claude (Anthropic Mess
            API, reads PDF pages), any OpenAI-compatible API, and Ollama (local dev).
            Set in Admin > AI (super admins): provider, model, URL, prices, the API key
            (sealed with AES-256-GCM under AI_SECRET_KEY, never sent to a browser) and
-           the prompt per task (an edit gets its own version, the cache key). The env
+           the prompt per task (an edit gets its own version; an earlier AI reading of the
+           same syllabus is still reused, and Read again asks for one by the new prompt). The env
            AI_* values are only the fallback before an admin saves a provider. The
            worker builds the provider per job. Server and worker only.
 Realtime:  Server-Sent Events from Route Handlers, fan-out through Redis pub/sub.
@@ -147,7 +148,9 @@ Run test, lint and typecheck before declaring any task done.
    the same file, and an AI reading is never replaced by a rule-based one). Hash every uploaded
    file (SHA-256). Before any AI call, reuse in this order: the same file, a
    near-identical syllabus (the same syllabus for another post, matched by a text
-   fingerprint), and every section an earlier syllabus already had. Catalogue
+   fingerprint), and every section an earlier syllabus already had. An AI reading by any
+   model or prompt counts, and the first two are checked at upload, so a syllabus someone
+   already had read is ready to verify at once. Catalogue
    syllabuses and previous year papers are parsed once, ever, for all users.
 
 5. AI OUTPUT PASSES A HUMAN GATE.
