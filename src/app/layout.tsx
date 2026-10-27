@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   openGraph: { type: "website", siteName: site.name, locale: "en_IN" },
-  appleWebApp: { capable: true, title: "Study", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: site.name, statusBarStyle: "default" },
   twitter: { card: "summary_large_image" },
 };
 

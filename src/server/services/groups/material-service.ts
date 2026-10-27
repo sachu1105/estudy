@@ -1,12 +1,16 @@
 import type { Clock } from "@/lib/clock";
+import { isId } from "@/lib/ids";
 import { docImageIds, rewriteImages, type DocNode } from "@/lib/notes/doc";
+import type { ChannelType } from "@/lib/squads/templates";
 import { assertPublicUrl, UnsafeUrlError } from "@/server/links/fetch-meta";
 import type { GroupItemRepository } from "@/server/repositories/group-item-repository";
 import type { PodItemRepository } from "@/server/repositories/pod-item-repository";
 import type { ObjectStorage } from "@/server/storage/types";
 import type { Actor } from "@/server/services/syllabus/deps";
 
+import { ACCEPTED_FILE_TYPES, FILE_MAX_BYTES } from "../pods/file-service";
 import { failure, type Result } from "../syllabus/deps";
+import { imageMime, sniffKind } from "../syllabus/extract";
 import type { ChannelService } from "./channel-service";
 import type { GroupService } from "./group-service";
 
@@ -29,6 +33,12 @@ const MUTED = failure(
   "MUTED",
   "A squad admin has muted you for now, so you can't share.",
 );
+
+const CHAT: ChannelType[] = ["CHAT", "ANNOUNCEMENTS"];
+
+/** Where one person's chat uploads land in a squad, so a key can't name someone else's. */
+const chatKeyPrefix = (groupId: string, userId: string) =>
+  `groups/${groupId}/chat/${userId}/`;
 
 /** Shared material in groups: copies of pod items, or links (milestone 13, rule 15). */
 export function createMaterialService(deps: MaterialDeps) {
@@ -226,6 +236,144 @@ export function createMaterialService(deps: MaterialDeps) {
         topicName: input.topicName,
         sizeBytes: 0,
         files: [],
+      });
+      return { ok: true, itemId: created.id };
+    },
+
+    /**
+     * Presigned PUTs for photos and PDFs sent straight from a device into a chat
+     * message. Nothing is shared until `shareUploads` checks what arrived.
+     */
+    async requestChatUploads(
+      user: User,
+      groupId: string,
+      channelId: string,
+      files: { contentType: string; size: number }[],
+    ): Promise<
+      Result<{
+        uploads: {
+          key: string;
+          url: string;
+          headers: Record<string, string>;
+        }[];
+      }>
+    > {
+      const ok = await sharer(user, groupId);
+      if (ok.fail) return ok.fail;
+      const place = await deps.channels.place(
+        groupId,
+        { id: user.id, role: ok.me.role },
+        CHAT,
+        channelId,
+      );
+      if (!place.ok) return place;
+      if (
+        files.some((f) => !ACCEPTED_FILE_TYPES.includes(f.contentType as never))
+      )
+        return failure(
+          "UNSUPPORTED",
+          "Send photos (JPG, PNG or WebP) or a PDF.",
+        );
+      const pdfs = files.filter((f) => f.contentType === "application/pdf");
+      if (pdfs.length > 0 && files.length > 1)
+        return failure("ONE_PDF", "Send a PDF on its own, one per message.");
+      if (files.some((f) => f.size > FILE_MAX_BYTES))
+        return failure("TOO_LARGE", "Each file can be up to 25 MB.");
+      const full = await underStorage(
+        ok.group.ownerId,
+        files.reduce((n, f) => n + f.size, 0),
+      );
+      if (full) return full;
+      const uploads = [];
+      for (const f of files) {
+        const key = `${chatKeyPrefix(groupId, user.id)}${deps.newId()}`;
+        const signed = await deps.storage.signUpload({
+          key,
+          contentType: f.contentType,
+          contentLength: f.size,
+          expiresInSeconds: 600,
+        });
+        uploads.push({ key, ...signed });
+      }
+      return { ok: true, uploads };
+    },
+
+    /**
+     * Files that finished uploading become one squad item for a message: the photos
+     * together, or one PDF. The bytes decide what a file is, not what the browser said.
+     */
+    async shareUploads(
+      user: User,
+      groupId: string,
+      channelId: string,
+      keys: { key: string; name: string }[],
+    ): Promise<Result<{ itemId: string }>> {
+      const ok = await sharer(user, groupId);
+      if (ok.fail) return ok.fail;
+      const place = await deps.channels.place(
+        groupId,
+        { id: user.id, role: ok.me.role },
+        CHAT,
+        channelId,
+      );
+      if (!place.ok) return place;
+      const BROKEN = failure(
+        "UNSUPPORTED",
+        "A file didn't upload properly or isn't a photo or PDF. Try again.",
+      );
+      const prefix = chatKeyPrefix(groupId, user.id);
+      const files = [];
+      for (const [order, { key }] of keys.entries()) {
+        if (!key.startsWith(prefix) || !isId(key.slice(prefix.length)))
+          return BROKEN;
+        const head = await deps.storage.head(key);
+        if (!head || head.size > FILE_MAX_BYTES) return BROKEN;
+        const bytes = await deps.storage.getBytes(key);
+        const kind = sniffKind(bytes);
+        if (kind !== "PDF" && kind !== "IMAGE") {
+          await deps.storage.delete(key).catch(() => {});
+          return BROKEN;
+        }
+        files.push({
+          id: deps.newId(),
+          order,
+          storageKey: key,
+          kind,
+          mimeType: kind === "PDF" ? "application/pdf" : imageMime(bytes),
+          sizeBytes: bytes.byteLength,
+        });
+      }
+      const pdf = files.some((f) => f.kind === "PDF");
+      if (pdf && files.length > 1)
+        return failure("ONE_PDF", "Send a PDF on its own, one per message.");
+      const bytes = files.reduce((n, f) => n + f.sizeBytes, 0);
+      const full = await underStorage(ok.group.ownerId, bytes);
+      if (full) {
+        for (const f of files)
+          await deps.storage.delete(f.storageKey).catch(() => {});
+        return full;
+      }
+      const name = keys[0]!.name.replace(/\.[a-z0-9]+$/i, "").slice(0, 120);
+      const created = await deps.items.create({
+        groupId,
+        channelId: place.channelId,
+        sharedById: user.id,
+        type: pdf ? "FILE" : "IMAGE",
+        title: pdf
+          ? name || "PDF"
+          : files.length === 1
+            ? name || "Photo"
+            : `${files.length} photos`,
+        subjectName: place.subjectName,
+        topicName: null,
+        sizeBytes: bytes,
+        files: files.map((f) => ({
+          id: f.id,
+          order: f.order,
+          storageKey: f.storageKey,
+          mimeType: f.mimeType,
+          sizeBytes: f.sizeBytes,
+        })),
       });
       return { ok: true, itemId: created.id };
     },

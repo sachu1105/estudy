@@ -21,8 +21,10 @@ import {
 
 /**
  * A squad. Members get its channels: on md+ a rail of their squads, the channel list and
- * the open channel side by side; on phones the squad page lists the channels. Anyone else
- * sees what it's about and how to get in (rule 9: nothing inside is shown to non-members).
+ * the open channel side by side. Phones get Discord's two screens: the squad page is the
+ * rail beside the channel list, and a channel has the screen to itself under a bar with
+ * a way back. Anyone else sees what it's about and how to get in (rule 9: nothing inside
+ * is shown to non-members).
  */
 export default async function GroupLayout({
   params,
@@ -47,7 +49,11 @@ export default async function GroupLayout({
   const categories = layout.categories.map(({ id, name }) => ({ id, name }));
 
   return (
-    <div data-bleed className="flex flex-1 flex-col md:h-full md:flex-row">
+    <div
+      data-bleed
+      data-squad-screen
+      className="flex min-h-dvh flex-1 has-[[data-focus-view]]:min-h-0 md:h-full md:min-h-0"
+    >
       <SquadLive groupId={group.id} meId={user.id} />
       <SquadRail
         squads={mine.map((m) => ({
@@ -83,8 +89,8 @@ export default async function GroupLayout({
           />
         </div>
       </aside>
-      <div className="min-w-0 flex-1 has-[[data-focus-view]]:flex has-[[data-focus-view]]:flex-col md:scrollbar-thin md:overflow-y-auto">
-        <div className="mx-auto w-full max-w-content has-[[data-focus-view]]:flex has-[[data-focus-view]]:flex-1 has-[[data-focus-view]]:flex-col md:px-8 md:pt-6 md:pb-12 md:has-[[data-focus-view]]:pb-0">
+      <div className="flex min-w-0 flex-1 flex-col md:block md:scrollbar-thin md:overflow-y-auto md:has-[[data-focus-view]]:flex">
+        <div className="mx-auto flex w-full max-w-content flex-1 flex-col px-4 pt-4 pb-24 has-[[data-focus-view]]:pb-0 md:block md:px-8 md:pt-6 md:pb-12 md:has-[[data-focus-view]]:flex md:has-[[data-focus-view]]:flex-col">
           {view.muted ? (
             <p
               role="status"

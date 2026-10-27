@@ -19,6 +19,8 @@ export type MessageView = {
     type: "NOTE" | "LINK" | "FILE" | "IMAGE";
     title: string;
     url: string | null;
+    /** Stored files, in order: photos are drawn in the chat from these. */
+    files: { id: string; mimeType: string }[];
   } | null;
   reactions: { kind: Reaction; count: number; mine: boolean }[];
   mine: boolean;

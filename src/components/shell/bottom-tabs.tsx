@@ -1,35 +1,26 @@
 "use client";
 
-import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils/cn";
 
-import { isActive, primaryNav, secondaryNav } from "./nav-items";
+import { isActive, primaryNav } from "./nav-items";
+import type { Viewer } from "./top-bar";
 
 const tabClasses =
   "flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 text-micro font-medium transition-colors duration-[120ms]";
 
-export function BottomTabs() {
+/**
+ * The tab bar under 768px. The last tab is the viewer's profile, which opens straight
+ * onto settings (profile first, Log out at the foot), as the avatar's menu does in the
+ * top bar from 768px.
+ */
+export function BottomTabs({ viewer }: { viewer: Viewer }) {
   const pathname = usePathname();
-  const [moreOpen, setMoreOpen] = useState(false);
   const tabs = primaryNav.filter((item) => item.mobileTab);
-  const more = [
-    ...primaryNav.filter((item) => !item.mobileTab),
-    ...secondaryNav,
-  ];
-  const moreActive = more.some((item) =>
-    isActive(pathname, item.href, item.also),
-  );
+  const profileActive = isActive(pathname, "/settings");
 
   return (
     <nav
@@ -55,39 +46,26 @@ export function BottomTabs() {
         );
       })}
 
-      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
-        <SheetTrigger
-          className={cn(
-            tabClasses,
-            moreActive ? "text-accent" : "text-ink-muted",
-          )}
-        >
-          <Ellipsis className="size-5" aria-hidden />
-          More
-        </SheetTrigger>
-        <SheetContent side="bottom">
-          <SheetTitle>More</SheetTitle>
-          <SheetDescription className="sr-only">
-            Other sections of the app
-          </SheetDescription>
-          <div className="grid grid-cols-3 gap-2">
-            {more.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMoreOpen(false)}
-                aria-current={
-                  isActive(pathname, item.href, item.also) ? "page" : undefined
-                }
-                className="flex flex-col items-center gap-2 rounded-control border border-border p-4 text-small font-medium text-ink aria-[current=page]:border-transparent aria-[current=page]:bg-accent-soft aria-[current=page]:text-accent-ink"
-              >
-                <item.icon className="size-5" aria-hidden />
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet>
+      <Link
+        href="/settings"
+        aria-current={profileActive ? "page" : undefined}
+        className={cn(
+          tabClasses,
+          profileActive ? "text-accent" : "text-ink-muted",
+        )}
+      >
+        {/* Decorative here: the tab is named by its label, not the initials. It
+            takes an icon's 20px of height, so every label sits on one line. */}
+        <span aria-hidden className="-my-1 flex">
+          <Avatar
+            name={viewer.name}
+            src={viewer.avatarUrl}
+            size="sm"
+            className={cn(profileActive && "ring-2 ring-accent")}
+          />
+        </span>
+        Profile
+      </Link>
     </nav>
   );
 }

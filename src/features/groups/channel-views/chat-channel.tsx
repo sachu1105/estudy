@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { chatService, materialService } from "@/server/services/groups";
 
 import { ChannelHeader } from "../components/channels/channel-header";
+import { ChannelSearch } from "../components/channels/channel-search";
 import { ChatView } from "../components/chat/chat-view";
 import type { ChannelViewProps } from "./types";
 
@@ -26,6 +27,14 @@ export async function ChatChannel({
       <ChannelHeader
         manage={manage}
         notify={notify}
+        search={
+          <ChannelSearch
+            groupId={groupId}
+            channelId={channel.id}
+            channelName={channel.name}
+            timeZone={user.timezone}
+          />
+        }
         groupId={groupId}
         channel={channel}
       />

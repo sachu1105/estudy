@@ -48,7 +48,9 @@ export function SettingsSection({
               {title}
             </h2>
             {description ? (
-              <p className="mt-0.5 text-small text-ink-muted">{description}</p>
+              <p className="mt-0.5 text-small break-words text-ink-muted">
+                {description}
+              </p>
             ) : null}
           </div>
         </div>

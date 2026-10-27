@@ -510,3 +510,11 @@ html {
 body:has([data-focus-view]) [data-bottom-tabs] {
   display: none;
 }
+
+/* Inside a squad, phones get Discord-style screens: the squad's own bars stand in for
+   the app's top bar. */
+@media (width < 48rem) {
+  body:has([data-squad-screen]) [data-top-bar] {
+    display: none;
+  }
+}

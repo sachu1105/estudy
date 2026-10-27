@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutGrid } from "lucide-react";
+import { Compass, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -25,17 +25,26 @@ const tile = (active: boolean) =>
     active ? "rounded-xl" : "rounded-3xl hover:rounded-xl",
   );
 
-/** The squads you're in, one tile each, to jump between them (md and up). */
+/**
+ * The squads you're in, one tile each, to jump between them. Always there from md; on a
+ * phone only on a squad's own page, beside its channel list, as in Discord.
+ */
 export function SquadRail({
   squads,
 }: {
   squads: { id: string; name: string; cover?: unknown; unread?: boolean }[];
 }) {
   const pathname = usePathname();
+  const squadHome = /^\/groups\/[^/]+$/.test(pathname);
   return (
     <nav
       aria-label="Your squads"
-      className="hidden w-[72px] shrink-0 [scrollbar-width:none] flex-col items-center gap-2 overflow-y-auto border-r border-border py-3 md:flex"
+      className={cn(
+        "w-[72px] shrink-0 [scrollbar-width:none] flex-col items-center gap-2 overflow-y-auto py-3 md:flex md:border-r md:border-border",
+        // A phone: held in place while the channel list scrolls, clear of the tab bar.
+        "sticky top-0 h-dvh self-start pb-20 md:static md:h-auto md:self-auto md:pb-3",
+        squadHome ? "flex" : "hidden",
+      )}
     >
       <Tooltip content="All squads" side="right">
         <Link
@@ -91,6 +100,19 @@ export function SquadRail({
           </span>
         );
       })}
+      <span aria-hidden className="h-px w-8 shrink-0 bg-border" />
+      <Tooltip content="Find a squad" side="right">
+        <Link
+          href="/groups/discover"
+          aria-label="Find a squad"
+          className={cn(
+            tile(false),
+            "shrink-0 bg-surface-muted text-ink-muted hover:text-ink",
+          )}
+        >
+          <Compass className="size-5" aria-hidden />
+        </Link>
+      </Tooltip>
     </nav>
   );
 }

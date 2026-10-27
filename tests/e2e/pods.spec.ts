@@ -79,6 +79,41 @@ test.describe("pods", () => {
       column("Studying").getByRole("link", { name: "Kerala geography" }),
     ).toBeVisible();
 
+    // On a phone the columns are tabs over a track you swipe: a tab slides to its column.
+    if (test.info().project.name.includes("mobile")) {
+      const done = page.getByRole("tab", { name: /^Done/ });
+      await done.click();
+      await expect(done).toHaveAttribute("aria-selected", "true");
+      await expect(column("Done")).toBeInViewport();
+      await expect(column("To study")).not.toBeInViewport();
+
+      // The other columns are off screen, so a card is dragged onto a tab instead.
+      await page.getByRole("tab", { name: /^To study/ }).click();
+      // Settled, not mid-slide, before measuring where the card is.
+      await expect(column("To study")).toBeInViewport({ ratio: 1 });
+      const card = column("To study")
+        .getByRole("article")
+        .filter({ hasText: "Indian Constitution" });
+      const from = (await card.boundingBox())!;
+      const to = (await done.boundingBox())!;
+      await page.mouse.move(from.x + from.width / 2, from.y + 30);
+      await page.mouse.down();
+      await page.mouse.move(from.x + from.width / 2, from.y + 20);
+      await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+        steps: 12,
+      });
+      const dropped = page.waitForResponse(
+        (r) => r.request().method() === "POST",
+      );
+      await page.mouse.up();
+      await dropped;
+      await expect(done).toHaveAccessibleName("Done, 1");
+      await page.reload();
+      await expect(
+        column("Done").getByRole("link", { name: "Indian Constitution" }),
+      ).toBeAttached();
+    }
+
     // And by dragging, on desktop (a phone drags with a long press).
     if (!test.info().project.name.includes("mobile")) {
       const card = column("To study")

@@ -40,7 +40,8 @@ export default async function GroupsPage() {
         title="Squads"
         description="Study with others: chat, share notes and tests, and see who's keeping up."
         actions={
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          // Side by side, splitting the width on a phone.
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
             <JoinCodeDialog />
             <CreateGroupDialog
               exams={exams.map((e) => ({ id: e.id, name: e.name }))}

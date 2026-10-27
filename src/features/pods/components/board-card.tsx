@@ -30,9 +30,61 @@ export type BoardPod = {
   cover: PodCover;
 };
 
+const summary = (pod: BoardPod) =>
+  `${pod.topicsDone} of ${pod.topics} topic${pod.topics === 1 ? "" : "s"}` +
+  (pod.items > 0 ? ` · ${pod.items} item${pod.items === 1 ? "" : "s"}` : "");
+
 /**
- * A subject pod on the exam board. Drag the card itself (long-press on a phone); there
- * is no handle. The menu does the same with a tap or the keyboard: up, down, or to
+ * The card under the pointer while it's dragged. It's drawn over the page, so the
+ * phone's sideways track can't clip it on its way up to a tab. On the phone's track it
+ * shrinks to a chip, small enough not to hide the tabs.
+ */
+export function BoardCardPreview({
+  pod,
+  stage,
+  compact,
+}: {
+  pod: BoardPod;
+  stage: PodStage;
+  compact: boolean;
+}) {
+  if (compact)
+    return (
+      <div className="inline-flex max-w-56 cursor-grabbing items-center gap-2 rounded-full border border-border bg-surface py-1 pr-3 pl-1 shadow-lg">
+        <PodMark
+          cover={pod.cover}
+          name={pod.name}
+          done={stage === "DONE"}
+          className="size-7"
+        />
+        <span className="truncate font-heading text-small font-medium text-ink">
+          {pod.name}
+        </span>
+      </div>
+    );
+  return (
+    <div className="flex min-h-16 rotate-[1.5deg] cursor-grabbing items-center gap-2.5 rounded-control border border-border bg-surface py-2 pr-3 pl-2 shadow-lg">
+      <PodMark
+        cover={pod.cover}
+        name={pod.name}
+        done={stage === "DONE"}
+        className="size-9"
+      />
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="line-clamp-2 font-heading text-body font-medium break-words text-ink">
+          {pod.name}
+        </span>
+        <span className="truncate text-small text-ink-muted">
+          {summary(pod)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A subject pod on the exam board. Drag the card itself (long-press on a phone, and
+ * onto a tab for another column); there is no handle. The menu does the same with a tap or the keyboard: up, down, or to
  * another column.
  */
 export function BoardCard({
@@ -68,8 +120,9 @@ export function BoardCard({
       }}
       {...pointer}
       className={cn(
-        "group relative flex min-h-16 cursor-grab touch-manipulation items-center gap-2.5 rounded-control border border-border bg-surface py-2 pr-1 pl-2 [@media(hover:hover)]:pr-3 shadow-sm transition-[translate,rotate,box-shadow] duration-[120ms] select-none [-webkit-touch-callout:none] hover:-translate-y-px hover:shadow-md active:cursor-grabbing",
-        isDragging && "z-10 rotate-[1.5deg] shadow-lg",
+        "group relative flex min-h-16 cursor-grab touch-manipulation items-center gap-2.5 rounded-control border border-border bg-surface py-2 pr-1 pl-2 shadow-sm transition-[translate,rotate,box-shadow] duration-[120ms] select-none [-webkit-touch-callout:none] hover:-translate-y-px hover:shadow-md active:cursor-grabbing [@media(hover:hover)]:pr-3",
+        // The overlay is the card in the air; this is the gap it left.
+        isDragging && "opacity-40",
       )}
     >
       <PodMark
@@ -88,10 +141,7 @@ export function BoardCard({
           {pod.name}
         </Link>
         <span className="truncate text-small text-ink-muted">
-          {pod.topicsDone} of {pod.topics} topic{pod.topics === 1 ? "" : "s"}
-          {pod.items > 0
-            ? ` · ${pod.items} item${pod.items === 1 ? "" : "s"}`
-            : null}
+          {summary(pod)}
         </span>
         {/* Only once something is done: a row of empty bars is just noise. */}
         {pod.topicsDone > 0 ? (

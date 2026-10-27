@@ -23,8 +23,19 @@ test.describe("auth", () => {
     await page.goto("/login");
     await expect(page).toHaveURL(/\/today$/);
 
-    await page.getByRole("button", { name: "Account menu" }).click();
-    await page.getByRole("menuitem", { name: "Log out" }).click();
+    // The top bar's avatar menu on desktop; on a phone, the Profile tab opens settings,
+    // which ends with Log out.
+    if (test.info().project.name.includes("mobile")) {
+      await page
+        .getByRole("navigation", { name: "Main" })
+        .getByRole("link", { name: "Profile" })
+        .click();
+      await expect(page).toHaveURL(/\/settings$/);
+      await page.getByRole("button", { name: "Log out" }).click();
+    } else {
+      await page.getByRole("button", { name: "Account menu" }).click();
+      await page.getByRole("menuitem", { name: "Log out" }).click();
+    }
     await expect(page).toHaveURL(/\/login$/);
     await page.goto("/today");
     await expect(page).toHaveURL(/\/login/);
@@ -89,7 +100,9 @@ test.describe("auth", () => {
     await dialog
       .getByLabel("New password", { exact: true })
       .fill("brand new password 9");
-    await dialog.getByLabel("Confirm new password").fill("brand new password 9");
+    await dialog
+      .getByLabel("Confirm new password")
+      .fill("brand new password 9");
     await dialog.getByRole("button", { name: "Save new password" }).click();
     await expect(dialog.getByRole("alert")).toContainText(
       "That isn't your current password",

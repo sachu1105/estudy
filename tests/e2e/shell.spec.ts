@@ -37,12 +37,16 @@ test.describe("app shell", () => {
     );
 
     if (isMobile) {
-      await nav.getByRole("button", { name: "More" }).click();
-      await page
-        .getByRole("dialog")
-        .getByRole("link", { name: "Settings" })
-        .click();
+      // The profile sits in the tab bar, not behind an avatar in the top bar, and
+      // opens straight onto settings.
+      await expect(
+        page.getByRole("button", { name: "Account menu" }),
+      ).toBeHidden();
+      const profile = nav.getByRole("link", { name: "Profile" });
+      await profile.click();
       await expect(page).toHaveURL(/\/settings$/);
+      await expect(profile).toHaveAttribute("aria-current", "page");
+      await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
     }
   });
 

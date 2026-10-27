@@ -1,10 +1,15 @@
-import { ChevronLeft, Lock, Timer, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Lock, Timer, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { CHANNEL_ICONS, type ChannelSummary } from "./channel-icon";
 
-/** The heading of a page inside a squad. Phones get a way back to the channel list. */
+/**
+ * The heading of a page inside a squad. On a phone it's Discord's bar: back to the
+ * channel list, the name with a line under it, the menus, held at the top while the page
+ * scrolls; the actions follow below it. From md it's a plain heading with the actions
+ * beside it.
+ */
 export function SquadHeading({
   groupId,
   icon: Icon,
@@ -22,32 +27,42 @@ export function SquadHeading({
   menu?: ReactNode;
 }) {
   return (
-    <header className="mb-6 flex flex-col gap-3">
-      <Link
-        href={`/groups/${groupId}`}
-        className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start rounded-control px-2 text-small font-medium text-ink-muted hover:text-ink md:hidden"
-      >
-        <ChevronLeft className="size-4" aria-hidden /> Channels
-      </Link>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
+    // On a phone the header steps aside (contents), so the bar sticks for the length of
+    // the page rather than only the header's own height.
+    <header className="max-md:contents md:mb-6 md:flex md:flex-wrap md:items-end md:justify-between md:gap-3">
+      <div className="sticky top-0 z-20 -mx-4 -mt-4 mb-4 flex min-h-14 items-center gap-1 border-b border-border bg-bg/95 py-1 pr-1 pl-1 backdrop-blur md:static md:m-0 md:block md:min-h-0 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
+        <Link
+          href={`/groups/${groupId}`}
+          aria-label="Back to channels"
+          className="grid size-11 shrink-0 place-items-center rounded-control text-ink-muted hover:text-ink md:hidden"
+        >
+          <ArrowLeft className="size-5" aria-hidden />
+        </Link>
+        <div className="flex min-w-0 flex-1 flex-col md:gap-1">
           <div className="flex min-w-0 items-center gap-1">
-            <h1 className="flex min-w-0 items-center gap-2">
+            <h1 className="flex min-w-0 items-center gap-2 max-md:text-h2">
               {Icon ? (
-                <Icon className="size-5 shrink-0 text-ink-muted" aria-hidden />
+                <Icon
+                  className="size-5 shrink-0 text-ink-muted max-md:size-4"
+                  aria-hidden
+                />
               ) : null}
-              <span className="break-words">{title}</span>
+              <span className="max-md:truncate md:break-words">{title}</span>
             </h1>
-            {menu}
+            {/* Beside the title from md; at the bar's far end on a phone. */}
+            <span className="hidden md:contents">{menu}</span>
           </div>
           {subtitle ? (
-            <p className="flex flex-wrap items-center gap-x-2 text-body text-ink-muted">
+            <p className="flex items-center gap-x-2 text-ink-muted max-md:overflow-hidden max-md:text-small max-md:whitespace-nowrap md:flex-wrap md:text-body">
               {subtitle}
             </p>
           ) : null}
         </div>
-        {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
+        {menu ? <span className="flex shrink-0 md:hidden">{menu}</span> : null}
       </div>
+      {actions ? (
+        <div className="mb-4 flex flex-wrap gap-2 md:mb-0">{actions}</div>
+      ) : null}
     </header>
   );
 }
@@ -59,6 +74,7 @@ export function ChannelHeader({
   actions,
   manage,
   notify,
+  search,
 }: {
   groupId: string;
   channel: Pick<
@@ -70,6 +86,8 @@ export function ChannelHeader({
   manage?: ReactNode;
   /** How much of this channel reaches the viewer. */
   notify?: ReactNode;
+  /** Finding words in this channel's messages (chat channels). */
+  search?: ReactNode;
 }) {
   const adminsOnly = channel.postRule === "ADMINS";
   const slow = channel.slowModeSec;
@@ -111,8 +129,9 @@ export function ChannelHeader({
       }
       actions={actions}
       menu={
-        notify || manage ? (
+        search || notify || manage ? (
           <span className="flex items-center">
+            {search}
             {notify}
             {manage}
           </span>

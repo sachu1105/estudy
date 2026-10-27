@@ -52,10 +52,7 @@ export function StageIcon({
             <path d="M8 4.5A3.5 3.5 0 0 1 8 11.5Z" fill="currentColor" />
           ) : null}
           {stage === "REVISING" ? (
-            <path
-              d="M8 8V4.5A3.5 3.5 0 1 1 4.5 8Z"
-              fill="currentColor"
-            />
+            <path d="M8 8V4.5A3.5 3.5 0 1 1 4.5 8Z" fill="currentColor" />
           ) : null}
         </>
       )}

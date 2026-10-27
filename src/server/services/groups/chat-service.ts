@@ -21,6 +21,8 @@ export type { MessageView };
 
 /** How many messages one page holds. */
 export const CHAT_PAGE = 50;
+/** How many search results one search returns. */
+const SEARCH_LIMIT = 30;
 
 export type ChatDeps = {
   groups: GroupService;
@@ -43,6 +45,13 @@ export type ChatDeps = {
     groupId: string,
     podItemId: string,
     channelId: string,
+  ) => Promise<Result<{ itemId: string }>>;
+  /** Turns photos or a PDF uploaded from a device into a squad item for a message. */
+  shareUploads: (
+    user: User,
+    groupId: string,
+    channelId: string,
+    keys: { key: string; name: string }[],
   ) => Promise<Result<{ itemId: string }>>;
   clock: Clock;
   emit: (groupId: string, event: GroupEvent) => Promise<void>;
@@ -168,6 +177,36 @@ export function createChatService(deps: ChatDeps) {
       };
     },
 
+    /**
+     * Messages here holding every word of the query, newest first, as the person would
+     * see them in the chat (blocked people and removed messages stay out).
+     */
+    async search(
+      user: User,
+      groupId: string,
+      channelId: string,
+      query: string,
+    ) {
+      const chat = await inChat(user, groupId, channelId);
+      if (!chat) return null;
+      const words = [
+        ...new Set(query.trim().toLowerCase().split(/\s+/).filter(Boolean)),
+      ].slice(0, 6);
+      if (!words.length) return { messages: [] };
+      const [blocked, people] = await Promise.all([
+        deps.groups.blockedIds(user),
+        names(groupId),
+      ]);
+      const rows = await deps.messages.search(channelId, words, {
+        limit: SEARCH_LIMIT,
+        withHidden: isAdmin(chat.role),
+        notBy: [...blocked],
+      });
+      return {
+        messages: rows.map((m) => view(m, user, chat.role, people, blocked)),
+      };
+    },
+
     /** Who can be mentioned here. */
     async mentionable(user: User, groupId: string) {
       const blocked = await deps.groups.blockedIds(user);
@@ -185,8 +224,13 @@ export function createChatService(deps: ChatDeps) {
         replyToId: string | null;
         mentionIds: string[];
         podItemId: string | null;
+        /** Photos or a PDF already uploaded from the device, instead of a pod item. */
+        uploads?: { key: string; name: string }[];
       },
     ): Promise<Result<{ message: MessageView }>> {
+      const uploads = input.uploads ?? [];
+      if (uploads.length && input.podItemId)
+        return failure("TWO_ATTACHMENTS", "Send one attachment at a time.");
       const chat = await inChat(user, groupId, channelId);
       if (!chat)
         return failure("NOT_FOUND", "That channel is gone or isn't a chat.");
@@ -207,7 +251,7 @@ export function createChatService(deps: ChatDeps) {
           `This channel is in slow mode. You can write again in ${wait} second${wait === 1 ? "" : "s"}.`,
         );
       const body = input.body.trim();
-      if (!body && !input.podItemId)
+      if (!body && !input.podItemId && !uploads.length)
         return failure("EMPTY", "Write a message first.");
       if (input.replyToId) {
         const target = await deps.messages.find(channelId, input.replyToId);
@@ -221,6 +265,16 @@ export function createChatService(deps: ChatDeps) {
           groupId,
           input.podItemId,
           channelId,
+        );
+        if (!shared.ok) return shared;
+        itemId = shared.itemId;
+      }
+      if (uploads.length) {
+        const shared = await deps.shareUploads(
+          user,
+          groupId,
+          channelId,
+          uploads,
         );
         if (!shared.ok) return shared;
         itemId = shared.itemId;

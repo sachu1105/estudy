@@ -3,6 +3,7 @@ import {
   CalendarCheck,
   ClipboardCheck,
   Settings,
+  Shield,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -11,7 +12,7 @@ export type NavItem = {
   href: string;
   label: string;
   icon: LucideIcon;
-  /** Shown in the bottom tab bar under 768px; the rest live under "More". */
+  /** Shown in the bottom tab bar under 768px. */
   mobileTab?: boolean;
   /** Other paths that belong to this item (syllabus pages live under Pods). */
   also?: string[];
@@ -35,6 +36,18 @@ export const primaryNav: NavItem[] = [
 export const secondaryNav: NavItem[] = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
+
+/**
+ * The avatar's menu in the top bar from 768px, less Log out. Settings is the profile
+ * too, so it's one item. Moderators and admins also get the admin panel. Under 768px
+ * the Profile tab opens settings, which carries the same links at its foot.
+ */
+export function accountNav(staff = false): NavItem[] {
+  return [
+    { href: "/settings", label: "Settings", icon: Settings },
+    ...(staff ? [{ href: "/admin", label: "Admin panel", icon: Shield }] : []),
+  ];
+}
 
 export function isActive(pathname: string, href: string, also: string[] = []) {
   return [href, ...also].some(

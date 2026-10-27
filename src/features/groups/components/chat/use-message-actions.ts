@@ -12,6 +12,7 @@ import {
   reactMessageAction,
   sendMessageAction,
 } from "../../chat-actions";
+import { uploadChatFiles } from "../../upload";
 import type { Outgoing } from "./composer";
 import type { useChat } from "./use-chat";
 
@@ -40,8 +41,9 @@ export function useMessageActions({
   };
 
   const send = (out: Outgoing) => {
+    const tempId = `pending-${crypto.randomUUID()}`;
     const temp: PendingMessage = {
-      id: `pending-${crypto.randomUUID()}`,
+      id: tempId,
       body: out.body.trim(),
       deleted: false,
       hidden: false,
@@ -56,7 +58,18 @@ export function useMessageActions({
             preview: plainText(replyTo.body, 80),
           }
         : null,
-      item: null,
+      // Files still on their way show as a placeholder card until the server has them.
+      item: out.files.length
+        ? {
+            id: tempId,
+            type: out.files.some((f) => f.type === "application/pdf")
+              ? "FILE"
+              : "IMAGE",
+            title: "Uploading…",
+            url: null,
+            files: [],
+          }
+        : null,
       reactions: [],
       mine: true,
       canDelete: false,
@@ -65,12 +78,26 @@ export function useMessageActions({
     const replyToId = replyTo?.id ?? null;
     setReplyTo(null);
     start(async () => {
+      let uploads: { key: string; name: string }[] = [];
+      if (out.files.length) {
+        try {
+          uploads = await uploadChatFiles(groupId, channelId, out.files);
+        } catch (error) {
+          settle(null);
+          return void toast.error(
+            error instanceof Error
+              ? error.message
+              : "The files didn't upload. Try again.",
+          );
+        }
+      }
       const result = await sendMessageAction({
         ...where,
         body: out.body,
         replyToId,
         mentionIds: out.mentionIds,
         podItemId: out.attachment?.id ?? null,
+        uploads,
       });
       if (!result.ok) {
         settle(null);

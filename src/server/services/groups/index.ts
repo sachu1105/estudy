@@ -120,6 +120,8 @@ export const chatService = createChatService({
     channelRepository.mutedOn(channelId, userIds),
   shareFromPod: (user, groupId, podItemId, channelId) =>
     materialService.shareFromPod(user, groupId, podItemId, channelId, "chat"),
+  shareUploads: (user, groupId, channelId, keys) =>
+    materialService.shareUploads(user, groupId, channelId, keys),
   clock: systemClock,
   emit: groupEvents.emit,
   notify: (rows) => notificationService.notify(rows),

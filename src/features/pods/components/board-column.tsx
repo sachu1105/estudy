@@ -6,8 +6,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { ChevronDown } from "lucide-react";
-
 import { stageHints, stageLabels, type PodStage } from "@/lib/pods/stages";
 import { cn } from "@/lib/utils/cn";
 
@@ -15,8 +13,9 @@ import { BoardCard, type BoardPod } from "./board-card";
 import { StageIcon } from "./stage-icon";
 
 /**
- * One column of the exam board. Empty columns still take a drop. On a phone the columns
- * stack, so each folds to its heading; from lg they sit side by side, always open.
+ * One column of the exam board. Empty columns still take a drop. Under lg the columns
+ * slide past one at a time and the tabs above them carry the name and count, so the
+ * column shows only its hint; from lg they sit side by side with full headings.
  * Studying is the lane the plan works from, so it alone carries a tint of the accent.
  */
 export function BoardColumn({
@@ -24,22 +23,17 @@ export function BoardColumn({
   pods,
   onMove,
   onShift,
-  open,
-  onToggle,
 }: {
   stage: PodStage;
   pods: BoardPod[];
   onMove: (podId: string, stage: PodStage) => void;
   onShift: (podId: string, delta: -1 | 1) => void;
-  open: boolean;
-  onToggle: () => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage });
   const headingId = `board-${stage}`;
   const focus = stage === "STUDYING";
   return (
     <section
-      // The whole column takes a drop, so a folded one on a phone still does.
       ref={setNodeRef}
       aria-labelledby={headingId}
       className={cn(
@@ -50,20 +44,12 @@ export function BoardColumn({
         isOver && "border-accent bg-accent-soft/40",
       )}
     >
-      <div className="relative flex min-h-11 flex-col justify-center px-2 py-1">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col justify-center px-2 py-1 lg:min-h-11">
+        {/* Hidden under lg, where the tab says it; it still names the column. */}
+        <div className="hidden items-center gap-2 lg:flex">
           <StageIcon stage={stage} />
           <h3 id={headingId} className="text-h3">
-            {/* The whole heading row is the toggle on a phone. */}
-            <button
-              type="button"
-              aria-expanded={open}
-              onClick={onToggle}
-              className="after:absolute after:inset-0 after:rounded-card lg:hidden"
-            >
-              {stageLabels[stage]}
-            </button>
-            <span className="hidden lg:inline">{stageLabels[stage]}</span>
+            {stageLabels[stage]}
           </h3>
           <span
             className={cn(
@@ -73,34 +59,15 @@ export function BoardColumn({
           >
             {pods.length}
           </span>
-          <ChevronDown
-            aria-hidden
-            className={cn(
-              "ml-auto size-4 text-ink-subtle transition-transform duration-[200ms] lg:hidden",
-              open && "rotate-180",
-            )}
-          />
         </div>
-        <p
-          className={cn(
-            "pl-6 text-small text-ink-muted",
-            !open && "hidden lg:block",
-          )}
-        >
-          {stageHints[stage]}
-        </p>
+        <p className="text-small text-ink-muted lg:pl-6">{stageHints[stage]}</p>
       </div>
       <SortableContext
         id={stage}
         items={pods.map((p) => p.id)}
         strategy={verticalListSortingStrategy}
       >
-        <ul
-          className={cn(
-            "min-h-14 flex-col gap-2",
-            open ? "flex" : "hidden lg:flex",
-          )}
-        >
+        <ul className="flex min-h-14 flex-col gap-2">
           {pods.map((pod, i) => (
             <li key={pod.id}>
               <BoardCard
@@ -115,7 +82,11 @@ export function BoardColumn({
           ))}
           {pods.length === 0 ? (
             <li className="grid min-h-14 place-items-center rounded-control border border-dashed border-border px-3 text-center text-small text-ink-muted">
-              Drop a subject here
+              {/* On a phone a subject comes in by its tab or its menu. */}
+              <span className="lg:hidden">
+                No subjects here. Drag one onto this tab, or use its menu.
+              </span>
+              <span className="hidden lg:inline">Drop a subject here</span>
             </li>
           ) : null}
         </ul>

@@ -24,8 +24,14 @@ export default async function ExamSubjectsPage({
   return (
     <section aria-label="Subjects" className="flex flex-col gap-3">
       <p className="text-small text-ink-muted">
-        Drag subjects between columns, or use a subject&apos;s menu. Your plan
-        follows the board.
+        <span className="lg:hidden">
+          Swipe between columns. Hold a subject to drag it up or down, or onto a
+          tab to move it there.
+        </span>
+        <span className="hidden lg:inline">
+          Drag subjects between columns, or use a subject&apos;s menu.
+        </span>{" "}
+        Your plan follows the board.
       </p>
       <PodBoard
         syllabusId={exam.id}

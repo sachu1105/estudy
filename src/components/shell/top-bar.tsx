@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  LogOut,
-  Moon,
-  Search,
-  Settings,
-  Shield,
-  Sun,
-  User,
-} from "lucide-react";
+import { LogOut, Moon, Search, Sun } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -30,7 +22,7 @@ import { setThemePreference } from "@/lib/theme";
 
 import { Logo, LogoMark } from "./logo";
 import { NotificationBell } from "./notification-bell";
-import { primaryNav, secondaryNav } from "./nav-items";
+import { accountNav, primaryNav, secondaryNav } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 
 export type Viewer = {
@@ -83,7 +75,10 @@ export function TopBar({ viewer, logout }: TopBarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-bg/90 px-4 backdrop-blur md:static md:border-0 md:bg-transparent md:pr-4 md:pl-0 md:backdrop-blur-none">
+    <header
+      data-top-bar
+      className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-bg/90 px-4 backdrop-blur md:static md:border-0 md:bg-transparent md:pr-4 md:pl-0 md:backdrop-blur-none"
+    >
       <Link href="/today" aria-label="Today" className="md:hidden">
         <LogoMark />
       </Link>
@@ -112,9 +107,10 @@ export function TopBar({ viewer, logout }: TopBarProps) {
         <ThemeToggle className="hidden sm:inline-flex" />
         <NotificationBell initial={viewer.unread ?? 0} />
         <DropdownMenu>
+          {/* Under 768px the bottom bar's Profile tab stands in for it. */}
           <DropdownMenuTrigger
             aria-label="Account menu"
-            className="cursor-pointer rounded-full"
+            className="hidden cursor-pointer rounded-full md:block"
           >
             <Avatar name={viewer.name} src={viewer.avatarUrl} />
           </DropdownMenuTrigger>
@@ -124,17 +120,14 @@ export function TopBar({ viewer, logout }: TopBarProps) {
               <p className="text-small text-ink-muted">{viewer.email}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => router.push("/settings")}>
-              <User aria-hidden /> Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => router.push("/settings")}>
-              <Settings aria-hidden /> Settings
-            </DropdownMenuItem>
-            {viewer.staff ? (
-              <DropdownMenuItem onSelect={() => router.push("/admin")}>
-                <Shield aria-hidden /> Admin panel
+            {accountNav(viewer.staff).map((item) => (
+              <DropdownMenuItem
+                key={item.label}
+                onSelect={() => router.push(item.href)}
+              >
+                <item.icon aria-hidden /> {item.label}
               </DropdownMenuItem>
-            ) : null}
+            ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => void logout()}>
               <LogOut aria-hidden /> Log out

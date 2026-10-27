@@ -13,7 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     orientation: "portrait",
     background_color: "#F7F7F5",
-    theme_color: "#5865F2",
+    // Same as the page's themeColor in the root layout, so the status bar matches the page.
+    theme_color: "#F7F7F5",
     categories: ["education", "productivity"],
     icons: [
       { src: "/icon-512.png", sizes: "512x512", type: "image/png" },

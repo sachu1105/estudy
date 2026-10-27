@@ -1,8 +1,9 @@
 "use client";
 
 import {
-  closestCorners,
   DndContext,
+  DragOverlay,
+  MeasuringStrategy,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -22,15 +23,25 @@ import {
 } from "@/lib/pods/stages";
 
 import { arrangeBoardAction } from "../actions";
-import type { BoardPod } from "./board-card";
+import { BoardCardPreview, type BoardPod } from "./board-card";
 import { BoardColumn } from "./board-column";
+import {
+  belowFinger,
+  boardCollisions,
+  BoardLaneTabs,
+  laneId,
+  onTrack,
+  tabStage,
+  useLanes,
+} from "./board-lanes";
 
 const isStage = (id: unknown): id is PodStage =>
   POD_STAGES.includes(id as PodStage);
 
 /**
- * The exam's subjects as a board: drag a pod between columns or up and down. Every move
- * saves the whole board at once and rolls back if saving fails.
+ * The exam's subjects as a board: drag a pod between columns or up and down, or on a
+ * phone onto a column's tab. Every move saves the whole board at once and rolls back if
+ * saving fails.
  */
 export function PodBoard({
   syllabusId,
@@ -43,21 +54,22 @@ export function PodBoard({
 }) {
   const dndId = useId();
   const [board, setBoard] = useState(initialBoard);
-  // On a phone, open the column being worked on: Studying, else the first with pods.
-  const [open, setOpen] = useState<Record<PodStage, boolean>>(() => {
-    const first =
-      initialBoard.STUDYING.length > 0
-        ? "STUDYING"
-        : (POD_STAGES.find((s) => initialBoard[s].length > 0) ?? "TO_STUDY");
-    return Object.fromEntries(
-      POD_STAGES.map((s) => [s, s === first]),
-    ) as Record<PodStage, boolean>;
-  });
-  const reveal = (stage: PodStage) => setOpen((o) => ({ ...o, [stage]: true }));
+  // On a phone, open on the column being worked on: Studying, else the first with pods.
+  const { lane, track, slideTo, onScroll } = useLanes(
+    initialBoard.STUDYING.length > 0
+      ? "STUDYING"
+      : (POD_STAGES.find((s) => initialBoard[s].length > 0) ?? "TO_STUDY"),
+  );
   const before = useRef(initialBoard);
+  const [dragged, setDragged] = useState<string | null>(null);
+  const [compact, setCompact] = useState(false);
   const [, start] = useTransition();
   const byId = new Map(pods.map((p) => [p.id, p]));
   const name = (id: unknown) => byId.get(String(id))?.name ?? "Subject";
+  const overName = (id: unknown) => {
+    const stage = isStage(id) ? id : tabStage(id);
+    return stage ? stageLabels[stage] : name(id);
+  };
   const stageOf = (b: Board, id: unknown) =>
     isStage(id) ? id : POD_STAGES.find((s) => b[s].includes(String(id)));
 
@@ -97,6 +109,13 @@ export function PodBoard({
   };
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
+    setDragged(null);
+    // Dropped on a tab: the card goes there, and the track follows it.
+    const toTab = tabStage(over?.id);
+    if (toTab) {
+      moveTo(String(active.id), toTab, before.current);
+      return slideTo(toTab);
+    }
     let next = board;
     const stage = stageOf(board, active.id);
     if (over && stage && stageOf(board, over.id) === stage) {
@@ -107,18 +126,17 @@ export function PodBoard({
       if (from !== to)
         next = { ...board, [stage]: arrayMove(board[stage], from, to) };
     }
-    const landed = stageOf(next, active.id);
-    if (landed) reveal(landed);
     save(next, before.current);
   };
 
-  const moveTo = (podId: string, to: PodStage) => {
+  // To the end of a column: from a card's menu, or dropped on a tab (which rolls back to
+  // the board as it was when the drag began).
+  const moveTo = (podId: string, to: PodStage, previous = board) => {
     const next = Object.fromEntries(
       POD_STAGES.map((s) => [s, board[s].filter((id) => id !== podId)]),
     ) as Board;
     next[to] = [...next[to], podId];
-    reveal(to);
-    save(next, board);
+    save(next, previous);
     toast.success(`${name(podId)} moved to ${stageLabels[to].toLowerCase()}`);
   };
 
@@ -135,17 +153,31 @@ export function PodBoard({
     <DndContext
       id={dndId}
       sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={() => (before.current = board)}
+      // Never sideways: on a phone that would slide the track to another column mid-drag.
+      autoScroll={{ threshold: { x: 0, y: 0.2 } }}
+      collisionDetection={boardCollisions}
+      // The tab strip is sticky, so it stays put while the page scrolls under a drag.
+      measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+      onDragStart={({ active }) => {
+        before.current = board;
+        setDragged(String(active.id));
+        setCompact(onTrack());
+      }}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
-      onDragCancel={() => setBoard(before.current)}
+      onDragCancel={() => {
+        setDragged(null);
+        setBoard(before.current);
+      }}
       accessibility={{
+        // Focusing the card's link after a drop would make the browser jump the track
+        // to wherever the card landed; the track slides there itself when it should.
+        restoreFocus: false,
         announcements: {
           onDragStart: ({ active }) => `Picked up ${name(active.id)}.`,
           onDragOver: ({ active, over }) =>
             over
-              ? `${name(active.id)} is over ${isStage(over.id) ? stageLabels[over.id] : name(over.id)}.`
+              ? `${name(active.id)} is over ${overName(over.id)}.`
               : undefined,
           onDragEnd: ({ active, over }) =>
             over
@@ -155,19 +187,51 @@ export function PodBoard({
         },
       }}
     >
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:items-start">
-        {POD_STAGES.map((stage) => (
-          <BoardColumn
-            key={stage}
-            stage={stage}
-            pods={board[stage].flatMap((id) => byId.get(id) ?? [])}
-            onMove={moveTo}
-            onShift={shift}
-            open={open[stage]}
-            onToggle={() => setOpen((o) => ({ ...o, [stage]: !o[stage] }))}
-          />
-        ))}
+      <div className="flex flex-col gap-3">
+        <BoardLaneTabs
+          active={lane}
+          counts={
+            Object.fromEntries(
+              POD_STAGES.map((s) => [s, board[s].length]),
+            ) as Record<PodStage, number>
+          }
+          onSelect={slideTo}
+          dragging={(dragged && stageOf(board, dragged)) || null}
+        />
+        <div
+          ref={track}
+          onScroll={onScroll}
+          className="relative flex snap-x snap-mandatory [scrollbar-width:none] items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden"
+        >
+          {POD_STAGES.map((stage) => (
+            <div
+              key={stage}
+              id={laneId(stage)}
+              className="w-full shrink-0 snap-start snap-always lg:w-auto"
+            >
+              <BoardColumn
+                stage={stage}
+                pods={board[stage].flatMap((id) => byId.get(id) ?? [])}
+                onMove={moveTo}
+                onShift={shift}
+              />
+            </div>
+          ))}
+        </div>
       </div>
+      <DragOverlay
+        modifiers={compact ? [belowFinger] : []}
+        // A chip flying back to a full-size card's spot would look wrong; it just goes.
+        dropAnimation={compact ? null : undefined}
+      >
+        {dragged && byId.get(dragged) ? (
+          <BoardCardPreview
+            pod={byId.get(dragged)!}
+            stage={stageOf(board, dragged) ?? "TO_STUDY"}
+            compact={compact}
+          />
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

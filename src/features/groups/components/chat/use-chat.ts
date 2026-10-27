@@ -122,6 +122,34 @@ export function useChat({
     }
   }, [base, messages, loadingOlder, merge]);
 
+  /**
+   * Loads older pages until a message is in the list (a search result far back), up to
+   * about a thousand messages. False when it's further back than that, or gone.
+   */
+  const reach = useCallback(
+    async (id: string) => {
+      if (messages.some((m) => m.id === id)) return true;
+      let oldest = messages.find((m) => !m.pending)?.id;
+      for (let i = 0; oldest && i < 20; i++) {
+        const res = await fetch(`${base}?before=${oldest}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) return false;
+        const page = (await res.json()) as {
+          messages: PendingMessage[];
+          hasMore: boolean;
+        };
+        merge(page.messages);
+        setHasMore(page.hasMore);
+        if (page.messages.some((m) => m.id === id)) return true;
+        if (!page.hasMore) return false;
+        oldest = page.messages[0]?.id;
+      }
+      return false;
+    },
+    [base, messages, merge],
+  );
+
   /** Shows a message at once; `settle` swaps in the server's copy or takes it back. */
   const addPending = useCallback(
     (message: PendingMessage) => {
@@ -149,6 +177,7 @@ export function useChat({
     hasMore,
     loadingOlder,
     loadOlder,
+    reach,
     addPending,
     patch,
     catchUp,

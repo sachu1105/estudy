@@ -57,6 +57,12 @@ export async function sendMessageAction(
       replyToId: id.nullable(),
       mentionIds,
       podItemId: id.nullable(),
+      uploads: z
+        .array(
+          z.object({ key: z.string().max(200), name: z.string().max(255) }),
+        )
+        .max(10)
+        .default([]),
     }),
     "messagePerUser",
   );

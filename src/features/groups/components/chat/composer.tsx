@@ -4,16 +4,20 @@ import { FileText, SendHorizontal, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import { mentionedIn, type Mention } from "@/lib/markdown/markdown";
 
 import { MentionTextarea } from "../discussion/mention-textarea";
 import { useDraft } from "../discussion/use-draft";
 import { AttachSheet, type Attachable } from "./attach-sheet";
+import { AddFilesButton, checkFiles, PendingFiles } from "./chat-files";
 
 export type Outgoing = {
   body: string;
   mentionIds: string[];
   attachment: Attachable | null;
+  /** Photos or a PDF from the device; never alongside `attachment`. */
+  files: File[];
 };
 
 /**
@@ -45,6 +49,15 @@ export function Composer({
   const [editText, setEditText] = useState<string | null>(null);
   const [picked, setPicked] = useState<Mention[]>([]);
   const [attachment, setAttachment] = useState<Attachable | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  // One kind of attachment at a time: a pod item, or files from the device.
+  const addFiles = (more: File[]) => {
+    const next = [...files, ...more];
+    const problem = checkFiles(next);
+    if (problem) return void toast.error(problem);
+    setAttachment(null);
+    setFiles(next);
+  };
   // Starting (or stopping) an edit puts that text in the box.
   const [lastEditing, setLastEditing] = useState(editing);
   if (editing !== lastEditing) {
@@ -54,7 +67,7 @@ export function Composer({
 
   const text = editText ?? draft;
   const setText = editText !== null ? setEditText : setDraft;
-  const ready = text.trim().length > 0 || !!attachment;
+  const ready = text.trim().length > 0 || !!attachment || files.length > 0;
 
   const send = () => {
     if (!ready) return;
@@ -62,11 +75,13 @@ export function Composer({
       body: text,
       mentionIds: mentionedIn(text, picked).map((m) => m.id),
       attachment,
+      files,
     });
     if (!ok) return;
     setText("");
     setPicked([]);
     setAttachment(null);
+    setFiles([]);
   };
 
   return (
@@ -101,6 +116,12 @@ export function Composer({
           </button>
         </div>
       ) : null}
+      {files.length ? (
+        <PendingFiles
+          files={files}
+          onRemove={(f) => setFiles((all) => all.filter((x) => x !== f))}
+        />
+      ) : null}
       <form
         className="flex items-end gap-2"
         onSubmit={(e) => {
@@ -109,7 +130,16 @@ export function Composer({
         }}
       >
         {editText === null ? (
-          <AttachSheet items={attachable} onPick={setAttachment} />
+          <div className="flex shrink-0">
+            <AddFilesButton onAdd={addFiles} />
+            <AttachSheet
+              items={attachable}
+              onPick={(item) => {
+                setFiles([]);
+                setAttachment(item);
+              }}
+            />
+          </div>
         ) : null}
         <div className="min-w-0 flex-1">
           <MentionTextarea

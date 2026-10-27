@@ -11,6 +11,7 @@ import type { Attachable } from "./attach-sheet";
 import { Composer } from "./composer";
 import { MessageList } from "./message-list";
 import { useChat } from "./use-chat";
+import { useJumpToMessage } from "./use-jump";
 import { useMessageActions } from "./use-message-actions";
 import { MessageItem } from "./message-item";
 import { MessageMenu } from "./message-menu";
@@ -52,6 +53,7 @@ export function ChatView({
   const act = useMessageActions({ groupId, channelId: channel.id, me, chat });
   const [activeId, setActiveId] = useState<string | null>(null);
   const [now] = useState(() => new Date());
+  const flashId = useJumpToMessage(chat.reach);
 
   // Stay at the bottom while the person is there; otherwise offer a jump down.
   const end = useRef<HTMLDivElement>(null);
@@ -112,6 +114,7 @@ export function ChatView({
                 compact={compact}
                 timeZone={timeZone}
                 active={activeId === m.id}
+                flash={flashId === m.id}
                 onToggle={() => setActiveId((a) => (a === m.id ? null : m.id))}
                 onReact={(kind) => act.react(m, kind)}
                 menu={

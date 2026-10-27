@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  CornerUpLeft,
-  EyeOff,
-  FileText,
-  Image as ImageIcon,
-  Link2,
-  NotebookPen,
-} from "lucide-react";
-import Link from "next/link";
+import { CornerUpLeft, EyeOff } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -18,14 +10,8 @@ import type { PendingMessage, Reaction } from "@/lib/squads/chat-types";
 import { cn } from "@/lib/utils/cn";
 
 import { PostBody } from "../discussion/post-body";
+import { MessageAttachment } from "./message-attachment";
 import { REACTIONS } from "./message-menu";
-
-const ITEM_ICONS = {
-  NOTE: NotebookPen,
-  LINK: Link2,
-  FILE: FileText,
-  IMAGE: ImageIcon,
-} as const;
 
 /**
  * One message. A message that follows the same person's last one within minutes is
@@ -40,6 +26,7 @@ export function MessageItem({
   onReact,
   active,
   onToggle,
+  flash = false,
 }: {
   groupId: string;
   message: PendingMessage;
@@ -50,6 +37,8 @@ export function MessageItem({
   /** On phones a tapped message shows its menu. */
   active: boolean;
   onToggle: () => void;
+  /** Just jumped to (a search result or a reply): lit for a moment. */
+  flash?: boolean;
 }) {
   const time = clockTime(new Date(m.at), timeZone);
   // Always in the same order, so a reaction doesn't jump when toggled.
@@ -63,8 +52,9 @@ export function MessageItem({
         if (!(e.target as HTMLElement).closest("a,button")) onToggle();
       }}
       className={cn(
-        "group relative flex gap-3 rounded-control px-2 hover:bg-surface-muted/60",
+        "group relative flex scroll-mt-20 gap-3 rounded-control px-2 transition-colors duration-[300ms] hover:bg-surface-muted/60",
         active && "bg-surface-muted/60",
+        flash && "bg-accent-soft hover:bg-accent-soft",
         compact ? "py-0.5" : "mt-3 pt-1.5 pb-0.5",
         m.pending && "opacity-60",
       )}
@@ -121,7 +111,7 @@ export function MessageItem({
             ) : null}
           </>
         )}
-        {m.item ? <ItemCard groupId={groupId} item={m.item} /> : null}
+        {m.item ? <MessageAttachment groupId={groupId} item={m.item} /> : null}
         {shown.length ? (
           <div className="flex flex-wrap gap-1.5">
             {shown.map((r) => {
@@ -152,28 +142,5 @@ export function MessageItem({
         </div>
       )}
     </li>
-  );
-}
-
-function ItemCard({
-  groupId,
-  item,
-}: {
-  groupId: string;
-  item: NonNullable<PendingMessage["item"]>;
-}) {
-  const Icon = ITEM_ICONS[item.type];
-  return (
-    <Link
-      href={`/groups/${groupId}/items/${item.id}`}
-      className="flex max-w-sm items-center gap-3 rounded-control border border-border bg-surface px-3 py-2 hover:bg-surface-muted"
-    >
-      <span className="grid size-9 shrink-0 place-items-center rounded-control bg-surface-muted text-ink-muted">
-        <Icon className="size-4" aria-hidden />
-      </span>
-      <span className="min-w-0 flex-1 truncate text-body font-medium">
-        {item.title}
-      </span>
-    </Link>
   );
 }

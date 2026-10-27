@@ -25,7 +25,19 @@ const messageRow = {
       author: { select: { displayName: true } },
     },
   },
-  item: { select: { id: true, type: true, title: true, url: true } },
+  item: {
+    select: {
+      id: true,
+      type: true,
+      title: true,
+      url: true,
+      // Photos show in the chat itself, so their files come along.
+      files: {
+        select: { id: true, mimeType: true },
+        orderBy: { order: "asc" },
+      },
+    },
+  },
   reactions: { select: { userId: true, kind: true } },
 } as const;
 
@@ -84,6 +96,38 @@ export const messageRepository = {
               ],
             }
           : {}),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: options.limit,
+      select: messageRow,
+    });
+  },
+
+  /**
+   * Messages in a channel holding these words, newest first: in the text, or in the name
+   * of what was shared with it. Removed messages never match.
+   */
+  search(
+    channelId: string,
+    words: string[],
+    options: { limit: number; withHidden: boolean; notBy: string[] },
+  ) {
+    return prisma.message.findMany({
+      where: {
+        channelId,
+        deletedAt: null,
+        ...(options.withHidden ? {} : { hiddenAt: null }),
+        ...(options.notBy.length ? { authorId: { notIn: options.notBy } } : {}),
+        AND: words.map((word) => ({
+          OR: [
+            { body: { contains: word, mode: "insensitive" as const } },
+            {
+              item: {
+                title: { contains: word, mode: "insensitive" as const },
+              },
+            },
+          ],
+        })),
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: options.limit,

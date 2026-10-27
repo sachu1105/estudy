@@ -31,7 +31,6 @@ async function open(page: Page, groupUrl: string, name: string) {
 async function person(browser: Browser, label: string, role?: "ADMIN") {
   const context = await browser.newContext({
     ...test.info().project.use,
-    baseURL: "http://localhost:3000",
     // A fresh session: not the shared signed-in user.
     storageState: { cookies: [], origins: [] },
   });

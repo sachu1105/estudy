@@ -44,6 +44,7 @@ const chat = createChatService({
   notifyLevels: (userId, g) => channelRepository.notifyLevels(userId, g),
   mutedOn: (channelId, ids) => channelRepository.mutedOn(channelId, ids),
   shareFromPod: async () => ({ ok: false, code: "NO", message: "no" }),
+  shareUploads: async () => ({ ok: false, code: "NO", message: "no" }),
   clock,
   emit: async (_g, e) => void events.push(e),
   notify: async (rows) => void notes.push(...rows),
@@ -104,6 +105,52 @@ beforeEach(async () => {
 afterAll(async () => {
   await prisma.$disconnect();
   redis.disconnect();
+});
+
+describe("searching a channel", () => {
+  it("finds messages holding every word, newest first, never removed ones", async () => {
+    const s = await squad();
+    const send = async (who: typeof s.owner, body: string) => {
+      clock.advance(1000);
+      return (await chat.send(who, s.groupId, s.general, text(body))) as {
+        ok: true;
+        message: { id: string };
+      };
+    };
+    await send(s.anu, "The Preamble notes are up");
+    const gone = await send(s.owner, "preamble quiz tonight");
+    await send(s.anu, "Fundamental rights next");
+    await send(s.owner, "Revise the PREAMBLE before the quiz");
+    await chat.remove(s.owner, s.groupId, s.general, gone.message.id);
+    // Another channel's message never shows up here.
+    await chat.send(s.anu, s.groupId, s.news, text("Preamble quiz moved"));
+
+    const one = await chat.search(s.anu, s.groupId, s.general, "preamble");
+    expect(one!.messages.map((m) => m.body)).toEqual([
+      "Revise the PREAMBLE before the quiz",
+      "The Preamble notes are up",
+    ]);
+    const both = await chat.search(
+      s.anu,
+      s.groupId,
+      s.general,
+      "quiz  Preamble",
+    );
+    expect(both!.messages.map((m) => m.body)).toEqual([
+      "Revise the PREAMBLE before the quiz",
+    ]);
+    expect(
+      (await chat.search(s.anu, s.groupId, s.general, "   "))!.messages,
+    ).toEqual([]);
+  });
+
+  it("is for members only", async () => {
+    const s = await squad();
+    const outsider = await user("Outsider");
+    expect(
+      await chat.search(outsider, s.groupId, s.general, "anything"),
+    ).toBeNull();
+  });
 });
 
 describe("squad chat", () => {

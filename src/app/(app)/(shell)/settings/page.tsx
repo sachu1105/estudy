@@ -4,6 +4,8 @@ import {
   HardDrive,
   KeyRound,
   Link2,
+  LogOut,
+  Shield,
   Trash2,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -12,6 +14,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { logoutAction } from "@/features/auth/actions";
 import { ChangePasswordButton } from "@/features/auth/components/change-password";
 import { CoverButton } from "@/features/profile/components/cover-button";
 import { EditProfileButton } from "@/features/profile/components/profile-editor";
@@ -162,6 +165,29 @@ export default async function SettingsPage() {
             />
           </div>
         </SettingsSection>
+
+        {/* The way out on a phone, where there's no avatar menu in the top bar. */}
+        <SettingsSection
+          title="Account"
+          description={`Signed in as ${user.email}.`}
+          icon={<LogOut className="size-4" />}
+          actions={
+            <div className="flex flex-wrap gap-2">
+              {user.role !== "USER" ? (
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/admin">
+                    <Shield aria-hidden /> Admin panel
+                  </Link>
+                </Button>
+              ) : null}
+              <form action={logoutAction}>
+                <Button type="submit" variant="secondary" size="sm">
+                  <LogOut aria-hidden /> Log out
+                </Button>
+              </form>
+            </div>
+          }
+        />
       </div>
     </div>
   );
