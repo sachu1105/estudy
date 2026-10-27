@@ -8,11 +8,12 @@ import {
   REFRESH_COOKIE,
   writeSessionCookies,
 } from "@/server/auth/cookies";
-import { requestMeta } from "@/server/auth/session";
+import { requestMeta, requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { accountService, sessionService } from "@/server/services/auth";
 
 import {
+  changePasswordSchema,
   emailOnlySchema,
   loginSchema,
   registerSchema,
@@ -147,4 +148,48 @@ export async function resetPasswordAction(
   if (!result.ok)
     return { ok: false, error: result.message, code: result.code };
   redirect("/login?reset=1");
+}
+
+// Signed-in password actions: requireUser() first, like every other app action (rule 9).
+
+export async function changePasswordAction(
+  input: unknown,
+): Promise<ActionResult> {
+  const user = await requireUser();
+  const parsed = changePasswordSchema.safeParse(input);
+  if (!parsed.success) return invalid;
+  const limited = await rateLimit([["passwordChangePerUser", user.id]]);
+  if (!limited.ok)
+    return { ok: false, error: retryMessage(limited.retryAfterMs) };
+
+  const result = await accountService.changePassword(
+    {
+      userId: user.id,
+      currentPassword: parsed.data.currentPassword,
+      newPassword: parsed.data.password,
+      refreshToken: (await cookies()).get(REFRESH_COOKIE)?.value,
+    },
+    await requestMeta(),
+  );
+  if (!result.ok)
+    return { ok: false, error: result.message, code: result.code };
+  return {
+    ok: true,
+    message: "Password changed. Your other devices are signed out.",
+  };
+}
+
+/** For a signed-in user who has forgotten the current password: the link goes to them. */
+export async function emailMyResetLinkAction(): Promise<ActionResult> {
+  const user = await requireUser();
+  const meta = await requestMeta();
+  const limited = await rateLimit([["resetPerAccount", user.email]]);
+  if (!limited.ok)
+    return { ok: false, error: retryMessage(limited.retryAfterMs) };
+
+  await accountService.requestPasswordReset(user.email, meta);
+  return {
+    ok: true,
+    message: `Reset link sent to ${user.email}. It works for 1 hour.`,
+  };
 }

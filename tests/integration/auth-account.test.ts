@@ -98,6 +98,88 @@ describe("password reset", () => {
   });
 });
 
+describe("changing the password while signed in", () => {
+  async function signedIn() {
+    const auth = buildAuth();
+    const registered = await auth.account.register(credentials, meta);
+    if (!registered.ok) throw new Error(registered.message);
+    const { userId } = registered;
+    await auth.account.verifyEmail(tokenFromLastEmail(auth.mailer));
+    const here = await auth.session.login(credentials, meta);
+    const elsewhere = await auth.session.login(credentials, meta);
+    if (!here.ok || !elsewhere.ok) throw new Error("login failed");
+    return { auth, userId, here, elsewhere };
+  }
+
+  it("keeps this device signed in and signs out the others", async () => {
+    const { auth, userId, here, elsewhere } = await signedIn();
+    const result = await auth.account.changePassword(
+      {
+        userId,
+        currentPassword: credentials.password,
+        newPassword: "second password 2",
+        refreshToken: here.refreshToken,
+      },
+      meta,
+    );
+    expect(result.ok).toBe(true);
+
+    expect((await auth.session.refresh(here.refreshToken, meta)).ok).toBe(true);
+    expect((await auth.session.refresh(elsewhere.refreshToken, meta)).ok).toBe(
+      false,
+    );
+    expect((await auth.session.login(credentials, meta)).ok).toBe(false);
+    expect(
+      (
+        await auth.session.login(
+          { ...credentials, password: "second password 2" },
+          meta,
+        )
+      ).ok,
+    ).toBe(true);
+  });
+
+  it("needs the current password, and a different new one", async () => {
+    const { auth, userId, here } = await signedIn();
+    const change = (currentPassword: string, newPassword: string) =>
+      auth.account.changePassword(
+        {
+          userId,
+          currentPassword,
+          newPassword,
+          refreshToken: here.refreshToken,
+        },
+        meta,
+      );
+    expect(await change("not my password", "second password 2")).toMatchObject(
+      { ok: false, code: "WRONG_PASSWORD" },
+    );
+    expect(
+      await change(credentials.password, credentials.password),
+    ).toMatchObject({ ok: false, code: "SAME_PASSWORD" });
+    expect((await auth.session.refresh(here.refreshToken, meta)).ok).toBe(true);
+  });
+
+  it("burns any reset link that was still open", async () => {
+    const { auth, userId, here } = await signedIn();
+    await auth.account.requestPasswordReset(credentials.email, meta);
+    const token = tokenFromLastEmail(auth.mailer);
+    await auth.account.changePassword(
+      {
+        userId,
+        currentPassword: credentials.password,
+        newPassword: "second password 2",
+        refreshToken: here.refreshToken,
+      },
+      meta,
+    );
+    expect(
+      (await auth.account.resetPassword({ token, password: "third 3333" }, meta))
+        .ok,
+    ).toBe(false);
+  });
+});
+
 describe("audit log", () => {
   it("is append-only at the database level", async () => {
     const auth = buildAuth();

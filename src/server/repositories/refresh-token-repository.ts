@@ -54,6 +54,14 @@ export const refreshTokenRepository = {
     });
   },
 
+  /** Every device but one: the login that is making the change stays signed in. */
+  revokeAllForUserExcept(userId: string, keepFamilyId: string, now: Date) {
+    return prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null, familyId: { not: keepFamilyId } },
+      data: { revokedAt: now },
+    });
+  },
+
   countActiveInFamily(familyId: string) {
     return prisma.refreshToken.count({ where: { familyId, revokedAt: null } });
   },

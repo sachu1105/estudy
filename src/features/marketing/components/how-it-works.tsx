@@ -124,7 +124,7 @@ export function HowItWorks() {
               key={step.title}
               // Each card parks a notch below the last, leaving the one behind it
               // peeking out. The margin is the scroll it takes to deal the next one.
-              className={`sticky h-104 sm:h-96 ${index < steps.length - 1 ? "mb-[32vh]" : ""}`}
+              className={`sticky h-104 sm:h-96 ${index < steps.length - 1 ? "mb-[8vh]" : ""}`}
               style={{ top: `calc(5.5rem + ${index} * 0.875rem)` }}
             >
               <article

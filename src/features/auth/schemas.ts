@@ -47,7 +47,19 @@ export const resetSchema = z
     message: "Passwords don't match.",
   });
 
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password.").max(128),
+    password: newPassword,
+    confirm: z.string(),
+  })
+  .refine((value) => value.password === value.confirm, {
+    path: ["confirm"],
+    message: "Passwords don't match.",
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type EmailOnlyInput = z.infer<typeof emailOnlySchema>;
 export type ResetInput = z.infer<typeof resetSchema>;

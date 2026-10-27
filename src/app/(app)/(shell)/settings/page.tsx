@@ -1,10 +1,18 @@
-import { Bell, CreditCard, HardDrive, Link2, Trash2 } from "lucide-react";
+import {
+  Bell,
+  CreditCard,
+  HardDrive,
+  KeyRound,
+  Link2,
+  Trash2,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ChangePasswordButton } from "@/features/auth/components/change-password";
 import { CoverButton } from "@/features/profile/components/cover-button";
 import { EditProfileButton } from "@/features/profile/components/profile-editor";
 import { ProfileBanner } from "@/features/profile/components/profile-banner";
@@ -44,7 +52,7 @@ export default async function SettingsPage() {
     <div className="mx-auto w-full max-w-2xl">
       <PageHeader
         title="Settings"
-        description="Your profile, what you share, reminders and storage."
+        description="Your profile, password, reminders and storage."
       />
 
       <div className="flex flex-col gap-4">
@@ -93,6 +101,13 @@ export default async function SettingsPage() {
             </SettingsSection>
           </>
         ) : null}
+
+        <SettingsSection
+          title="Password"
+          description="Change it any time. Forgot it? Email yourself a reset link."
+          icon={<KeyRound className="size-4" />}
+          actions={<ChangePasswordButton />}
+        />
 
         <SettingsSection
           title="Your plan"

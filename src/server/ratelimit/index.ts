@@ -15,6 +15,8 @@ export const rules = {
   resetPerIp: { limit: 10, windowMs: 60 * MINUTE },
   resetPerAccount: { limit: 3, windowMs: 60 * MINUTE },
   verifyResendPerAccount: { limit: 3, windowMs: 60 * MINUTE },
+  /** Each try checks the current password, so it is as tight as a login. */
+  passwordChangePerUser: { limit: 10, windowMs: 15 * MINUTE },
   refreshPerIp: { limit: 60, windowMs: MINUTE },
   uploadSignPerUser: { limit: 30, windowMs: 60 * MINUTE },
   /** Anything that may start an AI parse: completed uploads, pasted text, retries. */

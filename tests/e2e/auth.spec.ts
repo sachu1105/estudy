@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { PASSWORD, registerVerifyAndLogin } from "./support/auth";
+import { PASSWORD, registerVerifyAndLogin, seedAndLogin } from "./support/auth";
 import { tokenFromEmail } from "./support/mailpit";
 
 test.use({ storageState: { cookies: [], origins: [] } });
@@ -75,5 +75,52 @@ test.describe("auth", () => {
     await expect(
       page.getByText("That email and password don't match"),
     ).toBeVisible();
+  });
+
+  test("change the password from settings and stay signed in", async ({
+    page,
+  }) => {
+    const email = await seedAndLogin(page, "change");
+    await page.goto("/settings");
+    await page.getByRole("button", { name: "Change password" }).click();
+    const dialog = page.getByRole("dialog", { name: "Change password" });
+
+    await dialog.getByLabel("Current password").fill("not my password");
+    await dialog
+      .getByLabel("New password", { exact: true })
+      .fill("brand new password 9");
+    await dialog.getByLabel("Confirm new password").fill("brand new password 9");
+    await dialog.getByRole("button", { name: "Save new password" }).click();
+    await expect(dialog.getByRole("alert")).toContainText(
+      "That isn't your current password",
+    );
+
+    await dialog.getByLabel("Current password").fill(PASSWORD);
+    await dialog.getByRole("button", { name: "Save new password" }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByText("Password changed.")).toBeVisible();
+
+    // Still signed in here, and the new password is the one that works.
+    await page.goto("/today");
+    await expect(page).toHaveURL(/\/today$/);
+    await page.context().clearCookies();
+    await page.goto("/login");
+    await page.getByLabel("Email").fill(email);
+    await page
+      .getByLabel("Password", { exact: true })
+      .fill("brand new password 9");
+    await page.getByRole("button", { name: "Log in" }).click();
+    await expect(page).toHaveURL(/\/today$/);
+  });
+
+  test("a forgotten password can be reset from settings", async ({ page }) => {
+    const email = await seedAndLogin(page, "forgot");
+    await page.goto("/settings");
+    await page.getByRole("button", { name: "Change password" }).click();
+    await page
+      .getByRole("button", { name: "Forgot it? Email me a link" })
+      .click();
+    await expect(page.getByText(`Reset link sent to ${email}`)).toBeVisible();
+    expect(await tokenFromEmail(email, "Reset your password")).toBeTruthy();
   });
 });

@@ -1,4 +1,4 @@
-import { hashPassword } from "@/server/auth/password";
+import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { generateOpaqueToken, hashToken } from "@/server/auth/tokens";
 import {
   passwordResetEmail,
@@ -143,12 +143,59 @@ export function createAccountService(deps: AuthDeps) {
     return { ok: true as const };
   }
 
+  /**
+   * A signed-in change, so it needs the current password rather than an emailed link.
+   * Every other device signs out; the one making the change stays signed in.
+   */
+  async function changePassword(
+    input: {
+      userId: string;
+      currentPassword: string;
+      newPassword: string;
+      refreshToken?: string;
+    },
+    meta: RequestMeta,
+  ) {
+    const user = await users.findById(input.userId);
+    if (!user || user.status !== "ACTIVE")
+      return fail("INVALID", "Your session has ended. Log in again.");
+    if (!(await verifyPassword(user.passwordHash, input.currentPassword))) {
+      return fail(
+        "WRONG_PASSWORD",
+        "That isn't your current password. Check it, or email yourself a reset link.",
+      );
+    }
+    if (input.currentPassword === input.newPassword) {
+      return fail(
+        "SAME_PASSWORD",
+        "That is already your password. Choose a new one.",
+      );
+    }
+
+    const now = clock.now();
+    await users.updatePassword(user.id, await hashPassword(input.newPassword));
+    await oneTimeTokens.expireOpenResets(user.id, now);
+    const current = input.refreshToken
+      ? await refreshTokens.findByHash(hashToken(input.refreshToken))
+      : null;
+    if (current && current.userId === user.id)
+      await refreshTokens.revokeAllForUserExcept(user.id, current.familyId, now);
+    else await refreshTokens.revokeAllForUser(user.id, now);
+    await audit.append({
+      actorId: user.id,
+      action: "auth.password_changed",
+      ip: meta.ip,
+    });
+    return { ok: true as const };
+  }
+
   return {
     register,
     resendVerification,
     verifyEmail,
     requestPasswordReset,
     resetPassword,
+    changePassword,
   };
 }
 
