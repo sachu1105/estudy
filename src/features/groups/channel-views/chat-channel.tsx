@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { chatService, materialService } from "@/server/services/groups";
+import { podService } from "@/server/services/pods";
+import { testService } from "@/server/services/tests";
 
 import { ChannelHeader } from "../components/channels/channel-header";
 import { ChannelSearch } from "../components/channels/channel-search";
@@ -16,12 +18,26 @@ export async function ChatChannel({
   manage,
   notify,
 }: ChannelViewProps) {
-  const [page, members, attachable] = await Promise.all([
+  const [page, members, attachable, history, pods] = await Promise.all([
     chatService.page(user, groupId, channel.id),
     chatService.mentionable(user, groupId),
     canPost ? materialService.shareable(user) : Promise.resolve([]),
+    canPost ? testService.history(user) : Promise.resolve([]),
+    canPost ? podService.list(user) : Promise.resolve([]),
   ]);
   if (!page) notFound();
+  // For a mock test from the attach panel: pod topics to build one, tests taken to share.
+  const topics = [
+    ...new Set(pods.flatMap((p) => p.topics.map((t) => t.name))),
+  ].sort();
+  const myTests = [
+    ...new Map(
+      history.map((a) => [
+        a.mockTestId,
+        { mockTestId: a.mockTestId, title: a.mockTest.title },
+      ]),
+    ).values(),
+  ];
   return (
     <>
       <ChannelHeader
@@ -55,6 +71,8 @@ export async function ChatChannel({
         initialHasMore={page.hasMore}
         members={members}
         attachable={attachable}
+        topics={topics}
+        myTests={myTests}
         canPost={canPost}
         readOnlyNote={
           channel.postRule === "ADMINS"

@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { CHANNEL_TYPES } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { channelService } from "@/server/services/groups";
@@ -65,7 +64,6 @@ export async function createChannelAction(
     input,
     z.object({
       groupId: id,
-      type: z.enum(CHANNEL_TYPES),
       name,
       topic,
       categoryId: id.nullable(),
@@ -77,7 +75,11 @@ export async function createChannelAction(
   );
   if (g.fail) return g.fail;
   const { groupId, ...rest } = g.data;
-  return done(groupId, await channelService.create(g.user, groupId, rest));
+  // Every new channel is a chat: it holds messages, doubts, files, tests and polls.
+  return done(
+    groupId,
+    await channelService.create(g.user, groupId, { ...rest, type: "CHAT" }),
+  );
 }
 
 export async function updateChannelAction(input: unknown): Promise<Result> {
@@ -210,7 +212,7 @@ export async function setNotifyAction(input: unknown): Promise<Result> {
   );
 }
 
-/** One threads channel per subject of the squad's exam, under one category. */
+/** One chat channel per subject of the squad's exam, under one category. */
 export async function addSubjectChannelsAction(
   input: unknown,
 ): Promise<Result<{ added: number }>> {

@@ -110,6 +110,7 @@ model User {
   reactions          Reaction[]
   messages           Message[]
   messageReactions   MessageReaction[]
+  pollVotes          PollVote[]
   channelReads       ChannelRead[]
   channelAccess      ChannelAccess[]
   channelNotify      ChannelNotify[]
@@ -1275,34 +1276,78 @@ model ChannelNotify {
 
 /// A message in a chat or announcements channel (squads S3). Editable by its author.
 model Message {
-  id         String     @id @default(uuid()) @db.Uuid
-  groupId    String     @db.Uuid
-  group      Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  channelId  String     @db.Uuid
-  channel    Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  authorId   String     @db.Uuid
-  author     User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id               String      @id @default(uuid()) @db.Uuid
+  groupId          String      @db.Uuid
+  group            Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId        String      @db.Uuid
+  channel          Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  authorId         String      @db.Uuid
+  author           User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   /// Markdown subset, rendered without HTML.
-  body       String
+  body             String
   /// The message this answers, shown above it.
-  replyToId  String?    @db.Uuid
-  replyTo    Message?   @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
-  answers    Message[]  @relation("MessageReply")
+  replyToId        String?     @db.Uuid
+  replyTo          Message?    @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
+  answers          Message[]   @relation("MessageReply")
   /// People named with @, checked to be members when sent.
-  mentionIds String[]   @db.Uuid
+  mentionIds       String[]    @db.Uuid
   /// A pod item shared into the chat: a copy, like any shared material (rule 15).
-  itemId     String?    @db.Uuid
-  item       GroupItem? @relation(fields: [itemId], references: [id], onDelete: SetNull)
-  editedAt   DateTime?  @db.Timestamptz(6)
+  itemId           String?     @db.Uuid
+  item             GroupItem?  @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  /// A plain message, a doubt for others to answer (replies), or a poll.
+  kind             MessageKind @default(TEXT)
+  /// A mock test shared into the chat; members take it from the message.
+  groupTestId      String?     @db.Uuid
+  groupTest        GroupTest?  @relation(fields: [groupTestId], references: [id], onDelete: SetNull)
+  /// On a doubt: the reply its asker marked as the best answer.
+  acceptedAnswerId String?     @db.Uuid
+  acceptedAnswer   Message?    @relation("AcceptedAnswer", fields: [acceptedAnswerId], references: [id], onDelete: SetNull)
+  acceptedFor      Message[]   @relation("AcceptedAnswer")
+  editedAt         DateTime?   @db.Timestamptz(6)
   /// A squad admin or site admin took it down.
-  hiddenAt   DateTime?  @db.Timestamptz(6)
-  createdAt  DateTime   @default(now()) @db.Timestamptz(6)
-  deletedAt  DateTime?  @db.Timestamptz(6)
+  hiddenAt         DateTime?   @db.Timestamptz(6)
+  createdAt        DateTime    @default(now()) @db.Timestamptz(6)
+  deletedAt        DateTime?   @db.Timestamptz(6)
 
-  reactions MessageReaction[]
+  reactions   MessageReaction[]
+  pollOptions PollOption[]
+  pollVotes   PollVote[]
 
   @@index([channelId, createdAt])
   @@index([groupId, createdAt])
+}
+
+enum MessageKind {
+  TEXT
+  DOUBT
+  POLL
+}
+
+/// One choice of a poll in a chat message, in order.
+model PollOption {
+  id        String     @id @default(uuid()) @db.Uuid
+  messageId String     @db.Uuid
+  message   Message    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  order     Int
+  text      String
+  votes     PollVote[]
+
+  @@index([messageId, order])
+}
+
+/// A member's vote on a poll: one each, which they can change or take back.
+model PollVote {
+  id        String     @id @default(uuid()) @db.Uuid
+  messageId String     @db.Uuid
+  message   Message    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  optionId  String     @db.Uuid
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  userId    String     @db.Uuid
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+
+  @@unique([messageId, userId])
+  @@index([optionId])
 }
 
 model MessageReaction {
@@ -1435,6 +1480,8 @@ model GroupTest {
   negativeMarking Boolean   @default(false)
   hiddenAt        DateTime? @db.Timestamptz(6)
   createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  /// Chat messages that carry it.
+  messages        Message[]
 
   @@index([groupId, createdAt])
   @@index([channelId, createdAt])

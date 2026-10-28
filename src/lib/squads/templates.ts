@@ -38,9 +38,11 @@ const channel = (
 ): TemplateChannel => ({ type, name, topic, postRule });
 
 export const SQUAD_TEMPLATES: Record<TemplateKey, SquadTemplate> = {
+  // Every channel is a chat that does everything (messages, doubts, photos and PDFs,
+  // pod material, mock tests, polls); announcements is one only admins write in.
   EXAM: {
     label: "Exam squad",
-    description: "Announcements, chat, doubts, material, links and mock tests.",
+    description: "Announcements, a general chat and a place for doubts.",
     categories: [
       {
         name: "Info",
@@ -57,33 +59,19 @@ export const SQUAD_TEMPLATES: Record<TemplateKey, SquadTemplate> = {
         name: "General",
         channels: [
           channel("CHAT", "general", "Talk about anything to do with the exam"),
-          channel("THREADS", "doubts", "Ask a question, answer one"),
-        ],
-      },
-      {
-        name: "Library",
-        channels: [
-          channel(
-            "MATERIAL",
-            "material",
-            "Notes, PDFs and photos shared from pods",
-          ),
-          channel("LINKS", "links", "Websites worth studying from"),
-          channel("TESTS", "mock-tests", "Mock tests to take together"),
+          channel("CHAT", "doubts", "Ask a doubt, answer one"),
         ],
       },
     ],
   },
   CIRCLE: {
     label: "Study circle",
-    description: "For a few friends: chat, material and tests.",
+    description: "For a few friends: one chat for everything.",
     categories: [
       {
         name: "Study",
         channels: [
           channel("CHAT", "general", "Plan the week, keep each other going"),
-          channel("MATERIAL", "material", "Notes and files from our pods"),
-          channel("TESTS", "mock-tests", "Tests to take together"),
         ],
       },
     ],

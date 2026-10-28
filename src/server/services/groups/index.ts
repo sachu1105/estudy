@@ -122,6 +122,8 @@ export const chatService = createChatService({
     materialService.shareFromPod(user, groupId, podItemId, channelId, "chat"),
   shareUploads: (user, groupId, channelId, keys) =>
     materialService.shareUploads(user, groupId, channelId, keys),
+  findTest: (groupId, groupTestId) =>
+    groupTestRepository.find(groupId, groupTestId),
   clock: systemClock,
   emit: groupEvents.emit,
   notify: (rows) => notificationService.notify(rows),

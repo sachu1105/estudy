@@ -12,7 +12,7 @@ import { createGroupService } from "@/server/services/groups/group-service";
 import { createMaterialService } from "@/server/services/groups/material-service";
 import { createMemoryStorage } from "@/server/storage/memory";
 
-import { resetDatabase } from "./helpers";
+import { addClassicChannels, resetDatabase } from "./helpers";
 
 const clock = fixedClock("2026-10-11T04:30:00Z");
 const { storage } = createMemoryStorage();
@@ -108,6 +108,7 @@ async function groupWith(
     examId: null,
     visibility: "PUBLIC",
   })) as { groupId: string };
+  await addClassicChannels(g.groupId);
   for (const m of members) await groups.join(m, g.groupId);
   return g.groupId;
 }

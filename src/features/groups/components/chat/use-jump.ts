@@ -35,12 +35,10 @@ export function useJumpToMessage(reach: (id: string) => Promise<boolean>) {
   useEffect(() => {
     if (!flashId) return;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document
-      .getElementById(`m-${flashId}`)
-      ?.scrollIntoView({
-        block: "center",
-        behavior: still ? "auto" : "smooth",
-      });
+    document.getElementById(`m-${flashId}`)?.scrollIntoView({
+      block: "center",
+      behavior: still ? "auto" : "smooth",
+    });
     const timer = setTimeout(() => setFlashId(null), 2400);
     return () => clearTimeout(timer);
   }, [flashId]);

@@ -2,6 +2,7 @@ import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { seedAndLogin } from "./support/auth";
 import {
+  addClassicChannels,
   seedActiveSession,
   seedParsedDraft,
   seedQuestions,
@@ -77,6 +78,8 @@ test.describe("groups", () => {
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
     const groupUrl = page.url();
+    // Made like an older squad: with the questions, material, links and tests channels.
+    await addClassicChannels(groupUrl.split("/").pop()!);
 
     await tab(page, "Members").click();
     await page.getByRole("button", { name: "New invite" }).click();
@@ -245,14 +248,14 @@ test.describe("groups", () => {
       .click();
     await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
 
-    // Add a threads channel from the squad menu: it opens straight away.
+    // Add a channel from the squad menu: no kind to pick, every channel is a chat, and
+    // it opens straight away.
     await page
       .getByRole("button", { name: `More for Channels ${tag}` })
       .click();
     await page.getByRole("menuitem", { name: "Add a channel" }).click();
     const dialog = page.getByRole("dialog");
-    await dialog.getByLabel("Kind").click();
-    await page.getByRole("option", { name: "Threads" }).click();
+    await expect(dialog.getByLabel("Kind")).toHaveCount(0);
     await dialog.getByLabel("Name").fill("Kerala History");
     await expect(dialog.getByText("Shows as #kerala-history")).toBeVisible();
     await dialog.getByRole("button", { name: "Add channel" }).click();

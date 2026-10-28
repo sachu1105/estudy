@@ -75,9 +75,7 @@ export function ItemPicker({
           would otherwise swallow wheel scrolling in this portalled list. */}
       <Popover modal open={open && wide} onOpenChange={setOpen}>
         <PopoverAnchor asChild>
-          <span className="inline-flex">
-            {opener}
-          </span>
+          <span className="inline-flex">{opener}</span>
         </PopoverAnchor>
         <PopoverContent
           side={side}
@@ -103,7 +101,8 @@ export function ItemPicker({
   );
 }
 
-function PickerBody({
+/** The list itself, for a panel that opens it from somewhere else (the chat's attach sheet). */
+export function PickerBody({
   title,
   description,
   items,

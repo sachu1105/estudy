@@ -7,14 +7,18 @@ import { EmptyState } from "@/components/ui/empty-state";
 import type { Mention } from "@/lib/markdown/markdown";
 import type { PendingMessage } from "@/lib/squads/chat-types";
 
-import type { Attachable } from "./attach-sheet";
+import type { Attachable } from "./attachable";
+import { ChatTestDialog } from "./chat-test-dialog";
 import { Composer } from "./composer";
+import { MessageExtras } from "./message-extras";
 import { MessageList } from "./message-list";
 import { useChat } from "./use-chat";
 import { useJumpToMessage } from "./use-jump";
 import { useMessageActions } from "./use-message-actions";
 import { MessageItem } from "./message-item";
 import { MessageMenu } from "./message-menu";
+import { PollDialog } from "./poll-dialog";
+import { usePollActions } from "./use-poll-actions";
 
 /**
  * A chat channel: messages that arrive live, and the box to write in. It takes over the
@@ -29,6 +33,8 @@ export function ChatView({
   initialHasMore,
   members,
   attachable,
+  topics,
+  myTests,
   canPost,
   readOnlyNote,
 }: {
@@ -40,6 +46,10 @@ export function ChatView({
   initialHasMore: boolean;
   members: Mention[];
   attachable: Attachable[];
+  /** The person's pod topics, to build a mock test from the pool. */
+  topics: string[];
+  /** Tests the person took, to share one. */
+  myTests: { mockTestId: string; title: string }[];
   canPost: boolean;
   /** Why the box is missing, when it is. */
   readOnlyNote: string;
@@ -51,6 +61,9 @@ export function ChatView({
     initialHasMore,
   });
   const act = useMessageActions({ groupId, channelId: channel.id, me, chat });
+  const polls = usePollActions({ groupId, channelId: channel.id, chat });
+  const [pollOpen, setPollOpen] = useState(false);
+  const [testOpen, setTestOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [now] = useState(() => new Date());
   const flashId = useJumpToMessage(chat.reach);
@@ -117,6 +130,15 @@ export function ChatView({
                 flash={flashId === m.id}
                 onToggle={() => setActiveId((a) => (a === m.id ? null : m.id))}
                 onReact={(kind) => act.react(m, kind)}
+                extras={
+                  <MessageExtras
+                    groupId={groupId}
+                    message={m}
+                    onVote={(optionId) => polls.vote(m, optionId)}
+                    onAnswer={() => act.startReply(m)}
+                    onChoose={(best) => polls.choose(m, best)}
+                  />
+                }
                 menu={
                   <MessageMenu
                     groupId={groupId}
@@ -155,12 +177,41 @@ export function ChatView({
           editing={act.editing?.body ?? null}
           onCancel={act.cancel}
           onSubmit={act.submit}
+          onTest={() => setTestOpen(true)}
+          onPoll={() => setPollOpen(true)}
         />
       ) : (
         <p className="sticky bottom-0 border-t border-border bg-bg py-3 text-center text-small text-ink-muted">
           {readOnlyNote}
         </p>
       )}
+      {canPost ? (
+        <>
+          <PollDialog
+            open={pollOpen}
+            onOpenChange={setPollOpen}
+            onSend={(question, pollOptions) =>
+              act.submit({
+                body: question,
+                mentionIds: [],
+                attachment: null,
+                files: [],
+                doubt: false,
+                pollOptions,
+              })
+            }
+          />
+          <ChatTestDialog
+            groupId={groupId}
+            channelId={channel.id}
+            topics={topics}
+            mine={myTests}
+            open={testOpen}
+            onOpenChange={setTestOpen}
+            onShared={() => void chat.catchUp()}
+          />
+        </>
+      ) : null}
     </div>
   );
 }

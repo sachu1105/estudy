@@ -16,7 +16,7 @@ import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createGroupTests } from "@/server/services/groups/group-tests";
 
-import { resetDatabase } from "./helpers";
+import { addClassicChannels, resetDatabase } from "./helpers";
 
 const clock = fixedClock("2026-10-11T04:30:00Z");
 const groups = createGroupService({
@@ -97,6 +97,7 @@ describe("group tests", () => {
         visibility: "PUBLIC",
       })) as { groupId: string }
     ).groupId;
+    await addClassicChannels(g);
     await groups.join(anu, g);
 
     expect(
@@ -182,6 +183,7 @@ describe("group tests", () => {
         visibility: "PUBLIC",
       })) as { groupId: string }
     ).groupId;
+    await addClassicChannels(g);
     const r1 = await user("R1");
     const r2 = await user("R2");
     await groups.report(r1, { type: "GROUP", id: g, groupId: g }, "spam", null);

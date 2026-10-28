@@ -1,8 +1,10 @@
 import { fixedClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
+import type { ChannelType } from "@/lib/squads/templates";
 import { prisma } from "@/server/db";
 import { createMemoryMailer } from "@/server/email/mailer";
 import { auditLogRepository } from "@/server/repositories/audit-log-repository";
+import { channelRepository } from "@/server/repositories/channel-repository";
 import { oneTimeTokenRepository } from "@/server/repositories/one-time-token-repository";
 import { refreshTokenRepository } from "@/server/repositories/refresh-token-repository";
 import { userRepository } from "@/server/repositories/user-repository";
@@ -56,3 +58,32 @@ export async function resetDatabase() {
 }
 
 export const meta = { ip: "203.0.113.7", userAgent: "vitest" };
+
+/**
+ * The typed channels squads were made with before every new channel became a chat:
+ * threads, material, links and mock tests. Older squads still have them, so tests of
+ * those channels add them to a fresh squad. The threads channel is "questions", clear
+ * of the new "doubts" chat.
+ */
+export function addClassicChannels(groupId: string) {
+  return channelRepository.createFromTemplate(groupId, {
+    label: "Classic",
+    description: "",
+    categories: [
+      {
+        name: "Library",
+        channels: [
+          ["THREADS", "questions", "Ask a question, answer one"],
+          ["MATERIAL", "material", "Notes, PDFs and photos shared from pods"],
+          ["LINKS", "links", "Websites worth studying from"],
+          ["TESTS", "mock-tests", "Mock tests to take together"],
+        ].map(([type, name, topic]) => ({
+          type: type as ChannelType,
+          name: name!,
+          topic: topic!,
+          postRule: "EVERYONE" as const,
+        })),
+      },
+    ],
+  });
+}

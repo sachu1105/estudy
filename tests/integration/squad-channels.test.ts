@@ -10,7 +10,7 @@ import { createChannelService } from "@/server/services/groups/channel-service";
 import { createDiscussionService } from "@/server/services/groups/discussion-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 
-import { resetDatabase } from "./helpers";
+import { addClassicChannels, resetDatabase } from "./helpers";
 
 const clock = fixedClock("2026-10-16T04:30:00Z");
 let members = 100;
@@ -78,11 +78,16 @@ describe("squad channels", () => {
         visibility: "PUBLIC",
       }),
     );
+    // Every channel a template makes is a chat; announcements is one admins write in.
     expect(names(await channels.layout(owner, exam))).toEqual([
       ["Info", ["announcements"]],
       ["General", ["general", "doubts"]],
-      ["Library", ["material", "links", "mock-tests"]],
     ]);
+    expect(
+      (await channels.layout(owner, exam))!.categories
+        .flatMap((c) => c.channels)
+        .map((c) => c.type),
+    ).toEqual(["ANNOUNCEMENTS", "CHAT", "CHAT"]);
     const blank = groupId(
       await groups.create(owner, {
         name: "Just us",
@@ -163,7 +168,7 @@ describe("squad channels", () => {
         template: "CIRCLE",
       }),
     );
-    channelCap = 3;
+    channelCap = 1;
     expect(
       await channels.create(owner, g, {
         type: "CHAT",
@@ -185,15 +190,11 @@ describe("squad channels", () => {
         visibility: "PUBLIC",
       }),
     );
-    const library = (await channels.layout(owner, g))!.categories[2]!;
-    await channels.removeCategory(owner, g, library.id);
+    const general = (await channels.layout(owner, g))!.categories[1]!;
+    await channels.removeCategory(owner, g, general.id);
     const layout = (await channels.layout(owner, g))!;
-    expect(layout.loose.map((c) => c.name)).toEqual([
-      "material",
-      "links",
-      "mock-tests",
-    ]);
-    expect(layout.categories.map((c) => c.name)).toEqual(["Info", "General"]);
+    expect(layout.loose.map((c) => c.name)).toEqual(["general", "doubts"]);
+    expect(layout.categories.map((c) => c.name)).toEqual(["Info"]);
   });
 
   it("posts land in a threads channel, and announcements are for admins", async () => {
@@ -207,10 +208,11 @@ describe("squad channels", () => {
         visibility: "PUBLIC",
       }),
     );
+    await addClassicChannels(g);
     await groups.join(binu, g);
     const layout = (await channels.layout(owner, g))!;
     const all = layout.categories.flatMap((c) => c.channels);
-    const doubts = all.find((c) => c.name === "doubts")!;
+    const doubts = all.find((c) => c.name === "questions")!;
     const material = all.find((c) => c.name === "material")!;
     const post = {
       kind: "QUESTION" as const,
@@ -559,25 +561,21 @@ describe("subject channels", () => {
       ["maths", "Maths"],
     ]);
 
-    // A question asked there carries the channel's subject, whatever the form said.
+    // Each is a chat, and whatever lands there is tagged with its subject.
     const history = subjects.channels[0]!;
-    const made = (await discussion.create(
-      owner,
-      g,
-      {
-        kind: "QUESTION",
-        title: "Who ruled Travancore?",
-        body: "Asking",
-        mentionIds: [],
-        subjectName: "Something else",
-        topicName: "Travancore",
-      },
-      history.id,
-    )) as { postId: string };
+    expect(subjects.channels.map((c) => c.type)).toEqual(["CHAT", "CHAT"]);
     expect(
-      (await prisma.post.findUnique({ where: { id: made.postId } }))
-        ?.subjectName,
-    ).toBe("Kerala History");
+      await channels.place(
+        g,
+        { id: owner.id, role: "OWNER" },
+        ["CHAT"],
+        history.id,
+      ),
+    ).toEqual({
+      ok: true,
+      channelId: history.id,
+      subjectName: "Kerala History",
+    });
 
     // Run again after the syllabus grows: only the new subject is added.
     examSubjects = [...examSubjects, { name: "English", topics: [] }];

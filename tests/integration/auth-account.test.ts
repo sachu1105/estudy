@@ -151,9 +151,10 @@ describe("changing the password while signed in", () => {
         },
         meta,
       );
-    expect(await change("not my password", "second password 2")).toMatchObject(
-      { ok: false, code: "WRONG_PASSWORD" },
-    );
+    expect(await change("not my password", "second password 2")).toMatchObject({
+      ok: false,
+      code: "WRONG_PASSWORD",
+    });
     expect(
       await change(credentials.password, credentials.password),
     ).toMatchObject({ ok: false, code: "SAME_PASSWORD" });
@@ -174,8 +175,12 @@ describe("changing the password while signed in", () => {
       meta,
     );
     expect(
-      (await auth.account.resetPassword({ token, password: "third 3333" }, meta))
-        .ok,
+      (
+        await auth.account.resetPassword(
+          { token, password: "third 3333" },
+          meta,
+        )
+      ).ok,
     ).toBe(false);
   });
 });

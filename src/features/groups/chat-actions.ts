@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage, type RuleName } from "@/server/ratelimit";
-import { chatService } from "@/server/services/groups";
+import { chatService, groupTests } from "@/server/services/groups";
 import type { MessageView } from "@/lib/squads/chat-types";
 
 // Squad chat (S3). Every action: requireUser() (rule 9), zod (rule 11), rate limited
@@ -63,6 +63,11 @@ export async function sendMessageAction(
         )
         .max(10)
         .default([]),
+      doubt: z.boolean().default(false),
+      pollOptions: z
+        .array(z.string().trim().max(100, "Keep each choice short."))
+        .max(10, "A poll can have up to 10 choices.")
+        .optional(),
     }),
     "messagePerUser",
   );
@@ -110,6 +115,79 @@ export async function reactMessageAction(input: unknown): Promise<Result> {
   const { groupId, channelId, messageId, kind, on } = g.data;
   return out(
     await chatService.react(g.user, groupId, channelId, messageId, kind, on),
+  );
+}
+
+/** A vote on a poll, or (null, or the same choice again) taking it back. */
+export async function votePollAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({ ...where, messageId: id, optionId: id.nullable() }),
+    "reactPerUser",
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId, messageId, optionId } = g.data;
+  return out(
+    await chatService.vote(g.user, groupId, channelId, messageId, optionId),
+  );
+}
+
+/** Whoever asked a doubt marks a reply as its best answer, or takes the mark off. */
+export async function acceptAnswerAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({ ...where, messageId: id, best: z.boolean() }),
+    "reactPerUser",
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId, messageId, best } = g.data;
+  return out(
+    await chatService.acceptAnswer(g.user, groupId, channelId, messageId, best),
+  );
+}
+
+/**
+ * A mock test into a chat: one the person took, or one built from the question pool. It
+ * is shared to the squad, then sent as a message members take it from.
+ */
+export async function shareTestInChatAction(
+  input: unknown,
+): Promise<Result<{ message: MessageView }>> {
+  const g = await guard(
+    input,
+    z.object({
+      ...where,
+      test: z.discriminatedUnion("from", [
+        z.object({ from: z.literal("mine"), mockTestId: id }),
+        z.object({
+          from: z.literal("pool"),
+          title: z.string().trim().min(3, "Give the test a name.").max(120),
+          topics: z
+            .array(z.string().trim().min(1).max(200))
+            .min(1, "Pick at least one topic.")
+            .max(30),
+          count: z.number().int().min(5).max(50),
+          minutes: z.number().int().min(5).max(180).nullable(),
+        }),
+      ]),
+    }),
+    "messagePerUser",
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId, test } = g.data;
+  const shared =
+    test.from === "mine"
+      ? await groupTests.share(g.user, groupId, test.mockTestId, channelId)
+      : await groupTests.build(g.user, groupId, test, channelId);
+  if (!shared.ok) return out(shared);
+  return out(
+    await chatService.send(g.user, groupId, channelId, {
+      body: "",
+      replyToId: null,
+      mentionIds: [],
+      podItemId: null,
+      groupTestId: shared.id,
+    }),
   );
 }
 

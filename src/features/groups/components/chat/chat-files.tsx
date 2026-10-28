@@ -1,9 +1,7 @@
 "use client";
 
-import { FileText, ImagePlus, X } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
-
-import { Button } from "@/components/ui/button";
+import { FileText, X } from "lucide-react";
+import { useEffect, useMemo } from "react";
 
 import { CHAT_FILE_TYPES, CHAT_MAX_FILES } from "../../upload";
 
@@ -25,37 +23,6 @@ export function checkFiles(files: File[]): string | null {
   if (files.some((f) => isPdf(f) && f.size > MAX_BYTES))
     return "A PDF can be up to 25 MB.";
   return null;
-}
-
-/** The button that picks photos or a PDF from the device. */
-export function AddFilesButton({ onAdd }: { onAdd: (files: File[]) => void }) {
-  const input = useRef<HTMLInputElement>(null);
-  return (
-    <>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="Add photos or a PDF"
-        onClick={() => input.current?.click()}
-      >
-        <ImagePlus aria-hidden />
-      </Button>
-      <input
-        ref={input}
-        type="file"
-        accept={CHAT_FILE_TYPES}
-        multiple
-        hidden
-        data-chat-files
-        onChange={(e) => {
-          const picked = [...(e.target.files ?? [])];
-          e.target.value = "";
-          if (picked.length) onAdd(picked);
-        }}
-      />
-    </>
-  );
 }
 
 /** What's about to be sent from the device, above the box: thumbnails, or the PDF. */

@@ -27,6 +27,7 @@ export function MessageItem({
   active,
   onToggle,
   flash = false,
+  extras,
 }: {
   groupId: string;
   message: PendingMessage;
@@ -39,6 +40,8 @@ export function MessageItem({
   onToggle: () => void;
   /** Just jumped to (a search result or a reply): lit for a moment. */
   flash?: boolean;
+  /** A poll, a doubt's answers, a chosen answer or a test, under the words. */
+  extras?: ReactNode;
 }) {
   const time = clockTime(new Date(m.at), timeZone);
   // Always in the same order, so a reaction doesn't jump when toggled.
@@ -112,6 +115,7 @@ export function MessageItem({
           </>
         )}
         {m.item ? <MessageAttachment groupId={groupId} item={m.item} /> : null}
+        {extras}
         {shown.length ? (
           <div className="flex flex-wrap gap-1.5">
             {shown.map((r) => {

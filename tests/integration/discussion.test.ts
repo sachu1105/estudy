@@ -17,7 +17,7 @@ import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createNotificationService } from "@/server/services/notifications/notification-service";
 
-import { resetDatabase } from "./helpers";
+import { addClassicChannels, resetDatabase } from "./helpers";
 
 const clock = fixedClock("2026-10-12T04:30:00Z");
 const groups = createGroupService({
@@ -73,6 +73,7 @@ async function setup() {
     visibility: "PUBLIC",
   });
   const groupId = (made as { groupId: string }).groupId;
+  await addClassicChannels(groupId);
   await groups.join(anu, groupId);
   await groups.join(binu, groupId);
   return { owner, anu, binu, groupId };
@@ -308,7 +309,7 @@ describe("an announcements-style threads channel", () => {
     const { owner, anu, groupId } = await setup();
     const doubts = (await channels.layout(owner, groupId))!.categories
       .flatMap((c) => c.channels)
-      .find((c) => c.name === "doubts")!;
+      .find((c) => c.name === "questions")!;
     const { postId } = (await discussion.create(
       owner,
       groupId,

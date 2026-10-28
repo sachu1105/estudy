@@ -305,9 +305,10 @@ export function createChannelService(deps: ChannelDeps) {
         await deps.channels.create({
           groupId,
           categoryId: category.id,
-          type: "THREADS",
+          // One channel does everything: talk, doubts, files, tests, polls.
+          type: "CHAT",
           name: channelName(subject.name) || "subject",
-          topic: `Doubts about ${subject.name}`,
+          topic: `Talk, doubts and material for ${subject.name}`,
           postRule: "EVERYONE",
           viewRule: "EVERYONE",
           slowModeSec: 0,

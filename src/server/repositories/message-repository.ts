@@ -15,6 +15,8 @@ const messageRow = {
   hiddenAt: true,
   deletedAt: true,
   createdAt: true,
+  kind: true,
+  acceptedAnswerId: true,
   author: person,
   replyTo: {
     select: {
@@ -22,9 +24,28 @@ const messageRow = {
       body: true,
       deletedAt: true,
       hiddenAt: true,
+      // A reply to a doubt is an answer: who asked, and which answer they chose.
+      kind: true,
+      authorId: true,
+      acceptedAnswerId: true,
       author: { select: { displayName: true } },
     },
   },
+  groupTest: {
+    select: {
+      id: true,
+      title: true,
+      questionIds: true,
+      durationSec: true,
+      hiddenAt: true,
+    },
+  },
+  pollOptions: {
+    select: { id: true, text: true, votes: { select: { userId: true } } },
+    orderBy: { order: "asc" },
+  },
+  // Answers to a doubt are its replies.
+  _count: { select: { answers: { where: { deletedAt: null } } } },
   item: {
     select: {
       id: true,
@@ -51,12 +72,47 @@ export const messageRepository = {
     replyToId: string | null;
     mentionIds: string[];
     itemId: string | null;
+    kind?: "TEXT" | "DOUBT" | "POLL";
+    groupTestId?: string | null;
+    /** A poll's choices, in order. */
+    pollOptions?: string[];
     at: Date;
   }) {
-    const { at, ...rest } = data;
+    const { at, pollOptions, ...rest } = data;
     return prisma.message.create({
-      data: { ...rest, createdAt: at },
+      data: {
+        ...rest,
+        createdAt: at,
+        ...(pollOptions?.length
+          ? {
+              pollOptions: {
+                create: pollOptions.map((text, order) => ({ text, order })),
+              },
+            }
+          : {}),
+      },
       select: messageRow,
+    });
+  },
+
+  /** A member's vote on a poll: a new choice replaces the old; null takes it back. */
+  async vote(messageId: string, userId: string, optionId: string | null) {
+    if (!optionId) {
+      await prisma.pollVote.deleteMany({ where: { messageId, userId } });
+      return;
+    }
+    await prisma.pollVote.upsert({
+      where: { messageId_userId: { messageId, userId } },
+      create: { messageId, userId, optionId },
+      update: { optionId },
+    });
+  },
+
+  /** The asker's choice of best answer to a doubt, or none. */
+  accept(doubtId: string, answerId: string | null) {
+    return prisma.message.update({
+      where: { id: doubtId },
+      data: { acceptedAnswerId: answerId },
     });
   },
 

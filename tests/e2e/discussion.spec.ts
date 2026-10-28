@@ -1,6 +1,7 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { seedAndLogin } from "./support/auth";
+import { addClassicChannels } from "./support/db";
 
 const noSideScroll = (page: Page) =>
   page.evaluate(
@@ -48,6 +49,8 @@ test.describe("group discussion", () => {
       page.getByRole("heading", { level: 1, name: `Doubts ${tag}` }),
     ).toBeVisible();
     const groupUrl = page.url();
+    // Made like an older squad: with the questions, material, links and tests channels.
+    await addClassicChannels(groupUrl.split("/").pop()!);
     await tab(page, "Members").click();
     await page.getByRole("button", { name: "New invite" }).click();
     const code = (await page

@@ -45,6 +45,7 @@ const chat = createChatService({
   mutedOn: (channelId, ids) => channelRepository.mutedOn(channelId, ids),
   shareFromPod: async () => ({ ok: false, code: "NO", message: "no" }),
   shareUploads: async () => ({ ok: false, code: "NO", message: "no" }),
+  findTest: async () => null,
   clock,
   emit: async (_g, e) => void events.push(e),
   notify: async (rows) => void notes.push(...rows),
@@ -105,6 +106,129 @@ beforeEach(async () => {
 afterAll(async () => {
   await prisma.$disconnect();
   redis.disconnect();
+});
+
+type Sent = { ok: true; message: { id: string } };
+
+describe("polls", () => {
+  it("one vote each: moved by another choice, taken back by the same one", async () => {
+    const s = await squad();
+    const sent = (await chat.send(s.owner, s.groupId, s.general, {
+      ...text("Next mock?"),
+      pollOptions: ["Saturday", " Sunday ", "Saturday", ""],
+    })) as Sent;
+    const poll = async (who = s.anu) =>
+      (await chat.page(who, s.groupId, s.general))!.messages[0]!.poll!;
+    // Blank and repeated choices drop out.
+    expect((await poll()).options.map((o) => o.text)).toEqual([
+      "Saturday",
+      "Sunday",
+    ]);
+    const [sat, sun] = (await poll()).options.map((o) => o.id);
+    await chat.vote(s.anu, s.groupId, s.general, sent.message.id, sat!);
+    await chat.vote(s.owner, s.groupId, s.general, sent.message.id, sat!);
+    expect(await poll()).toMatchObject({
+      total: 2,
+      options: [
+        { votes: 2, mine: true },
+        { votes: 0, mine: false },
+      ],
+    });
+    await chat.vote(s.anu, s.groupId, s.general, sent.message.id, sun!);
+    expect((await poll()).options.map((o) => [o.votes, o.mine])).toEqual([
+      [1, false],
+      [1, true],
+    ]);
+    await chat.vote(s.anu, s.groupId, s.general, sent.message.id, sun!);
+    expect(await poll()).toMatchObject({ total: 1 });
+    expect(events.at(-1)).toMatchObject({ action: "edit" });
+  });
+
+  it("needs a question and two different choices", async () => {
+    const s = await squad();
+    expect(
+      await chat.send(s.owner, s.groupId, s.general, {
+        ...text("Pick one"),
+        pollOptions: ["Only", "only "],
+      }),
+    ).toMatchObject({ ok: true });
+    expect(
+      await chat.send(s.owner, s.groupId, s.general, {
+        ...text("Pick one"),
+        pollOptions: ["Only"],
+      }),
+    ).toMatchObject({ ok: false, code: "POLL" });
+    expect(
+      await chat.send(s.owner, s.groupId, s.general, {
+        ...text(" "),
+        pollOptions: ["A", "B"],
+      }),
+    ).toMatchObject({ ok: false, code: "EMPTY" });
+  });
+});
+
+describe("doubts", () => {
+  it("replies are answers, and only the asker marks the best one", async () => {
+    const s = await squad();
+    const doubt = (await chat.send(s.anu, s.groupId, s.general, {
+      ...text("What does Article 21 cover?"),
+      doubt: true,
+    })) as Sent;
+    clock.advance(1000);
+    const answer = (await chat.send(s.owner, s.groupId, s.general, {
+      ...text("Life and personal liberty"),
+      replyToId: doubt.message.id,
+    })) as Sent;
+    const seen = async (who = s.anu) => {
+      const all = (await chat.page(who, s.groupId, s.general))!.messages;
+      return {
+        doubt: all.find((m) => m.id === doubt.message.id)!,
+        answer: all.find((m) => m.id === answer.message.id)!,
+      };
+    };
+    expect((await seen()).doubt).toMatchObject({
+      kind: "DOUBT",
+      doubt: { answers: 1, acceptedId: null },
+    });
+    // The asker may choose; whoever answered may not.
+    expect((await seen()).answer.answer).toEqual({
+      best: false,
+      canChoose: true,
+    });
+    expect((await seen(s.owner)).answer.answer).toEqual({
+      best: false,
+      canChoose: false,
+    });
+    expect(
+      await chat.acceptAnswer(
+        s.owner,
+        s.groupId,
+        s.general,
+        answer.message.id,
+        true,
+      ),
+    ).toMatchObject({ ok: false, code: "FORBIDDEN" });
+
+    await chat.acceptAnswer(
+      s.anu,
+      s.groupId,
+      s.general,
+      answer.message.id,
+      true,
+    );
+    expect((await seen(s.owner)).doubt.doubt!.acceptedId).toBe(
+      answer.message.id,
+    );
+    expect((await seen(s.owner)).answer.answer!.best).toBe(true);
+    await chat.acceptAnswer(
+      s.anu,
+      s.groupId,
+      s.general,
+      answer.message.id,
+      false,
+    );
+    expect((await seen()).doubt.doubt!.acceptedId).toBeNull();
+  });
 });
 
 describe("searching a channel", () => {
@@ -195,8 +319,19 @@ describe("squad chat", () => {
 
   it("is only for chat channels, and announcements are for admins", async () => {
     const s = await squad();
+    // New squads only get chats now; an older squad's threads channel still isn't one.
+    const threads = await channelRepository.create({
+      groupId: s.groupId,
+      categoryId: null,
+      type: "THREADS",
+      name: "old-doubts",
+      topic: null,
+      postRule: "EVERYONE",
+      viewRule: "EVERYONE",
+      slowModeSec: 0,
+    });
     expect(
-      await chat.send(s.anu, s.groupId, s.doubts, text("Here?")),
+      await chat.send(s.anu, s.groupId, threads.id, text("Here?")),
     ).toMatchObject({ ok: false, code: "NOT_FOUND" });
     expect(
       await chat.send(s.anu, s.groupId, s.news, text("Big news")),

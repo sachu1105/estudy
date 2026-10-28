@@ -174,7 +174,8 @@ test.describe("squad chat", () => {
     };
     await seedPodLink(me.id, "Kerala history", `Travancore notes ${tag}`);
     await member.reload();
-    await member.getByRole("button", { name: "Attach from my pods" }).click();
+    await member.getByRole("button", { name: "Attach" }).click();
+    await member.getByRole("button", { name: "From my pods" }).click();
     await member
       .getByRole("button", { name: new RegExp(`Travancore notes ${tag}`) })
       .click();
@@ -192,6 +193,93 @@ test.describe("squad chat", () => {
     });
     await squadLink(page, /^general/).click();
     await expect(page.getByText("Anyone up for a mock?")).toBeVisible();
+    await member.context().close();
+  });
+
+  test("the paperclip holds everything: a poll everyone votes on, and a doubt with a best answer", async ({
+    page,
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const project = test.info().project.name;
+    await seedAndLogin(page, `chat-sheet-owner-${project}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Sheet ${project}${Date.now()}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    const groupUrl = page.url();
+    await open(page, groupUrl, "Members");
+    await page.getByRole("button", { name: "New invite" }).click();
+    const code = (await page.locator("li .font-mono").first().textContent())!;
+    const member = await person(browser, `chat-sheet-member-${project}`);
+    await member.goto(`/groups/join/${code.trim()}`);
+    await expect(member).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    await open(page, groupUrl, "general");
+    await open(member, groupUrl, "general");
+
+    // One paperclip, every kind of thing a message can carry.
+    await page.getByRole("button", { name: "Attach" }).click();
+    for (const tile of [
+      "Gallery",
+      "Camera",
+      "Document",
+      "From my pods",
+      "Mock test",
+      "Poll",
+      "Ask a doubt",
+    ])
+      await expect(page.getByRole("button", { name: tile })).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // A poll: the member votes, the owner sees it live.
+    await page.getByRole("button", { name: "Poll" }).click();
+    const poll = page.getByRole("dialog", { name: "Make a poll" });
+    await poll.getByLabel("Question").fill("Next mock?");
+    await poll.getByLabel("Choice 1").fill("Saturday");
+    await poll.getByLabel("Choice 2").fill("Sunday");
+    await poll.getByRole("button", { name: "Send poll" }).click();
+    const saturday = member.getByRole("button", { name: /^Saturday/ });
+    await expect(saturday).toBeVisible({ timeout: 15_000 });
+    await saturday.click();
+    await expect(saturday).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("1 vote ·")).toBeVisible({ timeout: 15_000 });
+
+    // A doubt from the member; the owner answers it; the member marks the best answer.
+    await member.getByRole("button", { name: "Attach" }).click();
+    await member.getByRole("button", { name: "Ask a doubt" }).click();
+    await expect(member.getByText("Asking a doubt")).toBeVisible();
+    await send(member, "What does Article 21 cover?");
+    const doubt = page
+      .getByRole("listitem")
+      .filter({ hasText: "What does Article 21 cover?" });
+    await expect(doubt.getByText("Doubt", { exact: true })).toBeVisible({
+      timeout: 15_000,
+    });
+    await doubt.getByRole("button", { name: "Answer" }).click();
+    await send(page, "Life and personal liberty");
+    const mark = member.getByRole("button", { name: "Mark as best answer" });
+    await expect(mark).toBeVisible({ timeout: 15_000 });
+    await mark.click();
+    await expect(
+      member.getByText("Best answer", { exact: true }),
+    ).toBeVisible();
+    await page.reload();
+    await expect(
+      page
+        .getByRole("listitem")
+        .filter({ hasText: "What does Article 21 cover?" })
+        .getByRole("link", { name: "Answered" }),
+    ).toBeVisible();
+
+    // A mock test opens its own dialog: build one, or share one you took.
+    await page.getByRole("button", { name: "Attach" }).click();
+    await page.getByRole("button", { name: "Mock test" }).click();
+    const tests = page.getByRole("dialog", { name: "Share a mock test" });
+    await expect(tests.getByRole("radio", { name: "Build one" })).toBeVisible();
     await member.context().close();
   });
 

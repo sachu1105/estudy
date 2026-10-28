@@ -46,6 +46,11 @@ export type ChatDeps = {
     podItemId: string,
     channelId: string,
   ) => Promise<Result<{ itemId: string }>>;
+  /** A mock test shared in this squad: where it landed and who shared it. */
+  findTest: (
+    groupId: string,
+    groupTestId: string,
+  ) => Promise<{ channelId: string; sharedById: string } | null>;
   /** Turns photos or a PDF uploaded from a device into a squad item for a message. */
   shareUploads: (
     user: User,
@@ -129,6 +134,42 @@ export function createChatService(deps: ChatDeps) {
       }),
       mine: m.authorId === user.id,
       canDelete: !deleted && (m.authorId === user.id || isAdmin(role)),
+      kind: m.kind,
+      doubt:
+        m.kind === "DOUBT"
+          ? { answers: m._count.answers, acceptedId: m.acceptedAnswerId }
+          : null,
+      // A reply to a doubt answers it; only whoever asked chooses the best one.
+      answer:
+        reply?.kind === "DOUBT" && !deleted
+          ? {
+              best: reply.acceptedAnswerId === m.id,
+              canChoose: reply.authorId === user.id && m.authorId !== user.id,
+            }
+          : null,
+      poll:
+        m.kind === "POLL" && !deleted
+          ? {
+              options: m.pollOptions.map((o) => ({
+                id: o.id,
+                text: o.text,
+                votes: o.votes.length,
+                mine: o.votes.some((v) => v.userId === user.id),
+              })),
+              total: m.pollOptions.reduce((n, o) => n + o.votes.length, 0),
+            }
+          : null,
+      test:
+        m.groupTest && !m.groupTest.hiddenAt && !deleted
+          ? {
+              id: m.groupTest.id,
+              title: m.groupTest.title,
+              questions: m.groupTest.questionIds.length,
+              minutes: m.groupTest.durationSec
+                ? Math.round(m.groupTest.durationSec / 60)
+                : null,
+            }
+          : null,
     };
   }
 
@@ -226,11 +267,38 @@ export function createChatService(deps: ChatDeps) {
         podItemId: string | null;
         /** Photos or a PDF already uploaded from the device, instead of a pod item. */
         uploads?: { key: string; name: string }[];
+        /** A doubt for others to answer; the body is the question. */
+        doubt?: boolean;
+        /** A poll: the body is its question, these its choices. */
+        pollOptions?: string[];
+        /** A mock test this person just shared into this channel. */
+        groupTestId?: string | null;
       },
     ): Promise<Result<{ message: MessageView }>> {
       const uploads = input.uploads ?? [];
-      if (uploads.length && input.podItemId)
+      const pollOptions = [
+        ...new Set((input.pollOptions ?? []).map((o) => o.trim())),
+      ].filter(Boolean);
+      const attached = [
+        uploads.length > 0,
+        !!input.podItemId,
+        !!input.groupTestId,
+        !!input.pollOptions,
+      ].filter(Boolean).length;
+      if (attached > 1)
         return failure("TWO_ATTACHMENTS", "Send one attachment at a time.");
+      if (
+        input.pollOptions &&
+        (pollOptions.length < 2 || pollOptions.length > 10)
+      )
+        return failure("POLL", "A poll needs 2 to 10 different choices.");
+      if ((input.doubt || input.pollOptions) && !input.body.trim())
+        return failure(
+          "EMPTY",
+          input.doubt
+            ? "Write your doubt first."
+            : "Write the poll's question.",
+        );
       const chat = await inChat(user, groupId, channelId);
       if (!chat)
         return failure("NOT_FOUND", "That channel is gone or isn't a chat.");
@@ -251,8 +319,17 @@ export function createChatService(deps: ChatDeps) {
           `This channel is in slow mode. You can write again in ${wait} second${wait === 1 ? "" : "s"}.`,
         );
       const body = input.body.trim();
-      if (!body && !input.podItemId && !uploads.length)
+      if (!body && !input.podItemId && !uploads.length && !input.groupTestId)
         return failure("EMPTY", "Write a message first.");
+      if (input.groupTestId) {
+        const test = await deps.findTest(groupId, input.groupTestId);
+        if (
+          !test ||
+          test.channelId !== channelId ||
+          test.sharedById !== user.id
+        )
+          return failure("NOT_FOUND", "That test isn't one you shared here.");
+      }
       if (input.replyToId) {
         const target = await deps.messages.find(channelId, input.replyToId);
         if (!target || target.deletedAt)
@@ -289,6 +366,9 @@ export function createChatService(deps: ChatDeps) {
         replyToId: input.replyToId,
         mentionIds,
         itemId,
+        kind: input.pollOptions ? "POLL" : input.doubt ? "DOUBT" : "TEXT",
+        groupTestId: input.groupTestId ?? null,
+        pollOptions: input.pollOptions ? pollOptions : undefined,
         at: now(),
       });
       // Someone who muted the channel hears nothing from it, mentions included.
@@ -397,6 +477,78 @@ export function createChatService(deps: ChatDeps) {
         action: "react",
         channelId,
         messageId,
+        authorId: user.id,
+      });
+      return { ok: true };
+    },
+
+    /**
+     * A vote on a poll: a new choice replaces the old one, the same choice again (or
+     * null) takes the vote back.
+     */
+    async vote(
+      user: User,
+      groupId: string,
+      channelId: string,
+      messageId: string,
+      optionId: string | null,
+    ): Promise<Result<object>> {
+      const chat = await inChat(user, groupId, channelId);
+      if (!chat) return GONE;
+      const poll = await deps.messages.find(channelId, messageId);
+      if (!poll || poll.deletedAt || poll.kind !== "POLL") return GONE;
+      if (optionId && !poll.pollOptions.some((o) => o.id === optionId))
+        return failure("NOT_FOUND", "That choice isn't in this poll.");
+      const current = poll.pollOptions.find((o) =>
+        o.votes.some((v) => v.userId === user.id),
+      );
+      await deps.messages.vote(
+        messageId,
+        user.id,
+        optionId === current?.id ? null : optionId,
+      );
+      await deps.emit(groupId, {
+        type: "message",
+        action: "edit",
+        channelId,
+        messageId,
+        authorId: user.id,
+      });
+      return { ok: true };
+    },
+
+    /** Whoever asked a doubt marks one answer the best, or takes the mark off (null). */
+    async acceptAnswer(
+      user: User,
+      groupId: string,
+      channelId: string,
+      answerId: string,
+      best: boolean,
+    ): Promise<Result<object>> {
+      const chat = await inChat(user, groupId, channelId);
+      if (!chat) return GONE;
+      const answer = await deps.messages.find(channelId, answerId);
+      const doubt = answer?.replyTo;
+      if (!answer || answer.deletedAt || !doubt || doubt.kind !== "DOUBT")
+        return GONE;
+      if (doubt.authorId !== user.id)
+        return failure(
+          "FORBIDDEN",
+          "Only whoever asked the doubt chooses its best answer.",
+        );
+      await deps.messages.accept(
+        doubt.id,
+        best
+          ? answer.id
+          : doubt.acceptedAnswerId === answer.id
+            ? null
+            : doubt.acceptedAnswerId,
+      );
+      await deps.emit(groupId, {
+        type: "message",
+        action: "edit",
+        channelId,
+        messageId: doubt.id,
         authorId: user.id,
       });
       return { ok: true };

@@ -44,9 +44,17 @@ export function createGroupTests(deps: GroupTestDeps) {
     return { fail: null, me: ok.me } as const;
   }
 
-  /** The tests channel a shared test lands in. */
+  /**
+   * The channel a shared test lands in: a tests channel, or a chat, where it goes out as
+   * a message (the action that shares it posts that).
+   */
   const place = (groupId: string, who: Viewer, channelId: string | null) =>
-    deps.channels.place(groupId, who, ["TESTS"], channelId);
+    deps.channels.place(
+      groupId,
+      who,
+      ["TESTS", "CHAT", "ANNOUNCEMENTS"],
+      channelId,
+    );
 
   return {
     async list(user: User, groupId: string, channelId: string | null = null) {

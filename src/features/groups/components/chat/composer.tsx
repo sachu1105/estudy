@@ -1,7 +1,7 @@
 "use client";
 
-import { FileText, SendHorizontal, X } from "lucide-react";
-import { useState } from "react";
+import { CircleHelp, FileText, SendHorizontal, X } from "lucide-react";
+import { useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
@@ -9,8 +9,9 @@ import { mentionedIn, type Mention } from "@/lib/markdown/markdown";
 
 import { MentionTextarea } from "../discussion/mention-textarea";
 import { useDraft } from "../discussion/use-draft";
-import { AttachSheet, type Attachable } from "./attach-sheet";
-import { AddFilesButton, checkFiles, PendingFiles } from "./chat-files";
+import { AttachPanel } from "./attach-panel";
+import type { Attachable } from "./attachable";
+import { checkFiles, PendingFiles } from "./chat-files";
 
 export type Outgoing = {
   body: string;
@@ -18,11 +19,17 @@ export type Outgoing = {
   attachment: Attachable | null;
   /** Photos or a PDF from the device; never alongside `attachment`. */
   files: File[];
+  /** A doubt for others to answer; the words are the question. */
+  doubt: boolean;
+  /** A poll: the words are its question, these its choices. */
+  pollOptions?: string[];
 };
 
 /**
  * The message box at the bottom of a chat. Enter sends on a keyboard, Shift+Enter is a
- * new line; on a phone the send button sends. The draft survives a reload.
+ * new line; on a phone the send button sends. The draft survives a reload. Everything
+ * else a message can be (photos, a PDF, pod material, a test, a poll, a doubt) is behind
+ * the paperclip.
  */
 export function Composer({
   channelId,
@@ -33,6 +40,8 @@ export function Composer({
   editing,
   onCancel,
   onSubmit,
+  onTest,
+  onPoll,
 }: {
   channelId: string;
   channelName: string;
@@ -44,12 +53,15 @@ export function Composer({
   editing: string | null;
   onCancel: () => void;
   onSubmit: (out: Outgoing) => boolean;
+  onTest: () => void;
+  onPoll: () => void;
 }) {
   const [draft, setDraft] = useDraft(`chat:${channelId}`);
   const [editText, setEditText] = useState<string | null>(null);
   const [picked, setPicked] = useState<Mention[]>([]);
   const [attachment, setAttachment] = useState<Attachable | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [doubt, setDoubt] = useState(false);
   // One kind of attachment at a time: a pod item, or files from the device.
   const addFiles = (more: File[]) => {
     const next = [...files, ...more];
@@ -67,7 +79,8 @@ export function Composer({
 
   const text = editText ?? draft;
   const setText = editText !== null ? setEditText : setDraft;
-  const ready = text.trim().length > 0 || !!attachment || files.length > 0;
+  const ready =
+    text.trim().length > 0 || (!doubt && (!!attachment || files.length > 0));
 
   const send = () => {
     if (!ready) return;
@@ -76,45 +89,43 @@ export function Composer({
       mentionIds: mentionedIn(text, picked).map((m) => m.id),
       attachment,
       files,
+      doubt,
     });
     if (!ok) return;
     setText("");
     setPicked([]);
     setAttachment(null);
     setFiles([]);
+    setDoubt(false);
   };
 
   return (
     <div className="sticky bottom-0 z-10 -mx-4 border-t border-border bg-bg px-4 pt-2 pb-[max(env(safe-area-inset-bottom),12px)] md:mx-0 md:px-0">
       {context ? (
-        <div className="mb-2 flex items-center justify-between gap-2 rounded-control bg-surface-muted px-3 py-1.5 text-small text-ink-muted">
-          <span className="truncate">{context}</span>
-          <button
-            type="button"
-            onClick={() => {
-              setEditText(null);
-              onCancel();
-            }}
-            aria-label="Cancel"
-            className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-chip hover:text-ink"
-          >
-            <X className="size-4" aria-hidden />
-          </button>
-        </div>
+        <Pill
+          label="Cancel"
+          onRemove={() => {
+            setEditText(null);
+            onCancel();
+          }}
+        >
+          {context}
+        </Pill>
+      ) : null}
+      {doubt ? (
+        <Pill label="Not a doubt" onRemove={() => setDoubt(false)}>
+          <CircleHelp className="size-4 shrink-0 text-accent" aria-hidden />
+          Asking a doubt: others answer by replying
+        </Pill>
       ) : null}
       {attachment ? (
-        <div className="mb-2 flex max-w-sm items-center gap-2 rounded-control border border-border bg-surface px-3 py-1.5 text-small">
-          <FileText className="size-4 shrink-0 text-ink-muted" aria-hidden />
-          <span className="min-w-0 flex-1 truncate">{attachment.title}</span>
-          <button
-            type="button"
-            onClick={() => setAttachment(null)}
-            aria-label={`Remove ${attachment.title}`}
-            className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-chip text-ink-muted hover:text-ink"
-          >
-            <X className="size-4" aria-hidden />
-          </button>
-        </div>
+        <Pill
+          label={`Remove ${attachment.title}`}
+          onRemove={() => setAttachment(null)}
+        >
+          <FileText className="size-4 shrink-0" aria-hidden />
+          {attachment.title}
+        </Pill>
       ) : null}
       {files.length ? (
         <PendingFiles
@@ -130,21 +141,22 @@ export function Composer({
         }}
       >
         {editText === null ? (
-          <div className="flex shrink-0">
-            <AddFilesButton onAdd={addFiles} />
-            <AttachSheet
-              items={attachable}
-              onPick={(item) => {
-                setFiles([]);
-                setAttachment(item);
-              }}
-            />
-          </div>
+          <AttachPanel
+            attachable={attachable}
+            onFiles={addFiles}
+            onPod={(item) => {
+              setFiles([]);
+              setAttachment(item);
+            }}
+            onTest={onTest}
+            onPoll={onPoll}
+            onDoubt={() => setDoubt(true)}
+          />
         ) : null}
         <div className="min-w-0 flex-1">
           <MentionTextarea
             aria-label={`Message #${channelName}`}
-            placeholder={`Message #${channelName}`}
+            placeholder={doubt ? "Ask your doubt" : `Message #${channelName}`}
             rows={1}
             maxLength={2000}
             listAbove
@@ -173,6 +185,33 @@ export function Composer({
           <SendHorizontal aria-hidden />
         </Button>
       </form>
+    </div>
+  );
+}
+
+/** A line above the box saying what's about to happen, with a way out. */
+function Pill({
+  children,
+  label,
+  onRemove,
+}: {
+  children: ReactNode;
+  label: string;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="mb-2 flex items-center justify-between gap-2 rounded-control bg-surface-muted py-1 pr-1 pl-3 text-small text-ink-muted">
+      <span className="flex min-w-0 items-center gap-2 truncate">
+        {children}
+      </span>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={label}
+        className="grid size-9 shrink-0 cursor-pointer place-items-center rounded-chip hover:text-ink"
+      >
+        <X className="size-4" aria-hidden />
+      </button>
     </div>
   );
 }

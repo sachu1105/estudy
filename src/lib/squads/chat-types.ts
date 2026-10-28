@@ -25,6 +25,24 @@ export type MessageView = {
   reactions: { kind: Reaction; count: number; mine: boolean }[];
   mine: boolean;
   canDelete: boolean;
+  /** A plain message, a doubt for others to answer, or a poll. */
+  kind: "TEXT" | "DOUBT" | "POLL";
+  /** On a doubt: how many answers (its replies), and the one its asker chose. */
+  doubt: { answers: number; acceptedId: string | null } | null;
+  /** On a reply to a doubt: whether it's the chosen answer, and if this person may choose. */
+  answer: { best: boolean; canChoose: boolean } | null;
+  /** On a poll: each choice with its votes, the person's own marked. */
+  poll: {
+    options: { id: string; text: string; votes: number; mine: boolean }[];
+    total: number;
+  } | null;
+  /** A mock test shared with the message, for everyone to take. */
+  test: {
+    id: string;
+    title: string;
+    questions: number;
+    minutes: number | null;
+  } | null;
 };
 
 /** A message the person just sent, shown before the server has it. */

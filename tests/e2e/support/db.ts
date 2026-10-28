@@ -237,3 +237,31 @@ export async function seedActiveSession(userId: string, minutes = 20) {
     );
   });
 }
+
+/**
+ * The typed channels squads were made with before every new channel became a chat:
+ * questions (threads), material, links and mock tests, under "Library". Older squads
+ * still have them, so the specs for those channels add them to a fresh squad.
+ */
+export async function addClassicChannels(groupId: string) {
+  await withDb(async (db) => {
+    const categoryId = randomUUID();
+    await db.query(
+      `INSERT INTO "ChannelCategory" (id, "groupId", name, "order")
+       VALUES ($1, $2, 'Library', 9)`,
+      [categoryId, groupId],
+    );
+    const channels = [
+      ["THREADS", "questions", "Ask a question, answer one"],
+      ["MATERIAL", "material", "Notes, PDFs and photos shared from pods"],
+      ["LINKS", "links", "Websites worth studying from"],
+      ["TESTS", "mock-tests", "Mock tests to take together"],
+    ];
+    for (const [order, [type, name, topic]] of channels.entries())
+      await db.query(
+        `INSERT INTO "Channel" (id, "groupId", "categoryId", type, name, topic, "order", "updatedAt")
+         VALUES ($1, $2, $3, $4::"ChannelType", $5, $6, $7, now())`,
+        [randomUUID(), groupId, categoryId, type, name, topic, order],
+      );
+  });
+}

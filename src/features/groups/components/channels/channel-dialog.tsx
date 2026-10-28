@@ -22,11 +22,6 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { channelName } from "@/lib/squads/channel-name";
-import {
-  CHANNEL_TYPE_LABELS,
-  CHANNEL_TYPES,
-  type ChannelType,
-} from "@/lib/squads/templates";
 
 import {
   createChannelAction,
@@ -85,7 +80,6 @@ export function ChannelDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const router = useRouter();
-  const [type, setType] = useState<ChannelType>(channel?.type ?? "CHAT");
   const [name, setName] = useState(channel?.name ?? "");
   const [topic, setTopic] = useState(channel?.topic ?? "");
   const [postRule, setPostRule] = useState(channel?.postRule ?? "EVERYONE");
@@ -112,7 +106,7 @@ export function ChannelDialog({
       };
       const result = channel
         ? await updateChannelAction({ ...fields, channelId: channel.id })
-        : await createChannelAction({ ...fields, type });
+        : await createChannelAction(fields);
       if (!result.ok) return void toast.error(result.error);
       toast.success(channel ? "Channel saved" : "Channel added");
       onOpenChange(false);
@@ -136,26 +130,6 @@ export function ChannelDialog({
               {channel ? "Edit channel" : "Add a channel"}
             </DialogTitle>
           </DialogHeader>
-          {channel ? null : (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="channel-type">Kind</Label>
-              <Select
-                value={type}
-                onValueChange={(v) => setType(v as ChannelType)}
-              >
-                <SelectTrigger id="channel-type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CHANNEL_TYPES.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {CHANNEL_TYPE_LABELS[t]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
           <div className="flex flex-col gap-2">
             <Label htmlFor="channel-name">Name</Label>
             <Input

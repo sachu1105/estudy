@@ -73,6 +73,21 @@ export function useMessageActions({
       reactions: [],
       mine: true,
       canDelete: false,
+      kind: out.pollOptions ? "POLL" : out.doubt ? "DOUBT" : "TEXT",
+      doubt: out.doubt ? { answers: 0, acceptedId: null } : null,
+      answer: null,
+      poll: out.pollOptions
+        ? {
+            options: out.pollOptions.map((text, i) => ({
+              id: `${tempId}-${i}`,
+              text,
+              votes: 0,
+              mine: false,
+            })),
+            total: 0,
+          }
+        : null,
+      test: null,
     };
     const settle = chat.addPending(temp);
     const replyToId = replyTo?.id ?? null;
@@ -98,6 +113,8 @@ export function useMessageActions({
         mentionIds: out.mentionIds,
         podItemId: out.attachment?.id ?? null,
         uploads,
+        doubt: out.doubt,
+        pollOptions: out.pollOptions,
       });
       if (!result.ok) {
         settle(null);
