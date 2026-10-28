@@ -1,5 +1,7 @@
 import { examKinds } from "@/lib/site";
 
+import { Band } from "./frame";
+
 // Kinds of exam as bold wordmarks, like a logo strip. Names only; real user numbers get
 // added once they exist, never invented.
 const marks = [...examKinds, "Any syllabus you bring"];
@@ -8,14 +10,11 @@ const half = [...marks, ...marks, ...marks];
 
 function Track({ hidden = false }: { hidden?: boolean }) {
   return (
-    <ul
-      aria-hidden={hidden || undefined}
-      className="flex shrink-0 items-center gap-12 pr-12 md:gap-16 md:pr-16"
-    >
+    <ul aria-hidden={hidden || undefined} className="flex shrink-0">
       {half.map((mark, i) => (
         <li
           key={`${mark}-${i}`}
-          className="font-heading text-[20px] leading-[1.4] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink-muted/70 md:text-[24px] dark:text-ink/80"
+          className="flex items-center border-r border-border px-8 py-6 font-heading text-[20px] leading-[1.4] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink-muted/70 md:px-12 md:py-8 md:text-[24px] dark:text-ink/80"
         >
           {mark}
         </li>
@@ -25,19 +24,21 @@ function Track({ hidden = false }: { hidden?: boolean }) {
 }
 
 /**
- * The kinds of exam it works for, drifting past as wordmarks. Pauses on hover; still for
- * reduced motion. Screen readers get the list once.
+ * The sheet's first band: a label cell, then the kinds of exam it works for drifting past
+ * in ruled cells. Pauses on hover; still for reduced motion. Screen readers get the list
+ * once.
  */
 export function ExamStrip() {
   return (
-    <section
+    <Band
+      first
       aria-label="Works for any competitive exam"
-      className="py-10 md:py-14"
+      inner="flex flex-col md:flex-row"
     >
-      <p className="mb-6 px-4 text-center text-small text-ink-muted">
-        For every competitive exam: bring its syllabus
+      <p className="border-b border-border px-4 py-4 font-mono text-small tracking-[0.06em] text-ink-muted uppercase md:flex md:w-60 md:shrink-0 md:items-center md:border-r md:border-b-0 md:px-8">
+        For every competitive exam
       </p>
-      <div className="group flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)] py-2">
+      <div className="group flex min-w-0 flex-1 overflow-hidden mask-[linear-gradient(90deg,black_80%,transparent)]">
         <div
           className="flex w-max group-hover:[animation-play-state:paused] motion-safe:animate-marquee"
           style={{ animationDuration: "90s" }}
@@ -46,6 +47,6 @@ export function ExamStrip() {
           <Track hidden />
         </div>
       </div>
-    </section>
+    </Band>
   );
 }

@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 
 import { ExamStrip } from "@/features/marketing/components/exam-strip";
 import { Faq, faqs } from "@/features/marketing/components/faq";
-import { FeaturesRail } from "@/features/marketing/components/features-rail";
+import { FeaturesGrid } from "@/features/marketing/components/features-grid";
 import { FinalCta } from "@/features/marketing/components/final-cta";
+import { Sheet } from "@/features/marketing/components/frame";
 import { Hero } from "@/features/marketing/components/hero";
-import { HowItWorks } from "@/features/marketing/components/how-it-works";
 import { Testimonials } from "@/features/marketing/components/testimonials";
 import { PricingTeaser } from "@/features/marketing/components/pricing-teaser";
 import { ctaHref } from "@/features/marketing/components/section-heading";
@@ -66,15 +66,16 @@ export default async function LandingPage() {
     <>
       <JsonLd />
       <Hero signedIn={signedIn} />
-      <ExamStrip />
-      <FeaturesRail />
-      <HowItWorks />
-      {showTestimonials(process.env.NODE_ENV === "production") ? (
-        <Testimonials />
-      ) : null}
-      <PricingTeaser billingEnabled={billingEnabled()} ctaHref={href} />
-      <Faq />
-      <FinalCta signedIn={signedIn} />
+      <Sheet>
+        <ExamStrip />
+        <FeaturesGrid signedIn={signedIn} />
+        {showTestimonials(process.env.NODE_ENV === "production") ? (
+          <Testimonials />
+        ) : null}
+        <PricingTeaser billingEnabled={billingEnabled()} ctaHref={href} />
+        <Faq />
+        <FinalCta signedIn={signedIn} />
+      </Sheet>
     </>
   );
 }

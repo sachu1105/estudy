@@ -3,6 +3,7 @@ import { Quote } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
 import { testimonials, type Testimonial } from "@/lib/testimonials";
 
+import { Band } from "./frame";
 import { SectionHeading } from "./section-heading";
 
 const initials = (name: string) =>
@@ -68,9 +69,9 @@ export function Testimonials() {
   const { quotes, sample } = testimonials;
   const half = Math.ceil(quotes.length / 2);
   return (
-    <section
+    <Band
       aria-labelledby="stories-title"
-      className="overflow-x-clip py-16 md:py-24"
+      inner="overflow-hidden py-16 md:py-24"
     >
       <Reveal className="px-4 md:px-8">
         <SectionHeading
@@ -87,6 +88,6 @@ export function Testimonials() {
         <Row quotes={quotes.slice(0, half)} />
         <Row quotes={quotes.slice(half)} reverse />
       </div>
-    </section>
+    </Band>
   );
 }

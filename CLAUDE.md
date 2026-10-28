@@ -90,7 +90,7 @@ Infra:     Docker Compose on a VPS in an India region: web, worker, postgres, re
 studyplanner/
   src/
     app/
-      (marketing)/     landing (hero, features, how it works, groups, pricing, FAQ),
+      (marketing)/     landing (hero, features, pricing, FAQ),
                        about, privacy, terms, contact
       (auth)/          login, register, verify-email, reset-password
       (app)/           today, pods, syllabus, tests, groups, settings, onboarding,
@@ -323,11 +323,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   (`lib/pods/covers`, `PodCover`, `PodTile`), which the catalogue reuses to preview each ready
   syllabus as the exam pod it becomes (its card and the cover strip on its page). The landing page may reuse the same
   cover art: a soft glow behind the hero window, the top of the featured plan card
-  (the admin picks it under Plans and limits), the giant studypods wordmark at the foot
-  of the page, where the gradient shows through the letters, and the cover strip on each
-  How it works card, which uses its own pale wash (blue, indigo, blurple, violet - one
-  hue family, not the pod rainbow) with the deep version of the same hue on the card's
-  icon tile. Nothing else.
+  (the admin picks it under Plans and limits), the sample pod card in the features grid,
+  and the giant studypods wordmark at the foot of the page, where the gradient shows
+  through the letters. Nothing else.
 
 ### Typography (next/font/google)
 

@@ -1,4 +1,4 @@
-import { Check, FileText, Link2, NotebookPen, Sparkles } from "lucide-react";
+import { Check, FileText, Link2, NotebookPen, Plus } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
 
@@ -22,7 +22,7 @@ export function HeroWindow() {
   return (
     <div
       role="img"
-      aria-label="A subject pod for Indian Constitution: 3 of 5 topics done, with notes, a PDF and a link saved under its topics, and a button to make a mock test from them"
+      aria-label="A subject pod for Indian Constitution: 3 of 5 topics done, with notes, a PDF and a link saved under its topics, and a button to add more"
       className="mx-auto max-w-4xl translate-y-px rounded-t-[20px] border border-b-0 border-white/40 bg-surface shadow-lg"
     >
       <div className="flex items-center gap-3 border-b border-border px-4 py-3 sm:px-5">
@@ -102,7 +102,7 @@ export function HeroWindow() {
             ))}
           </ul>
           <span className="mt-1 flex items-center justify-center gap-2 rounded-control border border-accent/30 bg-accent-soft px-3 py-2.5 text-small font-medium text-accent-ink">
-            <Sparkles className="size-4" /> Make a mock test from these
+            <Plus className="size-4" /> Add a note, PDF or link
           </span>
         </div>
       </div>

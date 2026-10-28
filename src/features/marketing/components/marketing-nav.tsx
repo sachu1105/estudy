@@ -96,10 +96,9 @@ export function MarketingNav({ signedIn }: MarketingNavProps) {
     <header
       data-smooth-scroll
       className={cn(
-        "sticky top-0 z-40 border-b transition-[background-color,border-color] duration-[200ms]",
-        scrolled
-          ? "border-border bg-bg/80 backdrop-blur-md"
-          : "border-transparent bg-bg",
+        // A rule under the bar always, like the rules across the landing page's sheet.
+        "sticky top-0 z-40 border-b border-border transition-[background-color] duration-[200ms] md:px-8",
+        scrolled ? "bg-bg/80 backdrop-blur-md" : "bg-bg",
       )}
     >
       <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4 md:px-8">

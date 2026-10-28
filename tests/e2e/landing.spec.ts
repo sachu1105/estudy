@@ -2,7 +2,6 @@ import { expect, test, type Page } from "@playwright/test";
 
 const sections = [
   ["Features", "features"],
-  ["How it works", "how-it-works"],
   ["Pricing", "pricing"],
   ["FAQ", "faq"],
 ] as const;
@@ -50,42 +49,34 @@ test.describe("landing, signed out", () => {
     }
   });
 
-  test("the features rail scrolls to its later cards", async ({
+  test("the features grid shows the four features, each with a way in", async ({
     page,
-    isMobile,
   }) => {
     await page.goto("/");
-    await page.locator("#features").scrollIntoViewIfNeeded();
-    const rail = page.getByRole("region", { name: "Features" });
-    await expect(
-      rail.getByRole("heading", { name: "A pod for every subject" }),
-    ).toBeInViewport();
-    // Squads live here now, as cards, rather than in a section of their own.
-    const squads = rail.getByRole("heading", { name: "Squads with channels" });
-    // The card sits past the right edge of the track until the rail is scrolled.
-    const left = async () => (await squads.boundingBox())?.x ?? 0;
-    const start = await left();
-    expect(start).toBeGreaterThan(page.viewportSize()?.width ?? 0);
-
-    if (isMobile) {
-      await squads.scrollIntoViewIfNeeded();
-    } else {
-      // The arrows page one card at a time; give each smooth scroll time to land.
-      const next = page.getByRole("button", { name: "Next" });
-      const width = page.viewportSize()?.width ?? 0;
-      const onScreen = async () => {
-        const box = await squads.boundingBox();
-        return !!box && box.x >= 0 && box.x + box.width <= width;
-      };
-      for (let i = 0; i < 8 && !(await onScreen()); i++) {
-        await next.click();
-        await page.waitForTimeout(400);
-      }
-      // Reaching the arrows scrolled the page past the cards; bring them back.
-      await squads.scrollIntoViewIfNeeded();
+    const grid = page.getByRole("region", {
+      name: "Built around your syllabus",
+    });
+    for (const [title, link] of [
+      ["Every subject gets its own pod", "Open pods"],
+      ["Sit real papers, exam hall rules", "Open tests"],
+      ["Squads to study with", "Find a squad"],
+      ["A plan that shows its working", "Build your plan"],
+    ] as const) {
+      const heading = grid.getByRole("heading", { name: title });
+      await heading.scrollIntoViewIfNeeded();
+      await expect(heading).toBeInViewport();
+      // Signed out, every way in is the sign-up.
+      await expect(grid.getByRole("link", { name: link })).toHaveAttribute(
+        "href",
+        "/register",
+      );
     }
-    expect(await left()).toBeLessThan(start);
-    await expect(squads).toBeInViewport();
+    // The pictures run off their cells, never off the page.
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
   });
 
   test("get started goes to register", async ({ page }) => {

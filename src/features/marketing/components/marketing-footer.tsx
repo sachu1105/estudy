@@ -10,7 +10,6 @@ const columns = [
     title: "Product",
     links: [
       { label: "Features", href: "/#features" },
-      { label: "How it works", href: "/#how-it-works" },
       { label: "Pricing", href: "/pricing" },
       { label: "FAQ", href: "/#faq" },
     ],
@@ -39,7 +38,7 @@ const columns = [
  */
 function Wordmark() {
   return (
-    <div aria-hidden className="overflow-x-clip select-none">
+    <div aria-hidden className="mt-12 overflow-x-clip select-none md:mt-16">
       <p
         className="bg-clip-text px-4 pt-[0.08em] pb-[0.2em] text-center font-heading text-[clamp(64px,17vw,260px)] leading-none font-semibold tracking-[-0.05em] text-transparent"
         style={{
@@ -55,27 +54,45 @@ function Wordmark() {
   );
 }
 
+/**
+ * Open, with no rules: the sheet above ends on its last band. The name and the copyright
+ * on the left, the links on the right, then the wordmark.
+ */
 export function MarketingFooter({ year }: { year: number }) {
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="mx-auto grid max-w-content gap-10 px-4 py-12 md:grid-cols-[1.6fr_repeat(3,1fr)] md:px-8">
-        <div className="flex flex-col gap-3">
+    <footer className="px-4 pt-16 md:px-8 md:pt-20">
+      <div className="mx-auto grid max-w-content gap-12 md:grid-cols-[1.4fr_2fr] md:px-8">
+        <div className="flex flex-col items-start gap-4">
           <Logo />
-          <p className="max-w-xs text-small text-ink-muted">
+          <p className="max-w-xs text-body text-ink-muted">
             A study space for competitive exam aspirants: a pod for every
-            subject, a daily plan, and a test after every task.
+            subject, real papers to practise on, and squads to study with.
           </p>
+          <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-4">
+            <p className="text-small text-ink-muted">
+              © {year} {site.company}
+            </p>
+            {site.social.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-small text-ink-muted hover:text-ink"
+                rel="me noopener"
+              >
+                {item.label}
+              </a>
+            ))}
+            <ThemeToggle />
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:contents">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           {columns.map((column) => (
             <nav
               key={column.title}
               aria-label={column.title}
               className="flex flex-col gap-3"
             >
-              <p className="text-micro text-ink-muted uppercase">
-                {column.title}
-              </p>
+              <p className="text-small font-medium text-ink">{column.title}</p>
               <ul className="flex flex-col gap-1">
                 {column.links.map((link) => (
                   <li key={link.label}>
@@ -90,26 +107,6 @@ export function MarketingFooter({ year }: { year: number }) {
               </ul>
             </nav>
           ))}
-        </div>
-      </div>
-      <div className="border-t border-border">
-        <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-4 py-5 md:px-8">
-          <p className="text-small text-ink-muted">
-            © {year} {site.company}
-          </p>
-          <div className="flex items-center gap-3">
-            {site.social.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-small text-ink-muted hover:text-ink"
-                rel="me noopener"
-              >
-                {item.label}
-              </a>
-            ))}
-            <ThemeToggle />
-          </div>
         </div>
       </div>
       <Wordmark />
