@@ -139,6 +139,7 @@ export function AttachPanel({
       type="button"
       variant="ghost"
       size="icon"
+      className="md:size-11"
       aria-label="Attach"
       aria-expanded={open}
       aria-haspopup="dialog"

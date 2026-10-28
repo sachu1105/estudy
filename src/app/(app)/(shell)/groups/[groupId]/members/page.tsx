@@ -35,7 +35,11 @@ export default async function MembersPage({
       {manages ? (
         <>
           <JoinRequests requests={data.requests} />
-          <InvitesPanel groupId={groupId} invites={data.invites} />
+          <InvitesPanel
+            groupId={groupId}
+            invites={data.invites}
+            timeZone={user.timezone}
+          />
         </>
       ) : null}
       <section aria-labelledby="members" className="flex flex-col gap-3">
@@ -47,16 +51,25 @@ export default async function MembersPage({
             const muted = m.muted;
             const isMe = m.user.id === user.id;
             return (
-              <li key={m.user.id} className="flex items-center gap-3 px-3 py-2">
+              <li
+                key={m.user.id}
+                className="flex min-h-14 items-center gap-3 px-3 py-2 sm:px-4"
+              >
                 <Avatar
                   name={m.user.displayName}
                   src={m.user.avatarUrl ?? undefined}
                   size="sm"
                 />
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate text-body">
-                    {m.user.displayName}
-                    {isMe ? " (you)" : ""}
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate text-body">
+                      {m.user.displayName}
+                    </span>
+                    {isMe ? (
+                      <span className="shrink-0 text-small text-ink-muted">
+                        you
+                      </span>
+                    ) : null}
                   </span>
                   {muted ? (
                     <span className="text-small text-ink-muted">muted</span>

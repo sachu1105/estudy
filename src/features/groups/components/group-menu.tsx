@@ -1,9 +1,11 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
+import { ChevronDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+
+import { cn } from "@/lib/utils/cn";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +31,7 @@ export function GroupMenu({
   canManage = false,
   categories = [],
   subjects = [],
+  asName = false,
 }: {
   groupId: string;
   name: string;
@@ -36,6 +39,8 @@ export function GroupMenu({
   canManage?: boolean;
   categories?: { id: string; name: string }[];
   subjects?: string[];
+  /** Open from the squad's name on its banner, as in Discord, not a "more" button. */
+  asName?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -53,16 +58,34 @@ export function GroupMenu({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={`More for ${name}`}
-            disabled={pending}
-          >
-            <MoreHorizontal aria-hidden />
-          </Button>
+          {asName ? (
+            <button
+              type="button"
+              aria-label={`More for ${name}`}
+              disabled={pending}
+              className={cn(
+                "group/name flex min-h-11 min-w-0 cursor-pointer items-center gap-1 rounded-control px-2 text-left font-heading text-h3 font-medium text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.45)]",
+                "transition-colors duration-[120ms] hover:bg-black/20 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none data-[state=open]:bg-black/20",
+              )}
+            >
+              <span className="truncate">{name}</span>
+              <ChevronDown
+                className="size-4 shrink-0 transition-transform duration-[200ms] group-data-[state=open]/name:rotate-180"
+                aria-hidden
+              />
+            </button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={`More for ${name}`}
+              disabled={pending}
+            >
+              <MoreHorizontal aria-hidden />
+            </Button>
+          )}
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align={asName ? "start" : "end"}>
           {canManage ? (
             <>
               <DropdownMenuItem onSelect={() => setAddingChannel(true)}>

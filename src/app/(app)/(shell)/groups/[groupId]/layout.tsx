@@ -6,9 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { BackLink } from "@/features/pods/components/back-link";
 import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
 import { CHANNEL_ICONS } from "@/features/groups/components/channels/channel-icon";
+import {
+  SquadBanner,
+  squadFacts,
+} from "@/features/groups/components/channels/squad-banner";
 import { SquadRail } from "@/features/groups/components/channels/squad-rail";
 import { SquadLive } from "@/features/groups/components/chat/squad-live";
-import { GroupMenu } from "@/features/groups/components/group-menu";
 import { JoinButton } from "@/features/groups/components/join-controls";
 import { isId } from "@/lib/ids";
 import { joinModeOf } from "@/lib/squads/access";
@@ -65,19 +68,16 @@ export default async function GroupLayout({
         aria-label={`${group.name} channels`}
         className="hidden w-64 shrink-0 flex-col border-r border-border md:flex"
       >
-        <div className="flex h-14 shrink-0 items-center gap-1 border-b border-border pr-1 pl-4">
-          <p className="min-w-0 flex-1 truncate font-heading text-h3 font-medium">
-            {group.name}
-          </p>
-          <GroupMenu
-            groupId={group.id}
-            name={group.name}
-            owner={role === "OWNER"}
-            canManage={layout.canManage}
-            categories={categories}
-            subjects={subjects.map((s) => s.name)}
-          />
-        </div>
+        <SquadBanner
+          group={group}
+          canInvite={layout.canManage}
+          menu={{
+            owner: role === "OWNER",
+            canManage: layout.canManage,
+            categories,
+            subjects: subjects.map((s) => s.name),
+          }}
+        />
         <div className="flex-1 scrollbar-thin overflow-y-auto p-2">
           <ChannelNav
             groupId={group.id}
@@ -117,12 +117,7 @@ async function Visitor({
   const { group } = view;
   const mode = joinModeOf(group);
   const channels = await channelService.preview(user, group.id);
-  const facts = [
-    group.exam?.name,
-    `${group._count.members} member${group._count.members === 1 ? "" : "s"}`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const facts = squadFacts(group);
 
   return (
     <>

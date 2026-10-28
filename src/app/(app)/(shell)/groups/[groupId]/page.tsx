@@ -10,7 +10,10 @@ import {
   type ChannelSummary,
 } from "@/features/groups/components/channels/channel-icon";
 import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
-import { GroupMenu } from "@/features/groups/components/group-menu";
+import {
+  SquadBanner,
+  squadFacts,
+} from "@/features/groups/components/channels/squad-banner";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import {
@@ -39,12 +42,7 @@ export default async function SquadPage({
   ]);
   if (!view?.role || !layout) return null; // the layout shows how to join
   const { group } = view;
-  const facts = [
-    group.exam?.name,
-    `${group._count.members} member${group._count.members === 1 ? "" : "s"}`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const facts = squadFacts(group);
   const channels = [
     ...layout.loose,
     ...layout.categories.flatMap((c) => c.channels),
@@ -61,24 +59,18 @@ export default async function SquadPage({
     <>
       {/* A phone: the panel beside the rail, as in Discord. It runs edge to edge and
           down under the tab bar, so it undoes the column's padding. */}
-      <div className="-mx-4 -mt-4 -mb-24 flex min-h-dvh flex-col rounded-tl-[20px] border-t border-l border-border bg-surface pb-24 md:hidden">
-        <header className="flex items-start gap-2 border-b border-border py-3 pr-1 pl-4">
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <h1 className="truncate text-h2">{group.name}</h1>
-            <p className="flex flex-wrap items-center gap-2 text-small text-ink-muted">
-              {facts}
-              {privateBadge}
-            </p>
-          </div>
-          <GroupMenu
-            groupId={group.id}
-            name={group.name}
-            owner={view.role === "OWNER"}
-            canManage={layout.canManage}
-            categories={layout.categories.map(({ id, name }) => ({ id, name }))}
-            subjects={subjects.map((s) => s.name)}
-          />
-        </header>
+      <div className="-mx-4 -mt-4 -mb-24 flex min-h-dvh flex-col overflow-hidden rounded-tl-[20px] border-t border-l border-border bg-surface pb-24 md:hidden">
+        <SquadBanner
+          group={group}
+          heading="h1"
+          canInvite={layout.canManage}
+          menu={{
+            owner: view.role === "OWNER",
+            canManage: layout.canManage,
+            categories: layout.categories.map(({ id, name }) => ({ id, name })),
+            subjects: subjects.map((s) => s.name),
+          }}
+        />
         {group.description ? (
           <p className="line-clamp-2 px-4 pt-3 text-small text-ink-muted">
             {group.description}

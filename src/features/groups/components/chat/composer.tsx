@@ -172,13 +172,14 @@ export function Composer({
               }
               if (e.key === "Escape" && context) onCancel();
             }}
-            className="max-h-40 min-h-11 resize-none py-2.5"
+            className="block max-h-40 min-h-11 resize-none py-2.25 leading-6"
           />
         </div>
         <Button
           type="submit"
           variant="primary"
           size="icon"
+          className="md:size-11"
           aria-label={editText !== null ? "Save edit" : "Send"}
           disabled={!ready}
         >

@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
 
 import { CategoryTools } from "./category-menu";
+import { CategorySection } from "./category-section";
 import {
   CHANNEL_ICONS,
   channelHref,
@@ -99,8 +100,11 @@ export function ChannelNav({
 }) {
   const pathname = usePathname();
   const options = categories.map(({ id, name }) => ({ id, name }));
-  const rows = (channels: ChannelSummary[]) =>
-    channels.map((ch, i) => {
+  const isOpen = (ch: ChannelSummary) =>
+    pathname === channelHref(groupId, ch.id);
+  const rows = (channels: ChannelSummary[], all = channels) =>
+    channels.map((ch) => {
+      const i = all.indexOf(ch);
       const Icon = CHANNEL_ICONS[ch.type];
       const href = channelHref(groupId, ch.id);
       return (
@@ -108,7 +112,7 @@ export function ChannelNav({
           key={ch.id}
           href={href}
           label={ch.name}
-          active={pathname === href}
+          active={isOpen(ch)}
           unread={unread[ch.id]}
           icon={<Icon className="size-4 shrink-0" aria-hidden />}
           extra={[
@@ -138,7 +142,7 @@ export function ChannelNav({
                 channel={ch}
                 categories={options}
                 first={i === 0}
-                last={i === channels.length - 1}
+                last={i === all.length - 1}
               />
             ) : null
           }
@@ -148,33 +152,8 @@ export function ChannelNav({
 
   return (
     <nav aria-label="Squad" className="flex flex-col gap-4">
-      {loose.length ? <ul className="flex flex-col">{rows(loose)}</ul> : null}
-      {categories.map((c, i) => (
-        <section key={c.id} aria-label={c.name} className="flex flex-col">
-          <div className="group flex min-h-8 items-center gap-1 pl-2">
-            <h3 className="flex-1 truncate text-micro text-ink-muted uppercase">
-              {c.name}
-            </h3>
-            {canManage ? (
-              <span className="flex md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100">
-                <CategoryTools
-                  groupId={groupId}
-                  category={c}
-                  categories={options}
-                  first={i === 0}
-                  last={i === categories.length - 1}
-                />
-              </span>
-            ) : null}
-          </div>
-          {c.channels.length ? (
-            <ul className="flex flex-col">{rows(c.channels)}</ul>
-          ) : (
-            <p className="px-2 py-1 text-small text-ink-muted">No channels</p>
-          )}
-        </section>
-      ))}
-      <ul className="flex flex-col border-t border-border pt-3">
+      {/* The squad's own places first, as Discord puts its server guide. */}
+      <ul className="flex flex-col border-b border-border pb-3">
         <Row
           href={`/groups/${groupId}/members`}
           label="Members"
@@ -194,6 +173,27 @@ export function ChannelNav({
           icon={<Trophy className="size-4 shrink-0" aria-hidden />}
         />
       </ul>
+      {loose.length ? <ul className="flex flex-col">{rows(loose)}</ul> : null}
+      {categories.map((c, i) => (
+        <CategorySection
+          key={c.id}
+          name={c.name}
+          channels={c.channels}
+          rows={rows}
+          keep={(ch) => isOpen(ch) || !!unread[ch.id]?.unread}
+          tools={
+            canManage ? (
+              <CategoryTools
+                groupId={groupId}
+                category={c}
+                categories={options}
+                first={i === 0}
+                last={i === categories.length - 1}
+              />
+            ) : null
+          }
+        />
+      ))}
     </nav>
   );
 }

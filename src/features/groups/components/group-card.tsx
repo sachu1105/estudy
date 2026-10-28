@@ -30,21 +30,30 @@ type Member = {
   user: { id: string; displayName: string; avatarUrl: string | null };
 };
 
-/** The first few faces, overlapping, with the rest as a count. */
+/**
+ * The first few faces, overlapping, with the rest as a count. Each face sits on top of
+ * the next, so initials are never covered (a photo can lose its edge, two letters can't).
+ * A ring in the card's colour cuts the faces apart without shrinking them, and initials
+ * sit on the accent tint so the circle shows on the card in both themes.
+ */
 function Faces({ members, total }: { members: Member[]; total: number }) {
   const shown = members.slice(0, 4);
   const rest = total - shown.length;
   if (shown.length === 0) return null;
   return (
-    <span className="flex items-center gap-2">
-      <span className="flex">
+    <span className="flex items-center gap-2.5">
+      <span className="flex pl-0.5">
         {shown.map((m, i) => (
           <Avatar
             key={m.user.id}
             name={m.user.displayName}
             src={m.user.avatarUrl}
             size="sm"
-            className={cn("border-2 border-surface", i > 0 && "-ml-2")}
+            className={cn(
+              "relative bg-accent-soft ring-2 ring-surface [&_span]:text-accent-ink",
+              i > 0 && "-ml-1.5",
+              ["z-4", "z-3", "z-2", "z-1"][i],
+            )}
           />
         ))}
       </span>
