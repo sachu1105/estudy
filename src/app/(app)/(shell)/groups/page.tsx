@@ -1,131 +1,107 @@
-import { ArrowRight, Compass } from "lucide-react";
+import { Compass, Plus, Users } from "lucide-react";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { UpgradeCard } from "@/features/billing/components/upgrade-card";
+import {
+  SquadColumn,
+  SquadShell,
+} from "@/features/groups/components/channels/squad-shell";
 import { CreateGroupDialog } from "@/features/groups/components/create-group-dialog";
 import { GroupCard } from "@/features/groups/components/group-card";
 import { JoinCodeDialog } from "@/features/groups/components/join-controls";
-import { NewSquadTile } from "@/features/groups/components/new-squad-tile";
 import { QuickJoin } from "@/features/groups/components/quick-join";
 import { joinModeOf } from "@/lib/squads/access";
+import { LAST_SQUAD_COOKIE } from "@/lib/squads/last-squad";
 import { requireUser } from "@/server/auth/session";
-import { billingEnabled, limit } from "@/server/entitlements";
-import { chatService, groupService } from "@/server/services/groups";
+import { groupService } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Squads" };
 
-/** The squads you're in, and a few open ones to discover. */
+/**
+ * Squads opens on the squad you had open last, as Discord reopens the last server (or
+ * your first squad). Only someone in no squad yet stays here: a welcome with the ways
+ * in, and a few open squads to try.
+ */
 export default async function GroupsPage() {
   const user = await requireUser();
-  const [mine, directory, exams, unread] = await Promise.all([
-    groupService.mine(user),
+  const mine = await groupService.mine(user);
+  if (mine.length > 0) {
+    const last = (await cookies()).get(LAST_SQUAD_COOKIE)?.value;
+    const open = mine.find((m) => m.group.id === last) ?? mine[0]!;
+    redirect(`/groups/${open.group.id}`);
+  }
+
+  const [directory, exams] = await Promise.all([
     groupService.directory(null, ""),
     catalogueService.listExams(),
-    chatService.squadsWithUnread(user),
   ]);
-  const joined = new Set(mine.map((m) => m.group.id));
-  const suggested = directory.filter((g) => !joined.has(g.id)).slice(0, 6);
-  // Only when they have actually reached it (rule: prompts at a limit, never a wall).
-  const owned = mine.filter((m) => m.role === "OWNER").length;
-  const maxOwned = limit(user, "groupsCreated");
+  const suggested = directory.slice(0, 6);
 
   return (
-    <>
-      <PageHeader
-        title="Squads"
-        description="Study with others: chat, share notes and tests, and see who's keeping up."
-        actions={
-          // Side by side, splitting the width on a phone.
-          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
-            <JoinCodeDialog />
-            <CreateGroupDialog
-              exams={exams.map((e) => ({ id: e.id, name: e.name }))}
-            />
-          </div>
-        }
-      />
-      <div className="flex flex-col gap-10">
-        {owned >= maxOwned ? (
-          <UpgradeCard
-            title="You have made every squad your plan allows"
-            detail={`Your plan covers ${maxOwned} squad${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
-            billingOn={billingEnabled()}
-          />
-        ) : null}
-        <section aria-labelledby="mine" className="flex flex-col gap-3">
-          <h2 id="mine" className="text-h2">
-            Your squads
-          </h2>
-          {mine.length === 0 ? (
-            <p className="text-body text-ink-muted">
-              You&apos;re not in a squad yet. Make one and invite a friend, or
-              join an open one below.
-            </p>
-          ) : null}
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {mine.map((m) => (
-              <li key={m.group.id} className="flex">
-                <GroupCard
-                  group={m.group}
-                  role={m.role}
-                  unread={unread.has(m.group.id)}
-                />
-              </li>
-            ))}
-            {owned < maxOwned ? (
-              <li className="flex">
-                <NewSquadTile
-                  exams={exams.map((e) => ({ id: e.id, name: e.name }))}
-                />
-              </li>
-            ) : null}
-          </ul>
-        </section>
+    <SquadShell user={user} canCreate={false}>
+      <SquadColumn>
+        <div className="flex flex-col gap-10">
+          <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface px-5 py-10 text-center">
+            <span className="grid size-14 place-items-center rounded-full bg-accent-soft text-accent-ink">
+              <Users className="size-7" aria-hidden />
+            </span>
+            <div className="flex max-w-md flex-col gap-2">
+              <h1>Study with a squad</h1>
+              <p className="text-body text-ink-muted">
+                A squad is you and your friends in one place: chat, share notes
+                and tests, and see who&apos;s keeping up. Make one, join with a
+                friend&apos;s code, or find an open one.
+              </p>
+            </div>
+            <div className="grid w-full max-w-md grid-cols-1 gap-2 sm:grid-cols-2">
+              <CreateGroupDialog
+                exams={exams.map((e) => ({ id: e.id, name: e.name }))}
+                trigger={
+                  <Button variant="primary" className="sm:col-span-2">
+                    <Plus aria-hidden /> Create squad
+                  </Button>
+                }
+              />
+              <JoinCodeDialog />
+              <Button asChild variant="secondary">
+                <Link href="/groups/discover">
+                  <Compass aria-hidden /> Find a squad
+                </Link>
+              </Button>
+            </div>
+          </section>
 
-        <section aria-labelledby="discover" className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-end justify-between gap-2">
-            <h2 id="discover" className="text-h2">
-              Discover
-            </h2>
-            <Button asChild variant="ghost">
-              <Link href="/groups/discover">
-                See all squads <ArrowRight aria-hidden />
-              </Link>
-            </Button>
-          </div>
-          {suggested.length === 0 ? (
-            <EmptyState
-              icon={Compass}
-              title="No open squads yet"
-              description="Create the first one, and others preparing for your exam can find it."
-            />
-          ) : (
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {suggested.map((g) => (
-                <li key={g.id} className="flex">
-                  <GroupCard
-                    group={g}
-                    action={
-                      joinModeOf(g) === "INVITE_ONLY" ? null : (
-                        <QuickJoin
-                          groupId={g.id}
-                          name={g.name}
-                          asks={joinModeOf(g) === "REQUEST"}
-                        />
-                      )
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
-    </>
+          {suggested.length ? (
+            <section aria-labelledby="open" className="flex flex-col gap-3">
+              <h2 id="open" className="text-h2">
+                Open squads
+              </h2>
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {suggested.map((g) => (
+                  <li key={g.id} className="flex">
+                    <GroupCard
+                      group={g}
+                      action={
+                        joinModeOf(g) === "INVITE_ONLY" ? null : (
+                          <QuickJoin
+                            groupId={g.id}
+                            name={g.name}
+                            asks={joinModeOf(g) === "REQUEST"}
+                          />
+                        )
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </div>
+      </SquadColumn>
+    </SquadShell>
   );
 }

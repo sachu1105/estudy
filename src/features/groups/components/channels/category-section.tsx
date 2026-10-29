@@ -37,12 +37,12 @@ export function CategorySection({
             type="button"
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="flex min-h-11 min-w-0 cursor-pointer items-center gap-1 rounded-chip pl-2 text-left text-micro text-ink-muted uppercase transition-colors duration-[120ms] hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none md:min-h-8"
+            className="flex min-h-11 min-w-0 cursor-pointer items-center gap-1 rounded-chip pl-2 text-left text-small font-medium tracking-[0.04em] text-ink-muted uppercase transition-colors duration-[120ms] hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none md:min-h-8"
           >
             <span className="truncate">{name}</span>
             <ChevronDown
               className={cn(
-                "size-3 shrink-0 transition-transform duration-[200ms]",
+                "size-3.5 shrink-0 transition-transform duration-[200ms]",
                 !open && "-rotate-90",
               )}
               aria-hidden

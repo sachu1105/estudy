@@ -1,6 +1,20 @@
 "use client";
 
-import { ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  Flag,
+  FolderPlus,
+  LibraryBig,
+  LogOut,
+  MessageSquarePlus,
+  MoreHorizontal,
+  SlidersHorizontal,
+  Timer,
+  Trash2,
+  Trophy,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -23,7 +37,13 @@ import { CategoryDialog } from "./channels/category-dialog";
 import { ChannelDialog } from "./channels/channel-dialog";
 import { ReportDialog } from "./report-dialog";
 
-/** Admins add channels and categories and invite; anyone leaves or reports; the owner deletes. */
+const danger =
+  "text-danger-ink data-highlighted:bg-danger-soft [&_svg]:text-danger-ink";
+
+/**
+ * The squad's own pages (members, study room, rank), then: admins add channels and
+ * categories and invite; anyone leaves or reports; the owner deletes.
+ */
 export function GroupMenu({
   groupId,
   name,
@@ -86,13 +106,30 @@ export function GroupMenu({
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align={asName ? "start" : "end"}>
+          {/* Every squad's own pages, ahead of its channels' tools. */}
+          <DropdownMenuItem asChild>
+            <Link href={`/groups/${groupId}/members`}>
+              <Users aria-hidden /> Members
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/groups/${groupId}/room`}>
+              <Timer aria-hidden /> Study room
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/groups/${groupId}/rank`}>
+              <Trophy aria-hidden /> Squad rank
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           {canManage ? (
             <>
               <DropdownMenuItem onSelect={() => setAddingChannel(true)}>
-                Add a channel
+                <MessageSquarePlus aria-hidden /> Add a channel
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setAddingCategory(true)}>
-                Add a category
+                <FolderPlus aria-hidden /> Add a category
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() =>
@@ -108,33 +145,40 @@ export function GroupMenu({
                   })
                 }
               >
-                A channel per subject
+                <LibraryBig aria-hidden /> A channel per subject
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/groups/${groupId}/members`}>Invite people</Link>
+                <Link href={`/groups/${groupId}/members`}>
+                  <UserPlus aria-hidden /> Invite people
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/groups/${groupId}/settings`}>Squad settings</Link>
+                <Link href={`/groups/${groupId}/settings`}>
+                  <SlidersHorizontal aria-hidden /> Squad settings
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
           ) : null}
+          <DropdownMenuItem onSelect={() => setReporting(true)}>
+            <Flag aria-hidden /> Report squad
+          </DropdownMenuItem>
+          {/* The way out comes last, in the colour of things that can't be undone. */}
           {owner ? (
             <DropdownMenuItem
+              className={danger}
               onSelect={() => run(deleteGroupAction, "Squad deleted")}
             >
-              Delete squad
+              <Trash2 aria-hidden /> Delete squad
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
+              className={danger}
               onSelect={() => run(leaveGroupAction, "You left the squad")}
             >
-              Leave squad
+              <LogOut aria-hidden /> Leave squad
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onSelect={() => setReporting(true)}>
-            Report squad
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {addingChannel ? (

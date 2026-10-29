@@ -1,6 +1,6 @@
 "use client";
 
-import { BellOff, Lock, Timer, Trophy, Users } from "lucide-react";
+import { BellOff, Lock } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -19,7 +19,7 @@ import { ChannelMenu } from "./channel-menu";
 
 const rowLink = (active: boolean) =>
   cn(
-    "flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-control px-2 text-body transition-colors duration-[120ms] md:min-h-9",
+    "flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-control px-2 text-h3 transition-colors duration-[120ms] md:min-h-10",
     "focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none",
     active
       ? "bg-accent-soft font-medium text-accent-ink"
@@ -82,7 +82,10 @@ function Row({
   );
 }
 
-/** A squad's channels by category, then its members and rank. Admins arrange them here. */
+/**
+ * A squad's channels by category. Admins arrange them here. Members, the study room and
+ * the rank are in the squad menu, on its name.
+ */
 export function ChannelNav({
   groupId,
   loose,
@@ -114,7 +117,7 @@ export function ChannelNav({
           label={ch.name}
           active={isOpen(ch)}
           unread={unread[ch.id]}
-          icon={<Icon className="size-4 shrink-0" aria-hidden />}
+          icon={<Icon className="size-5 shrink-0" aria-hidden />}
           extra={[
             ch.viewRule !== "EVERYONE" ? ", private" : "",
             notify[ch.id] === "MUTE" ? ", muted" : "",
@@ -152,27 +155,6 @@ export function ChannelNav({
 
   return (
     <nav aria-label="Squad" className="flex flex-col gap-4">
-      {/* The squad's own places first, as Discord puts its server guide. */}
-      <ul className="flex flex-col border-b border-border pb-3">
-        <Row
-          href={`/groups/${groupId}/members`}
-          label="Members"
-          active={pathname === `/groups/${groupId}/members`}
-          icon={<Users className="size-4 shrink-0" aria-hidden />}
-        />
-        <Row
-          href={`/groups/${groupId}/room`}
-          label="Study room"
-          active={pathname === `/groups/${groupId}/room`}
-          icon={<Timer className="size-4 shrink-0" aria-hidden />}
-        />
-        <Row
-          href={`/groups/${groupId}/rank`}
-          label="Squad rank"
-          active={pathname === `/groups/${groupId}/rank`}
-          icon={<Trophy className="size-4 shrink-0" aria-hidden />}
-        />
-      </ul>
       {loose.length ? <ul className="flex flex-col">{rows(loose)}</ul> : null}
       {categories.map((c, i) => (
         <CategorySection

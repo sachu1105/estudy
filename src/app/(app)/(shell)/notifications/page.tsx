@@ -16,9 +16,11 @@ const TEXT = {
   REPLY: "replied to",
   ACCEPTED: "accepted your answer to",
   GROUP_TEST: "shared a test:",
+  // Never names the reporter: the actor is left empty, so it reads "Someone reported".
+  REPORT: "reported",
 } as const;
 
-/** Mentions, replies, accepted answers and new group tests. */
+/** Mentions, replies, accepted answers, new group tests, and reports for squad staff. */
 export default async function NotificationsPage() {
   const user = await requireUser();
   const items = await notificationService.list(user);
@@ -42,6 +44,7 @@ export default async function NotificationsPage() {
             when: timeAgo(n.createdAt, now, user.timezone),
             unread: !n.readAt,
             actor: n.actor,
+            report: n.kind === "REPORT",
           }))}
         />
       )}

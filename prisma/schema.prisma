@@ -1536,6 +1536,8 @@ enum NotificationKind {
   REPLY
   ACCEPTED
   GROUP_TEST
+  /// Something in a squad was reported; sent to its owner, admins and moderators.
+  REPORT
 }
 
 /// A thread in a group: a discussion, or a question tagged with a topic.

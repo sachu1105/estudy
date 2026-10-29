@@ -21,10 +21,21 @@ const tab = (page: Page, name: string | RegExp) =>
     .getByRole("navigation", { name: "Squad" })
     .getByRole("link", { name, exact: typeof name === "string" });
 
-/** A channel or page of the squad, by way of its channel list (on phones, the squad page). */
+/** Members, the study room and the rank live in the squad menu, on the squad's name. */
+const SQUAD_PAGES = ["Members", "Study room", "Squad rank"];
+async function squadPage(page: Page, name: string) {
+  await page
+    .getByRole("button", { name: /^More for / })
+    .first()
+    .click();
+  await page.getByRole("menuitem", { name, exact: true }).click();
+}
+
+/** A channel or page of the squad, by way of its channel list or menu (on phones, the squad page). */
 async function open(page: Page, groupUrl: string, name: string) {
   await page.goto(groupUrl);
-  await tab(page, name).click();
+  if (SQUAD_PAGES.includes(name)) await squadPage(page, name);
+  else await tab(page, name).click();
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
 }
 
@@ -81,7 +92,7 @@ test.describe("groups", () => {
     // Made like an older squad: with the questions, material, links and tests channels.
     await addClassicChannels(groupUrl.split("/").pop()!);
 
-    await tab(page, "Members").click();
+    await squadPage(page, "Members");
     await page.getByRole("button", { name: "New invite" }).click();
     const code = (await page
       .locator("li .font-mono")
@@ -224,13 +235,15 @@ test.describe("groups", () => {
     await expect(asker.getByText("Request sent").first()).toBeVisible();
     expect(await noSideScroll(asker)).toBeLessThanOrEqual(0);
 
-    await tab(page, "Members").click();
+    await squadPage(page, "Members");
     await expect(page.getByText("Degree level")).toBeVisible();
     await page.getByRole("button", { name: "Let in" }).click();
     // The request leaves the list once they are in.
     await expect(page.getByText("Degree level")).toHaveCount(0);
     await asker.reload();
-    await expect(tab(asker, "Members")).toBeVisible();
+    await expect(
+      asker.getByRole("button", { name: `More for Ask first ${tag}` }).first(),
+    ).toBeVisible();
     await asker.context().close();
   });
 
@@ -293,6 +306,14 @@ test.describe("groups", () => {
       .click();
     await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
     const groupUrl = page.url();
+
+    // Its owner finds it apart from the squads to join, with a way to open it.
+    await page.goto(`/groups/discover?q=${encodeURIComponent(tag)}`);
+    const yours = page.getByRole("region", { name: "Squads you're in" });
+    await expect(yours.getByRole("link", { name: "Open" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: `Join Findable ${tag}` }),
+    ).toHaveCount(0);
 
     const finder = await person(
       browser,
@@ -411,5 +432,67 @@ test.describe("groups", () => {
     await page.reload();
     await expect(page.getByText("(you)")).toBeVisible();
     await expect(page.getByText("20 min")).toBeVisible();
+  });
+
+  test("Squads reopens the last squad, and the rail makes, joins and finds squads", async ({
+    page,
+  }) => {
+    const tag = `${test.info().project.name}${Date.now()}`;
+    await seedAndLogin(page, `glast-${test.info().project.name}`);
+
+    // Nobody's squads yet: a welcome with the ways in.
+    await page.goto("/groups");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Study with a squad" }),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    const make = async (name: string) => {
+      await page.getByRole("button", { name: "Create squad" }).click();
+      await page.getByLabel("Name").fill(name);
+      await page
+        .getByRole("dialog")
+        .getByRole("button", { name: "Create squad" })
+        .click();
+      await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+      return page.url();
+    };
+    const first = await make(`First ${tag}`);
+    // The second comes from the rail's +, which can also join with a code instead.
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByRole("button", { name: "Join a squad" }).click();
+    await expect(page.getByLabel("Invite code")).toBeVisible();
+    await page.getByRole("button", { name: "Back" }).click();
+    await page.getByLabel("Name").fill(`Second ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: `Second ${tag}` }),
+    ).toBeVisible();
+
+    // Squads opens back on the squad open last.
+    await page.goto(first);
+    await expect(
+      page.getByRole("heading", { level: 1, name: `First ${tag}` }),
+    ).toBeVisible();
+    // Noted once the page is live.
+    await expect
+      .poll(
+        async () =>
+          (await page.context().cookies()).find((c) => c.name === "last-squad")
+            ?.value,
+      )
+      .toBe(first.split("/").pop());
+    await page.goto("/groups");
+    await expect(page).toHaveURL(first);
+
+    // Discover sits beside the rail.
+    await page.getByRole("link", { name: "Find a squad" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Find your squad" }),
+    ).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
   });
 });

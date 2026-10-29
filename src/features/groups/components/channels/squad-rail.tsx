@@ -1,13 +1,16 @@
 "use client";
 
-import { Compass, LayoutGrid } from "lucide-react";
+import { Compass, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
 import { Tooltip } from "@/components/ui/tooltip";
 import { squadCover } from "@/lib/squads/cover";
 import { cn } from "@/lib/utils/cn";
+
+import { CreateGroupDialog } from "../create-group-dialog";
 
 function initials(name: string) {
   const words = name.trim().split(/\s+/).filter(Boolean);
@@ -25,17 +28,41 @@ const tile = (active: boolean) =>
     active ? "rounded-xl" : "rounded-3xl hover:rounded-xl",
   );
 
+/** The bar left of an active tile, as in Discord: tall for open, a dot for new messages. */
+function Marker({ active, unread }: { active: boolean; unread?: boolean }) {
+  return active || unread ? (
+    <span
+      aria-hidden
+      className={cn(
+        "absolute top-1/2 -left-3 w-1 -translate-y-1/2 rounded-r-full bg-ink",
+        active ? "h-8" : "h-2",
+      )}
+    />
+  ) : null;
+}
+
 /**
- * The squads you're in, one tile each, to jump between them. Always there from md; on a
- * phone only on a squad's own page, beside its channel list, as in Discord.
+ * The squads you're in, one tile each, to jump between them, then making a squad and
+ * finding one, as in Discord. Always there from md; on a phone only on a squad's own
+ * page, beside its channel list.
  */
 export function SquadRail({
   squads,
+  exams,
+  atLimit,
+  canCreate = true,
 }: {
   squads: { id: string; name: string; cover?: unknown; unread?: boolean }[];
+  /** For the new squad's exam. */
+  exams: { id: string; name: string }[];
+  /** Shown in place of the form once someone has made every squad their plan allows. */
+  atLimit?: ReactNode;
+  /** Off where the page beside it has its own way to make a squad (the welcome). */
+  canCreate?: boolean;
 }) {
   const pathname = usePathname();
-  const squadHome = /^\/groups\/[^/]+$/.test(pathname);
+  const squadHome = /^\/groups\/[0-9a-f-]{36}$/.test(pathname);
+  const discovering = pathname.startsWith("/groups/discover");
   return (
     <nav
       aria-label="Your squads"
@@ -46,37 +73,17 @@ export function SquadRail({
         squadHome ? "flex" : "hidden",
       )}
     >
-      <Tooltip content="All squads" side="right">
-        <Link
-          href="/groups"
-          aria-label="All squads"
-          className={cn(
-            tile(pathname === "/groups"),
-            pathname === "/groups"
-              ? "bg-accent-soft text-accent-ink"
-              : "bg-surface-muted text-ink-muted hover:text-ink",
-          )}
-        >
-          <LayoutGrid className="size-5" aria-hidden />
-        </Link>
-      </Tooltip>
-      <span aria-hidden className="h-px w-8 bg-border" />
       {squads.map((s) => {
         const active =
           pathname === `/groups/${s.id}` ||
           pathname.startsWith(`/groups/${s.id}/`);
         return (
           // The tile clips its art, so the active marker sits outside it.
-          <span key={s.id} className="relative grid place-items-center">
-            {active || s.unread ? (
-              <span
-                aria-hidden
-                className={cn(
-                  "absolute top-1/2 -left-3 w-1 -translate-y-1/2 rounded-r-full bg-ink",
-                  active ? "h-8" : "h-2",
-                )}
-              />
-            ) : null}
+          <span
+            key={s.id}
+            className="relative grid shrink-0 place-items-center"
+          >
+            <Marker active={active} unread={s.unread} />
             <Tooltip content={s.name} side="right">
               <Link
                 href={`/groups/${s.id}`}
@@ -100,19 +107,49 @@ export function SquadRail({
           </span>
         );
       })}
-      <span aria-hidden className="h-px w-8 shrink-0 bg-border" />
-      <Tooltip content="Find a squad" side="right">
-        <Link
-          href="/groups/discover"
-          aria-label="Find a squad"
-          className={cn(
-            tile(false),
-            "shrink-0 bg-surface-muted text-ink-muted hover:text-ink",
-          )}
-        >
-          <Compass className="size-5" aria-hidden />
-        </Link>
-      </Tooltip>
+      {squads.length ? (
+        <span aria-hidden className="h-px w-8 shrink-0 bg-border" />
+      ) : null}
+      {canCreate ? (
+        <Tooltip content="Create a squad" side="right">
+          <span className="grid shrink-0 place-items-center">
+            <CreateGroupDialog
+              exams={exams}
+              atLimit={atLimit}
+              trigger={
+                <button
+                  type="button"
+                  aria-label="Create squad"
+                  className={cn(
+                    tile(false),
+                    "cursor-pointer bg-surface-muted text-ink-muted hover:bg-accent hover:text-on-accent",
+                  )}
+                >
+                  <Plus className="size-5" aria-hidden />
+                </button>
+              }
+            />
+          </span>
+        </Tooltip>
+      ) : null}
+      <span className="relative grid shrink-0 place-items-center">
+        <Marker active={discovering} />
+        <Tooltip content="Find a squad" side="right">
+          <Link
+            href="/groups/discover"
+            aria-label="Find a squad"
+            aria-current={discovering ? "page" : undefined}
+            className={cn(
+              tile(discovering),
+              discovering
+                ? "bg-accent text-on-accent"
+                : "bg-surface-muted text-ink-muted hover:bg-accent hover:text-on-accent",
+            )}
+          >
+            <Compass className="size-5" aria-hidden />
+          </Link>
+        </Tooltip>
+      </span>
     </nav>
   );
 }

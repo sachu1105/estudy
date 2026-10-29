@@ -3,6 +3,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import {
+  SquadColumn,
+  SquadShell,
+} from "@/features/groups/components/channels/squad-shell";
 import { requireUser } from "@/server/auth/session";
 import { groupService } from "@/server/services/groups";
 
@@ -19,16 +23,20 @@ export default async function JoinByLink({
     : null;
   if (result?.ok) redirect(`/groups/${result.groupId}`);
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
-      <h1>That invite doesn&apos;t work</h1>
-      <p className="text-body text-ink-muted">
-        {result && !result.ok
-          ? result.message
-          : "Check the link, or ask for a new invite."}
-      </p>
-      <Button asChild variant="primary">
-        <Link href="/groups">Go to squads</Link>
-      </Button>
-    </div>
+    <SquadShell user={user}>
+      <SquadColumn>
+        <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
+          <h1>That invite doesn&apos;t work</h1>
+          <p className="text-body text-ink-muted">
+            {result && !result.ok
+              ? result.message
+              : "Check the link, or ask for a new invite."}
+          </p>
+          <Button asChild variant="primary">
+            <Link href="/groups">Go to squads</Link>
+          </Button>
+        </div>
+      </SquadColumn>
+    </SquadShell>
   );
 }

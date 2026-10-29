@@ -103,9 +103,7 @@ export function InviteRow({
             <Tick on={copied === "code"} Icon={Copy} />
           </span>
         </button>
-        <p className="text-small text-ink-muted">
-          {details(invite, timeZone)}
-        </p>
+        <p className="text-small text-ink-muted">{details(invite, timeZone)}</p>
       </div>
       <div className="-mx-2 flex flex-wrap items-center gap-1 sm:mx-0">
         <Button variant="ghost" onClick={() => copy("link")}>

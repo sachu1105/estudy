@@ -43,7 +43,10 @@ export function SquadBanner({
 }) {
   return (
     <div
-      className={cn("relative isolate h-32 shrink-0 overflow-hidden", className)}
+      className={cn(
+        "relative isolate h-36 shrink-0 overflow-hidden",
+        className,
+      )}
     >
       <PodCover cover={squadCover(group)} className="absolute inset-0 -z-10" />
       {/* A flat dim, so white type reads on any banner, light ones too. */}

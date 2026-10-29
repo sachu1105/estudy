@@ -3,14 +3,17 @@ import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
-import { BackLink } from "@/features/pods/components/back-link";
 import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
 import { CHANNEL_ICONS } from "@/features/groups/components/channels/channel-icon";
 import {
   SquadBanner,
   squadFacts,
 } from "@/features/groups/components/channels/squad-banner";
-import { SquadRail } from "@/features/groups/components/channels/squad-rail";
+import { RememberSquad } from "@/features/groups/components/channels/remember-squad";
+import {
+  SquadColumn,
+  SquadShell,
+} from "@/features/groups/components/channels/squad-shell";
 import { SquadLive } from "@/features/groups/components/chat/squad-live";
 import { JoinButton } from "@/features/groups/components/join-controls";
 import { isId } from "@/lib/ids";
@@ -39,34 +42,30 @@ export default async function GroupLayout({
   if (!view) notFound();
   const { group, role } = view;
 
-  if (!role) return <Visitor user={user} view={view} />;
+  if (!role)
+    return (
+      <SquadShell user={user}>
+        <SquadColumn>
+          <Visitor user={user} view={view} />
+        </SquadColumn>
+      </SquadShell>
+    );
 
-  const [layout, mine, unread, unreadSquads, subjects] = await Promise.all([
+  const [layout, unread, subjects] = await Promise.all([
     channelService.layout(user, groupId),
-    groupService.mine(user),
     chatService.unread(user, groupId),
-    chatService.squadsWithUnread(user),
     channelService.subjects(user, groupId),
   ]);
   if (!layout) notFound();
   const categories = layout.categories.map(({ id, name }) => ({ id, name }));
 
   return (
-    <div
-      data-bleed
-      data-squad-screen
-      className="flex min-h-dvh flex-1 has-[[data-focus-view]]:min-h-0 md:h-full md:min-h-0"
-    >
+    <SquadShell user={user} screen>
       <SquadLive groupId={group.id} meId={user.id} />
-      <SquadRail
-        squads={mine.map((m) => ({
-          ...m.group,
-          unread: unreadSquads.has(m.group.id),
-        }))}
-      />
+      <RememberSquad groupId={group.id} />
       <aside
         aria-label={`${group.name} channels`}
-        className="hidden w-64 shrink-0 flex-col border-r border-border md:flex"
+        className="hidden w-72 shrink-0 flex-col border-r border-border md:flex"
       >
         <SquadBanner
           group={group}
@@ -102,7 +101,7 @@ export default async function GroupLayout({
           {children}
         </div>
       </div>
-    </div>
+    </SquadShell>
   );
 }
 
@@ -121,7 +120,6 @@ async function Visitor({
 
   return (
     <>
-      <BackLink href="/groups" label="Squads" />
       <PageHeader title={group.name} description={facts} />
       {group.visibility === "PRIVATE" ? (
         <Badge tone="outline" className="-mt-6 mb-6">

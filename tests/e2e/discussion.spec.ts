@@ -10,10 +10,14 @@ const noSideScroll = (page: Page) =>
       document.documentElement.clientWidth,
   );
 
-const tab = (page: Page, name: string) =>
-  page
-    .getByRole("navigation", { name: "Squad" })
-    .getByRole("link", { name, exact: true });
+/** Members, the study room and the rank live in the squad menu, on the squad's name. */
+async function squadPage(page: Page, name: string) {
+  await page
+    .getByRole("button", { name: /^More for / })
+    .first()
+    .click();
+  await page.getByRole("menuitem", { name, exact: true }).click();
+}
 
 async function person(browser: Browser, label: string) {
   const context = await browser.newContext({
@@ -51,7 +55,7 @@ test.describe("group discussion", () => {
     const groupUrl = page.url();
     // Made like an older squad: with the questions, material, links and tests channels.
     await addClassicChannels(groupUrl.split("/").pop()!);
-    await tab(page, "Members").click();
+    await squadPage(page, "Members");
     await page.getByRole("button", { name: "New invite" }).click();
     const code = (await page
       .locator("li .font-mono")

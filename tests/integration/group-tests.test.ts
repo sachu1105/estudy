@@ -10,11 +10,13 @@ import { groupRepository } from "@/server/repositories/group-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
 import { refreshTokenRepository } from "@/server/repositories/refresh-token-repository";
+import { reportRepository } from "@/server/repositories/report-repository";
 import { syllabusRepository } from "@/server/repositories/syllabus-repository";
 import { createAdminService } from "@/server/services/admin/admin-service";
 import { createChannelService } from "@/server/services/groups/channel-service";
 import { createGroupService } from "@/server/services/groups/group-service";
 import { createGroupTests } from "@/server/services/groups/group-tests";
+import { createSquadReports } from "@/server/services/groups/squad-reports";
 
 import { addClassicChannels, resetDatabase } from "./helpers";
 
@@ -26,6 +28,14 @@ const groups = createGroupService({
   clock,
   limit: () => 10,
   newCode: () => crypto.randomUUID().slice(0, 8),
+});
+const reports = createSquadReports({
+  reports: reportRepository,
+  save: (data) => groupRepository.report(data),
+  groups,
+  isMember: async (g, u) => !!(await groupRepository.membership(g, u)),
+  notify: async () => {},
+  clock,
 });
 const tests = createGroupTests({
   groups,
@@ -186,8 +196,8 @@ describe("group tests", () => {
     await addClassicChannels(g);
     const r1 = await user("R1");
     const r2 = await user("R2");
-    await groups.report(r1, { type: "GROUP", id: g, groupId: g }, "spam", null);
-    await groups.report(
+    await reports.file(r1, { type: "GROUP", id: g, groupId: g }, "spam", null);
+    await reports.file(
       r2,
       { type: "GROUP", id: g, groupId: g },
       "abuse",

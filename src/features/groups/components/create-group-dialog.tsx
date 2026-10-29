@@ -1,69 +1,46 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useTransition, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input, Label } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/toast";
-import {
-  asksToJoin,
-  SQUAD_ACCESS,
-  type SquadAccess,
-} from "@/lib/squads/access";
-import {
-  SQUAD_TEMPLATES,
-  TEMPLATE_KEYS,
-  type TemplateKey,
-} from "@/lib/squads/templates";
 
-import { createGroupAction } from "../actions";
-import { ChoiceRows } from "./choice-rows";
-import { SquadAccessField } from "./squad-access-field";
+import { CreateSquadForm } from "./create-squad-form";
+import { JoinCodeForm } from "./join-controls";
 
-const TEMPLATES = TEMPLATE_KEYS.map((value) => ({
-  value,
-  label: SQUAD_TEMPLATES[value].label,
-  description: SQUAD_TEMPLATES[value].description,
-}));
-
-/** A new squad: who it's for, the channels it starts with, and who can join. */
+/**
+ * A new squad: who it's for, the channels it starts with, and who can join. As in
+ * Discord, someone holding an invite can switch to joining with its code instead.
+ */
 export function CreateGroupDialog({
   exams,
   trigger,
+  atLimit,
 }: {
   exams: { id: string; name: string }[];
-  /** Replaces the default button, so the same dialog can open from a grid tile. */
+  /** Replaces the default button, so the same dialog can open from a rail tile. */
   trigger?: ReactNode;
+  /** Shown in place of the form once someone has made every squad their plan allows. */
+  atLimit?: ReactNode;
 }) {
-  const router = useRouter();
+  const [joining, setJoining] = useState(false);
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [examId, setExamId] = useState("none");
-  const [template, setTemplate] = useState<TemplateKey>("EXAM");
-  const [access, setAccess] = useState<SquadAccess>("OPEN");
-  const [question, setQuestion] = useState("");
-  const [pending, start] = useTransition();
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setJoining(false);
+      }}
+    >
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="primary">
@@ -72,92 +49,59 @@ export function CreateGroupDialog({
         )}
       </DialogTrigger>
       <DialogContent>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            start(async () => {
-              const result = await createGroupAction({
-                name,
-                description,
-                examId: examId === "none" ? null : examId,
-                visibility: SQUAD_ACCESS[access].visibility,
-                joinMode: SQUAD_ACCESS[access].joinMode,
-                joinQuestion: asksToJoin(access) ? question : "",
-                template,
-              });
-              if (!result.ok) return void toast.error(result.error);
-              setOpen(false);
-              router.push(`/groups/${result.groupId}`);
-            });
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>Create a squad</DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="group-name">Name</Label>
-            <Input
-              id="group-name"
-              value={name}
-              maxLength={80}
-              placeholder="LDC 2026 Kollam"
-              onChange={(e) => setName(e.target.value)}
+        {joining ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Join a squad</DialogTitle>
+              <DialogDescription>
+                Type the invite code a friend sent you.
+              </DialogDescription>
+            </DialogHeader>
+            <JoinCodeForm
+              footer={
+                <Button variant="ghost" onClick={() => setJoining(false)}>
+                  Back
+                </Button>
+              }
             />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="group-description">
-              What it&apos;s for (optional)
-            </Label>
-            <Textarea
-              id="group-description"
-              value={description}
-              maxLength={500}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="group-exam">Exam</Label>
-            <Select value={examId} onValueChange={setExamId}>
-              <SelectTrigger id="group-exam">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Any exam</SelectItem>
-                {exams.map((e) => (
-                  <SelectItem key={e.id} value={e.id}>
-                    {e.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-small font-medium">Start with</span>
-            <ChoiceRows
-              label="Start with"
-              options={TEMPLATES}
-              value={template}
-              onChange={setTemplate}
-            />
-          </div>
-          <SquadAccessField
-            access={access}
-            onAccessChange={setAccess}
-            question={question}
-            onQuestionChange={setQuestion}
-          />
-          <DialogFooter>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={pending || name.trim().length < 3}
-            >
-              Create squad
-            </Button>
-          </DialogFooter>
-        </form>
+          </>
+        ) : atLimit ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Create your squad</DialogTitle>
+            </DialogHeader>
+            {atLimit}
+            <HaveInvite onJoin={() => setJoining(true)} />
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Create your squad</DialogTitle>
+              <DialogDescription>
+                Where you and your friends study together.
+              </DialogDescription>
+            </DialogHeader>
+            <CreateSquadForm exams={exams} onCreated={() => setOpen(false)} />
+            <HaveInvite onJoin={() => setJoining(true)} />
+          </>
+        )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** The foot of the dialog, as in Discord: holding an invite, join instead. */
+function HaveInvite({ onJoin }: { onJoin: () => void }) {
+  return (
+    <p className="-mt-1 flex flex-wrap items-center justify-center gap-x-1 text-small text-ink-muted">
+      Have an invite already?
+      <button
+        type="button"
+        onClick={onJoin}
+        className="inline-flex min-h-11 cursor-pointer items-center rounded-chip px-1 font-medium text-accent-ink hover:underline md:min-h-8"
+      >
+        Join a squad
+      </button>
+    </p>
   );
 }

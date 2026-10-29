@@ -435,7 +435,7 @@ export function createGroupService(deps: GroupDeps) {
       return { ok: true };
     },
 
-    // ---- Blocks and reports ---------------------------------------------------------
+    // ---- Blocks (reports: squad-reports) ---------------------------------------------
 
     async block(
       user: User,
@@ -449,32 +449,6 @@ export function createGroupService(deps: GroupDeps) {
       return { ok: true };
     },
     blockedIds: (user: User) => deps.groups.blockedIds(user.id),
-
-    report: (
-      user: User,
-      target: {
-        type:
-          | "GROUP"
-          | "GROUP_ITEM"
-          | "GROUP_TEST"
-          | "USER"
-          | "POST"
-          | "REPLY"
-          | "MESSAGE";
-        id: string;
-        groupId: string | null;
-      },
-      reason: string,
-      note: string | null,
-    ) =>
-      deps.groups.report({
-        reporterId: user.id,
-        targetType: target.type,
-        targetId: target.id,
-        groupId: target.groupId,
-        reason,
-        note,
-      }),
   };
 }
 

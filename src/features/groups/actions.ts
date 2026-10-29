@@ -16,6 +16,7 @@ import {
   groupTests,
   materialService,
   squadCoverService,
+  squadReports,
 } from "@/server/services/groups";
 
 // Every action: requireUser() (rule 9), zod (rule 11), rate limited (rule 13). The
@@ -300,20 +301,25 @@ export async function blockUserAction(input: unknown): Promise<Result> {
   return done(await groupService.block(g.user, d.userId, d.on), "/groups");
 }
 
-/** Reports go to the site admins' queue (every piece of user content, milestone 13). */
+const REPORT_TYPES = [
+  "GROUP",
+  "GROUP_ITEM",
+  "GROUP_TEST",
+  "USER",
+  "POST",
+  "REPLY",
+  "MESSAGE",
+] as const;
+
+/**
+ * Reports go to the site admins' queue, and anything in a squad to its staff too
+ * (every piece of user content, milestone 13).
+ */
 export async function reportAction(input: unknown): Promise<Result> {
   const g = await guard(
     input,
     z.object({
-      type: z.enum([
-        "GROUP",
-        "GROUP_ITEM",
-        "GROUP_TEST",
-        "USER",
-        "POST",
-        "REPLY",
-        "MESSAGE",
-      ]),
+      type: z.enum(REPORT_TYPES),
       targetId: id,
       groupId: id.nullable(),
       reason: z.enum(["spam", "abuse", "copyright", "wrong", "other"]),
@@ -322,19 +328,49 @@ export async function reportAction(input: unknown): Promise<Result> {
   );
   if (g.fail) return g.fail;
   const d = g.data as {
-    type: "GROUP";
+    type: (typeof REPORT_TYPES)[number];
     targetId: string;
     groupId: string | null;
     reason: string;
     note: string | null;
   };
-  await groupService.report(
-    g.user,
-    { type: d.type, id: d.targetId, groupId: d.groupId },
-    d.reason,
-    d.note || null,
+  return done(
+    await squadReports.file(
+      g.user,
+      { type: d.type, id: d.targetId, groupId: d.groupId },
+      d.reason,
+      d.note || null,
+    ),
   );
-  return { ok: true };
+}
+
+/** A squad's staff take reported content down, mark a report handled, or dismiss it. */
+export async function decideSquadReportAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({
+      groupId: id,
+      type: z.enum(REPORT_TYPES),
+      targetId: id,
+      decision: z.enum(["remove", "resolve", "dismiss"]),
+    }),
+  );
+  if (g.fail) return g.fail;
+  const d = g.data as {
+    groupId: string;
+    type: (typeof REPORT_TYPES)[number];
+    targetId: string;
+    decision: "remove" | "resolve" | "dismiss";
+  };
+  return done(
+    await squadReports.decide(
+      g.user,
+      d.groupId,
+      { type: d.type, id: d.targetId },
+      d.decision,
+    ),
+    `/groups/${d.groupId}`,
+  );
 }
 
 // ---- Shared material (milestone 13) ------------------------------------------------

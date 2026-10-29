@@ -1,37 +1,42 @@
-import { Check, FileText, Timer } from "lucide-react";
-import Link from "next/link";
-
-import { Badge } from "@/components/ui/badge";
+import { PodTile } from "@/components/blocks/pod-tile";
 import { timeAgo } from "@/lib/format/ago";
-import { markedCount, OMR_QUESTIONS, type Marks } from "@/lib/omr/marks";
+import { BLANK, markedCount, OMR_QUESTIONS, type Marks } from "@/lib/omr/marks";
 import type { TimerView } from "@/lib/omr/timer";
+import { cn } from "@/lib/utils/cn";
 
 import { SheetMenu } from "./sheet-menu";
 
-/** Where a paper stands: not touched, being worked on, or every answer marked. */
-function Status({ marked, timer }: { marked: number; timer: TimerView }) {
-  if (marked === OMR_QUESTIONS)
-    return (
-      <Badge tone="success">
-        <Check aria-hidden /> All marked
-      </Badge>
-    );
-  if (timer.running)
-    return (
-      <Badge tone="accent">
-        <Timer aria-hidden /> Timer running
-      </Badge>
-    );
-  return marked > 0 ? (
-    <Badge tone="outline">In progress</Badge>
-  ) : (
-    <Badge>Not started</Badge>
+/** The paper's own answer sheet as its cover: a bubble per question, filled once marked. */
+function SheetArt({ marks }: { marks: Marks }) {
+  return (
+    // A sheet tucked into the folder, clear of the menu in the corner.
+    <span className="block size-full bg-surface-muted pt-4 pr-16 pl-5">
+      <span className="grid h-full max-w-72 -rotate-[1.5deg] grid-cols-20 content-start gap-1 rounded-t-chip border border-border bg-surface p-3 shadow-sm">
+        {marks.map((mark, i) => (
+          <span
+            key={i}
+            className={cn(
+              "aspect-square rounded-full",
+              mark === BLANK ? "border border-ink-subtle/50" : "bg-accent",
+            )}
+          />
+        ))}
+      </span>
+    </span>
   );
 }
 
+/** Where a paper stands: not touched, being worked on, or every answer marked. */
+function status(marked: number, timer: TimerView) {
+  if (marked === OMR_QUESTIONS) return "All marked";
+  if (timer.running) return "Timer running";
+  return marked > 0 ? "In progress" : "Not started";
+}
+
 /**
- * A question paper on the Tests page: its name, where it stands, and how much of the
- * answer sheet is marked. The card opens it; the menu in its corner renames or deletes.
+ * A question paper on the Tests page, shaped like a pod: its answer sheet on top, then
+ * its name, where it stands and how much is marked. The menu in the corner renames or
+ * deletes it.
  */
 export function PaperCard({
   sheet,
@@ -49,53 +54,27 @@ export function PaperCard({
   timeZone: string;
 }) {
   const marked = markedCount(sheet.marks);
-  const percent = Math.round((marked / OMR_QUESTIONS) * 100);
 
   return (
     <li className="relative flex">
-      <Link
+      <PodTile
         href={`/omr/${sheet.id}`}
-        className="flex w-full flex-col gap-4 rounded-card border border-border bg-surface p-4 transition-[transform,box-shadow] duration-[120ms] hover:-translate-y-px hover:shadow-md focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
-      >
-        <span className="flex items-start gap-3 pr-10">
-          <span className="grid size-10 shrink-0 place-items-center rounded-control bg-surface-muted text-ink-muted">
-            <FileText className="size-5" aria-hidden />
-          </span>
-          <span className="flex min-w-0 flex-col items-start gap-1.5">
-            {/* File names come with underscores; the words read better without. */}
-            <span className="line-clamp-2 text-body font-medium break-words">
-              {sheet.title.replaceAll("_", " ")}
-            </span>
-            <Status marked={marked} timer={sheet.timer} />
-          </span>
-        </span>
-        <span className="mt-auto flex flex-col gap-2">
-          <span className="flex items-baseline justify-between gap-2 text-small text-ink-muted">
-            <span>
-              <span className="font-mono text-ink tabular-nums">
-                {marked}/{OMR_QUESTIONS}
-              </span>{" "}
-              marked
-            </span>
-            <span>{timeAgo(sheet.updatedAt, now, timeZone)}</span>
-          </span>
-          <span
-            role="progressbar"
-            aria-label="Answers marked"
-            aria-valuenow={percent}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            className="block h-1.5 overflow-hidden rounded-full bg-surface-muted"
-          >
-            <span
-              className="block h-full rounded-full bg-accent"
-              style={{ width: `${percent}%` }}
-            />
-          </span>
-        </span>
-      </Link>
+        // File names come with underscores; the words read better without.
+        title={sheet.title.replaceAll("_", " ")}
+        subtitle={`${status(marked, sheet.timer)} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
+        art={<SheetArt marks={sheet.marks} />}
+        stat={{ value: marked, unit: `of ${OMR_QUESTIONS} marked` }}
+        aside={
+          marked === OMR_QUESTIONS
+            ? "Review"
+            : marked > 0 || sheet.timer.running
+              ? "Continue"
+              : "Start"
+        }
+        progress={(marked / OMR_QUESTIONS) * 100}
+      />
       {/* Beside the link, not in it: a menu can't sit inside a link. */}
-      <div className="absolute top-2 right-2">
+      <div className="absolute top-2 right-2 rounded-control bg-surface/90 backdrop-blur-sm">
         <SheetMenu id={sheet.id} title={sheet.title} />
       </div>
     </li>

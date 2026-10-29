@@ -19,6 +19,7 @@ import { messageRepository } from "@/server/repositories/message-repository";
 import { randomIds } from "@/lib/ids";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
+import { reportRepository } from "@/server/repositories/report-repository";
 import { userRepository } from "@/server/repositories/user-repository";
 import { storage } from "@/server/storage";
 
@@ -29,6 +30,7 @@ import { createGroupService } from "./group-service";
 import { createSquadCoverService } from "./squad-cover-service";
 import { createGroupTests } from "./group-tests";
 import { createMaterialService } from "./material-service";
+import { createSquadReports } from "./squad-reports";
 
 /** No 0/O or 1/I/L: codes get read out and typed by hand. */
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -53,6 +55,16 @@ export const groupService = createGroupService({
   limit: (user, feature) => limit(user, feature),
   ownerLimit,
   newCode,
+});
+
+export const squadReports = createSquadReports({
+  reports: reportRepository,
+  save: (data) => groupRepository.report(data),
+  groups: groupService,
+  isMember: async (groupId, userId) =>
+    !!(await groupRepository.membership(groupId, userId)),
+  notify: (rows) => notificationService.notify(rows),
+  clock: systemClock,
 });
 
 export const squadCoverService = createSquadCoverService({

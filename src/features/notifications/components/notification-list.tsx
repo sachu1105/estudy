@@ -1,5 +1,6 @@
 "use client";
 
+import { Flag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 
@@ -18,6 +19,8 @@ export type NotificationView = {
   when: string;
   unread: boolean;
   actor: { displayName: string; avatarUrl: string | null } | null;
+  /** A report for a squad's staff: nobody is named, so a flag stands in for a face. */
+  report?: boolean;
 };
 
 /** The inbox. Opening one marks it read; "Mark all read" clears the rest at once. */
@@ -69,12 +72,18 @@ export function NotificationList({ items }: { items: NotificationView[] }) {
                 n.unread && "bg-accent-soft/50",
               )}
             >
-              <Avatar
-                name={n.actor?.displayName ?? "?"}
-                src={n.actor?.avatarUrl ?? undefined}
-                size="sm"
-                className="mt-0.5"
-              />
+              {n.report ? (
+                <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-surface-muted text-ink-muted">
+                  <Flag className="size-3.5" aria-hidden />
+                </span>
+              ) : (
+                <Avatar
+                  name={n.actor?.displayName ?? "?"}
+                  src={n.actor?.avatarUrl ?? undefined}
+                  size="sm"
+                  className="mt-0.5"
+                />
+              )}
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-body wrap-break-word">
                   {n.text} <span className="font-medium">{n.subject}</span>

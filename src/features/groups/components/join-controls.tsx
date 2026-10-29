@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -77,54 +77,69 @@ export function JoinButton({
   );
 }
 
-/** Type an invite code a friend gave you. */
-export function JoinCodeDialog() {
+/** Type an invite code a friend gave you; joining opens the squad. */
+export function JoinCodeForm({ footer }: { footer?: ReactNode }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
   const [pending, start] = useTransition();
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <form
+      className="flex flex-col gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        start(async () => {
+          const result = await joinByCodeAction({ code });
+          if (!result.ok) return void toast.error(result.error);
+          router.push(`/groups/${result.groupId}`);
+        });
+      }}
+    >
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="invite-code">Invite code</Label>
+        <Input
+          id="invite-code"
+          value={code}
+          maxLength={12}
+          autoCapitalize="characters"
+          placeholder="AX2RW67F"
+          className="font-mono uppercase"
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <p className="text-small text-ink-muted">
+          The 8 letters and numbers a friend sent you. Opening their invite link
+          works too.
+        </p>
+      </div>
+      <DialogFooter>
+        {footer}
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={pending || code.trim().length < 6}
+        >
+          Join
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+/** Join with a code, from its own button. */
+export function JoinCodeDialog({
+  label = "Join with a code",
+}: {
+  label?: string;
+}) {
+  return (
+    <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary">Join with a code</Button>
+        <Button variant="secondary">{label}</Button>
       </DialogTrigger>
       <DialogContent>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            start(async () => {
-              const result = await joinByCodeAction({ code });
-              if (!result.ok) return void toast.error(result.error);
-              setOpen(false);
-              router.push(`/groups/${result.groupId}`);
-            });
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle>Join with a code</DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="invite-code">Invite code</Label>
-            <Input
-              id="invite-code"
-              value={code}
-              maxLength={12}
-              autoCapitalize="characters"
-              className="font-mono uppercase"
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={pending || code.trim().length < 6}
-            >
-              Join
-            </Button>
-          </DialogFooter>
-        </form>
+        <DialogHeader>
+          <DialogTitle>Join with a code</DialogTitle>
+        </DialogHeader>
+        <JoinCodeForm />
       </DialogContent>
     </Dialog>
   );

@@ -122,8 +122,9 @@ test.describe("question papers", () => {
     await page.getByRole("button", { name: "Leave and reset timer" }).click();
     await expect(page).toHaveURL(/\/tests$/);
     const papers = page.getByRole("list", { name: "Question papers" });
-    await expect(papers.getByText("LDC 2024 paper")).toBeVisible();
-    await expect(papers.getByText(/1\/100\s+marked/)).toBeVisible();
+    await expect(
+      papers.getByRole("link", { name: /LDC 2024 paper.*01\s*of 100 marked/ }),
+    ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
     await page.getByRole("button", { name: "More for LDC 2024 paper" }).click();
     await page.getByRole("menuitem", { name: "Delete paper" }).click();

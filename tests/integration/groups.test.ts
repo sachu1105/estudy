@@ -5,7 +5,9 @@ import { prisma } from "@/server/db";
 import { redis } from "@/server/redis";
 import { channelRepository } from "@/server/repositories/channel-repository";
 import { groupRepository } from "@/server/repositories/group-repository";
+import { reportRepository } from "@/server/repositories/report-repository";
 import { createGroupService } from "@/server/services/groups/group-service";
+import { createSquadReports } from "@/server/services/groups/squad-reports";
 
 import { resetDatabase } from "./helpers";
 
@@ -19,6 +21,14 @@ const groups = createGroupService({
   clock,
   limit: (_u, f) => (f === "groupsCreated" ? created : 10),
   newCode: () => `CODE${++code}`,
+});
+const reports = createSquadReports({
+  reports: reportRepository,
+  save: (data) => groupRepository.report(data),
+  groups,
+  isMember: async (g, u) => !!(await groupRepository.membership(g, u)),
+  notify: async () => {},
+  clock,
 });
 
 async function user(name: string) {
@@ -219,13 +229,13 @@ describe("groups", () => {
     const b = await user("B");
     await groups.block(a, b.id, true);
     expect((await groups.blockedIds(a)).has(b.id)).toBe(true);
-    await groups.report(
+    await reports.file(
       a,
       { type: "USER", id: b.id, groupId: null },
       "spam",
       null,
     );
-    await groups.report(
+    await reports.file(
       a,
       { type: "USER", id: b.id, groupId: null },
       "spam",

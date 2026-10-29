@@ -13,8 +13,10 @@ type PodTileProps = {
   title: string;
   subtitle?: string;
   /** A short tag on the cover, e.g. "Exam" or "Your pod". */
-  tag: string;
-  cover: Cover | PlaceholderCover;
+  tag?: string;
+  cover?: Cover | PlaceholderCover;
+  /** Art of the card's own in place of a cover (a question paper's answer sheet). */
+  art?: ReactNode;
   /** The focal number (or a short word) at the bottom left, and the words after it. */
   stat: { value: number | string; unit: string };
   /** A smaller fact at the bottom right. */
@@ -33,30 +35,38 @@ export function PodTile({
   subtitle,
   tag,
   cover,
+  art,
   stat,
   aside,
   progress,
 }: PodTileProps) {
+  const top =
+    "absolute inset-x-0 top-0 -z-10 h-32 transition-transform duration-[300ms] group-hover:scale-[1.03]";
   return (
     <Link
       href={href}
       className="group relative isolate flex min-h-60 w-full flex-col overflow-hidden rounded-card border border-border bg-surface shadow-sm transition-[transform,box-shadow] duration-[120ms] hover:-translate-y-px hover:shadow-md"
     >
-      <PodCover
-        cover={cover}
-        className="absolute inset-x-0 top-0 -z-10 h-32 transition-transform duration-[300ms] group-hover:scale-[1.03]"
-      />
-      <span
-        className={cn(
-          "absolute top-3 right-3 rounded-full px-2.5 py-0.5 text-small font-medium backdrop-blur-sm",
-          // White on a dark wash over art; ink on surface over the pale placeholder.
-          cover.kind === "placeholder"
-            ? "border border-border bg-surface/90 text-ink"
-            : "bg-black/30 text-white",
-        )}
-      >
-        {tag}
-      </span>
+      {art ? (
+        <span aria-hidden className={cn(top, "block")}>
+          {art}
+        </span>
+      ) : cover ? (
+        <PodCover cover={cover} className={top} />
+      ) : null}
+      {tag ? (
+        <span
+          className={cn(
+            "absolute top-3 right-3 rounded-full px-2.5 py-0.5 text-small font-medium backdrop-blur-sm",
+            // White on a dark wash over art; ink on surface over pale art.
+            cover && cover.kind !== "placeholder"
+              ? "bg-black/30 text-white"
+              : "border border-border bg-surface/90 text-ink",
+          )}
+        >
+          {tag}
+        </span>
+      ) : null}
 
       <span className="relative mt-20 flex flex-1 flex-col">
         {/* The folder shape: a tab on the left that slopes down into the body. */}

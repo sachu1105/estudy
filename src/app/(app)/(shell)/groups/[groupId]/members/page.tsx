@@ -8,6 +8,9 @@ import { SquadHeading } from "@/features/groups/components/channels/channel-head
 import { InvitesPanel } from "@/features/groups/components/invites-panel";
 import { JoinRequests } from "@/features/groups/components/join-requests";
 import { MemberMenu } from "@/features/groups/components/member-menu";
+import { SquadReports } from "@/features/groups/components/squad-reports";
+import { systemClock } from "@/lib/clock";
+import { timeAgo } from "@/lib/format/ago";
 import { isId } from "@/lib/ids";
 import {
   canManage,
@@ -16,7 +19,7 @@ import {
   ROLE_LABELS,
 } from "@/lib/squads/roles";
 import { requireUser } from "@/server/auth/session";
-import { groupService } from "@/server/services/groups";
+import { groupService, squadReports } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Members" };
 
@@ -28,10 +31,26 @@ export default async function MembersPage({
   const data = isId(groupId) ? await groupService.members(user, groupId) : null;
   if (!data) notFound();
   const manages = canManage(data.me.role);
+  // The squad's staff handle what members report in it.
+  const reports = canModerate(data.me.role)
+    ? await squadReports.list(user, groupId)
+    : null;
+  const now = systemClock.now();
 
   return (
     <div className="flex flex-col gap-8">
       <SquadHeading groupId={groupId} icon={Users} title="Members" />
+      {reports?.length ? (
+        <SquadReports
+          groupId={groupId}
+          reports={reports.map((r) => ({
+            ...r,
+            when: timeAgo(r.first, now, user.timezone),
+          }))}
+          canSetRole={manages}
+          canSetAdmin={data.me.role === "OWNER"}
+        />
+      ) : null}
       {manages ? (
         <>
           <JoinRequests requests={data.requests} />

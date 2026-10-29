@@ -23,9 +23,20 @@ const squadLink = (page: Page, name: string | RegExp) =>
     .getByRole("navigation", { name: "Squad" })
     .getByRole("link", { name, exact: typeof name === "string" });
 
+/** Members, the study room and the rank live in the squad menu, on the squad's name. */
+const SQUAD_PAGES = ["Members", "Study room", "Squad rank"];
+async function squadPage(page: Page, name: string) {
+  await page
+    .getByRole("button", { name: /^More for / })
+    .first()
+    .click();
+  await page.getByRole("menuitem", { name, exact: true }).click();
+}
+
 async function open(page: Page, groupUrl: string, name: string) {
   await page.goto(groupUrl);
-  await squadLink(page, name).click();
+  if (SQUAD_PAGES.includes(name)) await squadPage(page, name);
+  else await squadLink(page, name).click();
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
 }
 
@@ -71,7 +82,9 @@ test.describe("squad chat", () => {
         .getByRole("dialog")
         .getByRole("button", { name: "Create squad" })
         .click();
-      await expect(page).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+      // Squads reopens the last squad, so the URL already looks right: wait for the
+      // new one's name.
+      await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
       const url = page.url();
       await open(page, url, "Members");
       await page.getByRole("button", { name: "New invite" }).click();
@@ -365,5 +378,66 @@ test.describe("squad chat", () => {
     await expect(page.locator(`li#${id}`)).toHaveClass(/bg-accent-soft/);
     await expect(page.locator(`li#${id}`)).toBeInViewport();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+  });
+
+  test("a reported message reaches the squad's staff, without the reporter's name", async ({
+    page,
+    browser,
+  }) => {
+    test.setTimeout(150_000);
+    const project = test.info().project.name;
+    const tag = `${project}${Date.now()}`;
+
+    await seedAndLogin(page, `report-owner-${project}`);
+    await page.goto("/groups");
+    await page.getByRole("button", { name: "Create squad" }).click();
+    await page.getByLabel("Name").fill(`Reports ${tag}`);
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Create squad" })
+      .click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: `Reports ${tag}` }),
+    ).toBeVisible();
+    const groupUrl = page.url();
+    await open(page, groupUrl, "Members");
+    await page.getByRole("button", { name: "New invite" }).click();
+    const code = (await page.locator("li .font-mono").first().textContent())!;
+
+    // Two members: one writes something rude, the other reports it.
+    const writer = await person(browser, `report-writer-${project}`);
+    await writer.goto(`/groups/join/${code.trim()}`);
+    await expect(writer).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+    const reporter = await person(browser, `report-reporter-${project}`);
+    await reporter.goto(`/groups/join/${code.trim()}`);
+    await expect(reporter).toHaveURL(/\/groups\/[0-9a-f-]{36}$/);
+
+    await open(writer, groupUrl, "general");
+    await send(writer, `Buy followers cheap ${tag}`);
+    await open(reporter, groupUrl, "general");
+    await menuOf(reporter, `Buy followers cheap ${tag}`);
+    await reporter.getByRole("menuitem", { name: "Report message" }).click();
+    const dialog = reporter.getByRole("dialog");
+    await dialog.getByLabel("Details (optional)").fill("selling stuff");
+    await dialog.getByRole("button", { name: "Send report" }).click();
+    await expect(reporter.getByText("Reported. Thank you.")).toBeVisible();
+
+    // The owner hears of it, and nobody is named.
+    await page.goto("/notifications");
+    const note = page.getByRole("button", { name: /Someone reported/ }).first();
+    await expect(note).toContainText(`a message in Reports ${tag}`);
+    await note.click();
+    const reports = page.getByRole("region", { name: /^Reports/ });
+    await expect(reports.getByText(`Buy followers cheap ${tag}`)).toBeVisible();
+    await expect(reports.getByText("“selling stuff”")).toBeVisible();
+    await expect(reports.getByText(/report-reporter/)).toHaveCount(0);
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+
+    // Taken down: it leaves the queue, and the chat.
+    await reports.getByRole("button", { name: "Take it down" }).click();
+    await expect(page.getByText("Taken down")).toBeVisible();
+    await expect(page.getByRole("region", { name: /^Reports/ })).toHaveCount(0);
+    await writer.context().close();
+    await reporter.context().close();
   });
 });
