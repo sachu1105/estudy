@@ -293,6 +293,9 @@ neutral; the accent marks the one thing that matters.
   edge          #D3D3CB   the ledge under a secondary button
   streak        #F59E0B   streak flame and streak count ONLY
   streakSoft    #FEF3DC
+  gold          #C8961E   paid squads and paid channels ONLY (edge, glow, pass marks)
+  goldSoft      #FBF4E2
+  goldInk       #8A6110   text on goldSoft
   success       #1F9D61   correct answers, completed tasks
   successSoft   #E6F5EE
   danger        #E5484D   wrong answers, destructive actions
@@ -305,6 +308,7 @@ neutral; the accent marks the one thing that matters.
   accent #5865F2  accentHover #4752C4  accentDeep #2B3290  accentSoft #23264F
   accentInk #C3C8FB  onAccent #FFFFFF  edge #34343F
   streak #FBBF24  streakSoft #3A2C0A
+  gold #E3B54A  goldSoft #2E2410  goldInk #EBC873
   success #3CCB85  successSoft #12301F
   danger #FF6B6F  dangerSoft #3A1517
 
@@ -316,6 +320,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
 - One filled accent button per view. If two actions are both primary, neither is.
 - streak colour appears only on the streak. success and danger only mean right/wrong
   or done/destructive.
+- gold appears only on what is paid (a paid squad's card, its pass card, a paid
+  channel's mark), as a thin edge, the soft `glow-gold` light around it and small
+  goldSoft marks, never as a large fill or a gradient.
 - Never signal state with colour alone: correct = success + check icon, wrong =
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and

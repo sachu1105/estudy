@@ -22,8 +22,8 @@ export function PaidPill({
       className={cn(
         "inline-flex h-5 shrink-0 items-center gap-1 rounded-full px-1.5 font-mono text-micro font-medium tabular-nums",
         locked
-          ? "bg-accent-soft text-accent-ink ring-1 ring-accent/40"
-          : "border border-accent/40 text-accent-ink",
+          ? "bg-gold-soft text-gold-ink ring-1 ring-gold/50"
+          : "border border-gold/50 text-gold-ink",
       )}
     >
       {locked ? <Lock className="size-3" /> : null}

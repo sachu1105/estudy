@@ -106,3 +106,16 @@ export const passDate = (at: Date) =>
     year: "numeric",
     timeZone: "Asia/Kolkata",
   });
+
+/**
+ * What an owner wrote they offer, as separate points: one per line, or per comma
+ * followed by a space ("Daily notes, current affairs"). "₹1,000" stays whole.
+ */
+export function offerPoints(offer: string | null) {
+  if (!offer) return [];
+  return offer
+    .split(/\n|•|,(?=\s)/)
+    .map((p) => p.trim().replace(/^[-*]\s*/, ""))
+    .filter(Boolean)
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1));
+}

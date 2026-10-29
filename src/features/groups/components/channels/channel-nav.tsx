@@ -124,8 +124,8 @@ export function ChannelNav({
             <Icon
               className={cn(
                 "size-5 shrink-0",
-                // A paid channel's own mark: the accent, wherever it's listed.
-                ch.pricePaise !== null && "text-accent",
+                // A paid channel's own mark: gold, wherever it's listed.
+                ch.pricePaise !== null && "text-gold",
               )}
               aria-hidden
             />

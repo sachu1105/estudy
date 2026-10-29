@@ -229,6 +229,20 @@ export function createSquadPay(deps: SquadPayDeps) {
       return { ok: true, until };
     },
 
+    /** Who runs a paid squad, for the card that sells its pass. */
+    async squadFacts(groupId: string) {
+      const facts = await deps.passes.squadFacts(groupId);
+      if (!facts) return null;
+      return {
+        owner: {
+          id: facts.owner.id,
+          name: facts.owner.displayName,
+          avatarUrl: facts.owner.avatarUrl,
+        },
+        channels: facts._count.channels,
+      };
+    },
+
     /** What a paid channel costs, for a member who can't open it yet. */
     async lockedChannel(user: User, groupId: string, channelId: string) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");

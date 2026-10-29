@@ -18,10 +18,12 @@ import {
 import { SquadLive } from "@/features/groups/components/chat/squad-live";
 import { JoinButton } from "@/features/groups/components/join-controls";
 import { PricingProvider } from "@/features/groups/components/pay/pricing-context";
+import { PaidMark } from "@/features/groups/components/pay/paid-mark";
 import { SquadPassCard } from "@/features/groups/components/pay/squad-pass-card";
 import { isId } from "@/lib/ids";
 import { joinModeOf } from "@/lib/squads/access";
 import { priceLabel } from "@/lib/squads/pay";
+import { cn } from "@/lib/utils/cn";
 import { requireUser } from "@/server/auth/session";
 import {
   channelService,
@@ -131,18 +133,35 @@ async function Visitor({
 }) {
   const { group } = view;
   const mode = joinModeOf(group);
-  const [channels, selling] = await Promise.all([
+  const paid = group.pricePaise !== null;
+  const [channels, selling, about] = await Promise.all([
     channelService.preview(user, group.id),
-    group.pricePaise !== null ? squadPay.selling(group.ownerId) : false,
+    paid ? squadPay.selling(group.ownerId) : false,
+    paid ? squadPay.squadFacts(group.id) : null,
   ]);
-  const facts = squadFacts(group);
+
+  // A paid squad: its pass card is the page, edged in gold, with what's inside below.
+  if (paid && about)
+    return (
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-8 md:pt-2">
+        <SquadPassCard
+          group={{ ...group, pricePaise: group.pricePaise! }}
+          owner={{ ...about.owner, verified }}
+          channels={about.channels}
+          selling={selling}
+          lapsedAt={view.lapsedAt}
+          inviteOnly={mode === "INVITE_ONLY"}
+        />
+        <Inside channels={channels} />
+      </div>
+    );
 
   return (
     <>
       <PageHeader
         title={group.name}
         badge={verified ? <VerifiedMark className="size-5" /> : null}
-        description={facts}
+        description={squadFacts(group)}
       />
       {group.visibility === "PRIVATE" ? (
         <Badge tone="outline" className="-mt-6 mb-6">
@@ -150,77 +169,72 @@ async function Visitor({
         </Badge>
       ) : null}
       <div className="flex max-w-xl flex-col gap-6">
-        {group.pricePaise !== null ? (
-          <>
-            {group.description ? (
-              <p className="text-body">{group.description}</p>
-            ) : null}
-            <SquadPassCard
-              group={{ ...group, pricePaise: group.pricePaise }}
-              selling={selling}
-              lapsedAt={view.lapsedAt}
-              inviteOnly={mode === "INVITE_ONLY"}
+        <section className="flex flex-col gap-4 rounded-card border border-border bg-surface p-5">
+          {group.description ? (
+            <p className="text-body">{group.description}</p>
+          ) : null}
+          <p className="text-body text-ink-muted">
+            {mode === "INVITE_ONLY"
+              ? "This squad takes members by invite only. Ask a member for an invite link."
+              : mode === "REQUEST"
+                ? "Ask to join and an admin of the squad decides, or use an invite from a member."
+                : "Join to see the channels, shared notes and tests, and to take part."}
+          </p>
+          {mode !== "INVITE_ONLY" && (
+            <JoinButton
+              groupId={group.id}
+              asks={mode === "REQUEST"}
+              question={group.joinQuestion}
+              requested={view.request === "PENDING"}
             />
-          </>
-        ) : (
-          <section className="flex flex-col gap-4 rounded-card border border-border bg-surface p-5">
-            {group.description ? (
-              <p className="text-body">{group.description}</p>
-            ) : null}
-            <p className="text-body text-ink-muted">
-              {mode === "INVITE_ONLY"
-                ? "This squad takes members by invite only. Ask a member for an invite link."
-                : mode === "REQUEST"
-                  ? "Ask to join and an admin of the squad decides, or use an invite from a member."
-                  : "Join to see the channels, shared notes and tests, and to take part."}
-            </p>
-            {mode !== "INVITE_ONLY" && (
-              <JoinButton
-                groupId={group.id}
-                asks={mode === "REQUEST"}
-                question={group.joinQuestion}
-                requested={view.request === "PENDING"}
-              />
-            )}
-          </section>
-        )}
-        {channels.length ? (
-          <section aria-labelledby="inside" className="flex flex-col gap-2">
-            <h2 id="inside" className="text-h3">
-              Inside
-            </h2>
-            <ul className="divide-y divide-border rounded-card border border-border bg-surface">
-              {channels.map((c) => {
-                const Icon = CHANNEL_ICONS[c.type];
-                return (
-                  <li key={c.id} className="flex items-start gap-3 px-4 py-3">
-                    <Icon
-                      className="mt-1 size-4 shrink-0 text-ink-muted"
-                      aria-hidden
-                    />
-                    <span className="flex min-w-0 flex-col">
-                      <span className="flex flex-wrap items-center gap-x-2 text-body font-medium">
-                        {c.name}
-                        {c.pricePaise !== null ? (
-                          <Badge tone="outline">
-                            <Lock aria-hidden />{" "}
-                            {priceLabel(c.pricePaise, c.accessDays)}
-                          </Badge>
-                        ) : null}
-                      </span>
-                      {c.topic ? (
-                        <span className="text-small text-ink-muted">
-                          {c.topic}
-                        </span>
-                      ) : null}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ) : null}
+          )}
+        </section>
+        <Inside channels={channels} />
       </div>
     </>
+  );
+}
+
+/** A public squad's open channels, so people see what's inside before joining. */
+function Inside({
+  channels,
+}: {
+  channels: Awaited<ReturnType<typeof channelService.preview>>;
+}) {
+  if (!channels.length) return null;
+  return (
+    <section aria-labelledby="inside" className="flex flex-col gap-2">
+      <h2 id="inside" className="text-h3">
+        Inside
+      </h2>
+      <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+        {channels.map((c) => {
+          const Icon = CHANNEL_ICONS[c.type];
+          const priced = c.pricePaise !== null;
+          return (
+            <li key={c.id} className="flex items-start gap-3 px-4 py-3">
+              <Icon
+                className={cn(
+                  "mt-1 size-4 shrink-0",
+                  priced ? "text-gold-ink" : "text-ink-muted",
+                )}
+                aria-hidden
+              />
+              <span className="flex min-w-0 flex-col">
+                <span className="flex flex-wrap items-center gap-x-2 text-body font-medium">
+                  {c.name}
+                  {priced ? (
+                    <PaidMark label={priceLabel(c.pricePaise!, c.accessDays)} />
+                  ) : null}
+                </span>
+                {c.topic ? (
+                  <span className="text-small text-ink-muted">{c.topic}</span>
+                ) : null}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

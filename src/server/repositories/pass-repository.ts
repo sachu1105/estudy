@@ -85,6 +85,22 @@ export const passRepository = {
     };
   },
 
+  /** Who runs a squad and how many channels it has, for its pass card. */
+  squadFacts(groupId: string) {
+    return prisma.group.findUnique({
+      where: { id: groupId },
+      select: {
+        owner: { select: { id: true, displayName: true, avatarUrl: true } },
+        _count: {
+          select: {
+            channels: { where: { deletedAt: null } },
+            passes: true,
+          },
+        },
+      },
+    });
+  },
+
   /** What a squad has taken in, and its latest sales, for its owner. */
   async sales(groupId: string, take: number) {
     const [totals, recent] = await Promise.all([

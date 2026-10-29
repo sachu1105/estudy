@@ -53,7 +53,14 @@ export function SquadRail({
   canCreate = true,
   canPrice = false,
 }: {
-  squads: { id: string; name: string; cover?: unknown; unread?: boolean }[];
+  squads: {
+    id: string;
+    name: string;
+    cover?: unknown;
+    unread?: boolean;
+    /** A paid squad: its tile wears a gold edge. */
+    pricePaise?: number | null;
+  }[];
   /** For the new squad's exam. */
   exams: { id: string; name: string }[];
   /** Shown in place of the form once someone has made every squad their plan allows. */
@@ -92,7 +99,11 @@ export function SquadRail({
                 href={`/groups/${s.id}`}
                 aria-label={s.name}
                 aria-current={active ? "page" : undefined}
-                className={cn(tile(active), "isolate")}
+                className={cn(
+                  tile(active),
+                  "isolate",
+                  s.pricePaise != null && "ring-2 ring-gold/80",
+                )}
               >
                 {s.unread && !active ? (
                   <span className="sr-only">, new messages</span>

@@ -13,6 +13,8 @@ import { squadCover } from "@/lib/squads/cover";
 import { ROLE_LABELS, type GroupRole } from "@/lib/squads/roles";
 import { cn } from "@/lib/utils/cn";
 
+import { PaidMark } from "./pay/paid-mark";
+
 const JOIN_LABEL: Record<JoinMode, string> = {
   OPEN: "Open",
   REQUEST: "Asks to join",
@@ -119,7 +121,13 @@ export function GroupCard({
   ].filter(Boolean);
 
   return (
-    <div className="relative flex w-full flex-col overflow-hidden rounded-card border border-border bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md">
+    <div
+      className={cn(
+        "relative flex w-full flex-col overflow-hidden rounded-card bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px",
+        // A paid squad is edged in gold and glows; the rest keep the plain card.
+        paid ? "glow-gold" : "border border-border hover:shadow-md",
+      )}
+    >
       <PodCover cover={art} className="h-16 shrink-0" />
 
       <div className="relative flex flex-1 flex-col p-4 pt-0">
@@ -153,6 +161,7 @@ export function GroupCard({
             ) : null}
             {unread ? <span className="sr-only">, new messages</span> : null}
           </Link>
+          {paid ? <PaidMark /> : null}
           {group.visibility === "PRIVATE" ? (
             <Badge tone="outline">
               <Lock aria-hidden /> private

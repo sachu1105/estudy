@@ -30,6 +30,10 @@
   --streak: #f59e0b;
   --streak-soft: #fef3dc;
   --streak-ink: #b45309;
+  /* Paid squads and channels only: a warm metallic gold, apart from the streak's amber. */
+  --gold: #c8961e;
+  --gold-soft: #fbf4e2;
+  --gold-ink: #8a6110;
   --success: #1f9d61;
   --success-soft: #e6f5ee;
   --success-ink: #157a4a;
@@ -82,6 +86,9 @@
   --streak: #fbbf24;
   --streak-soft: #3a2c0a;
   --streak-ink: #fbbf24;
+  --gold: #e3b54a;
+  --gold-soft: #2e2410;
+  --gold-ink: #ebc873;
   --success: #3ccb85;
   --success-soft: #12301f;
   --success-ink: #8ee6b9;
@@ -136,6 +143,9 @@
   --color-streak: var(--streak);
   --color-streak-soft: var(--streak-soft);
   --color-streak-ink: var(--streak-ink);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-ink: var(--gold-ink);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-success-ink: var(--success-ink);
@@ -524,4 +534,12 @@ body:has([data-focus-view]) [data-bottom-tabs] {
   body:has([data-squad-screen]) [data-top-bar] {
     display: none;
   }
+}
+
+/* A paid squad or channel: a thin gold edge and a soft gold glow around it. The glow is
+   light, not a gradient fill, and is the only place gold lights up. */
+@utility glow-gold {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
+    0 10px 36px -12px color-mix(in oklab, var(--gold) 60%, transparent);
 }

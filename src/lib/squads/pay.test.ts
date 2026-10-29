@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   channelPriceSchema,
+  offerPoints,
   passEnds,
   periodLabel,
   priceLabel,
@@ -91,5 +92,18 @@ describe("squad passes", () => {
         demoUrl: "https://youtube.com/watch?v=abc",
       })?.demoUrl,
     ).toBe("https://youtube.com/watch?v=abc");
+  });
+
+  it("splits an owner's offer into points, keeping amounts whole", () => {
+    expect(offerPoints("Daily notes , current affairs, weekly mock")).toEqual([
+      "Daily notes",
+      "Current affairs",
+      "Weekly mock",
+    ]);
+    expect(offerPoints("- Notes\n- Tests worth ₹1,000")).toEqual([
+      "Notes",
+      "Tests worth ₹1,000",
+    ]);
+    expect(offerPoints(null)).toEqual([]);
   });
 });
