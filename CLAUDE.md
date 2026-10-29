@@ -320,9 +320,10 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
 - One filled accent button per view. If two actions are both primary, neither is.
 - streak colour appears only on the streak. success and danger only mean right/wrong
   or done/destructive.
-- gold appears only on what is paid (a paid squad's card, its pass card, a paid
-  channel's mark), as a thin edge, the soft `glow-gold` light around it and small
-  goldSoft marks, never as a large fill or a gradient.
+- gold appears only on what is paid (a paid squad's "Paid" mark, a paid channel's mark,
+  small goldSoft marks on its pass card), never as a large fill, a card edge, a card
+  glow or a gradient. Paid squad cards and pass cards stay plain; the "Paid" mark has
+  no shadow, only a thin gold streak that sweeps over it (`shine-gold`).
 - Never signal state with colour alone: correct = success + check icon, wrong =
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and

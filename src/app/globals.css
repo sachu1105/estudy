@@ -536,10 +536,37 @@ body:has([data-focus-view]) [data-bottom-tabs] {
   }
 }
 
-/* A paid squad or channel: a thin gold edge and a soft gold glow around it. The glow is
-   light, not a gradient fill, and is the only place gold lights up. */
-@utility glow-gold {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
-    0 10px 36px -12px color-mix(in oklab, var(--gold) 60%, transparent);
+/* The "Paid" pill on a paid squad: a thin gold edge, no shadow, and a gold streak that
+   sweeps over it now and then. The streak sits under the text (isolated, z -1); reduced motion
+   leaves it parked off the pill. */
+@keyframes gold-sweep {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  45%,
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+@utility shine-gold {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--gold) 45%, transparent);
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    z-index: -1;
+    width: 45%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--gold) 55%, transparent),
+      transparent
+    );
+    transform: translateX(-160%) skewX(-20deg);
+    animation: gold-sweep 3.2s var(--ease-out) 0.6s infinite;
+  }
 }

@@ -3,6 +3,7 @@ import type { Clock } from "@/lib/clock";
 import {
   PAID_ONLY,
   planConfig,
+  planPricePaise,
   type Feature,
   type FlagFeature,
   type LimitFeature,
@@ -52,6 +53,17 @@ export function effectivePlans(overrides: EntitlementSettings["overrides"]) {
     Object.assign(plans[plan].flags, change?.flags ?? {});
   }
   return plans;
+}
+
+/** Monthly prices in paise with the admin's changes laid over the built-in ones. */
+export function effectivePrices(
+  overrides: Partial<Record<PlanName, { pricePaise: number }>> | undefined,
+): Record<PlanName, number> {
+  return {
+    FREE: 0,
+    PRO: overrides?.PRO?.pricePaise ?? planPricePaise.PRO,
+    ELITE: overrides?.ELITE?.pricePaise ?? planPricePaise.ELITE,
+  };
 }
 
 // CLAUDE.md rule 8: the only place that decides what a plan grants.

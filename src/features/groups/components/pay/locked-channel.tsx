@@ -63,7 +63,7 @@ export function LockedChannel({
         <BlurredChat className="absolute inset-0" />
         <section
           aria-labelledby="channel-pass"
-          className="relative mt-16 w-full max-w-md overflow-hidden rounded-card bg-surface glow-gold md:my-6"
+          className="relative mt-16 w-full max-w-md overflow-hidden rounded-card border border-border bg-surface md:my-6"
         >
           <PassCardHeader
             cover={squadCover(squad)}

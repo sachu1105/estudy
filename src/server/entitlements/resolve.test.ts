@@ -4,6 +4,7 @@ import { fixedClock } from "@/lib/clock";
 
 import {
   createEntitlements,
+  effectivePrices,
   type EntitlementSettings,
   type EntitlementSubject,
 } from "./resolve";
@@ -159,5 +160,23 @@ describe("admin changes to the plans table (milestone 15)", () => {
     expect(planOf(free)).toBe("ELITE");
     settings = { billingEnabled: true };
     expect(planOf(free)).toBe("FREE");
+  });
+});
+
+describe("admin changes to plan prices", () => {
+  it("keeps the built-in prices until an admin sets one", () => {
+    expect(effectivePrices(undefined)).toEqual({
+      FREE: 0,
+      PRO: 19900,
+      ELITE: 39900,
+    });
+  });
+
+  it("lays a saved price over its plan only, and Free stays free", () => {
+    expect(effectivePrices({ PRO: { pricePaise: 24900 } })).toEqual({
+      FREE: 0,
+      PRO: 24900,
+      ELITE: 39900,
+    });
   });
 });

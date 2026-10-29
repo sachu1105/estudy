@@ -123,9 +123,7 @@ export function GroupCard({
   return (
     <div
       className={cn(
-        "relative flex w-full flex-col overflow-hidden rounded-card bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px",
-        // A paid squad is edged in gold and glows; the rest keep the plain card.
-        paid ? "glow-gold" : "border border-border hover:shadow-md",
+        "relative flex w-full flex-col overflow-hidden rounded-card border border-border bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md",
       )}
     >
       <PodCover cover={art} className="h-16 shrink-0" />

@@ -55,6 +55,24 @@ export const entitlementOverridesSchema = z.partialRecord(
 
 export const billingSchema = z.object({ enabled: z.boolean() });
 
+/**
+ * What a paid plan costs a month (paise) and the Razorpay plan that charges it. Left out,
+ * a plan keeps its built-in price and the env plan id. Razorpay charges what its own plan
+ * says, so a new price comes with a new Razorpay plan id.
+ */
+export const PAID_PLAN_NAMES = ["PRO", "ELITE"] as const;
+export const planPricesSchema = z.partialRecord(
+  z.enum(PAID_PLAN_NAMES),
+  z.object({
+    pricePaise: z.number().int().min(100).max(10_000_000),
+    /** "" = the env RAZORPAY_PLAN_* id. */
+    razorpayPlanId: z
+      .string()
+      .trim()
+      .regex(/^(plan_[A-Za-z0-9]{1,40})?$/),
+  }),
+);
+
 /** The plan the pricing cards lift up as the one to pick. */
 export const featuredPlanSchema = z.object({ plan: z.enum(PLAN_NAMES) });
 
@@ -173,6 +191,7 @@ export const settingSchemas = {
   entitlements: entitlementOverridesSchema,
   billing: billingSchema,
   featuredPlan: featuredPlanSchema,
+  planPrices: planPricesSchema,
   announcement: announcementSchema,
   maintenance: maintenanceSchema,
   flags: featureFlagsSchema,

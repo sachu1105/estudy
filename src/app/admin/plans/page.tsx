@@ -4,12 +4,15 @@ import { PageHeader } from "@/components/shell/page-header";
 import { BillingForm } from "@/features/admin/components/billing-form";
 import { FeaturedPlanForm } from "@/features/admin/components/featured-plan-form";
 import { PaidSquadsForm } from "@/features/admin/components/paid-squads-form";
+import { PlanPricesForm } from "@/features/admin/components/plan-prices-form";
 import {
   PlansForm,
   type PlanTable,
 } from "@/features/admin/components/plans-form";
 import { billingEnabled, planConfig } from "@/server/entitlements";
-import { effectivePlans } from "@/server/entitlements/resolve";
+import { planPricePaise } from "@/server/entitlements/config";
+import { effectivePlans, effectivePrices } from "@/server/entitlements/resolve";
+import { env } from "@/server/env";
 import { requireAdmin } from "@/server/services/admin";
 import { loadSettings } from "@/server/settings";
 
@@ -35,6 +38,7 @@ const toTable = (plans: typeof planConfig): PlanTable =>
 export default async function AdminPlans() {
   await requireAdmin("plans");
   const settings = await loadSettings(true);
+  const prices = effectivePrices(settings.planPrices);
   return (
     <>
       <PageHeader
@@ -45,6 +49,24 @@ export default async function AdminPlans() {
         <BillingForm enabled={billingEnabled()} />
         <PaidSquadsForm enabled={settings.paidSquads?.enabled ?? false} />
         <FeaturedPlanForm initial={settings.featuredPlan?.plan ?? "PRO"} />
+        <PlanPricesForm
+          initial={{
+            PRO: {
+              pricePaise: prices.PRO,
+              razorpayPlanId: settings.planPrices?.PRO?.razorpayPlanId ?? "",
+            },
+            ELITE: {
+              pricePaise: prices.ELITE,
+              razorpayPlanId: settings.planPrices?.ELITE?.razorpayPlanId ?? "",
+            },
+          }}
+          defaults={{ PRO: planPricePaise.PRO, ELITE: planPricePaise.ELITE }}
+          envIds={{
+            PRO: env.RAZORPAY_PLAN_PRO ?? "",
+            ELITE: env.RAZORPAY_PLAN_ELITE ?? "",
+          }}
+          billingOn={billingEnabled()}
+        />
         <PlansForm
           initial={toTable(effectivePlans(settings.entitlements))}
           defaults={toTable(planConfig)}

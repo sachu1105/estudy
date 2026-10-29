@@ -89,7 +89,7 @@ export function SquadPassCard({
     <section
       // Named on its own: the content below the header changes as the checkout steps on.
       aria-label="Squad pass"
-      className="overflow-hidden rounded-card bg-surface glow-gold"
+      className="overflow-hidden rounded-card border border-border bg-surface"
     >
       <PassCardHeader
         cover={squadCover(group)}

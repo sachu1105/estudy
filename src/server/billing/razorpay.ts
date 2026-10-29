@@ -12,12 +12,15 @@ import type {
 // Razorpay subscriptions over their REST API: no SDK, just fetch and an HMAC check.
 // Everything here runs on the server; only keyId ever reaches the browser.
 
+/** The Razorpay plan that charges one of ours, and what it charges a month. */
+type RazorpayPlan = { id: string; pricePaise: number };
+
 export type RazorpayConfig = {
   keyId: string;
   keySecret: string;
   webhookSecret: string;
-  planIds: Record<PaidPlan, string>;
-  pricePaise: Record<PaidPlan, number>;
+  /** Read at every checkout, so an admin's new price applies without a restart. */
+  plan: (plan: PaidPlan) => RazorpayPlan | Promise<RazorpayPlan>;
   /** Months a subscription runs before Razorpay asks again. */
   totalCount?: number;
   baseUrl?: string;
@@ -52,8 +55,9 @@ export function createRazorpayProvider(
 
   return {
     async createSubscription({ plan, userId, email }): Promise<Checkout> {
+      const { id, pricePaise } = await config.plan(plan);
       const created = await call("/subscriptions", {
-        plan_id: config.planIds[plan],
+        plan_id: id,
         total_count: config.totalCount ?? 12,
         customer_notify: 1,
         notes: { userId, email, plan },
@@ -61,7 +65,7 @@ export function createRazorpayProvider(
       return {
         subscriptionId: String(created.id),
         keyId: config.keyId,
-        amountPaise: config.pricePaise[plan],
+        amountPaise: pricePaise,
         plan,
       };
     },

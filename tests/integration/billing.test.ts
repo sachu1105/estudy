@@ -21,8 +21,10 @@ const provider = createRazorpayProvider({
   keyId: "rzp_test_key",
   keySecret: "secret",
   webhookSecret: SECRET,
-  planIds: { PRO: "plan_pro", ELITE: "plan_elite" },
-  pricePaise: { PRO: 19900, ELITE: 39900 },
+  plan: (plan) =>
+    plan === "PRO"
+      ? { id: "plan_pro", pricePaise: 19900 }
+      : { id: "plan_elite", pricePaise: 39900 },
   baseUrl: "https://example.test",
   fetchImpl: (async (url: string, init: RequestInit) => {
     calls.push({
