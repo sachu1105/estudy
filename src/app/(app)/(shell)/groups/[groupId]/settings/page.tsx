@@ -3,11 +3,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SquadHeading } from "@/features/groups/components/channels/channel-header";
+import { SalesPanel } from "@/features/groups/components/pay/sales-panel";
+import { SquadOfferForm } from "@/features/groups/components/pay/squad-offer-form";
 import { SquadCoverButton } from "@/features/groups/components/squad-cover-button";
 import { SquadSettingsForm } from "@/features/groups/components/squad-settings-form";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
-import { groupService, squadCoverService } from "@/server/services/groups";
+import {
+  groupService,
+  squadCoverService,
+  squadPay,
+} from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Squad settings" };
@@ -22,13 +28,18 @@ export default async function SquadSettingsPage({
     ? await groupService.require(user, groupId, "ADMIN")
     : null;
   if (!ok || "error" in ok) notFound();
-  const [view, exams, banner] = await Promise.all([
+  const [view, exams, banner, canPrice, sales] = await Promise.all([
     groupService.view(user, groupId),
     catalogueService.listExams(),
     squadCoverService.get(user, groupId),
+    squadPay.canPrice(user),
+    squadPay.sales(user, groupId),
   ]);
   if (!view || !banner) notFound();
   const { group } = view;
+  // The pass is the owner's alone: the money is theirs.
+  const owner = view.role === "OWNER";
+  const priced = group.pricePaise !== null;
 
   return (
     <>
@@ -57,6 +68,23 @@ export default async function SquadSettingsPage({
         }}
         exams={exams.map((e) => ({ id: e.id, name: e.name }))}
       />
+      {owner && (canPrice || priced) ? (
+        <div className="mt-8 flex flex-col gap-8">
+          <SquadOfferForm
+            groupId={group.id}
+            canPrice={canPrice}
+            initial={{
+              pricePaise: group.pricePaise,
+              accessDays: group.accessDays,
+              offer: group.offer,
+              demoUrl: group.demoUrl,
+            }}
+          />
+          {sales && (priced || sales.count > 0) ? (
+            <SalesPanel sales={sales} />
+          ) : null}
+        </div>
+      ) : null}
     </>
   );
 }

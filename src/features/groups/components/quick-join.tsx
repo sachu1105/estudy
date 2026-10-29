@@ -17,13 +17,27 @@ export function QuickJoin({
   groupId,
   name,
   asks,
+  paid = false,
 }: {
   groupId: string;
   name: string;
   asks: boolean;
+  /** A paid squad: its page has the price and the pass. */
+  paid?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
+  if (paid)
+    return (
+      <Button asChild variant="secondary">
+        <Link
+          href={`/groups/${groupId}`}
+          aria-label={`See the pass for ${name}`}
+        >
+          See pass
+        </Link>
+      </Button>
+    );
   if (asks)
     return (
       <Button asChild variant="secondary">

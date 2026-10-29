@@ -22,7 +22,13 @@ export type LimitFeature =
   | "vaultMocksPerMonth"
   | "pagesPerVaultMock";
 
-export type FlagFeature = "aiExplanations" | "priorityParsing";
+export type FlagFeature =
+  | "aiExplanations"
+  | "priorityParsing"
+  /** Charging people to join your squad, or to open a channel in it. */
+  | "sellInSquads"
+  /** The verified mark beside a subscriber's name and the squads they own. */
+  | "verifiedBadge";
 
 export type Feature = LimitFeature | FlagFeature;
 
@@ -33,6 +39,8 @@ export type Feature = LimitFeature | FlagFeature;
 export const PAID_ONLY: ReadonlySet<Feature> = new Set<Feature>([
   "vaultMocksPerMonth",
   "pagesPerVaultMock",
+  "sellInSquads",
+  "verifiedBadge",
 ]);
 
 type PlanConfig = {
@@ -70,6 +78,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     flags: {
       aiExplanations: false,
       priorityParsing: false,
+      sellInSquads: false,
+      verifiedBadge: false,
     },
   },
   PRO: {
@@ -91,6 +101,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     flags: {
       aiExplanations: true,
       priorityParsing: false,
+      sellInSquads: false,
+      verifiedBadge: true,
     },
   },
   ELITE: {
@@ -112,6 +124,8 @@ export const planConfig: Record<PlanName, PlanConfig> = {
     flags: {
       aiExplanations: true,
       priorityParsing: true,
+      sellInSquads: true,
+      verifiedBadge: true,
     },
   },
 };

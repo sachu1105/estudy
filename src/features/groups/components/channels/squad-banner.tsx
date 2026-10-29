@@ -26,6 +26,7 @@ export function SquadBanner({
   group,
   menu,
   canInvite,
+  verified = false,
   heading: Heading = "p",
   className,
 }: {
@@ -37,6 +38,8 @@ export function SquadBanner({
   };
   menu: Omit<ComponentProps<typeof GroupMenu>, "asName" | "groupId" | "name">;
   canInvite: boolean;
+  /** Run by someone on a paid plan: the verified seal after the name. */
+  verified?: boolean;
   /** An h1 where the squad's page is the channel list (phones). */
   heading?: "h1" | "p";
   className?: string;
@@ -57,7 +60,13 @@ export function SquadBanner({
           aria-label={Heading === "h1" ? group.name : undefined}
           className="flex min-w-0 flex-1"
         >
-          <GroupMenu groupId={group.id} name={group.name} asName {...menu} />
+          <GroupMenu
+            groupId={group.id}
+            name={group.name}
+            verified={verified}
+            asName
+            {...menu}
+          />
         </Heading>
         {canInvite ? (
           <Link

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -28,6 +29,8 @@ import {
   updateChannelAction,
 } from "../../channel-actions";
 import { ChoiceRows } from "../choice-rows";
+import { fromDraft, PriceFields, priceDraft } from "../pay/price-fields";
+import { usePricing } from "../pay/pricing-context";
 import { channelHref, type ChannelSummary } from "./channel-icon";
 
 const NONE = "none";
@@ -89,8 +92,25 @@ export function ChannelDialog({
   const [categoryId, setCategoryId] = useState(
     channel ? (channel.categoryId ?? NONE) : (startCategory ?? NONE),
   );
+  const pricing = usePricing();
+  const wasPaid = channel?.pricePaise != null;
+  // The owner prices a channel; without the right to sell, only takes a price off.
+  const showPrice = pricing.owner && (pricing.canPrice || wasPaid);
+  const [paid, setPaid] = useState(wasPaid);
+  const [price, setPrice] = useState(
+    wasPaid
+      ? priceDraft(channel.pricePaise, channel.accessDays)
+      : priceDraft(null, 30),
+  );
   const [pending, start] = useTransition();
   const shown = channelName(name);
+
+  /** What the action is told about the price: left out when nothing changed. */
+  const priceField = () => {
+    if (!showPrice) return {};
+    if (paid) return pricing.canPrice ? { price: fromDraft(price) } : {};
+    return wasPaid ? { price: null } : {};
+  };
 
   const submit = () =>
     start(async () => {
@@ -99,10 +119,12 @@ export function ChannelDialog({
         name,
         topic,
         postRule,
-        viewRule,
+        // A paid channel is listed for every member, locked until they pay.
+        viewRule: paid ? "EVERYONE" : viewRule,
         slowModeSec,
         subjectName: subject === NONE ? "" : subject,
         categoryId: categoryId === NONE ? null : categoryId,
+        ...priceField(),
       };
       const result = channel
         ? await updateChannelAction({ ...fields, channelId: channel.id })
@@ -192,15 +214,45 @@ export function ChannelDialog({
               </span>
             </div>
           ) : null}
-          <div className="flex flex-col gap-2">
-            <span className="text-small font-medium">Who can see it</span>
-            <ChoiceRows
-              label="Who can see it"
-              options={VIEW_RULES}
-              value={viewRule}
-              onChange={setViewRule}
-            />
-          </div>
+          {showPrice ? (
+            <div className="flex flex-col gap-3 rounded-card border border-border p-3">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <Label htmlFor="channel-paid">Paid channel</Label>
+                  <span className="text-small text-ink-muted">
+                    Members see it locked until they pay. You, admins and
+                    moderators always get in.
+                  </span>
+                </div>
+                <Switch
+                  id="channel-paid"
+                  checked={paid}
+                  disabled={!pricing.canPrice && !paid}
+                  onCheckedChange={setPaid}
+                />
+              </div>
+              {paid ? (
+                <fieldset disabled={!pricing.canPrice}>
+                  <PriceFields
+                    id="channel-pass"
+                    value={price}
+                    onChange={setPrice}
+                  />
+                </fieldset>
+              ) : null}
+            </div>
+          ) : null}
+          {paid ? null : (
+            <div className="flex flex-col gap-2">
+              <span className="text-small font-medium">Who can see it</span>
+              <ChoiceRows
+                label="Who can see it"
+                options={VIEW_RULES}
+                value={viewRule}
+                onChange={setViewRule}
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <Label htmlFor="channel-slow">Slow mode</Label>
             <Select
@@ -240,7 +292,7 @@ export function ChannelDialog({
             <Button
               type="submit"
               variant="primary"
-              disabled={pending || !shown}
+              disabled={pending || !shown || (paid && !price.rupees)}
             >
               {channel ? "Save channel" : "Add channel"}
             </Button>

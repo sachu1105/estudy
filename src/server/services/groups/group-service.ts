@@ -39,12 +39,36 @@ const NOT_ALLOWED = failure(
 export function createGroupService(deps: GroupDeps) {
   const now = () => deps.clock.now();
 
-  /** The caller's membership, or null. Every action starts here. */
+  /**
+   * A paying member whose pass ran out is outside again until they renew. Those who run
+   * the squad never run out, and nobody does once the squad is free.
+   */
+  function lapsed(
+    group: { pricePaise: number | null },
+    membership: { role: Role; paidUntil: Date | null },
+  ) {
+    return (
+      group.pricePaise !== null &&
+      membership.role === "MEMBER" &&
+      membership.paidUntil !== null &&
+      membership.paidUntil <= now()
+    );
+  }
+
+  /**
+   * The caller's membership, or null. Every action starts here. `lapsedAt` is when a
+   * paid pass ran out; that membership counts as none.
+   */
   async function memberOf(user: User, groupId: string) {
     const group = await deps.groups.find(groupId);
     if (!group) return null;
-    const membership = await deps.groups.membership(groupId, user.id);
-    return { group, membership };
+    const row = await deps.groups.membership(groupId, user.id);
+    const ended = !!row && lapsed(group, row);
+    return {
+      group,
+      membership: ended ? null : row,
+      lapsedAt: ended ? row.paidUntil : null,
+    };
   }
 
   /** The caller must hold at least `role` in the group. */
@@ -83,6 +107,19 @@ export function createGroupService(deps: GroupDeps) {
   return {
     memberOf,
     require,
+
+    /**
+     * Whether someone may come in now (a paid pass, say): their own plan's join limit and
+     * room on the owner's. Someone whose pass ran out still holds their place.
+     */
+    async canAdmit(
+      user: User,
+      group: { id: string; ownerId: string },
+      returning: boolean,
+    ) {
+      if (returning) return null;
+      return (await underJoinLimit(user)) ?? (await hasRoom(group));
+    },
 
     async create(
       user: User,
@@ -129,18 +166,28 @@ export function createGroupService(deps: GroupDeps) {
     async view(user: User, groupId: string) {
       const found = await memberOf(user, groupId);
       if (!found) return null;
-      const { group, membership } = found;
-      if (!membership && (group.hiddenAt || group.visibility === "PRIVATE")) {
+      const { group, membership, lapsedAt } = found;
+      if (
+        !membership &&
+        !lapsedAt &&
+        (group.hiddenAt || group.visibility === "PRIVATE")
+      ) {
         // A private group's name may be seen through a request or invite, nothing more.
         const request = await deps.groups.myRequest(groupId, user.id);
         if (group.hiddenAt && !request) return null;
-        return { group, role: null, request: request?.status ?? null };
+        return {
+          group,
+          role: null,
+          request: request?.status ?? null,
+          lapsedAt,
+        };
       }
       return {
         group,
         role: membership?.role ?? null,
         muted: membership?.mutedUntil ? membership.mutedUntil > now() : false,
         request: null,
+        lapsedAt,
       };
     },
 
@@ -158,6 +205,12 @@ export function createGroupService(deps: GroupDeps) {
         return failure(
           "INVITE_ONLY",
           "This squad takes members by invite only. Ask a member for an invite link.",
+        );
+      // Paying is the way into a paid squad (squad-pay), not a request or a tap.
+      if (found.group.pricePaise !== null)
+        return failure(
+          "PAID",
+          "This is a paid squad. Get a pass on its page to join.",
         );
       const limited = await underJoinLimit(user);
       if (limited) return limited;
@@ -232,12 +285,16 @@ export function createGroupService(deps: GroupDeps) {
           "BAD_CODE",
           "That invite doesn't work any more. Ask for a new one.",
         );
-      if (await deps.groups.membership(invite.groupId, user.id))
-        return { ok: true, groupId: invite.groupId };
-      const limited = await underJoinLimit(user);
-      if (limited) return limited;
-      const full = await hasRoom(invite.group);
-      if (full) return full;
+      // An invite from the squad's admins lets someone in free, a paid squad too, and
+      // brings back a member whose pass ran out.
+      const found = await memberOf(user, invite.groupId);
+      if (found?.membership) return { ok: true, groupId: invite.groupId };
+      if (!found?.lapsedAt) {
+        const limited = await underJoinLimit(user);
+        if (limited) return limited;
+        const full = await hasRoom(invite.group);
+        if (full) return full;
+      }
       if (!(await deps.groups.useInvite(invite.id, invite.maxUses)))
         return failure(
           "FULL",
@@ -249,8 +306,9 @@ export function createGroupService(deps: GroupDeps) {
 
     async leave(user: User, groupId: string): Promise<Result<object>> {
       const found = await memberOf(user, groupId);
-      if (!found?.membership) return NOT_FOUND;
-      if (found.membership.role === "OWNER")
+      // Someone whose pass ran out can still take the squad off their list.
+      if (!found?.membership && !found?.lapsedAt) return NOT_FOUND;
+      if (found.membership?.role === "OWNER")
         return failure(
           "OWNER",
           "The owner can't leave. Delete the squad, or make someone else owner first.",
@@ -333,10 +391,13 @@ export function createGroupService(deps: GroupDeps) {
       const at = now();
       return {
         me: ok.me,
-        members: members.map((m) => ({
-          ...m,
-          muted: m.mutedUntil ? m.mutedUntil > at : false,
-        })),
+        // Someone whose pass ran out is outside until they renew.
+        members: members
+          .filter((m) => !lapsed(ok.group, m))
+          .map((m) => ({
+            ...m,
+            muted: m.mutedUntil ? m.mutedUntil > at : false,
+          })),
         requests,
         invites,
       };

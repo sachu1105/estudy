@@ -18,6 +18,10 @@ const groupCard = {
   joinMode: true,
   joinQuestion: true,
   hiddenAt: true,
+  ownerId: true,
+  /** A paid squad's price, shown on its card. */
+  pricePaise: true,
+  accessDays: true,
   exam: { select: { id: true, name: true } },
   _count: { select: { members: true } },
   /** A few faces for the card. Capped, so a listing stays one query. */
@@ -52,7 +56,7 @@ export const groupRepository = {
   find(id: string) {
     return prisma.group.findFirst({
       where: { id, deletedAt: null },
-      select: { ...groupCard, ownerId: true, createdAt: true },
+      select: { ...groupCard, offer: true, demoUrl: true, createdAt: true },
     });
   },
 
@@ -112,12 +116,26 @@ export const groupRepository = {
     });
   },
 
-  addMember(groupId: string, userId: string) {
+  /** In, or back in. `paidUntil` is when a paid pass ends (null: no end). */
+  addMember(groupId: string, userId: string, paidUntil: Date | null = null) {
     return prisma.membership.upsert({
       where: { groupId_userId: { groupId, userId } },
-      create: { groupId, userId },
-      update: {},
+      create: { groupId, userId, paidUntil },
+      update: { paidUntil },
     });
+  },
+
+  /** What a pass costs and what the owner says about it. Null price: free. */
+  setOffer(
+    groupId: string,
+    data: {
+      pricePaise: number | null;
+      accessDays: number | null;
+      offer: string | null;
+      demoUrl: string | null;
+    },
+  ) {
+    return prisma.group.update({ where: { id: groupId }, data });
   },
 
   removeMember(groupId: string, userId: string) {
@@ -159,6 +177,7 @@ export const groupRepository = {
       select: {
         role: true,
         mutedUntil: true,
+        paidUntil: true,
         joinedAt: true,
         user: { select: { id: true, displayName: true, avatarUrl: true } },
       },

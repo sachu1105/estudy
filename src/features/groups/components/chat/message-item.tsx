@@ -3,6 +3,7 @@
 import { CornerUpLeft, EyeOff } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Chip } from "@/components/ui/chip";
 import { clockTime } from "@/lib/squads/chat-time";
@@ -89,6 +90,12 @@ export function MessageItem({
           <p className="flex flex-wrap items-baseline gap-x-2">
             <span className="text-body font-medium">
               {m.author.displayName}
+              {m.author.verified ? (
+                <>
+                  {" "}
+                  <VerifiedMark />
+                </>
+              ) : null}
             </span>
             <time
               dateTime={m.at}

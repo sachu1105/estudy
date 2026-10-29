@@ -44,13 +44,29 @@ export function createChannelService(deps: ChannelDeps) {
   const admin = (user: User, groupId: string) =>
     deps.groups.require(user, groupId, "ADMIN");
 
-  /** Whether this person may open a channel at all. */
+  /**
+   * Whether this person may open a channel at all. A paid channel is listed for every
+   * member but opens only for those who run the squad and those holding a live pass.
+   */
   async function canSee(
-    channel: { id: string; viewRule: ChannelViewRule },
+    channel: {
+      id: string;
+      groupId?: string;
+      viewRule: ChannelViewRule;
+      pricePaise?: number | null;
+    },
     who: Viewer,
   ) {
-    if (channel.viewRule === "EVERYONE") return true;
     if (canModerate(who.role)) return true;
+    if (channel.pricePaise != null && channel.groupId)
+      return (
+        await deps.channels.passChannelIds(
+          channel.groupId,
+          who.id,
+          deps.clock.now(),
+        )
+      ).has(channel.id);
+    if (channel.viewRule === "EVERYONE") return true;
     if (channel.viewRule === "ADMINS") return false;
     return deps.channels.hasAccess(channel.id, who.id);
   }
@@ -63,14 +79,20 @@ export function createChannelService(deps: ChannelDeps) {
       const ok = await deps.groups.require(user, groupId, "MEMBER");
       if ("error" in ok) return null;
       const role = ok.me.role;
-      const [categories, channels, notify] = await Promise.all([
+      const staff = canModerate(role);
+      const [categories, listed, notify, passes] = await Promise.all([
         deps.channels.categories(groupId),
-        deps.channels.channels(groupId, {
-          id: user.id,
-          staff: canModerate(role),
-        }),
+        deps.channels.channels(groupId, { id: user.id, staff }),
         deps.channels.notifyLevels(user.id, groupId),
+        staff
+          ? new Set<string>()
+          : deps.channels.passChannelIds(groupId, user.id, deps.clock.now()),
       ]);
+      // A paid channel shows to everyone, locked until they hold a pass.
+      const channels = listed.map((c) => ({
+        ...c,
+        locked: c.pricePaise !== null && !staff && !passes.has(c.id),
+      }));
       const inCategory = (id: string | null) =>
         channels.filter((c) => c.categoryId === id);
       return {
@@ -93,7 +115,14 @@ export function createChannelService(deps: ChannelDeps) {
       const channels = await deps.channels.channels(groupId);
       return channels
         .filter((c) => c.viewRule === "EVERYONE")
-        .map(({ id, type, name, topic }) => ({ id, type, name, topic }));
+        .map(({ id, type, name, topic, pricePaise, accessDays }) => ({
+          id,
+          type,
+          name,
+          topic,
+          pricePaise,
+          accessDays,
+        }));
     },
 
     /** The squad's first channel of a type, for links from before channels existed. */

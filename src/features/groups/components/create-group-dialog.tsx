@@ -24,8 +24,11 @@ export function CreateGroupDialog({
   exams,
   trigger,
   atLimit,
+  canPrice = false,
 }: {
   exams: { id: string; name: string }[];
+  /** Offer a price on the new squad (paid squads on, a plan that sells). */
+  canPrice?: boolean;
   /** Replaces the default button, so the same dialog can open from a rail tile. */
   trigger?: ReactNode;
   /** Shown in place of the form once someone has made every squad their plan allows. */
@@ -81,7 +84,11 @@ export function CreateGroupDialog({
                 Where you and your friends study together.
               </DialogDescription>
             </DialogHeader>
-            <CreateSquadForm exams={exams} onCreated={() => setOpen(false)} />
+            <CreateSquadForm
+              exams={exams}
+              canPrice={canPrice}
+              onCreated={() => setOpen(false)}
+            />
             <HaveInvite onJoin={() => setJoining(true)} />
           </>
         )}

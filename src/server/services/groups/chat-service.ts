@@ -61,6 +61,8 @@ export type ChatDeps = {
   clock: Clock;
   emit: (groupId: string, event: GroupEvent) => Promise<void>;
   notify: (rows: NewNotification[]) => Promise<void>;
+  /** Who of these authors carries the verified mark. Left out: nobody. */
+  verified?: (ids: string[]) => Promise<Set<string>>;
 };
 
 const CHAT_TYPES = new Set(["CHAT", "ANNOUNCEMENTS"]);
@@ -91,12 +93,17 @@ export function createChatService(deps: ChatDeps) {
     return new Map(rows.map((m) => [m.user.id, m.user.displayName]));
   }
 
+  /** The verified authors among these messages. */
+  const verifiedOf = (rows: MessageRow[]) =>
+    deps.verified?.(rows.map((m) => m.authorId)) ?? new Set<string>();
+
   function view(
     m: MessageRow,
     user: User,
     role: string,
     people: Map<string, string>,
     blocked: Set<string>,
+    verified: Set<string> = new Set(),
   ): MessageView {
     const deleted = !!m.deletedAt;
     const reply = m.replyTo;
@@ -107,7 +114,7 @@ export function createChatService(deps: ChatDeps) {
       hidden: !!m.hiddenAt,
       edited: !!m.editedAt,
       at: m.createdAt.toISOString(),
-      author: m.author,
+      author: { ...m.author, verified: verified.has(m.authorId) },
       mentions: m.mentionIds
         .filter((id) => people.has(id))
         .map((id) => ({ id, name: people.get(id)! })),
@@ -211,8 +218,11 @@ export function createChatService(deps: ChatDeps) {
       });
       const more = rows.length > CHAT_PAGE;
       const shown = rows.slice(0, CHAT_PAGE).reverse();
+      const verified = await verifiedOf(shown);
       return {
-        messages: shown.map((m) => view(m, user, chat.role, people, blocked)),
+        messages: shown.map((m) =>
+          view(m, user, chat.role, people, blocked, verified),
+        ),
         // Catching up returns everything new; only scrolling up has an older page.
         hasMore: !cursor.after && more,
       };
@@ -243,8 +253,11 @@ export function createChatService(deps: ChatDeps) {
         withHidden: isAdmin(chat.role),
         notBy: [...blocked],
       });
+      const verified = await verifiedOf(rows);
       return {
-        messages: rows.map((m) => view(m, user, chat.role, people, blocked)),
+        messages: rows.map((m) =>
+          view(m, user, chat.role, people, blocked, verified),
+        ),
       };
     },
 
@@ -394,7 +407,14 @@ export function createChatService(deps: ChatDeps) {
       });
       return {
         ok: true,
-        message: view(row, user, chat.role, people, new Set()),
+        message: view(
+          row,
+          user,
+          chat.role,
+          people,
+          new Set(),
+          await verifiedOf([row]),
+        ),
       };
     },
 

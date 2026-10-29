@@ -55,6 +55,18 @@ describe("entitlements with billing disabled", () => {
     };
     expect(limit(elite, "vaultMocksPerMonth")).toBe(100);
   });
+
+  it("gives the verified mark to paid plans and selling in squads to ELITE only", () => {
+    expect(can(free, "verifiedBadge")).toBe(false);
+    expect(can(free, "sellInSquads")).toBe(false);
+    expect(can(pro(), "verifiedBadge")).toBe(true);
+    expect(can(pro(), "sellInSquads")).toBe(false);
+    const elite = {
+      subscription: { ...pro().subscription, plan: "ELITE" as const },
+    };
+    expect(can(elite, "verifiedBadge")).toBe(true);
+    expect(can(elite, "sellInSquads")).toBe(true);
+  });
 });
 
 describe("entitlements with billing enabled", () => {

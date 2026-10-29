@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils/cn";
 
 type PageHeaderProps = {
   title: string;
+  /** A mark after the title, like the verified seal. */
+  badge?: ReactNode;
   description?: string;
   actions?: ReactNode;
   /**
@@ -15,6 +17,7 @@ type PageHeaderProps = {
 
 export function PageHeader({
   title,
+  badge,
   description,
   actions,
   inlineActions = false,
@@ -27,7 +30,10 @@ export function PageHeader({
       )}
     >
       <div className={cn("flex flex-col gap-1", inlineActions && "min-w-0")}>
-        <h1>{title}</h1>
+        <h1>
+          {title}
+          {badge ? <> {badge}</> : null}
+        </h1>
         {description ? (
           <p className="text-body text-ink-muted">{description}</p>
         ) : null}

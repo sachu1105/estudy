@@ -25,6 +25,8 @@ const plan = {
   flags: {
     aiExplanations: true,
     priorityParsing: false,
+    sellInSquads: false,
+    verifiedBadge: true,
   },
 };
 

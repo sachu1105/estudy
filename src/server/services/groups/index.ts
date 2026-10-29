@@ -3,7 +3,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 
 import { systemClock } from "@/lib/clock";
-import { limit } from "@/server/entitlements";
+import { can, limit } from "@/server/entitlements";
 import { today } from "@/lib/clock";
 import { rankStore } from "@/server/rank/rank-store";
 import { discussionRepository } from "@/server/repositories/discussion-repository";
@@ -19,9 +19,12 @@ import { messageRepository } from "@/server/repositories/message-repository";
 import { randomIds } from "@/lib/ids";
 import { groupRepository } from "@/server/repositories/group-repository";
 import { podItemRepository } from "@/server/repositories/pod-item-repository";
+import { passRepository } from "@/server/repositories/pass-repository";
 import { reportRepository } from "@/server/repositories/report-repository";
 import { userRepository } from "@/server/repositories/user-repository";
+import { getSetting } from "@/server/settings";
 import { storage } from "@/server/storage";
+import { verifiedIds } from "@/server/services/verified";
 
 import { createChannelService } from "./channel-service";
 import { createChatService } from "./chat-service";
@@ -30,6 +33,7 @@ import { createGroupService } from "./group-service";
 import { createSquadCoverService } from "./squad-cover-service";
 import { createGroupTests } from "./group-tests";
 import { createMaterialService } from "./material-service";
+import { createSquadPay } from "./squad-pay";
 import { createSquadReports } from "./squad-reports";
 
 /** No 0/O or 1/I/L: codes get read out and typed by hand. */
@@ -55,6 +59,27 @@ export const groupService = createGroupService({
   limit: (user, feature) => limit(user, feature),
   ownerLimit,
   newCode,
+});
+
+export const squadPay = createSquadPay({
+  groups: groupService,
+  repo: groupRepository,
+  channels: channelRepository,
+  passes: passRepository,
+  // Demo only: no money moves until Razorpay is wired in here.
+  checkout: {
+    charge: async () => ({
+      provider: "DEMO",
+      ref: `demo_${crypto.randomUUID()}`,
+    }),
+  },
+  clock: systemClock,
+  salesOn: async () => (await getSetting("paidSquads"))?.enabled ?? false,
+  canSell: (user) => can(user, "sellInSquads"),
+  ownerCanSell: async (ownerId) => {
+    const owner = await userRepository.findSessionUser(ownerId);
+    return !!owner && can(owner, "sellInSquads");
+  },
 });
 
 export const squadReports = createSquadReports({
@@ -139,4 +164,5 @@ export const chatService = createChatService({
   clock: systemClock,
   emit: groupEvents.emit,
   notify: (rows) => notificationService.notify(rows),
+  verified: verifiedIds,
 });

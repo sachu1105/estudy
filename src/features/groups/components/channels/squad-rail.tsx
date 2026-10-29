@@ -51,6 +51,7 @@ export function SquadRail({
   exams,
   atLimit,
   canCreate = true,
+  canPrice = false,
 }: {
   squads: { id: string; name: string; cover?: unknown; unread?: boolean }[];
   /** For the new squad's exam. */
@@ -59,6 +60,8 @@ export function SquadRail({
   atLimit?: ReactNode;
   /** Off where the page beside it has its own way to make a squad (the welcome). */
   canCreate?: boolean;
+  /** The new squad may be a paid one. */
+  canPrice?: boolean;
 }) {
   const pathname = usePathname();
   const squadHome = /^\/groups\/[0-9a-f-]{36}$/.test(pathname);
@@ -116,6 +119,7 @@ export function SquadRail({
             <CreateGroupDialog
               exams={exams}
               atLimit={atLimit}
+              canPrice={canPrice}
               trigger={
                 <button
                   type="button"

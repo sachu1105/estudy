@@ -21,7 +21,12 @@ export const LIMIT_FEATURES = [
   "pagesPerVaultMock",
 ] as const;
 
-export const FLAG_FEATURES = ["aiExplanations", "priorityParsing"] as const;
+export const FLAG_FEATURES = [
+  "aiExplanations",
+  "priorityParsing",
+  "sellInSquads",
+  "verifiedBadge",
+] as const;
 
 /** null means unlimited (JSON has no Infinity). */
 const limitValue = z.number().int().min(0).max(1e13).nullable();
@@ -58,6 +63,12 @@ export const announcementSchema = z.object({
   text: z.string().trim().max(200),
   tone: z.enum(["info", "important"]),
 });
+
+/**
+ * Paid squads and channels. Off by default: nobody is offered a price field until an
+ * admin turns it on. Off again, sales pause; everyone who paid keeps what they paid for.
+ */
+export const paidSquadsSchema = z.object({ enabled: z.boolean() });
 
 export const maintenanceSchema = z.object({
   on: z.boolean(),
@@ -166,6 +177,7 @@ export const settingSchemas = {
   maintenance: maintenanceSchema,
   flags: featureFlagsSchema,
   ai: aiSettingSchema,
+  paidSquads: paidSquadsSchema,
   aiProvider: aiProviderSchema,
   aiPrompts: aiPromptsSchema,
 } as const;

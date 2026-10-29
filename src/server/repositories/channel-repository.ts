@@ -21,6 +21,8 @@ const channelRow = {
   viewRule: true,
   slowModeSec: true,
   subjectName: true,
+  pricePaise: true,
+  accessDays: true,
 } as const;
 
 /** A squad's categories and channels (squads S1). */
@@ -81,6 +83,35 @@ export const channelRepository = {
       },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
       select: channelRow,
+    });
+  },
+
+  /** The paid channels in a squad this person holds a live pass to. */
+  passChannelIds(groupId: string, userId: string, now: Date) {
+    return prisma.squadPass
+      .findMany({
+        where: {
+          groupId,
+          userId,
+          channelId: { not: null },
+          OR: [{ accessUntil: null }, { accessUntil: { gt: now } }],
+        },
+        distinct: ["channelId"],
+        select: { channelId: true },
+      })
+      .then((rows) => new Set(rows.map((r) => r.channelId!)));
+  },
+
+  /** A paid channel's price; null makes it free. A priced channel is listed for all. */
+  setPrice(
+    channelId: string,
+    price: { pricePaise: number; accessDays: number | null } | null,
+  ) {
+    return prisma.channel.update({
+      where: { id: channelId },
+      data: price
+        ? { ...price, viewRule: "EVERYONE" }
+        : { pricePaise: null, accessDays: null },
     });
   },
 

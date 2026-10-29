@@ -7,6 +7,8 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
+import { PaidPill } from "../pay/paid-pill";
+
 import { CategoryTools } from "./category-menu";
 import { CategorySection } from "./category-section";
 import {
@@ -116,14 +118,33 @@ export function ChannelNav({
           href={href}
           label={ch.name}
           active={isOpen(ch)}
-          unread={unread[ch.id]}
-          icon={<Icon className="size-5 shrink-0" aria-hidden />}
+          // A locked channel's messages aren't the person's to count.
+          unread={ch.locked ? undefined : unread[ch.id]}
+          icon={
+            <Icon
+              className={cn(
+                "size-5 shrink-0",
+                // A paid channel's own mark: the accent, wherever it's listed.
+                ch.pricePaise !== null && "text-accent",
+              )}
+              aria-hidden
+            />
+          }
           extra={[
+            ch.locked ? ", paid, locked" : ch.pricePaise ? ", paid" : "",
             ch.viewRule !== "EVERYONE" ? ", private" : "",
             notify[ch.id] === "MUTE" ? ", muted" : "",
           ].join("")}
           badge={
             <>
+              {ch.pricePaise !== null ? (
+                <PaidPill
+                  pricePaise={ch.pricePaise}
+                  locked={!!ch.locked}
+                  // Those who run the squad see the price; a member with a pass, "Pass".
+                  holder={!ch.locked && !canManage}
+                />
+              ) : null}
               {ch.viewRule !== "EVERYONE" ? (
                 <Lock
                   className="size-3.5 shrink-0 text-ink-subtle"

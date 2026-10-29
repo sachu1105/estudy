@@ -16,7 +16,8 @@ import { QuickJoin } from "@/features/groups/components/quick-join";
 import { joinModeOf } from "@/lib/squads/access";
 import { LAST_SQUAD_COOKIE } from "@/lib/squads/last-squad";
 import { requireUser } from "@/server/auth/session";
-import { groupService } from "@/server/services/groups";
+import { verifiedIds } from "@/server/services/verified";
+import { groupService, squadPay } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
 export const metadata: Metadata = { title: "Squads" };
@@ -35,11 +36,13 @@ export default async function GroupsPage() {
     redirect(`/groups/${open.group.id}`);
   }
 
-  const [directory, exams] = await Promise.all([
+  const [directory, exams, canPrice] = await Promise.all([
     groupService.directory(null, ""),
     catalogueService.listExams(),
+    squadPay.canPrice(user),
   ]);
   const suggested = directory.slice(0, 6);
+  const verified = await verifiedIds(suggested.map((g) => g.ownerId));
 
   return (
     <SquadShell user={user} canCreate={false}>
@@ -60,6 +63,7 @@ export default async function GroupsPage() {
             <div className="grid w-full max-w-md grid-cols-1 gap-2 sm:grid-cols-2">
               <CreateGroupDialog
                 exams={exams.map((e) => ({ id: e.id, name: e.name }))}
+                canPrice={canPrice}
                 trigger={
                   <Button variant="primary" className="sm:col-span-2">
                     <Plus aria-hidden /> Create squad
@@ -85,12 +89,14 @@ export default async function GroupsPage() {
                   <li key={g.id} className="flex">
                     <GroupCard
                       group={g}
+                      verified={verified.has(g.ownerId)}
                       action={
                         joinModeOf(g) === "INVITE_ONLY" ? null : (
                           <QuickJoin
                             groupId={g.id}
                             name={g.name}
                             asks={joinModeOf(g) === "REQUEST"}
+                            paid={g.pricePaise !== null}
                           />
                         )
                       }

@@ -265,3 +265,28 @@ export async function addClassicChannels(groupId: string) {
       );
   });
 }
+
+/** An admin's ELITE grant for this account: what lets an owner sell passes. */
+export async function grantElite(email: string) {
+  await withDb((db) =>
+    db.query(
+      `UPDATE "Subscription" SET plan = 'ELITE', source = 'ADMIN_GRANT', "updatedAt" = now()
+       WHERE "userId" = (SELECT id FROM "User" WHERE email = $1)`,
+      [email],
+    ),
+  );
+}
+
+/**
+ * Paid squads on, as the admin switch does. The global setup notes what the dev
+ * database had and the teardown puts it back, so a run never leaves this on.
+ */
+export async function enablePaidSquads() {
+  await withDb((db) =>
+    db.query(
+      `INSERT INTO "AppSetting" (key, value, "updatedAt")
+       VALUES ('paidSquads', '{"enabled":true}'::jsonb, now())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, "updatedAt" = now()`,
+    ),
+  );
+}

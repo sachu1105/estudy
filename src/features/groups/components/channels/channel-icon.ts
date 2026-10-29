@@ -34,6 +34,11 @@ export type ChannelSummary = {
   viewRule: "EVERYONE" | "ADMINS" | "PICKED";
   slowModeSec: number;
   subjectName: string | null;
+  /** A paid channel's pass price, in paise. Null: free to every member. */
+  pricePaise: number | null;
+  accessDays: number | null;
+  /** Paid, and this person holds no pass yet. */
+  locked?: boolean;
 };
 
 export type CategorySummary = {

@@ -39,6 +39,8 @@ export const rules = {
   messagePerUser: { limit: 40, windowMs: MINUTE },
   // Checkout and cancel (milestone 16).
   billingPerUser: { limit: 10, windowMs: 10 * MINUTE },
+  // Passes to paid squads and channels: a few tries, never a double-click loop.
+  payPerUser: { limit: 10, windowMs: 10 * MINUTE },
 } satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof rules;

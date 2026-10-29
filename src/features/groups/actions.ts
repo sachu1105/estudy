@@ -8,6 +8,7 @@ import {
   type CoverPreset,
   type PodCover,
 } from "@/lib/pods/covers";
+import { squadOfferSchema, type SquadOffer } from "@/lib/squads/pay";
 import { TEMPLATE_KEYS } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
@@ -16,6 +17,7 @@ import {
   groupTests,
   materialService,
   squadCoverService,
+  squadPay,
   squadReports,
 } from "@/server/services/groups";
 
@@ -129,10 +131,20 @@ export async function createGroupAction(
       joinMode: squadFields.joinMode.optional(),
       joinQuestion: squadFields.joinQuestion.optional(),
       template: z.enum(TEMPLATE_KEYS).default("EXAM"),
+      /** A paid squad's price and pitch; left out, free. */
+      offer: squadOfferSchema.optional(),
     }),
   );
   if (g.fail) return g.fail;
-  return done(await groupService.create(g.user, g.data as never), "/groups");
+  const { offer, ...fields } = g.data as { offer?: SquadOffer | null };
+  if (offer && !(await squadPay.canPrice(g.user)))
+    return { ok: false, error: "Paid squads aren't open to you." };
+  const made = await groupService.create(g.user, fields as never);
+  if (made.ok && offer) {
+    const priced = await squadPay.setSquadOffer(g.user, made.groupId, offer);
+    if (!priced.ok) return done(priced);
+  }
+  return done(made, "/groups");
 }
 
 export async function joinGroupAction(
@@ -514,4 +526,68 @@ export async function takeGroupTestAction(
   if (g.fail) return g.fail;
   const d = g.data as { groupId: string; groupTestId: string };
   return done(await groupTests.take(g.user!, d.groupId, d.groupTestId));
+}
+
+// ---- Paid squads and channels ------------------------------------------------------
+// Owners price things; anyone buys a pass. Payments are a demo: no money moves yet.
+
+async function payGuard<S extends z.ZodType>(input: unknown, schema: S) {
+  const user = await requireUser();
+  const parsed = schema.safeParse(input);
+  if (!parsed.success)
+    return {
+      fail: {
+        ok: false as const,
+        error: parsed.error.issues[0]?.message ?? invalid.error,
+      },
+    } as const;
+  const limited = await rateLimit([["payPerUser", user.id]]);
+  if (!limited.ok)
+    return {
+      fail: { ok: false as const, error: retryMessage(limited.retryAfterMs) },
+    } as const;
+  return { fail: null, user, data: parsed.data as z.infer<S> } as const;
+}
+
+/** The owner prices the squad, or makes it free (offer null). */
+export async function setSquadOfferAction(input: unknown): Promise<Result> {
+  const g = await guard(
+    input,
+    z.object({ groupId: id, offer: squadOfferSchema }),
+  );
+  if (g.fail) return g.fail;
+  const { groupId, offer } = g.data as {
+    groupId: string;
+    offer: SquadOffer | null;
+  };
+  return done(
+    await squadPay.setSquadOffer(g.user, groupId, offer),
+    "/groups",
+    `/groups/${groupId}`,
+  );
+}
+
+/** A pass to a paid squad: the member is in once it's paid. */
+export async function buySquadAction(
+  input: unknown,
+): Promise<Result<{ until: string | null }>> {
+  const g = await payGuard(input, z.object({ groupId: id }));
+  if (g.fail) return g.fail;
+  const result = await squadPay.buySquad(g.user, g.data.groupId);
+  if (!result.ok) return { ok: false, error: result.message };
+  // No revalidate here: the page would swap under the receipt. Closing it refreshes.
+  return { ok: true, until: result.until?.toISOString() ?? null };
+}
+
+/** A pass to one paid channel of a squad the member is in. */
+export async function buyChannelAction(
+  input: unknown,
+): Promise<Result<{ until: string | null }>> {
+  const g = await payGuard(input, z.object({ groupId: id, channelId: id }));
+  if (g.fail) return g.fail;
+  const { groupId, channelId } = g.data;
+  const result = await squadPay.buyChannel(g.user, groupId, channelId);
+  if (!result.ok) return { ok: false, error: result.message };
+  // No revalidate here: the page would swap under the receipt. Closing it refreshes.
+  return { ok: true, until: result.until?.toISOString() ?? null };
 }

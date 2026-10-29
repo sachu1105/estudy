@@ -15,6 +15,7 @@ import { isId } from "@/lib/ids";
 import { joinModeOf } from "@/lib/squads/access";
 import { cn } from "@/lib/utils/cn";
 import { requireUser } from "@/server/auth/session";
+import { verifiedIds } from "@/server/services/verified";
 import { groupService } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
@@ -41,6 +42,7 @@ export default async function DiscoverPage({
   // looks joinable but isn't only confuses.
   const roles = new Map(mine.map((m) => [m.group.id, m.role]));
   const others = directory.filter((g) => !roles.has(g.id));
+  const verified = await verifiedIds(directory.map((g) => g.ownerId));
   const yours = directory.filter((g) => roles.has(g.id));
   const examLinks = [
     { id: null, name: "Every exam" },
@@ -153,12 +155,14 @@ export default async function DiscoverPage({
                     <li key={g.id} className="flex">
                       <GroupCard
                         group={g}
+                        verified={verified.has(g.ownerId)}
                         action={
                           mode === "INVITE_ONLY" ? null : (
                             <QuickJoin
                               groupId={g.id}
                               name={g.name}
                               asks={mode === "REQUEST"}
+                              paid={g.pricePaise !== null}
                             />
                           )
                         }
@@ -184,6 +188,7 @@ export default async function DiscoverPage({
                   <li key={g.id} className="flex">
                     <GroupCard
                       group={g}
+                      verified={verified.has(g.ownerId)}
                       role={roles.get(g.id)}
                       action={
                         <Button asChild variant="secondary">

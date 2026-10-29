@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/server/db";
-import type { ReactionKind } from "@/server/db/generated/prisma/client";
+import { Prisma, type ReactionKind } from "@/server/db/generated/prisma/client";
 
 const person = { select: { id: true, displayName: true, avatarUrl: true } };
 
@@ -63,6 +63,16 @@ const messageRow = {
 } as const;
 
 /** Chat messages, their reactions, and how far each person has read (squads S3). */
+/**
+ * A paid channel counts for unread only once the person can open it: they run the
+ * squad, or hold a live pass to it (alias c is the channel, ms the membership).
+ */
+const canOpenPaid = (userId: string) => Prisma.sql`
+  (c."pricePaise" IS NULL OR ms."role" <> 'MEMBER' OR EXISTS (
+    SELECT 1 FROM "SquadPass" p
+    WHERE p."channelId" = c."id" AND p."userId" = ${userId}::uuid
+      AND (p."accessUntil" IS NULL OR p."accessUntil" > NOW())))`;
+
 export const messageRepository = {
   create(data: {
     groupId: string;
@@ -269,6 +279,7 @@ export const messageRepository = {
         AND m."deletedAt" IS NULL AND m."hiddenAt" IS NULL
         AND m."authorId" <> ${userId}::uuid
         AND m."createdAt" > COALESCE(r."lastReadAt", ms."joinedAt")
+        AND ${canOpenPaid(userId)}
       GROUP BY m."channelId"`;
   },
 
@@ -282,7 +293,8 @@ export const messageRepository = {
       LEFT JOIN "ChannelRead" r ON r."channelId" = m."channelId" AND r."userId" = ${userId}::uuid
       WHERE m."deletedAt" IS NULL AND m."hiddenAt" IS NULL
         AND m."authorId" <> ${userId}::uuid
-        AND m."createdAt" > COALESCE(r."lastReadAt", ms."joinedAt")`;
+        AND m."createdAt" > COALESCE(r."lastReadAt", ms."joinedAt")
+        AND ${canOpenPaid(userId)}`;
     return new Set(rows.map((r) => r.groupId));
   },
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BadgeCheck,
   ChevronDown,
   Flag,
   FolderPlus,
@@ -52,9 +53,12 @@ export function GroupMenu({
   categories = [],
   subjects = [],
   asName = false,
+  verified = false,
 }: {
   groupId: string;
   name: string;
+  /** The verified seal after the name, on the banner. */
+  verified?: boolean;
   owner: boolean;
   canManage?: boolean;
   categories?: { id: string; name: string }[];
@@ -81,7 +85,7 @@ export function GroupMenu({
           {asName ? (
             <button
               type="button"
-              aria-label={`More for ${name}`}
+              aria-label={`More for ${name}${verified ? ", verified" : ""}`}
               disabled={pending}
               className={cn(
                 "group/name flex min-h-11 min-w-0 cursor-pointer items-center gap-1 rounded-control px-2 text-left font-heading text-h3 font-medium text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.45)]",
@@ -89,6 +93,12 @@ export function GroupMenu({
               )}
             >
               <span className="truncate">{name}</span>
+              {verified ? (
+                <BadgeCheck
+                  aria-hidden
+                  className="size-4 shrink-0 fill-accent text-white"
+                />
+              ) : null}
               <ChevronDown
                 className="size-4 shrink-0 transition-transform duration-[200ms] group-data-[state=open]/name:rotate-180"
                 aria-hidden

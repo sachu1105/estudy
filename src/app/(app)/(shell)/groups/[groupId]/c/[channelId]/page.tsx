@@ -8,10 +8,18 @@ import { ThreadsChannel } from "@/features/groups/channel-views/threads-channel"
 import type { ChannelViewProps } from "@/features/groups/channel-views/types";
 import { ChannelMenu } from "@/features/groups/components/channels/channel-menu";
 import { NotifyMenu } from "@/features/groups/components/channels/notify-menu";
+import { LockedChannel } from "@/features/groups/components/pay/locked-channel";
+import { systemClock } from "@/lib/clock";
+import { timeAgo } from "@/lib/format/ago";
 import { isId } from "@/lib/ids";
 import type { ChannelType } from "@/lib/squads/templates";
 import { requireUser } from "@/server/auth/session";
-import { channelService, groupService } from "@/server/services/groups";
+import {
+  channelService,
+  groupService,
+  squadPay,
+} from "@/server/services/groups";
+import { verifiedIds } from "@/server/services/verified";
 
 export const metadata: Metadata = { title: "Squad channel" };
 
@@ -40,7 +48,29 @@ export default async function ChannelPage({
     groupService.view(user, groupId),
     channelService.layout(user, groupId),
   ]);
-  if (!found || !view?.role || !layout) notFound();
+  if (!view?.role || !layout) notFound();
+  if (!found) {
+    // A paid channel the member hasn't opened: its price and a pass, not a 404.
+    const locked = await squadPay.lockedChannel(user, groupId, channelId);
+    if (!locked) notFound();
+    const verified = await verifiedIds([locked.owner.id]);
+    return (
+      <LockedChannel
+        groupId={groupId}
+        channel={locked.channel}
+        squad={locked.squad}
+        owner={{ ...locked.owner, verified: verified.has(locked.owner.id) }}
+        stats={locked.stats}
+        lastActive={
+          locked.stats.lastAt
+            ? timeAgo(locked.stats.lastAt, systemClock.now(), user.timezone)
+            : null
+        }
+        endedAt={locked.endedAt}
+        selling={locked.selling}
+      />
+    );
+  }
   const { channel } = found;
   const View = VIEWS[channel.type];
 

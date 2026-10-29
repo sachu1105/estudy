@@ -3,10 +3,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { COVER_PRESETS, type CoverPreset } from "@/lib/pods/covers";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
+import { priceLabel } from "@/lib/squads/pay";
 import { squadCover } from "@/lib/squads/cover";
 import { ROLE_LABELS, type GroupRole } from "@/lib/squads/roles";
 import { cn } from "@/lib/utils/cn";
@@ -75,6 +77,7 @@ export function GroupCard({
   group,
   role,
   unread = false,
+  verified = false,
   action,
 }: {
   group: {
@@ -88,8 +91,13 @@ export function GroupCard({
     cover?: unknown;
     members?: Member[];
     _count: { members: number };
+    /** A paid squad's pass. Null: free. */
+    pricePaise?: number | null;
+    accessDays?: number | null;
   };
   role?: GroupRole | null;
+  /** Run by someone on a paid plan. */
+  verified?: boolean;
   /** Something new in its chats. */
   unread?: boolean;
   action?: ReactNode;
@@ -100,9 +108,14 @@ export function GroupCard({
     art.kind === "gradient"
       ? COVER_PRESETS[art.preset as CoverPreset].base
       : undefined;
+  const paid = group.pricePaise != null;
   const facts = [
     group.exam?.name,
-    role ? null : JOIN_LABEL[joinModeOf(group)],
+    role
+      ? null
+      : paid
+        ? priceLabel(group.pricePaise!, group.accessDays ?? null)
+        : JOIN_LABEL[joinModeOf(group)],
   ].filter(Boolean);
 
   return (
@@ -132,6 +145,12 @@ export function GroupCard({
             className="font-heading text-h3 font-medium break-words outline-none after:absolute after:inset-0 after:rounded-card"
           >
             {group.name}
+            {verified ? (
+              <>
+                {" "}
+                <VerifiedMark />
+              </>
+            ) : null}
             {unread ? <span className="sr-only">, new messages</span> : null}
           </Link>
           {group.visibility === "PRIVATE" ? (
@@ -156,7 +175,7 @@ export function GroupCard({
           </span>
         ) : null}
 
-        <span className="mt-auto flex items-center justify-between gap-3 pt-4">
+        <span className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4">
           <Faces members={group.members ?? []} total={group._count.members} />
           {action ? (
             <span className="relative z-10 shrink-0">{action}</span>

@@ -12,6 +12,7 @@ import { userRepository } from "@/server/repositories/user-repository";
 import { hasSession } from "@/server/auth/session";
 import { progressService } from "@/server/services/progress";
 import { profileService } from "@/server/services/profile";
+import { verifiedIds } from "@/server/services/verified";
 
 type Props = { params: Promise<{ handle: string }> };
 
@@ -52,7 +53,8 @@ function Stat({
 /**
  * A shared profile. Everything here is what the owner chose to share: name, bio, photo,
  * cover, how long their streak is, the XP they have earned and the public squads they
- * are in. Nothing about their plan, pods or email appears.
+ * are in. Nothing about their plan, pods or email appears, beyond the verified seal
+ * that every paid plan shows beside the name.
  */
 export default async function PublicProfilePage({ params }: Props) {
   const profile = await profileService.shared((await params).handle);
@@ -61,17 +63,19 @@ export default async function PublicProfilePage({ params }: Props) {
   const owner = await userRepository.findById(profile.id);
   if (!owner) notFound();
 
-  const [streak, xp, squads, signedIn] = await Promise.all([
+  const [streak, xp, squads, signedIn, verified] = await Promise.all([
     progressService.streak(owner),
     progressRepository.xpTotal(profile.id),
     groupRepository.publicSquadsOf(profile.id),
     hasSession(),
+    verifiedIds([profile.id]),
   ]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 md:px-8 md:py-16">
       <ProfileBanner
         user={profile}
+        verified={verified.has(profile.id)}
         joinedAt={profile.joinedAt}
         stats={
           <div className="flex flex-wrap gap-2">

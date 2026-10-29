@@ -2,6 +2,7 @@ import { CalendarDays } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { Avatar } from "@/components/ui/avatar";
 import type { PodCover as Cover } from "@/lib/pods/covers";
 
@@ -24,8 +25,11 @@ export function ProfileBanner({
   actions,
   overlay,
   stats,
+  verified = false,
 }: {
   user: ProfileBannerUser;
+  /** On a paid plan: the verified seal after the name. */
+  verified?: boolean;
   joinedAt?: Date;
   /** Buttons beside the name. */
   actions?: ReactNode;
@@ -58,7 +62,15 @@ export function ProfileBanner({
         </div>
 
         <div className="mt-3 flex flex-col gap-1">
-          <h2 className="text-h1">{user.displayName}</h2>
+          <h2 className="text-h1">
+            {user.displayName}
+            {verified ? (
+              <>
+                {" "}
+                <VerifiedMark className="size-5" />
+              </>
+            ) : null}
+          </h2>
           {user.handle ? (
             <p className="font-mono text-small text-ink-muted">
               @{user.handle}

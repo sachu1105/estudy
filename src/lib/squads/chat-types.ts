@@ -11,7 +11,13 @@ export type MessageView = {
   hidden: boolean;
   edited: boolean;
   at: string;
-  author: { id: string; displayName: string; avatarUrl: string | null };
+  author: {
+    id: string;
+    displayName: string;
+    avatarUrl: string | null;
+    /** On a paid plan: the verified seal after the name. */
+    verified?: boolean;
+  };
   mentions: { id: string; name: string }[];
   replyTo: { id: string; author: string; preview: string } | null;
   item: {

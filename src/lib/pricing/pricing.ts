@@ -109,6 +109,7 @@ export function featureRows(plan: PlanShape): FeatureRow[] {
         : "Normal parsing queue",
       on: true,
     },
+    { label: "Verified mark on your name and squads", on: flags.verifiedBadge },
   ];
 }
 

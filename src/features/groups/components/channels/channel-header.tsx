@@ -1,6 +1,8 @@
-import { ArrowLeft, Lock, Timer, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Lock, Ticket, Timer, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { priceLabel } from "@/lib/squads/pay";
 
 import { CHANNEL_ICONS, type ChannelSummary } from "./channel-icon";
 
@@ -80,7 +82,8 @@ export function ChannelHeader({
   channel: Pick<
     ChannelSummary,
     "type" | "name" | "topic" | "postRule" | "viewRule" | "slowModeSec"
-  >;
+  > &
+    Partial<Pick<ChannelSummary, "pricePaise" | "accessDays">>;
   actions?: ReactNode;
   /** The admin's channel menu, when the viewer manages the squad. */
   manage?: ReactNode;
@@ -91,6 +94,7 @@ export function ChannelHeader({
 }) {
   const adminsOnly = channel.postRule === "ADMINS";
   const slow = channel.slowModeSec;
+  const price = channel.pricePaise ?? null;
   return (
     <SquadHeading
       groupId={groupId}
@@ -100,8 +104,15 @@ export function ChannelHeader({
         channel.topic ||
         adminsOnly ||
         slow ||
+        price !== null ||
         channel.viewRule !== "EVERYONE" ? (
           <>
+            {price !== null ? (
+              <span className="inline-flex items-center gap-1 text-small font-medium text-accent-ink">
+                <Ticket className="size-3.5" aria-hidden />
+                Paid · {priceLabel(price, channel.accessDays ?? null)}
+              </span>
+            ) : null}
             {channel.topic}
             {channel.viewRule !== "EVERYONE" ? (
               <span className="inline-flex items-center gap-1 text-small">

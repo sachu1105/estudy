@@ -1,6 +1,7 @@
 import { Lock } from "lucide-react";
 import { notFound } from "next/navigation";
 
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ChannelNav } from "@/features/groups/components/channels/channel-nav";
@@ -16,14 +17,19 @@ import {
 } from "@/features/groups/components/channels/squad-shell";
 import { SquadLive } from "@/features/groups/components/chat/squad-live";
 import { JoinButton } from "@/features/groups/components/join-controls";
+import { PricingProvider } from "@/features/groups/components/pay/pricing-context";
+import { SquadPassCard } from "@/features/groups/components/pay/squad-pass-card";
 import { isId } from "@/lib/ids";
 import { joinModeOf } from "@/lib/squads/access";
+import { priceLabel } from "@/lib/squads/pay";
 import { requireUser } from "@/server/auth/session";
 import {
   channelService,
   chatService,
   groupService,
+  squadPay,
 } from "@/server/services/groups";
+import { verifiedIds } from "@/server/services/verified";
 
 /**
  * A squad. Members get its channels: on md+ a rail of their squads, the channel list and
@@ -41,67 +47,75 @@ export default async function GroupLayout({
   const view = isId(groupId) ? await groupService.view(user, groupId) : null;
   if (!view) notFound();
   const { group, role } = view;
+  // A squad run by someone on a paid plan carries the verified mark.
+  const verified = (await verifiedIds([group.ownerId])).has(group.ownerId);
 
   if (!role)
     return (
       <SquadShell user={user}>
         <SquadColumn>
-          <Visitor user={user} view={view} />
+          <Visitor user={user} view={view} verified={verified} />
         </SquadColumn>
       </SquadShell>
     );
 
-  const [layout, unread, subjects] = await Promise.all([
+  const owner = role === "OWNER";
+  const [layout, unread, subjects, canPrice] = await Promise.all([
     channelService.layout(user, groupId),
     chatService.unread(user, groupId),
     channelService.subjects(user, groupId),
+    owner ? squadPay.canPrice(user) : false,
   ]);
   if (!layout) notFound();
   const categories = layout.categories.map(({ id, name }) => ({ id, name }));
 
   return (
-    <SquadShell user={user} screen>
-      <SquadLive groupId={group.id} meId={user.id} />
-      <RememberSquad groupId={group.id} />
-      <aside
-        aria-label={`${group.name} channels`}
-        className="hidden w-72 shrink-0 flex-col border-r border-border md:flex"
-      >
-        <SquadBanner
-          group={group}
-          canInvite={layout.canManage}
-          menu={{
-            owner: role === "OWNER",
-            canManage: layout.canManage,
-            categories,
-            subjects: subjects.map((s) => s.name),
-          }}
-        />
-        <div className="flex-1 scrollbar-thin overflow-y-auto p-2">
-          <ChannelNav
-            groupId={group.id}
-            loose={layout.loose}
-            categories={layout.categories}
-            canManage={layout.canManage}
-            unread={unread}
-            notify={layout.notify}
+    <PricingProvider owner={owner} canPrice={canPrice}>
+      <SquadShell user={user} screen>
+        <SquadLive groupId={group.id} meId={user.id} />
+        <RememberSquad groupId={group.id} />
+        <aside
+          aria-label={`${group.name} channels`}
+          className="hidden w-72 shrink-0 flex-col border-r border-border md:flex"
+        >
+          <SquadBanner
+            group={group}
+            verified={verified}
+            canInvite={layout.canManage}
+            menu={{
+              owner: role === "OWNER",
+              canManage: layout.canManage,
+              categories,
+              subjects: subjects.map((s) => s.name),
+            }}
           />
+          <div className="flex-1 scrollbar-thin overflow-y-auto p-2">
+            <ChannelNav
+              groupId={group.id}
+              loose={layout.loose}
+              categories={layout.categories}
+              canManage={layout.canManage}
+              unread={unread}
+              notify={layout.notify}
+            />
+          </div>
+        </aside>
+        <div className="flex min-w-0 flex-1 flex-col md:block md:scrollbar-thin md:overflow-y-auto md:has-[[data-focus-view]]:flex">
+          <div className="mx-auto flex w-full max-w-content flex-1 flex-col px-4 pt-4 pb-24 has-[[data-focus-view]]:pb-0 md:block md:px-8 md:pt-6 md:pb-12 md:has-[[data-focus-view]]:flex md:has-[[data-focus-view]]:flex-col">
+            {view.muted ? (
+              <p
+                role="status"
+                className="mb-4 rounded-card bg-surface-muted p-3 text-small"
+              >
+                A squad admin has muted you for now: you can read, but not
+                share.
+              </p>
+            ) : null}
+            {children}
+          </div>
         </div>
-      </aside>
-      <div className="flex min-w-0 flex-1 flex-col md:block md:scrollbar-thin md:overflow-y-auto md:has-[[data-focus-view]]:flex">
-        <div className="mx-auto flex w-full max-w-content flex-1 flex-col px-4 pt-4 pb-24 has-[[data-focus-view]]:pb-0 md:block md:px-8 md:pt-6 md:pb-12 md:has-[[data-focus-view]]:flex md:has-[[data-focus-view]]:flex-col">
-          {view.muted ? (
-            <p
-              role="status"
-              className="mb-4 rounded-card bg-surface-muted p-3 text-small"
-            >
-              A squad admin has muted you for now: you can read, but not share.
-            </p>
-          ) : null}
-          {children}
-        </div>
-      </div>
-    </SquadShell>
+      </SquadShell>
+    </PricingProvider>
   );
 }
 
@@ -109,44 +123,67 @@ export default async function GroupLayout({
 async function Visitor({
   user,
   view,
+  verified,
 }: {
   user: Awaited<ReturnType<typeof requireUser>>;
   view: NonNullable<Awaited<ReturnType<typeof groupService.view>>>;
+  verified: boolean;
 }) {
   const { group } = view;
   const mode = joinModeOf(group);
-  const channels = await channelService.preview(user, group.id);
+  const [channels, selling] = await Promise.all([
+    channelService.preview(user, group.id),
+    group.pricePaise !== null ? squadPay.selling(group.ownerId) : false,
+  ]);
   const facts = squadFacts(group);
 
   return (
     <>
-      <PageHeader title={group.name} description={facts} />
+      <PageHeader
+        title={group.name}
+        badge={verified ? <VerifiedMark className="size-5" /> : null}
+        description={facts}
+      />
       {group.visibility === "PRIVATE" ? (
         <Badge tone="outline" className="-mt-6 mb-6">
           <Lock aria-hidden /> private
         </Badge>
       ) : null}
       <div className="flex max-w-xl flex-col gap-6">
-        <section className="flex flex-col gap-4 rounded-card border border-border bg-surface p-5">
-          {group.description ? (
-            <p className="text-body">{group.description}</p>
-          ) : null}
-          <p className="text-body text-ink-muted">
-            {mode === "INVITE_ONLY"
-              ? "This squad takes members by invite only. Ask a member for an invite link."
-              : mode === "REQUEST"
-                ? "Ask to join and an admin of the squad decides, or use an invite from a member."
-                : "Join to see the channels, shared notes and tests, and to take part."}
-          </p>
-          {mode !== "INVITE_ONLY" && (
-            <JoinButton
-              groupId={group.id}
-              asks={mode === "REQUEST"}
-              question={group.joinQuestion}
-              requested={view.request === "PENDING"}
+        {group.pricePaise !== null ? (
+          <>
+            {group.description ? (
+              <p className="text-body">{group.description}</p>
+            ) : null}
+            <SquadPassCard
+              group={{ ...group, pricePaise: group.pricePaise }}
+              selling={selling}
+              lapsedAt={view.lapsedAt}
+              inviteOnly={mode === "INVITE_ONLY"}
             />
-          )}
-        </section>
+          </>
+        ) : (
+          <section className="flex flex-col gap-4 rounded-card border border-border bg-surface p-5">
+            {group.description ? (
+              <p className="text-body">{group.description}</p>
+            ) : null}
+            <p className="text-body text-ink-muted">
+              {mode === "INVITE_ONLY"
+                ? "This squad takes members by invite only. Ask a member for an invite link."
+                : mode === "REQUEST"
+                  ? "Ask to join and an admin of the squad decides, or use an invite from a member."
+                  : "Join to see the channels, shared notes and tests, and to take part."}
+            </p>
+            {mode !== "INVITE_ONLY" && (
+              <JoinButton
+                groupId={group.id}
+                asks={mode === "REQUEST"}
+                question={group.joinQuestion}
+                requested={view.request === "PENDING"}
+              />
+            )}
+          </section>
+        )}
         {channels.length ? (
           <section aria-labelledby="inside" className="flex flex-col gap-2">
             <h2 id="inside" className="text-h3">
@@ -162,7 +199,15 @@ async function Visitor({
                       aria-hidden
                     />
                     <span className="flex min-w-0 flex-col">
-                      <span className="text-body font-medium">{c.name}</span>
+                      <span className="flex flex-wrap items-center gap-x-2 text-body font-medium">
+                        {c.name}
+                        {c.pricePaise !== null ? (
+                          <Badge tone="outline">
+                            <Lock aria-hidden />{" "}
+                            {priceLabel(c.pricePaise, c.accessDays)}
+                          </Badge>
+                        ) : null}
+                      </span>
                       {c.topic ? (
                         <span className="text-small text-ink-muted">
                           {c.topic}

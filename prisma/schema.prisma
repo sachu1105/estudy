@@ -113,6 +113,7 @@ model User {
   pollVotes          PollVote[]
   channelReads       ChannelRead[]
   channelAccess      ChannelAccess[]
+  squadPasses        SquadPass[]
   channelNotify      ChannelNotify[]
   notifications      Notification[]      @relation("NotificationFor")
   pushSubscriptions  PushSubscription[]
@@ -1183,11 +1184,20 @@ model Group {
   owner        User            @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   /// A site admin took it out of the directory (moderation).
   hiddenAt     DateTime?       @db.Timestamptz(6)
+  /// What one pass costs, in paise. Null: a free squad. Only the owner sets it.
+  pricePaise   Int?
+  /// How long one payment lets a member in. Null: for good.
+  accessDays   Int?
+  /// What a member gets for the price, shown above the pay button.
+  offer        String?
+  /// A sample class to watch before paying.
+  demoUrl      String?
   createdAt    DateTime        @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime        @updatedAt @db.Timestamptz(6)
   deletedAt    DateTime?       @db.Timestamptz(6)
 
   members    Membership[]
+  passes     SquadPass[]
   invites    GroupInvite[]
   requests   JoinRequest[]
   items      GroupItem[]
@@ -1234,6 +1244,10 @@ model Channel {
   subjectName String?
   /// Seconds a member waits between messages here. 0 is off; admins are exempt.
   slowModeSec Int              @default(0)
+  /// A paid channel: members unlock it with a pass. Null: free to every member.
+  pricePaise  Int?
+  /// How long one pass to it lasts. Null: for good.
+  accessDays  Int?
   createdAt   DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
   deletedAt   DateTime?        @db.Timestamptz(6)
@@ -1245,6 +1259,7 @@ model Channel {
   reads    ChannelRead[]
   access   ChannelAccess[]
   notify   ChannelNotify[]
+  passes   SquadPass[]
 
   @@index([groupId, deletedAt, order])
 }
@@ -1383,10 +1398,42 @@ model Membership {
   role       GroupRole @default(MEMBER)
   /// Muted members read but can't share until this passes.
   mutedUntil DateTime? @db.Timestamptz(6)
+  /// In a paid squad, a member's pass runs out then. Null: no end (paid for good, or
+  /// let in by an invite). Owners, admins and moderators never run out.
+  paidUntil  DateTime? @db.Timestamptz(6)
   joinedAt   DateTime  @default(now()) @db.Timestamptz(6)
 
   @@unique([groupId, userId])
   @@index([userId])
+}
+
+/// Who paid for what. Payments are demo-only until Razorpay arrives: no money moves.
+enum PassProvider {
+  DEMO
+  RAZORPAY
+}
+
+/// One payment for a paid squad, or for a paid channel in a squad. Append-only (rule 6):
+/// renewing writes a new row, and access is read from the latest.
+model SquadPass {
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groupId     String       @db.Uuid
+  group       Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  /// Null: the squad itself. Set: one paid channel in it.
+  channelId   String?      @db.Uuid
+  channel     Channel?     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  amountPaise Int
+  provider    PassProvider
+  /// The provider's payment id: the idempotency key once payments are real.
+  providerRef String       @unique
+  /// When access ends. Null: for good.
+  accessUntil DateTime?    @db.Timestamptz(6)
+  createdAt   DateTime     @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, groupId, channelId, createdAt])
+  @@index([groupId, createdAt])
 }
 
 model GroupInvite {

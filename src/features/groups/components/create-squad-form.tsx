@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -28,6 +29,11 @@ import {
 
 import { createGroupAction } from "../actions";
 import { ChoiceTiles } from "./choice-tiles";
+import {
+  emptyOffer,
+  fromOfferDraft,
+  SquadOfferFields,
+} from "./pay/squad-offer-fields";
 import { SquadAccessField } from "./squad-access-field";
 
 const ICONS = { EXAM: GraduationCap, CIRCLE: Users, BLANK: Hash } as const;
@@ -46,9 +52,12 @@ const TEMPLATES = TEMPLATE_KEYS.map((value) => ({
 export function CreateSquadForm({
   exams,
   onCreated,
+  canPrice = false,
 }: {
   exams: { id: string; name: string }[];
   onCreated: () => void;
+  /** Paid squads are on and this person's plan sells: offer the price fields. */
+  canPrice?: boolean;
 }) {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -58,7 +67,11 @@ export function CreateSquadForm({
   const [template, setTemplate] = useState<TemplateKey>("EXAM");
   const [access, setAccess] = useState<SquadAccess>("OPEN");
   const [question, setQuestion] = useState("");
+  const [paid, setPaid] = useState(false);
+  const [offer, setOffer] = useState(emptyOffer);
   const [pending, start] = useTransition();
+  // A paid squad is listed, and paying is how people get in.
+  const how = paid ? "OPEN" : access;
 
   return (
     <form
@@ -70,10 +83,11 @@ export function CreateSquadForm({
             name,
             description,
             examId: examId === "none" ? null : examId,
-            visibility: SQUAD_ACCESS[access].visibility,
-            joinMode: SQUAD_ACCESS[access].joinMode,
-            joinQuestion: asksToJoin(access) ? question : "",
+            visibility: SQUAD_ACCESS[how].visibility,
+            joinMode: SQUAD_ACCESS[how].joinMode,
+            joinQuestion: asksToJoin(how) ? question : "",
             template,
+            ...(paid ? { offer: fromOfferDraft(offer) } : {}),
           });
           if (!result.ok) return void toast.error(result.error);
           onCreated();
@@ -140,17 +154,41 @@ export function CreateSquadForm({
           onChange={setTemplate}
         />
       </div>
-      <SquadAccessField
-        compact
-        access={access}
-        onAccessChange={setAccess}
-        question={question}
-        onQuestionChange={setQuestion}
-      />
+      {canPrice ? (
+        <div className="flex flex-col gap-4 rounded-card border border-border p-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-0.5">
+              <Label htmlFor="group-paid">Paid squad</Label>
+              <span className="text-small text-ink-muted">
+                {paid
+                  ? "Listed under Discover. People pay for a pass to join; your invites let people in free."
+                  : "Charge for a pass to join, like a batch or a test series."}
+              </span>
+            </div>
+            <Switch id="group-paid" checked={paid} onCheckedChange={setPaid} />
+          </div>
+          {paid ? (
+            <SquadOfferFields
+              id="group-offer"
+              value={offer}
+              onChange={setOffer}
+            />
+          ) : null}
+        </div>
+      ) : null}
+      {paid ? null : (
+        <SquadAccessField
+          compact
+          access={access}
+          onAccessChange={setAccess}
+          question={question}
+          onQuestionChange={setQuestion}
+        />
+      )}
       <Button
         type="submit"
         variant="primary"
-        disabled={pending || name.trim().length < 3}
+        disabled={pending || name.trim().length < 3 || (paid && !offer.rupees)}
         className="w-full"
       >
         Create squad

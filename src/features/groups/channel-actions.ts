@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { channelPriceSchema } from "@/lib/squads/pay";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
-import { channelService } from "@/server/services/groups";
+import { channelService, squadPay } from "@/server/services/groups";
 
 // A squad's channels and categories. Every action: requireUser() (rule 9), zod (rule 11),
 // rate limited (rule 13). The service checks that the caller is a squad admin.
@@ -71,15 +72,29 @@ export async function createChannelAction(
       viewRule,
       slowModeSec,
       subjectName: subjectName.optional(),
+      /** The owner's price for it; left out, free. */
+      price: channelPriceSchema.optional(),
     }),
   );
   if (g.fail) return g.fail;
-  const { groupId, ...rest } = g.data;
+  const { groupId, price, ...rest } = g.data;
+  if (price && !(await squadPay.canPrice(g.user)))
+    return { ok: false, error: "Paid channels aren't open to you." };
   // Every new channel is a chat: it holds messages, doubts, files, tests and polls.
-  return done(
-    groupId,
-    await channelService.create(g.user, groupId, { ...rest, type: "CHAT" }),
-  );
+  const made = await channelService.create(g.user, groupId, {
+    ...rest,
+    type: "CHAT",
+  });
+  if (made.ok && price) {
+    const priced = await squadPay.setChannelPrice(
+      g.user,
+      groupId,
+      made.channelId,
+      price,
+    );
+    if (!priced.ok) return done(groupId, priced);
+  }
+  return done(groupId, made);
 }
 
 export async function updateChannelAction(input: unknown): Promise<Result> {
@@ -95,14 +110,19 @@ export async function updateChannelAction(input: unknown): Promise<Result> {
       slowModeSec: slowModeSec.optional(),
       subjectName: subjectName.optional(),
       categoryId: id.nullable().optional(),
+      /** The owner's price; null makes it free, left out leaves it as it is. */
+      price: channelPriceSchema.optional(),
     }),
   );
   if (g.fail) return g.fail;
-  const { groupId, channelId, ...rest } = g.data;
-  return done(
-    groupId,
-    await channelService.update(g.user, groupId, channelId, rest),
-  );
+  const { groupId, channelId, price, ...rest } = g.data;
+  const saved = await channelService.update(g.user, groupId, channelId, rest);
+  if (saved.ok && price !== undefined)
+    return done(
+      groupId,
+      await squadPay.setChannelPrice(g.user, groupId, channelId, price),
+    );
+  return done(groupId, saved);
 }
 
 export async function moveChannelAction(input: unknown): Promise<Result> {

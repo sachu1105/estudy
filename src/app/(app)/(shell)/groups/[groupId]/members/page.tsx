@@ -1,17 +1,21 @@
-import { Users } from "lucide-react";
+import { Ticket, Users } from "lucide-react";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SquadHeading } from "@/features/groups/components/channels/channel-header";
 import { InvitesPanel } from "@/features/groups/components/invites-panel";
 import { JoinRequests } from "@/features/groups/components/join-requests";
 import { MemberMenu } from "@/features/groups/components/member-menu";
+import { PassLine } from "@/features/groups/components/pay/pass-line";
 import { SquadReports } from "@/features/groups/components/squad-reports";
 import { systemClock } from "@/lib/clock";
 import { timeAgo } from "@/lib/format/ago";
 import { isId } from "@/lib/ids";
+import { cn } from "@/lib/utils/cn";
 import {
   canManage,
   canModerate,
@@ -19,12 +23,14 @@ import {
   ROLE_LABELS,
 } from "@/lib/squads/roles";
 import { requireUser } from "@/server/auth/session";
-import { groupService, squadReports } from "@/server/services/groups";
+import { verifiedIds } from "@/server/services/verified";
+import { groupService, squadPay, squadReports } from "@/server/services/groups";
 
 export const metadata: Metadata = { title: "Members" };
 
 export default async function MembersPage({
   params,
+  searchParams,
 }: PageProps<"/groups/[groupId]/members">) {
   const user = await requireUser();
   const { groupId } = await params;
@@ -36,6 +42,16 @@ export default async function MembersPage({
     ? await squadReports.list(user, groupId)
     : null;
   const now = systemClock.now();
+  const [verified, passes] = await Promise.all([
+    verifiedIds(data.members.map((m) => m.user.id)),
+    // Who paid for what: the squad's staff only (null for everyone else).
+    squadPay.passHolders(user, groupId),
+  ]);
+  const paying = data.members.filter((m) => passes?.has(m.user.id)).length;
+  const onlyPaid = !!passes && (await searchParams).paid === "1";
+  const shown = onlyPaid
+    ? data.members.filter((m) => passes.has(m.user.id))
+    : data.members;
 
   return (
     <div className="flex flex-col gap-8">
@@ -62,11 +78,16 @@ export default async function MembersPage({
         </>
       ) : null}
       <section aria-labelledby="members" className="flex flex-col gap-3">
-        <h2 id="members" className="text-h3">
-          {data.members.length} member{data.members.length === 1 ? "" : "s"}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="members" className="text-h3">
+            {data.members.length} member{data.members.length === 1 ? "" : "s"}
+          </h2>
+          {passes && paying > 0 ? (
+            <PaidFilter groupId={groupId} onlyPaid={onlyPaid} paying={paying} />
+          ) : null}
+        </div>
         <ul className="divide-y divide-border rounded-card border border-border bg-surface">
-          {data.members.map((m) => {
+          {shown.map((m) => {
             const muted = m.muted;
             const isMe = m.user.id === user.id;
             return (
@@ -84,6 +105,7 @@ export default async function MembersPage({
                     <span className="truncate text-body">
                       {m.user.displayName}
                     </span>
+                    {verified.has(m.user.id) ? <VerifiedMark /> : null}
                     {isMe ? (
                       <span className="shrink-0 text-small text-ink-muted">
                         you
@@ -93,7 +115,16 @@ export default async function MembersPage({
                   {muted ? (
                     <span className="text-small text-ink-muted">muted</span>
                   ) : null}
+                  {/* Who paid for what, and until when: for those who run the squad. */}
+                  {passes?.has(m.user.id) ? (
+                    <PassLine passes={passes.get(m.user.id)!} />
+                  ) : null}
                 </span>
+                {passes?.has(m.user.id) ? (
+                  <Badge tone="accent">
+                    <Ticket aria-hidden /> Paid
+                  </Badge>
+                ) : null}
                 {m.role !== "MEMBER" ? (
                   <Badge tone="accent">{ROLE_LABELS[m.role]}</Badge>
                 ) : null}
@@ -120,5 +151,42 @@ export default async function MembersPage({
         </ul>
       </section>
     </div>
+  );
+}
+
+/** All members, or only those holding a pass: how the owner finds who paid. */
+function PaidFilter({
+  groupId,
+  onlyPaid,
+  paying,
+}: {
+  groupId: string;
+  onlyPaid: boolean;
+  paying: number;
+}) {
+  const tab = (active: boolean) =>
+    cn(
+      "inline-flex min-h-11 items-center rounded-full px-3 text-small font-medium md:min-h-8",
+      active
+        ? "bg-accent-soft text-accent-ink"
+        : "text-ink-muted hover:bg-surface-muted hover:text-ink",
+    );
+  return (
+    <nav aria-label="Show members" className="flex gap-1">
+      <Link
+        href={`/groups/${groupId}/members`}
+        aria-current={onlyPaid ? undefined : "page"}
+        className={tab(!onlyPaid)}
+      >
+        All
+      </Link>
+      <Link
+        href={`/groups/${groupId}/members?paid=1`}
+        aria-current={onlyPaid ? "page" : undefined}
+        className={tab(onlyPaid)}
+      >
+        With a pass · {paying}
+      </Link>
+    </nav>
   );
 }

@@ -42,6 +42,19 @@ export const userRepository = {
     return { ...rest, subscription: subscriptions[0] ?? null };
   },
 
+  /** Each person's current subscription, for marks shown beside many names at once. */
+  async subscriptionsOf(ids: string[]) {
+    const rows = await prisma.subscription.findMany({
+      where: { userId: { in: ids }, status: { not: "EXPIRED" } },
+      orderBy: { createdAt: "desc" },
+      select: { userId: true, plan: true, status: true, periodEnd: true },
+    });
+    const latest = new Map<string, Omit<(typeof rows)[number], "userId">>();
+    for (const { userId, ...sub } of rows)
+      if (!latest.has(userId)) latest.set(userId, sub);
+    return latest;
+  },
+
   /** Every new user starts with a FREE subscription row (BILLING_ENABLED=false still grants ELITE). */
   create(data: {
     email: string;

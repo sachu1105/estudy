@@ -65,6 +65,13 @@ export default async function globalSetup() {
   });
   await db.connect();
   try {
+    // The paid squads spec switches this on; the teardown restores what was here.
+    const { rows } = await db.query(
+      `SELECT value FROM "AppSetting" WHERE key = 'paidSquads'`,
+    );
+    process.env.E2E_PAID_SQUADS_WAS = rows[0]
+      ? JSON.stringify(rows[0].value)
+      : "";
     if (await resetSettings(db)) await waitForLaunchCopy();
   } finally {
     await db.end();

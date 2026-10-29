@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { VerifiedMark } from "@/components/blocks/verified-mark";
 import { Badge } from "@/components/ui/badge";
 import {
   CHANNEL_ICONS,
@@ -15,12 +16,14 @@ import {
   squadFacts,
 } from "@/features/groups/components/channels/squad-banner";
 import { isId } from "@/lib/ids";
+import { priceLabel } from "@/lib/squads/pay";
 import { requireUser } from "@/server/auth/session";
 import {
   channelService,
   chatService,
   groupService,
 } from "@/server/services/groups";
+import { verifiedIds } from "@/server/services/verified";
 
 export const metadata: Metadata = { title: "Squad" };
 
@@ -42,6 +45,7 @@ export default async function SquadPage({
   ]);
   if (!view?.role || !layout) return null; // the layout shows how to join
   const { group } = view;
+  const verified = (await verifiedIds([group.ownerId])).has(group.ownerId);
   const facts = squadFacts(group);
   const channels = [
     ...layout.loose,
@@ -62,6 +66,7 @@ export default async function SquadPage({
       <div className="-mx-4 -mt-4 -mb-24 flex min-h-dvh flex-col overflow-hidden rounded-tl-[20px] border-t border-l border-border bg-surface pb-24 md:hidden">
         <SquadBanner
           group={group}
+          verified={verified}
           heading="h1"
           canInvite={layout.canManage}
           menu={{
@@ -90,7 +95,15 @@ export default async function SquadPage({
 
       <div className="hidden flex-col gap-6 md:flex">
         <header className="flex min-w-0 flex-col gap-1">
-          <h1 className="break-words">{group.name}</h1>
+          <h1 className="break-words">
+            {group.name}
+            {verified ? (
+              <>
+                {" "}
+                <VerifiedMark className="size-5" />
+              </>
+            ) : null}
+          </h1>
           <p className="flex flex-wrap items-center gap-2 text-body text-ink-muted">
             {facts}
             {privateBadge}
@@ -130,16 +143,23 @@ function Overview({
                 <span className="flex items-center gap-2 text-body font-medium">
                   <Icon className="size-4 text-ink-muted" aria-hidden />
                   {c.name}
-                  {c.viewRule !== "EVERYONE" ? (
+                  {c.viewRule !== "EVERYONE" || c.locked ? (
                     <>
                       <Lock className="size-3.5 text-ink-subtle" aria-hidden />
-                      <span className="sr-only">, private</span>
+                      <span className="sr-only">
+                        {c.locked ? ", paid, locked" : ", private"}
+                      </span>
                     </>
                   ) : null}
                 </span>
                 {c.topic ? (
                   <span className="line-clamp-2 text-small text-ink-muted">
                     {c.topic}
+                  </span>
+                ) : null}
+                {c.locked && c.pricePaise !== null ? (
+                  <span className="text-small text-ink-muted">
+                    {priceLabel(c.pricePaise, c.accessDays)}
                   </span>
                 ) : null}
               </Link>
