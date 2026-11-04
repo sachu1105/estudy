@@ -19,12 +19,21 @@ import { TODAY_INTRO_COOKIE } from "@/features/today/intro";
 import type { ReplanDiff } from "@/lib/plan-engine";
 import { formatDay } from "@/lib/plans/format";
 import { requireUser } from "@/server/auth/session";
+import { coverService, podService } from "@/server/services/pods";
 import { progressService } from "@/server/services/progress";
 
 export const metadata: Metadata = { title: "Today" };
 
 const TIMED = new Set(["STUDY", "REVISION", "CUSTOM"]);
 const TESTS = new Set(["CHECK_TEST", "SECTION_MOCK", "FULL_MOCK"]);
+const KIND = {
+  STUDY: "study",
+  REVISION: "revise",
+  CHECK_TEST: "test",
+  SECTION_MOCK: "test",
+  FULL_MOCK: "test",
+  CUSTOM: "own",
+} as const;
 
 export default async function TodayPage() {
   const user = await requireUser();
@@ -61,6 +70,8 @@ export default async function TodayPage() {
         t.type === "FULL_MOCK"
           ? "Every subject"
           : (t.subjectName ?? "Your task"),
+      subjectId: t.type === "FULL_MOCK" ? null : t.subjectId,
+      kind: KIND[t.type],
       minutes: t.minutes,
       done: t.done,
       topicId: t.topicId,
@@ -68,6 +79,18 @@ export default async function TodayPage() {
       timed: TIMED.has(t.type),
       test: TESTS.has(t.type),
     }),
+  );
+  // Each subject shows its pod's cover, the same face it has on the pods pages.
+  const pods = await podService.subjectPods(user, [
+    ...new Set(tasks.flatMap((t) => (t.subjectId ? [t.subjectId] : []))),
+  ]);
+  const covers = Object.fromEntries(
+    await Promise.all(
+      pods.map(
+        async (p) =>
+          [p.subjectId!, await coverService.resolve(p.cover, p.id)] as const,
+      ),
+    ),
   );
   // The focus exam's work is the page; the rest is gathered under it. With one exam running
   // `others` is empty and nothing below changes.
@@ -139,7 +162,7 @@ export default async function TodayPage() {
               Nothing planned today. Rest, or read ahead in a pod.
             </p>
           ) : (
-            <TodayTasks tasks={focusTasks} />
+            <TodayTasks tasks={focusTasks} covers={covers} />
           )}
         </section>
 
@@ -160,7 +183,7 @@ export default async function TodayPage() {
                 Whole plan
               </Link>
             </div>
-            <TodayTasks tasks={exam.tasks} />
+            <TodayTasks tasks={exam.tasks} covers={covers} />
           </section>
         ))}
 

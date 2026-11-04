@@ -328,8 +328,13 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and
   pod covers: the grainy mesh gradient (or the user's image) on top of each pod card
-  (`lib/pods/covers`, `PodCover`, `PodTile`), which the catalogue reuses to preview each ready
-  syllabus as the exam pod it becomes (its card and the cover strip on its page). The landing page may reuse the same
+  (`lib/pods/covers`, `PodCover`, `PodTile`), as a strip on top of a subject pod's own
+  summary card, and as the pod's small tile (`PodMark`) wherever a subject is listed (the
+  exam board, Today's subjects), which the catalogue reuses to preview each ready
+  syllabus as the exam pod it becomes (its card and the cover strip on its page). Squads
+  wear the same art: each squad's banner, rail tile and Discover card, and the blurple
+  banner (dimmed under white type) at the top of Squads > Discover (`DiscoverHero`).
+  The landing page may reuse the same
   cover art: a soft glow behind the hero window, the top of the featured plan card
   (the admin picks it under Plans and limits), the sample pod card in the features grid,
   and the giant studypods wordmark at the foot of the page, where the gradient shows

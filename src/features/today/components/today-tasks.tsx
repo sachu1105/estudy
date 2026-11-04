@@ -1,15 +1,20 @@
 "use client";
 
+import { CircleCheck, ClipboardCheck } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotionConfig } from "motion/react";
 import { useOptimistic, useState, useTransition } from "react";
 
+import { PodMark } from "@/components/blocks/pod-cover";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
+import type { PodCover } from "@/lib/pods/covers";
 
 import { setTaskDoneAction } from "../actions";
 import { groupBySubject } from "../group-subjects";
 import { StartTask } from "./start-task";
 import { SectionToggle, TaskRow } from "./task-row";
+
+export type TaskKind = "study" | "revise" | "test" | "own";
 
 export type TodayTask = {
   id: string;
@@ -18,6 +23,9 @@ export type TodayTask = {
   /** The same task inside its topic: "Study · part 1 of 2". */
   step: string;
   subject: string;
+  /** Null for full mocks, which cover every subject. */
+  subjectId: string | null;
+  kind: TaskKind;
   minutes: number;
   done: boolean;
   topicId: string | null;
@@ -28,8 +36,11 @@ export type TodayTask = {
   test: boolean;
 };
 
-const iconButton =
-  "grid size-11 shrink-0 place-items-center rounded-control text-ink-muted transition-colors duration-[120ms] hover:bg-surface-muted hover:text-ink md:size-9";
+const startButton =
+  "grid size-11 shrink-0 place-items-center rounded-full border border-border bg-surface text-accent-ink transition-colors duration-[120ms] hover:border-transparent hover:bg-accent-soft md:size-9";
+
+const tile =
+  "grid size-8 shrink-0 place-items-center rounded-[9px] [&_svg]:size-4";
 
 /** 20 -> "20m", 120 -> "2h", 125 -> "2h 5m". */
 function short(minutes: number) {
@@ -44,7 +55,14 @@ function short(minutes: number) {
  * list stays short however full the day is. A tick shows at once and rolls back if saving
  * fails; ticked tasks gather under Done.
  */
-export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
+export function TodayTasks({
+  tasks,
+  covers,
+}: {
+  tasks: TodayTask[];
+  /** Each subject pod's cover, by subject id. */
+  covers: Record<string, PodCover>;
+}) {
   const reduceMotion = useReducedMotionConfig();
   const [, start] = useTransition();
   const [shown, setShown] = useOptimistic(
@@ -54,6 +72,8 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
   );
   const subjects = groupBySubject(shown.filter((t) => !t.done));
   const done = shown.filter((t) => t.done);
+  const doneIn = (subject: string) =>
+    done.filter((t) => t.subject === subject).length;
   // The first subject left is open by default, so finishing one opens the next.
   const [opened, setOpened] = useState<Record<string, boolean>>({});
   const [showDone, setShowDone] = useState(false);
@@ -75,6 +95,9 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
       <AnimatePresence initial={false}>
         {subjects.map((group, index) => {
           const open = opened[group.subject] ?? index === 0;
+          const subjectId = group.tasks[0]!.subjectId;
+          const cover = subjectId ? covers[subjectId] : undefined;
+          const finished = doneIn(group.subject);
           return (
             <motion.section
               key={group.subject}
@@ -89,6 +112,20 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
                   setOpened((o) => ({ ...o, [group.subject]: !open }))
                 }
                 title={group.subject}
+                lead={
+                  cover ? (
+                    <PodMark cover={cover} name={group.subject} size="sm" />
+                  ) : (
+                    <span className={`${tile} bg-surface-muted text-ink-muted`}>
+                      <ClipboardCheck aria-hidden />
+                    </span>
+                  )
+                }
+                progress={
+                  finished > 0
+                    ? (finished / (finished + group.tasks.length)) * 100
+                    : null
+                }
                 meta={
                   <>
                     {group.tasks.length} left ·{" "}
@@ -110,7 +147,7 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
                           task={task}
                           onDoneChange={toggleDone}
                           action={
-                            <StartTask task={task} className={iconButton} />
+                            <StartTask task={task} className={startButton} />
                           }
                         />
                       </motion.div>
@@ -132,8 +169,13 @@ export function TodayTasks({ tasks }: { tasks: TodayTask[] }) {
           <SectionToggle
             open={showDone}
             onToggle={() => setShowDone((s) => !s)}
-            title="Done"
-            meta={done.length}
+            title="Done today"
+            lead={
+              <span className={`${tile} bg-success-soft text-success-ink`}>
+                <CircleCheck aria-hidden />
+              </span>
+            }
+            meta={<span className="font-mono">{done.length}</span>}
           />
           {showDone ? (
             <div className="px-1.5 pb-1.5">

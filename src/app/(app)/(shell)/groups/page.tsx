@@ -10,10 +10,8 @@ import {
   SquadShell,
 } from "@/features/groups/components/channels/squad-shell";
 import { CreateGroupDialog } from "@/features/groups/components/create-group-dialog";
-import { GroupCard } from "@/features/groups/components/group-card";
 import { JoinCodeDialog } from "@/features/groups/components/join-controls";
-import { QuickJoin } from "@/features/groups/components/quick-join";
-import { joinModeOf } from "@/lib/squads/access";
+import { SquadGrid } from "@/features/groups/components/squad-grid";
 import { LAST_SQUAD_COOKIE } from "@/lib/squads/last-squad";
 import { requireUser } from "@/server/auth/session";
 import { verifiedIds } from "@/server/services/verified";
@@ -41,8 +39,11 @@ export default async function GroupsPage() {
     catalogueService.listExams(),
     squadPay.canPrice(user),
   ]);
-  const suggested = directory.slice(0, 6);
-  const verified = await verifiedIds(suggested.map((g) => g.ownerId));
+  const suggested = directory.slice(0, 8);
+  const [verified, studying] = await Promise.all([
+    verifiedIds(suggested.map((g) => g.ownerId)),
+    groupService.studyingCounts(suggested.map((g) => g.id)),
+  ]);
 
   return (
     <SquadShell user={user} canCreate={false}>
@@ -84,26 +85,11 @@ export default async function GroupsPage() {
               <h2 id="open" className="text-h2">
                 Open squads
               </h2>
-              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {suggested.map((g) => (
-                  <li key={g.id} className="flex">
-                    <GroupCard
-                      group={g}
-                      verified={verified.has(g.ownerId)}
-                      action={
-                        joinModeOf(g) === "INVITE_ONLY" ? null : (
-                          <QuickJoin
-                            groupId={g.id}
-                            name={g.name}
-                            asks={joinModeOf(g) === "REQUEST"}
-                            paid={g.pricePaise !== null}
-                          />
-                        )
-                      }
-                    />
-                  </li>
-                ))}
-              </ul>
+              <SquadGrid
+                squads={suggested}
+                verified={verified}
+                studying={studying}
+              />
             </section>
           ) : null}
         </div>

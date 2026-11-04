@@ -34,6 +34,7 @@ export function MessageItem({
   message: PendingMessage;
   compact: boolean;
   timeZone: string;
+  /** Null where nothing can be done with it (someone else's direct message). */
   menu: ReactNode;
   onReact: (kind: Reaction) => void;
   /** On phones a tapped message shows its menu. */
@@ -142,7 +143,7 @@ export function MessageItem({
           </div>
         ) : null}
       </div>
-      {m.pending || m.deleted ? null : (
+      {m.pending || m.deleted || !menu ? null : (
         <div
           className={cn(
             active ? "flex" : "hidden",

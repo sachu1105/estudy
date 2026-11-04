@@ -23,6 +23,9 @@ const appRoutes = [
   "/tests",
   "/groups",
   "/groups/discover",
+  "/groups/friends",
+  "/groups/friends?tab=pending",
+  "/groups/friends?tab=add",
   "/settings",
 ];
 

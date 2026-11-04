@@ -3,12 +3,13 @@
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input, Label } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { timeOf } from "@/lib/reminders/reminders";
 
 import { saveNotifyPrefsAction } from "../notify-actions";
+import { SettingsRow } from "./settings-section";
 import { enablePush, disablePush } from "./push";
 
 type Prefs = {
@@ -27,21 +28,21 @@ const REMINDERS = [
   {
     key: "sessionReminder",
     label: "Time to study",
-    hint: "At the start of your study window, if you haven't studied yet.",
+    hint: "When your study window starts",
   },
   {
     key: "streakAtRisk",
     label: "Streak at risk",
-    hint: "Once in the evening, only when nothing is logged that day.",
+    hint: "Evenings, if nothing's logged",
   },
   {
     key: "weeklySummary",
     label: "Weekly summary",
-    hint: "On Monday, when last week's summary and the new plan are ready.",
+    hint: "Mondays, with the new plan",
   },
 ] as const;
 
-/** The three reminders, how they reach you, and when to stay quiet. */
+/** The three reminders, how they reach you, and when to stay quiet: one row each. */
 export function NotifyForm({
   initial,
   pushAvailable,
@@ -57,9 +58,13 @@ export function NotifyForm({
   );
   const [quietFrom, setQuietFrom] = useState(timeOf(initial.quietFromMin));
   const [quietTo, setQuietTo] = useState(timeOf(initial.quietToMin));
+  const now = JSON.stringify([prefs, windowStart, quietFrom, quietTo]);
+  // What was last saved; Save wakes up only when something differs from it.
+  const [saved, setSaved] = useState(now);
   const [pending, start] = useTransition();
   const set = (key: keyof Prefs, value: boolean) =>
     setPrefs((p) => ({ ...p, [key]: value }));
+  const dirty = now !== saved;
 
   const togglePush = (on: boolean) =>
     start(async () => {
@@ -71,114 +76,98 @@ export function NotifyForm({
       }
     });
 
-  // The heading and the card around this live in the settings section that holds it.
+  const toggle = (key: keyof Prefs, on?: (v: boolean) => void) => (
+    <Switch
+      id={key}
+      checked={prefs[key] as boolean}
+      disabled={key === "byPush" && (!pushAvailable || pending)}
+      onCheckedChange={on ?? ((v) => set(key, v))}
+    />
+  );
+
+  const save = () =>
+    start(async () => {
+      const result = await saveNotifyPrefsAction({
+        sessionReminder: prefs.sessionReminder,
+        streakAtRisk: prefs.streakAtRisk,
+        weeklySummary: prefs.weeklySummary,
+        byEmail: prefs.byEmail,
+        byPush: prefs.byPush,
+        windowStart,
+        quietFrom,
+        quietTo,
+      });
+      if (!result.ok) return void toast.error(result.error);
+      setSaved(now);
+      toast.success("Reminders saved");
+    });
+
   return (
-    <div className="flex flex-col gap-4">
+    <>
       {REMINDERS.map((r) => (
-        <div key={r.key} className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <Label htmlFor={r.key}>{r.label}</Label>
-            <p className="text-small text-ink-muted">{r.hint}</p>
-          </div>
-          <Switch
-            id={r.key}
-            checked={prefs[r.key]}
-            onCheckedChange={(on) => set(r.key, on)}
-          />
-        </div>
+        <SettingsRow
+          key={r.key}
+          label={r.label}
+          hint={r.hint}
+          htmlFor={r.key}
+          control={toggle(r.key)}
+        />
       ))}
-
-      <hr className="border-border" />
-
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="byEmail">By email</Label>
-          <p className="text-small text-ink-muted">
-            Every reminder says how to stop it.
-          </p>
-        </div>
-        <Switch
-          id="byEmail"
-          checked={prefs.byEmail}
-          onCheckedChange={(on) => set("byEmail", on)}
-        />
-      </div>
-
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="byPush">On this device</Label>
-          <p className="text-small text-ink-muted">
-            {pushAvailable
-              ? "A notification on your phone or desktop, even with the app closed."
-              : "Push isn't set up on this server yet."}
-          </p>
-        </div>
-        <Switch
-          id="byPush"
-          checked={prefs.byPush}
-          disabled={!pushAvailable || pending}
-          onCheckedChange={togglePush}
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="windowStart">Your study window starts at</Label>
-        <Input
-          id="windowStart"
-          type="time"
-          value={windowStart}
-          className="max-w-40"
-          onChange={(e) => setWindowStart(e.target.value)}
-        />
-      </div>
-
-      <fieldset className="flex flex-wrap items-end gap-3">
-        <legend className="mb-2 text-small font-medium">Quiet hours</legend>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="quietFrom">Quiet from</Label>
+      <SettingsRow
+        label="By email"
+        htmlFor="byEmail"
+        control={toggle("byEmail")}
+      />
+      <SettingsRow
+        label="On this device"
+        htmlFor="byPush"
+        hint={pushAvailable ? undefined : "Not set up on this server yet"}
+        control={toggle("byPush", togglePush)}
+      />
+      <SettingsRow
+        label="Study window starts"
+        htmlFor="windowStart"
+        control={
           <Input
-            id="quietFrom"
+            id="windowStart"
             type="time"
-            value={quietFrom}
-            className="max-w-32"
-            onChange={(e) => setQuietFrom(e.target.value)}
+            value={windowStart}
+            className="w-36"
+            onChange={(e) => setWindowStart(e.target.value)}
           />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="quietTo">Quiet until</Label>
-          <Input
-            id="quietTo"
-            type="time"
-            value={quietTo}
-            className="max-w-32"
-            onChange={(e) => setQuietTo(e.target.value)}
-          />
-        </div>
-      </fieldset>
-
-      <Button
-        variant="primary"
-        className="self-start"
-        disabled={pending}
-        onClick={() =>
-          start(async () => {
-            const result = await saveNotifyPrefsAction({
-              sessionReminder: prefs.sessionReminder,
-              streakAtRisk: prefs.streakAtRisk,
-              weeklySummary: prefs.weeklySummary,
-              byEmail: prefs.byEmail,
-              byPush: prefs.byPush,
-              windowStart,
-              quietFrom,
-              quietTo,
-            });
-            if (!result.ok) return void toast.error(result.error);
-            toast.success("Reminders saved");
-          })
         }
-      >
-        Save reminders
-      </Button>
-    </div>
+      />
+      <SettingsRow
+        label="Quiet hours"
+        stack
+        control={
+          // Two fields that share the width on a phone, side by side beside the name from sm.
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 max-sm:w-full">
+            <Input
+              aria-label="Quiet from"
+              type="time"
+              value={quietFrom}
+              className="min-w-0 sm:w-36"
+              onChange={(e) => setQuietFrom(e.target.value)}
+            />
+            <span aria-hidden className="text-ink-muted">
+              –
+            </span>
+            <Input
+              aria-label="Quiet until"
+              type="time"
+              value={quietTo}
+              className="min-w-0 sm:w-36"
+              onChange={(e) => setQuietTo(e.target.value)}
+            />
+          </div>
+        }
+      />
+      <div className="flex justify-end px-4 py-3">
+        <Button variant="primary" disabled={pending || !dirty} onClick={save}>
+          Save reminders
+        </Button>
+      </div>
+    </>
   );
 }

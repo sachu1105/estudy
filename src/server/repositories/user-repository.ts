@@ -1,5 +1,8 @@
 import "server-only";
 
+import { randomBytes } from "node:crypto";
+
+import { starterHandle } from "@/lib/profile/profile";
 import { Prisma } from "@/server/db/generated/prisma/client";
 import { prisma } from "@/server/db";
 
@@ -66,6 +69,8 @@ export const userRepository = {
     return prisma.user.create({
       data: {
         ...data,
+        // A username from the start, so friends can add them (the profile stays private).
+        handle: starterHandle(data.displayName, randomBytes(3).toString("hex")),
         subscriptions: { create: { plan: "FREE", source: "DEFAULT" } },
       },
     });
@@ -92,6 +97,7 @@ export const userRepository = {
         profileCover: true,
         handle: true,
         profilePublic: true,
+        findable: true,
         timezone: true,
         createdAt: true,
       },
@@ -125,6 +131,29 @@ export const userRepository = {
     data: { handle: string | null; profilePublic: boolean },
   ) {
     return prisma.user.update({ where: { id }, data });
+  },
+
+  /** Public (in friend search, open to requests) or private. */
+  setFindable(id: string, findable: boolean) {
+    return prisma.user.update({ where: { id }, data: { findable } });
+  },
+
+  /** Sets a username where there is none yet. False when someone else has it. */
+  async claimHandle(id: string, handle: string) {
+    try {
+      const { count } = await prisma.user.updateMany({
+        where: { id, handle: null },
+        data: { handle },
+      });
+      return count === 1;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      )
+        return false;
+      throw error;
+    }
   },
 
   handleTaken(handle: string, exceptUserId: string) {

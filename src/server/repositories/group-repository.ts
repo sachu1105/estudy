@@ -222,6 +222,20 @@ export const groupRepository = {
     return rows;
   },
 
+  /** How many members of each squad have a timer beating since `since`: a count only. */
+  async studyingCounts(groupIds: string[], since: Date) {
+    if (groupIds.length === 0) return new Map<string, number>();
+    const rows = await prisma.membership.groupBy({
+      by: ["groupId"],
+      where: {
+        groupId: { in: groupIds },
+        user: { activeSession: { is: { lastBeatAt: { gte: since } } } },
+      },
+      _count: { _all: true },
+    });
+    return new Map(rows.map((r) => [r.groupId, r._count._all]));
+  },
+
   softDelete(groupId: string, at: Date) {
     return prisma.group.update({
       where: { id: groupId },

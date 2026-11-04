@@ -66,7 +66,7 @@ test.describe("plans and reminders", () => {
     await expect(reminders).toBeVisible();
 
     await reminders.getByLabel("Streak at risk").click();
-    await reminders.getByLabel("Your study window starts at").fill("06:30");
+    await reminders.getByLabel("Study window starts").fill("06:30");
     await reminders.getByLabel("Quiet from").fill("23:00");
     await reminders.getByLabel("Quiet until").fill("06:00");
     await page.getByRole("button", { name: "Save reminders" }).click();
@@ -75,9 +75,7 @@ test.describe("plans and reminders", () => {
     await page.reload();
     const saved = page.getByRole("region", { name: "Reminders" });
     await expect(saved.getByLabel("Streak at risk")).not.toBeChecked();
-    await expect(saved.getByLabel("Your study window starts at")).toHaveValue(
-      "06:30",
-    );
+    await expect(saved.getByLabel("Study window starts")).toHaveValue("06:30");
     await expect(saved.getByLabel("Quiet from")).toHaveValue("23:00");
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
   });

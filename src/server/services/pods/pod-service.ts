@@ -201,6 +201,12 @@ export function createPodService(deps: PodDeps) {
       return (await deps.pods.findBySubject(user.id, subjectId))?.id ?? null;
     },
 
+    /** The user's pods for these subjects: id, subject and stored cover. */
+    subjectPods: (user: User, subjectIds: string[]) =>
+      subjectIds.length > 0
+        ? deps.pods.listBySubjects(user.id, subjectIds)
+        : Promise.resolve([]),
+
     /** The user's pod holding a topic, for "Open pod" on a task. */
     async podIdForTopic(user: User, topicId: string) {
       const topic = await deps.pods.topicSubject(topicId);

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 import type { PodCover } from "@/lib/pods/covers";
 import { requireUser } from "@/server/auth/session";
@@ -91,4 +92,18 @@ export async function setSharingAction(
     handle: result.handle,
     profilePublic: result.profilePublic,
   };
+}
+
+export async function setFindableAction(
+  input: unknown,
+): Promise<ActionResult<{ findable: boolean }>> {
+  const user = await requireUser();
+  const parsed = z.object({ findable: z.boolean() }).safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const result = await profileService.setFindable(user, parsed.data.findable);
+  revalidateProfile();
+  revalidatePath("/groups/friends");
+  return result;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, Plus } from "lucide-react";
+import { Compass, MessageCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -52,6 +52,7 @@ export function SquadRail({
   atLimit,
   canCreate = true,
   canPrice = false,
+  friendsCount = 0,
 }: {
   squads: {
     id: string;
@@ -69,9 +70,14 @@ export function SquadRail({
   canCreate?: boolean;
   /** The new squad may be a paid one. */
   canPrice?: boolean;
+  /** Unread direct messages and friend requests waiting, on the Friends tile. */
+  friendsCount?: number;
 }) {
   const pathname = usePathname();
-  const squadHome = /^\/groups\/[0-9a-f-]{36}$/.test(pathname);
+  const squadHome =
+    /^\/groups\/[0-9a-f-]{36}$/.test(pathname) ||
+    pathname === "/groups/friends";
+  const friending = pathname.startsWith("/groups/friends");
   const discovering = pathname.startsWith("/groups/discover");
   return (
     <nav
@@ -83,6 +89,36 @@ export function SquadRail({
         squadHome ? "flex" : "hidden",
       )}
     >
+      {/* Friends and direct messages first, as Discord's home button. */}
+      <span className="relative grid shrink-0 place-items-center">
+        <Marker active={friending} unread={friendsCount > 0} />
+        <Tooltip content="Friends" side="right">
+          <Link
+            href="/groups/friends"
+            aria-label={
+              friendsCount > 0 ? `Friends, ${friendsCount} new` : "Friends"
+            }
+            aria-current={friending ? "page" : undefined}
+            className={cn(
+              tile(friending),
+              friending
+                ? "bg-accent text-on-accent"
+                : "bg-surface-muted text-ink-muted hover:bg-accent hover:text-on-accent",
+            )}
+          >
+            <MessageCircle className="size-5" aria-hidden />
+          </Link>
+        </Tooltip>
+        {friendsCount > 0 ? (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-1 -bottom-1 grid h-5 min-w-5 place-items-center rounded-full border-2 border-bg bg-accent px-1 text-micro font-medium text-on-accent tabular-nums"
+          >
+            {friendsCount > 9 ? "9+" : friendsCount}
+          </span>
+        ) : null}
+      </span>
+      <span aria-hidden className="h-px w-8 shrink-0 bg-border" />
       {squads.map((s) => {
         const active =
           pathname === `/groups/${s.id}` ||

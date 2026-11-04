@@ -161,6 +161,14 @@ export const podRepository = {
     });
   },
 
+  /** The user's pods for these subjects, with their covers (Today's subject tiles). */
+  listBySubjects(ownerId: string, subjectIds: string[]) {
+    return prisma.pod.findMany({
+      where: { ownerId, subjectId: { in: subjectIds }, deletedAt: null },
+      select: { id: true, subjectId: true, cover: true },
+    });
+  },
+
   topicSubject(topicId: string) {
     return prisma.topic.findUnique({
       where: { id: topicId },

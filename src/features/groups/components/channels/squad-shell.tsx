@@ -4,6 +4,7 @@ import { UpgradeCard } from "@/features/billing/components/upgrade-card";
 import { cn } from "@/lib/utils/cn";
 import type { SessionUser } from "@/server/auth/session";
 import { billingEnabled, limit } from "@/server/entitlements";
+import { dmService, friendService } from "@/server/services/friends";
 import { chatService, groupService, squadPay } from "@/server/services/groups";
 import { catalogueService } from "@/server/services/syllabus";
 
@@ -28,11 +29,13 @@ export async function SquadShell({
   screen?: boolean;
   children: ReactNode;
 }) {
-  const [mine, unread, exams, canPrice] = await Promise.all([
+  const [mine, unread, exams, canPrice, dms, requests] = await Promise.all([
     groupService.mine(user),
     chatService.squadsWithUnread(user),
     catalogueService.listExams(),
     canCreate ? squadPay.canPrice(user) : false,
+    dmService.unreadTotal(user),
+    friendService.incomingCount(user),
   ]);
   const owned = mine.filter((m) => m.role === "OWNER").length;
   const maxOwned = limit(user, "groupsCreated");
@@ -54,6 +57,7 @@ export async function SquadShell({
         exams={exams.map((e) => ({ id: e.id, name: e.name }))}
         canCreate={canCreate}
         canPrice={canPrice}
+        friendsCount={dms + requests}
         atLimit={
           owned >= maxOwned ? (
             <UpgradeCard

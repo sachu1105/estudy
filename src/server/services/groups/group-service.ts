@@ -162,6 +162,13 @@ export function createGroupService(deps: GroupDeps) {
     directory: (examId: string | null, query: string) =>
       deps.groups.directory(examId, query.trim()),
 
+    /** Listed squads' "studying now", as Discord's online count. Counts, never names. */
+    studyingCounts: (groupIds: string[]) =>
+      deps.groups.studyingCounts(
+        groupIds,
+        new Date(now().getTime() - PRESENCE_MS),
+      ),
+
     /** What the caller may see: everything as a member; name and size otherwise. */
     async view(user: User, groupId: string) {
       const found = await memberOf(user, groupId);

@@ -61,6 +61,9 @@ model User {
   handle          String?    @unique
   /// Off by default: a profile is private until the user chooses to share it.
   profilePublic   Boolean    @default(false)
+  /// Shown in friend search and open to friend requests. Off: private, and the person
+  /// can only make friends by sending requests themselves.
+  findable        Boolean    @default(true)
   role            Role       @default(USER)
   timezone        String     @default("Asia/Kolkata")
   beginnerMode    Boolean    @default(false)
@@ -121,6 +124,11 @@ model User {
   payments           Payment[]
   notificationsSent  Notification[]      @relation("NotificationActor")
   examCovers         ExamCover[]
+  friendshipsA       Friendship[]        @relation("FriendA")
+  friendshipsB       Friendship[]        @relation("FriendB")
+  dmThreadsA         DirectThread[]      @relation("DmA")
+  dmThreadsB         DirectThread[]      @relation("DmB")
+  directMessages     DirectMessage[]
 }
 
 model RefreshToken {
@@ -1585,6 +1593,10 @@ enum NotificationKind {
   GROUP_TEST
   /// Something in a squad was reported; sent to its owner, admins and moderators.
   REPORT
+  /// Someone asked to be your friend.
+  FRIEND_REQUEST
+  /// Someone said yes to your friend request.
+  FRIEND_ACCEPTED
 }
 
 /// A thread in a group: a discussion, or a question tagged with a topic.
@@ -1684,4 +1696,66 @@ model ExamCover {
   updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
 
   @@unique([userId, syllabusVersionId])
+}
+
+// ---- Friends and direct messages ------------------------------------------------------
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}
+
+/// Two people who are friends, or one asking the other. One row per pair, the smaller id
+/// first, so a pair can't ask each other twice. Declining, cancelling and unfriending
+/// delete it.
+model Friendship {
+  id          String           @id @default(uuid()) @db.Uuid
+  userAId     String           @db.Uuid
+  userA       User             @relation("FriendA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId     String           @db.Uuid
+  userB       User             @relation("FriendB", fields: [userBId], references: [id], onDelete: Cascade)
+  /// Who sent the request.
+  requesterId String           @db.Uuid
+  status      FriendshipStatus @default(PENDING)
+  /// A short line with the request; it opens the chat if they say yes.
+  note        String?
+  createdAt   DateTime         @db.Timestamptz(6)
+  acceptedAt  DateTime?        @db.Timestamptz(6)
+
+  @@unique([userAId, userBId])
+  @@index([userBId])
+}
+
+/// A private chat between two people, the smaller id first. Private to the two (rule 15).
+model DirectThread {
+  id            String          @id @default(uuid()) @db.Uuid
+  userAId       String          @db.Uuid
+  userA         User            @relation("DmA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId       String          @db.Uuid
+  userB         User            @relation("DmB", fields: [userBId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @db.Timestamptz(6)
+  lastMessageAt DateTime        @db.Timestamptz(6)
+  /// How far each side has read; newer messages from the other are unread.
+  readA         DateTime?       @db.Timestamptz(6)
+  readB         DateTime?       @db.Timestamptz(6)
+  messages      DirectMessage[]
+
+  @@unique([userAId, userBId])
+  @@index([userAId, lastMessageAt])
+  @@index([userBId, lastMessageAt])
+}
+
+model DirectMessage {
+  id        String       @id @default(uuid()) @db.Uuid
+  threadId  String       @db.Uuid
+  thread    DirectThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  String       @db.Uuid
+  author    User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  /// Markdown subset, rendered without HTML.
+  body      String
+  editedAt  DateTime?    @db.Timestamptz(6)
+  deletedAt DateTime?    @db.Timestamptz(6)
+  createdAt DateTime     @db.Timestamptz(6)
+
+  @@index([threadId, createdAt])
 }

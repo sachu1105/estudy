@@ -69,20 +69,38 @@ export function PodMark({
   cover,
   name,
   done = false,
+  size = "md",
   className,
 }: {
   cover: Cover;
   name: string;
   done?: boolean;
+  /** "sm" sits in a one-line row header. */
+  size?: "sm" | "md";
   className?: string;
 }) {
   return (
     <span
       aria-hidden
-      className={cn("relative grid size-10 shrink-0 place-items-center", className)}
+      className={cn(
+        "relative grid shrink-0 place-items-center",
+        size === "sm" ? "size-8" : "size-10",
+        className,
+      )}
     >
-      <PodCover cover={cover} className="absolute inset-0 rounded-[10px]" />
-      <span className="relative font-heading text-small font-semibold text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.4)]">
+      <PodCover
+        cover={cover}
+        className={cn(
+          "absolute inset-0",
+          size === "sm" ? "rounded-[9px]" : "rounded-[10px]",
+        )}
+      />
+      <span
+        className={cn(
+          "relative font-heading font-semibold text-white [text-shadow:0_1px_2px_rgb(0_0_0/0.4)]",
+          size === "sm" ? "text-[11px]" : "text-small",
+        )}
+      >
         {initialsOf(name)}
       </span>
       {done ? (

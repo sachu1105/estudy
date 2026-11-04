@@ -56,7 +56,7 @@ export const handleSchema = z
     HANDLE_PATTERN,
     "Use lowercase letters, numbers and underscores, starting and ending with a letter or number.",
   )
-  .refine((value) => !RESERVED.has(value), "That handle is taken.");
+  .refine((value) => !RESERVED.has(value), "That username is taken.");
 
 export const profileSchema = z.object({
   displayName: z
@@ -86,6 +86,20 @@ export function suggestHandle(displayName: string, fallback: string) {
     .slice(0, HANDLE_MAX);
   const seed = base.length >= HANDLE_MIN ? base : `study_${fallback}`;
   return seed.slice(0, HANDLE_MAX).replace(/_+$/, "");
+}
+
+/**
+ * The username a new account starts with, so friends can add it at once: the name, then
+ * a short random tail (`suffix`, a few hex characters) that keeps it unique.
+ */
+export function starterHandle(displayName: string, suffix: string) {
+  const base = displayName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 16)
+    .replace(/_+$/, "");
+  return `${base || "study"}_${suffix}`;
 }
 
 /** The public address of a profile, for the copy button and for share sheets. */

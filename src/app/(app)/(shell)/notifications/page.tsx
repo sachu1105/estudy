@@ -18,6 +18,8 @@ const TEXT = {
   GROUP_TEST: "shared a test:",
   // Never names the reporter: the actor is left empty, so it reads "Someone reported".
   REPORT: "reported",
+  FRIEND_REQUEST: "sent you a friend request",
+  FRIEND_ACCEPTED: "accepted your friend request",
 } as const;
 
 /** Mentions, replies, accepted answers, new group tests, and reports for squad staff. */
@@ -32,7 +34,7 @@ export default async function NotificationsPage() {
         <EmptyState
           icon={Bell}
           title="Nothing new"
-          description="Mentions, replies to your posts and tests shared in your squads show up here."
+          description="Mentions, replies to your posts, friend requests and tests shared in your squads show up here."
         />
       ) : (
         <NotificationList

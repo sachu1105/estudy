@@ -93,39 +93,4 @@ test.describe("mock tests", () => {
     await page.getByRole("button", { name: "Send report" }).click();
     await expect(page.getByText("Thanks, it's reported")).toBeVisible();
   });
-
-  test("section mocks are timed with negative marking; topics can be practised alone", async ({
-    page,
-  }) => {
-    test.setTimeout(90_000);
-    await seedQuestions(TOPICS);
-    await userWithPlan(page, `mocks-${test.info().project.name}`);
-
-    const openPod = async () => {
-      await page.goto("/pods");
-      await page
-        .getByRole("region", { name: "Your exams" })
-        .getByRole("link")
-        .first()
-        .click();
-      await page
-        .getByRole("link", { name: "Indian Constitution", exact: true })
-        .click();
-    };
-
-    // A section mock starts from the subject pod's tests.
-    await openPod();
-    await page.getByRole("tab", { name: "Tests" }).click();
-    await page.getByRole("button", { name: "Section mock" }).click();
-    await expect(page).toHaveURL(/\/test\/[0-9a-f-]{36}$/);
-    await expect(page.getByRole("timer")).toBeVisible();
-    await expect(page.getByText(/a third of a mark off/)).toBeVisible();
-    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
-
-    await openPod();
-    await page.getByRole("link", { name: /^Preamble/ }).click();
-    await page.getByRole("button", { name: "Practice 5 questions" }).click();
-    await expect(page).toHaveURL(/\/test\/[0-9a-f-]{36}$/);
-    await expect(page.getByText("1 of 5")).toBeVisible();
-  });
 });

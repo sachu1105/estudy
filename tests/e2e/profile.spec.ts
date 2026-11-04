@@ -43,9 +43,10 @@ test.describe("profile", () => {
 
     // Share it at an address of our own.
     const handle = `anjali_${Date.now().toString(36)}`;
-    await page.getByLabel("Your address").fill(handle);
+    await page.getByRole("button", { name: "Change username" }).click();
+    await page.getByRole("textbox", { name: "Username" }).fill(handle);
     await page.getByRole("button", { name: "Save", exact: true }).click();
-    await expect(page.getByText("Address saved")).toBeVisible();
+    await expect(page.getByText("Username saved")).toBeVisible();
     await page.getByRole("switch", { name: "Share my profile" }).click();
     await expect(page.getByText("Profile is shared")).toBeVisible();
 

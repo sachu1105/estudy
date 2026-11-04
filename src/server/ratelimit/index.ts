@@ -37,6 +37,10 @@ export const rules = {
   reactPerUser: { limit: 200, windowMs: 10 * MINUTE },
   // Chat messages: a quick back-and-forth fits, a flood does not (squads S3).
   messagePerUser: { limit: 40, windowMs: MINUTE },
+  // Friend requests, answers and blocks: a handful at a time, never a sweep of usernames.
+  friendPerUser: { limit: 30, windowMs: 10 * MINUTE },
+  // Friend search runs as the person types: brisk typing fits, scraping the list does not.
+  friendSearchPerUser: { limit: 120, windowMs: 5 * MINUTE },
   // Checkout and cancel (milestone 16).
   billingPerUser: { limit: 10, windowMs: 10 * MINUTE },
   // Passes to paid squads and channels: a few tries, never a double-click loop.

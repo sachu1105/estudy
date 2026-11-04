@@ -8,13 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export function PodTabs({
   topics,
   material,
-  tests,
   progress,
   hasTopics,
 }: {
   topics: ReactNode;
   material: ReactNode;
-  tests: ReactNode;
   progress: ReactNode;
   hasTopics: boolean;
 }) {
@@ -23,12 +21,10 @@ export function PodTabs({
       <TabsList className="overflow-x-auto">
         {hasTopics ? <TabsTrigger value="topics">Topics</TabsTrigger> : null}
         <TabsTrigger value="material">Material</TabsTrigger>
-        <TabsTrigger value="tests">Tests</TabsTrigger>
         <TabsTrigger value="progress">Progress</TabsTrigger>
       </TabsList>
       {hasTopics ? <TabsContent value="topics">{topics}</TabsContent> : null}
       <TabsContent value="material">{material}</TabsContent>
-      <TabsContent value="tests">{tests}</TabsContent>
       <TabsContent value="progress">{progress}</TabsContent>
     </Tabs>
   );

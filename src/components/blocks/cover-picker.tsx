@@ -4,7 +4,6 @@ import { Check, ImageUp, Loader2, Shuffle } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +21,10 @@ import {
 import { cn } from "@/lib/utils/cn";
 
 const PRESETS = Object.keys(COVER_PRESETS) as CoverPreset[];
+
+/** A tile with an icon and a word (Automatic, Upload), the size of a swatch. */
+const tileText =
+  "flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-control border px-1 text-center text-micro leading-tight disabled:cursor-not-allowed disabled:opacity-60";
 
 export type CoverSelection = "auto" | CoverPreset | "image";
 export type CoverChoice =
@@ -119,62 +122,86 @@ export function CoverPicker({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <PodCover
-          cover={cover}
-          className="h-24 w-full rounded-card border border-border"
-        />
+        <div className="flex flex-col gap-3">
+          <PodCover
+            cover={cover}
+            className="h-24 w-full rounded-card border border-border"
+          />
 
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              choose(
-                { kind: "auto" },
-                { selection: "auto", cover: coverFor(autoId) },
-              )
-            }
-            className={cn(
-              "flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-control border text-micro",
-              selection === "auto"
-                ? "border-accent bg-accent-soft text-accent-ink"
-                : "border-border text-ink-muted hover:bg-surface-muted",
-            )}
-          >
-            <Shuffle className="size-4" aria-hidden />
-            Automatic
-          </button>
-          {PRESETS.map((preset) => (
+          {/* Automatic, the six gradients and your own image: eight tiles, two full rows. */}
+          <div className="grid grid-cols-4 gap-2">
             <button
-              key={preset}
               type="button"
               disabled={pending}
-              aria-label={preset}
               onClick={() =>
                 choose(
-                  { kind: "gradient", preset },
-                  { selection: preset, cover: { kind: "gradient", preset } },
+                  { kind: "auto" },
+                  { selection: "auto", cover: coverFor(autoId) },
                 )
               }
               className={cn(
-                "relative h-16 cursor-pointer overflow-hidden rounded-control border",
-                selection === preset ? "border-accent" : "border-border",
+                tileText,
+                selection === "auto"
+                  ? "border-accent bg-accent-soft text-accent-ink"
+                  : "border-border text-ink-muted hover:bg-surface-muted",
               )}
             >
-              <PodCover
-                cover={{ kind: "gradient", preset }}
-                className="size-full"
-              />
-              {selection === preset ? (
-                <span className="absolute inset-0 grid place-items-center">
-                  <Check
-                    className="size-5 text-white drop-shadow"
-                    aria-hidden
-                  />
-                </span>
-              ) : null}
+              <Shuffle className="size-4" aria-hidden />
+              Automatic
             </button>
-          ))}
+            {PRESETS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                disabled={pending}
+                aria-label={preset}
+                onClick={() =>
+                  choose(
+                    { kind: "gradient", preset },
+                    { selection: preset, cover: { kind: "gradient", preset } },
+                  )
+                }
+                className={cn(
+                  "relative h-16 cursor-pointer overflow-hidden rounded-control border",
+                  selection === preset ? "border-accent" : "border-border",
+                )}
+              >
+                <PodCover
+                  cover={{ kind: "gradient", preset }}
+                  className="size-full"
+                />
+                {selection === preset ? (
+                  <span className="absolute inset-0 grid place-items-center">
+                    <Check
+                      className="size-5 text-white drop-shadow"
+                      aria-hidden
+                    />
+                  </span>
+                ) : null}
+              </button>
+            ))}
+            <button
+              type="button"
+              disabled={uploading || pending}
+              onClick={() => input.current?.click()}
+              className={cn(
+                tileText,
+                selection === "image"
+                  ? "border-accent bg-accent-soft text-accent-ink"
+                  : "border-dashed border-border text-ink-muted hover:bg-surface-muted",
+              )}
+            >
+              {uploading ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              ) : (
+                <ImageUp className="size-4" aria-hidden />
+              )}
+              {selection === "image" ? "New image" : "Upload an image"}
+            </button>
+          </div>
+          <p className="text-small text-ink-muted">
+            JPG, PNG or WebP.
+          </p>
         </div>
 
         <input
@@ -188,19 +215,6 @@ export function CoverPicker({
             if (file) pickImage(file);
           }}
         />
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={uploading}
-          onClick={() => input.current?.click()}
-        >
-          {uploading ? (
-            <Loader2 className="animate-spin" aria-hidden />
-          ) : (
-            <ImageUp aria-hidden />
-          )}
-          Upload an image
-        </Button>
       </DialogContent>
     </Dialog>
   );

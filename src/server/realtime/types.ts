@@ -42,3 +42,25 @@ export type GroupEvent =
 export interface GroupEvents {
   emit(groupId: string, event: GroupEvent): Promise<void>;
 }
+
+export const userChannel = (userId: string) => `user:${userId}`;
+
+/**
+ * Something for one person: a direct message to or from them, or a change to their
+ * friends (a request, a yes, a removal). Ids only; the client re-reads what it may see.
+ */
+export type UserEvent =
+  | {
+      type: "dm";
+      action: "new" | "edit" | "delete";
+      /** The two people in the chat. */
+      users: [string, string];
+      messageId: string;
+      authorId: string;
+    }
+  | { type: "friends" };
+
+/** Sends an event to each person's open streams. Nothing is kept to replay. */
+export interface UserEvents {
+  emit(userIds: string[], event: UserEvent): Promise<void>;
+}

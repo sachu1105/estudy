@@ -128,6 +128,7 @@ export function createProfileService(deps: ProfileDeps) {
         coverSelection: selectionOf(stored),
         handle: row.handle,
         profilePublic: row.profilePublic,
+        findable: row.findable,
         suggestedHandle: suggestHandle(row.displayName, row.id.slice(0, 4)),
         joinedAt: row.createdAt,
       };
@@ -238,17 +239,26 @@ export function createProfileService(deps: ProfileDeps) {
             parsed.error.issues[0]?.message ?? "Pick another handle.",
           );
         if (await deps.users.handleTaken(parsed.data, user.id))
-          return failure("TAKEN", "That handle is taken. Try another.");
+          return failure("TAKEN", "That username is taken. Try another.");
         handle = parsed.data;
       }
       if (input.profilePublic && !handle)
-        return failure("INVALID", "Pick a handle for your profile address.");
+        return failure("INVALID", "Pick a username for your profile address.");
 
       await deps.users.setSharing(user.id, {
         handle,
         profilePublic: input.profilePublic,
       });
       return { ok: true, handle, profilePublic: input.profilePublic };
+    },
+
+    /**
+     * Public: found in friend search and open to requests. Private: neither; they make
+     * friends by sending requests. Friends and requests they already have are kept.
+     */
+    async setFindable(user: User, findable: boolean) {
+      await deps.users.setFindable(user.id, findable);
+      return { ok: true as const, findable };
     },
 
     /** A shared profile, for /u/<handle>. Null when it doesn't exist or isn't shared. */

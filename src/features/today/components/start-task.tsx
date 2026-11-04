@@ -56,7 +56,9 @@ export function StartTask({
       className={className}
       aria-label={`Start ${task.title}`}
     >
-      {children ?? <Play className="size-4" aria-hidden />}
+      {children ?? (
+        <Play className="size-3.5 translate-x-px fill-current" aria-hidden />
+      )}
     </Link>
   );
 }

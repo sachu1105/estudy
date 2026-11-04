@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 import { PodCover } from "@/components/blocks/pod-cover";
 import { VerifiedMark } from "@/components/blocks/verified-mark";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { COVER_PRESETS, type CoverPreset } from "@/lib/pods/covers";
 import { joinModeOf, type JoinMode } from "@/lib/squads/access";
@@ -30,56 +29,45 @@ function initials(name: string) {
   ).toUpperCase();
 }
 
-type Member = {
-  user: { id: string; displayName: string; avatarUrl: string | null };
-};
+const count = new Intl.NumberFormat("en-IN");
 
-/**
- * The first few faces, overlapping, with the rest as a count. Each face sits on top of
- * the next, so initials are never covered (a photo can lose its edge, two letters can't).
- * A ring in the card's colour cuts the faces apart without shrinking them, and initials
- * sit on the accent tint so the circle shows on the card in both themes.
- */
-function Faces({ members, total }: { members: Member[]; total: number }) {
-  const shown = members.slice(0, 4);
-  const rest = total - shown.length;
-  if (shown.length === 0) return null;
+/** "● 3 studying  ● 120 members": a dot and a number, as Discord's online and members. */
+function Stat({
+  n,
+  label,
+  live,
+}: {
+  n: number;
+  label: string;
+  live?: boolean;
+}) {
   return (
-    <span className="flex items-center gap-2.5">
-      <span className="flex pl-0.5">
-        {shown.map((m, i) => (
-          <Avatar
-            key={m.user.id}
-            name={m.user.displayName}
-            src={m.user.avatarUrl}
-            size="sm"
-            className={cn(
-              "relative bg-accent-soft ring-2 ring-surface [&_span]:text-accent-ink",
-              i > 0 && "-ml-1.5",
-              ["z-4", "z-3", "z-2", "z-1"][i],
-            )}
-          />
-        ))}
-      </span>
-      <span className="text-small text-ink-muted">
-        {rest > 0 ? `+${rest}` : `${total} member${total === 1 ? "" : "s"}`}
-      </span>
+    <span className="inline-flex items-center gap-1.5">
+      <span
+        aria-hidden
+        className={cn(
+          "size-2 rounded-full",
+          live ? "bg-accent" : "bg-ink-subtle",
+        )}
+      />
+      <span className="font-medium text-ink tabular-nums">
+        {count.format(n)}
+      </span>{" "}
+      {label}
     </span>
   );
 }
 
 /**
- * A squad at a glance: its own cover art, the faces already in it, its exam and how to
- * get in. The whole card opens the squad; an action (Join) sits on top of it.
- *
- * Shaped like a pod card, which is the app's card idiom: art on top, a tile straddling
- * its edge, the content below.
+ * A squad at a glance, shaped like a Discord Discover card: its art across the top, its
+ * tile straddling the art's edge, the name and what it's about, then who's in it and
+ * who's studying now. The whole card opens the squad; an action (Join) sits on top of it.
  */
 export function GroupCard({
   group,
   role,
-  unread = false,
   verified = false,
+  studying = 0,
   action,
 }: {
   group: {
@@ -91,7 +79,6 @@ export function GroupCard({
     exam: { name: string } | null;
     /** lib/pods/covers storedCoverSchema, or null for the automatic gradient. */
     cover?: unknown;
-    members?: Member[];
     _count: { members: number };
     /** A paid squad's pass. Null: free. */
     pricePaise?: number | null;
@@ -100,8 +87,8 @@ export function GroupCard({
   role?: GroupRole | null;
   /** Run by someone on a paid plan. */
   verified?: boolean;
-  /** Something new in its chats. */
-  unread?: boolean;
+  /** Members with a focus timer running right now. */
+  studying?: number;
   action?: ReactNode;
 }) {
   const art = squadCover(group);
@@ -119,30 +106,22 @@ export function GroupCard({
         ? priceLabel(group.pricePaise!, group.accessDays ?? null)
         : JOIN_LABEL[joinModeOf(group)],
   ].filter(Boolean);
+  const members = group._count.members;
 
   return (
-    <div
-      className={cn(
-        "relative flex w-full flex-col overflow-hidden rounded-card border border-border bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md",
-      )}
-    >
-      <PodCover cover={art} className="h-16 shrink-0" />
+    <div className="relative flex w-full flex-col overflow-hidden rounded-card border border-border bg-surface transition-[transform,box-shadow] duration-[120ms] focus-within:ring-2 focus-within:ring-accent hover:-translate-y-px hover:shadow-md">
+      <PodCover cover={art} className="h-32 shrink-0" />
 
-      <div className="relative flex flex-1 flex-col p-4 pt-0">
+      <div className="relative flex flex-1 flex-col px-4 pb-4">
         <span
+          aria-hidden
           className={cn(
-            "relative -mt-6 mb-3 grid size-12 w-12 place-items-center rounded-[14px] border-4 border-surface font-heading text-small font-medium",
+            "-mt-8 mb-2 grid size-14 place-items-center rounded-[16px] border-4 border-surface font-heading text-h3 font-medium",
             tile ? "text-white" : "bg-surface-muted text-ink-muted",
           )}
           style={tile ? { background: tile } : undefined}
         >
           {initials(group.name)}
-          {unread ? (
-            <span
-              aria-hidden
-              className="absolute -top-1 -right-1 size-3 rounded-full border-2 border-surface bg-accent"
-            />
-          ) : null}
         </span>
 
         <span className="flex flex-wrap items-center gap-2">
@@ -157,7 +136,6 @@ export function GroupCard({
                 <VerifiedMark />
               </>
             ) : null}
-            {unread ? <span className="sr-only">, new messages</span> : null}
           </Link>
           {paid ? <PaidMark /> : null}
           {group.visibility === "PRIVATE" ? (
@@ -171,19 +149,20 @@ export function GroupCard({
         </span>
 
         {facts.length > 0 ? (
-          <span className="mt-0.5 text-small text-ink-muted">
-            {facts.join(" · ")}
-          </span>
+          <span className="text-small text-ink-muted">{facts.join(" · ")}</span>
         ) : null}
 
         {group.description ? (
-          <span className="mt-1.5 line-clamp-2 text-small text-ink-muted">
+          <span className="mt-2 line-clamp-3 text-small text-ink">
             {group.description}
           </span>
         ) : null}
 
-        <span className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4">
-          <Faces members={group.members ?? []} total={group._count.members} />
+        <span className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
+            {studying > 0 ? <Stat n={studying} label="studying" live /> : null}
+            <Stat n={members} label={members === 1 ? "member" : "members"} />
+          </span>
           {action ? (
             <span className="relative z-10 shrink-0">{action}</span>
           ) : null}
