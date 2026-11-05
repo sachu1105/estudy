@@ -159,6 +159,10 @@ export function createGroupService(deps: GroupDeps) {
     },
 
     mine: (user: User) => deps.groups.mine(user.id),
+
+    /** Whether Squads may open straight onto this squad: they're still in it. */
+    stillIn: (userId: string, groupId: string) =>
+      deps.groups.isIn(groupId, userId),
     directory: (examId: string | null, query: string) =>
       deps.groups.directory(examId, query.trim()),
 

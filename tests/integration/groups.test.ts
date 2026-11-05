@@ -56,6 +56,28 @@ afterAll(async () => {
 });
 
 describe("groups", () => {
+  it("opens Squads on the last squad only while the person is still in it", async () => {
+    const owner = await user("Owner");
+    const binu = await user("Binu");
+    const g = groupId(
+      await groups.create(owner, {
+        name: "Last open",
+        description: null,
+        examId: null,
+        visibility: "PUBLIC",
+      }),
+    );
+    expect(await groups.stillIn(binu.id, g)).toBe(false);
+    await groups.join(binu, g);
+    expect(await groups.stillIn(binu.id, g)).toBe(true);
+    await groups.leave(binu, g);
+    expect(await groups.stillIn(binu.id, g)).toBe(false);
+    // A deleted squad isn't reopened, even for its owner.
+    expect(await groups.stillIn(owner.id, g)).toBe(true);
+    await groups.remove(owner, g);
+    expect(await groups.stillIn(owner.id, g)).toBe(false);
+  });
+
   it("creates a group with its owner, within the plan's limit", async () => {
     const anu = await user("Anu");
     const g = groupId(

@@ -60,6 +60,15 @@ export const groupRepository = {
     });
   },
 
+  /** Whether the person is in a squad that still exists. */
+  async isIn(groupId: string, userId: string) {
+    const row = await prisma.membership.findFirst({
+      where: { groupId, userId, group: { deletedAt: null } },
+      select: { id: true },
+    });
+    return !!row;
+  },
+
   membership(groupId: string, userId: string) {
     return prisma.membership.findUnique({
       where: { groupId_userId: { groupId, userId } },

@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { systemClock } from "@/lib/clock";
+import { isId } from "@/lib/ids";
+import { LAST_SQUAD_COOKIE } from "@/lib/squads/last-squad";
 import {
   ACCESS_COOKIE,
   clearSessionCookies,
@@ -9,9 +11,10 @@ import {
   type SessionTokens,
 } from "@/server/auth/cookies";
 import { clientIp } from "@/server/auth/ip";
-import { verifyAccessToken } from "@/server/auth/tokens";
+import { verifyAccessToken, type AccessClaims } from "@/server/auth/tokens";
 import { env } from "@/server/env";
 import { sessionService } from "@/server/services/auth";
+import { groupService } from "@/server/services/groups";
 
 // Refreshes tokens and redirects. It is never the only guard (CLAUDE.md rule 9): every
 // page, action and route handler still calls requireUser() / requireRole() / withUser().
@@ -62,6 +65,11 @@ export async function proxy(request: NextRequest) {
   }
   const signedIn = Boolean(access || refreshed);
 
+  const squad =
+    signedIn && pathname === "/groups"
+      ? await lastSquad(request, access, refreshed)
+      : null;
+
   let response: NextResponse;
   if (!signedIn && matches(pathname, PROTECTED)) {
     const login = new URL("/login", request.url);
@@ -69,6 +77,11 @@ export async function proxy(request: NextRequest) {
     response = NextResponse.redirect(login);
   } else if (signedIn && matches(pathname, SIGNED_OUT_ONLY)) {
     response = NextResponse.redirect(new URL("/today", request.url));
+  } else if (squad) {
+    // Squads reopens the last squad. Redirecting here, before anything renders, lets
+    // the squad's skeleton stream at once; the page's own redirect left a blank screen
+    // between the two requests.
+    response = NextResponse.redirect(new URL(`/groups/${squad}`, request.url));
   } else {
     // Forward the fresh access token so Server Components in this same request see it.
     const requestHeaders = new Headers(request.headers);
@@ -83,6 +96,27 @@ export async function proxy(request: NextRequest) {
   if (refreshed) writeSessionCookies(response.cookies, refreshed);
   else if (sessionEnded) clearSessionCookies(response.cookies);
   return response;
+}
+
+/** The squad last open, if the person is still in it (else the page picks one). */
+async function lastSquad(
+  request: NextRequest,
+  access: AccessClaims | null,
+  refreshed: SessionTokens | null,
+) {
+  const id = request.cookies.get(LAST_SQUAD_COOKIE)?.value;
+  if (!id || !isId(id)) return null;
+  const claims =
+    access ??
+    (refreshed
+      ? await verifyAccessToken(
+          refreshed.accessToken,
+          env.JWT_ACCESS_SECRET,
+          systemClock.now(),
+        )
+      : null);
+  if (!claims) return null;
+  return (await groupService.stillIn(claims.sub, id)) ? id : null;
 }
 
 export const config = {
