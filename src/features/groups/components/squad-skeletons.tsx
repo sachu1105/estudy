@@ -5,29 +5,8 @@ import { cn } from "@/lib/utils/cn";
 
 // Skeletons for Squads, shaped like the screens they stand in for, so moving between
 // squads, channels, Discover and Friends never flashes a blank page (design system:
-// skeletons, never spinners). Server components, no data.
-
-/** The squad rail: Friends, a few squads, then make and find. */
-export function RailSkeleton({ phone = true }: { phone?: boolean }) {
-  return (
-    <div
-      aria-hidden
-      className={cn(
-        "w-[72px] shrink-0 flex-col items-center gap-2 py-3 md:flex md:border-r md:border-border",
-        phone ? "flex" : "hidden",
-      )}
-    >
-      <Skeleton className="size-12 rounded-xl" />
-      <span className="h-px w-8 bg-border" />
-      {[0, 1, 2].map((i) => (
-        <Skeleton key={i} className="size-12 rounded-3xl" />
-      ))}
-      <span className="h-px w-8 bg-border" />
-      <Skeleton className="size-12 rounded-3xl" />
-      <Skeleton className="size-12 rounded-3xl" />
-    </div>
-  );
-}
+// skeletons, never spinners). The rail is the layout's and stays real. Server
+// components, no data.
 
 /** A heading over a few rows, as a channel category or a list of chats. */
 function Rows({ rows, avatar = false }: { rows: number; avatar?: boolean }) {
@@ -105,29 +84,24 @@ export function ChatSkeleton() {
 }
 
 /**
- * The screen beside the rail, edge to edge like a squad's own (data-bleed and
- * data-squad-screen let the app shell step aside, as SquadShell does).
+ * The screen beside the rail while it loads (the rail itself is the layout's, and stays
+ * on screen). A squad's own screen is edge to edge on phones too, as SquadShell's.
  */
 export function SquadScreenSkeleton({
   screen = true,
-  rail = true,
   children,
 }: {
   /** A squad's own screen: edge to edge on phones too. */
   screen?: boolean;
-  /** Show the rail on phones (a squad's home, Friends). */
-  rail?: boolean;
   children: ReactNode;
 }) {
   return (
     <div
-      data-bleed
       data-squad-screen={screen ? "" : undefined}
       aria-busy="true"
       aria-label="Loading"
-      className={cn("flex flex-1 md:h-full md:min-h-0", screen && "min-h-dvh")}
+      className="flex min-w-0 flex-1"
     >
-      <RailSkeleton phone={rail} />
       {children}
     </div>
   );

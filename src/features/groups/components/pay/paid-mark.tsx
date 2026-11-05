@@ -14,7 +14,7 @@ export function PaidMark({
   return (
     <span
       className={cn(
-        "inline-flex h-6 shrink-0 items-center gap-1 rounded-full bg-gold-soft px-2.5 text-small font-medium whitespace-nowrap text-gold-ink shine-gold [&_svg]:size-3.5",
+        "shine-gold inline-flex h-6 shrink-0 items-center gap-1 rounded-full bg-gold-soft px-2.5 text-small font-medium whitespace-nowrap text-gold-ink [&_svg]:size-3.5",
         className,
       )}
     >

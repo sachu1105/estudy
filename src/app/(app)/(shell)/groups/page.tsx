@@ -46,7 +46,7 @@ export default async function GroupsPage() {
   ]);
 
   return (
-    <SquadShell user={user} canCreate={false}>
+    <SquadShell>
       <SquadColumn>
         <div className="flex flex-col gap-10">
           <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface px-5 py-10 text-center">

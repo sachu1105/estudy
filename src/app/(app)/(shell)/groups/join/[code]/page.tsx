@@ -23,7 +23,7 @@ export default async function JoinByLink({
     : null;
   if (result?.ok) redirect(`/groups/${result.groupId}`);
   return (
-    <SquadShell user={user}>
+    <SquadShell>
       <SquadColumn>
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
           <h1>That invite doesn&apos;t work</h1>

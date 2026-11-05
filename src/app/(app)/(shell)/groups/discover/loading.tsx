@@ -4,7 +4,7 @@ import { SquadScreenSkeleton } from "@/features/groups/components/squad-skeleton
 /** Discover: the exam tabs, the banner and a grid of squad cards. */
 export default function Loading() {
   return (
-    <SquadScreenSkeleton screen={false} rail={false}>
+    <SquadScreenSkeleton screen={false}>
       <div aria-hidden className="min-w-0 flex-1">
         <div className="hidden h-14 items-center gap-4 border-b border-border px-6 md:flex">
           {[20, 16, 28, 24].map((w) => (

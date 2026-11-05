@@ -11,29 +11,17 @@ import { catalogueService } from "@/server/services/syllabus";
 import { SquadRail } from "./squad-rail";
 
 /**
- * Everything under Squads, as in Discord: the rail of your squads (with making and
- * finding one) on the left, and the squad, Discover or a welcome beside it. Rendered by
- * each screen rather than a shared layout, so the rail's unread marks are fresh on every
- * move between squads.
+ * The rail of your squads, drawn once by the Squads layout so it stays put while you
+ * move between squads, Discover and Friends, as in Discord. Its unread marks catch up
+ * on each move (the rail asks for them), and joins, leaves and new squads revalidate
+ * the layout.
  */
-export async function SquadShell({
-  user,
-  screen = false,
-  canCreate = true,
-  children,
-}: {
-  user: SessionUser;
-  /** Off where the page has its own way to make a squad. */
-  canCreate?: boolean;
-  /** A squad's own screens: edge to edge on phones, with the squad's bars for the app's. */
-  screen?: boolean;
-  children: ReactNode;
-}) {
+export async function SquadRailMount({ user }: { user: SessionUser }) {
   const [mine, unread, exams, canPrice, dms, requests] = await Promise.all([
     groupService.mine(user),
     chatService.squadsWithUnread(user),
     catalogueService.listExams(),
-    canCreate ? squadPay.canPrice(user) : false,
+    squadPay.canPrice(user),
     dmService.unreadTotal(user),
     friendService.incomingCount(user),
   ]);
@@ -41,33 +29,45 @@ export async function SquadShell({
   const maxOwned = limit(user, "groupsCreated");
 
   return (
+    <SquadRail
+      squads={mine.map((m) => ({
+        ...m.group,
+        unread: unread.has(m.group.id),
+      }))}
+      exams={exams.map((e) => ({ id: e.id, name: e.name }))}
+      canPrice={canPrice}
+      friendsCount={dms + requests}
+      atLimit={
+        owned >= maxOwned ? (
+          <UpgradeCard
+            title="You have made every squad your plan allows"
+            detail={`Your plan covers ${maxOwned} squad${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
+            billingOn={billingEnabled()}
+          />
+        ) : null
+      }
+    />
+  );
+}
+
+/**
+ * Everything beside the rail: a squad, Discover, Friends or a welcome. A squad's own
+ * screens (`screen`) are edge to edge on phones, with the squad's bars for the app's.
+ */
+export function SquadShell({
+  screen = false,
+  className,
+  children,
+}: {
+  screen?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
     <div
-      data-bleed
       data-squad-screen={screen ? "" : undefined}
-      className={cn(
-        "flex flex-1 md:h-full md:min-h-0",
-        screen && "min-h-dvh has-[[data-focus-view]]:min-h-0",
-      )}
+      className={cn("flex min-w-0 flex-1", className)}
     >
-      <SquadRail
-        squads={mine.map((m) => ({
-          ...m.group,
-          unread: unread.has(m.group.id),
-        }))}
-        exams={exams.map((e) => ({ id: e.id, name: e.name }))}
-        canCreate={canCreate}
-        canPrice={canPrice}
-        friendsCount={dms + requests}
-        atLimit={
-          owned >= maxOwned ? (
-            <UpgradeCard
-              title="You have made every squad your plan allows"
-              detail={`Your plan covers ${maxOwned} squad${maxOwned === 1 ? "" : "s"} of your own. You can still join others, and nothing you have made goes away.`}
-              billingOn={billingEnabled()}
-            />
-          ) : null
-        }
-      />
       {children}
     </div>
   );

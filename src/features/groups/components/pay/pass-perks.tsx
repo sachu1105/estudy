@@ -56,9 +56,7 @@ export function PassFacts({
           key={label}
           className="flex min-w-0 flex-col-reverse justify-end gap-0.5 px-1 py-3"
         >
-          <dt className="text-small text-ink-muted">
-            {label}
-          </dt>
+          <dt className="text-small text-ink-muted">{label}</dt>
           <dd className="font-mono text-body font-medium break-words tabular-nums">
             {value}
           </dd>

@@ -11,6 +11,7 @@ import { squadCover } from "@/lib/squads/cover";
 import { cn } from "@/lib/utils/cn";
 
 import { CreateGroupDialog } from "../create-group-dialog";
+import { useRailMarks } from "./use-rail-marks";
 
 function initials(name: string) {
   const words = name.trim().split(/\s+/).filter(Boolean);
@@ -50,7 +51,6 @@ export function SquadRail({
   squads,
   exams,
   atLimit,
-  canCreate = true,
   canPrice = false,
   friendsCount = 0,
 }: {
@@ -66,14 +66,19 @@ export function SquadRail({
   exams: { id: string; name: string }[];
   /** Shown in place of the form once someone has made every squad their plan allows. */
   atLimit?: ReactNode;
-  /** Off where the page beside it has its own way to make a squad (the welcome). */
-  canCreate?: boolean;
   /** The new squad may be a paid one. */
   canPrice?: boolean;
   /** Unread direct messages and friend requests waiting, on the Friends tile. */
   friendsCount?: number;
 }) {
   const pathname = usePathname();
+  // The rail stays mounted between squads; its marks catch up on each move.
+  const marks = useRailMarks({
+    unread: squads.filter((s) => s.unread).map((s) => s.id),
+    friends: friendsCount,
+  });
+  // The welcome (no squads yet) has its own way to make one.
+  const canCreate = pathname !== "/groups";
   const squadHome =
     /^\/groups\/[0-9a-f-]{36}$/.test(pathname) ||
     pathname === "/groups/friends";
@@ -91,12 +96,12 @@ export function SquadRail({
     >
       {/* Friends and direct messages first, as Discord's home button. */}
       <span className="relative grid shrink-0 place-items-center">
-        <Marker active={friending} unread={friendsCount > 0} />
+        <Marker active={friending} unread={marks.friends > 0} />
         <Tooltip content="Friends" side="right">
           <Link
             href="/groups/friends"
             aria-label={
-              friendsCount > 0 ? `Friends, ${friendsCount} new` : "Friends"
+              marks.friends > 0 ? `Friends, ${marks.friends} new` : "Friends"
             }
             aria-current={friending ? "page" : undefined}
             className={cn(
@@ -109,17 +114,18 @@ export function SquadRail({
             <MessageCircle className="size-5" aria-hidden />
           </Link>
         </Tooltip>
-        {friendsCount > 0 ? (
+        {marks.friends > 0 ? (
           <span
             aria-hidden
             className="pointer-events-none absolute -right-1 -bottom-1 grid h-5 min-w-5 place-items-center rounded-full border-2 border-bg bg-accent px-1 text-micro font-medium text-on-accent tabular-nums"
           >
-            {friendsCount > 9 ? "9+" : friendsCount}
+            {marks.friends > 9 ? "9+" : marks.friends}
           </span>
         ) : null}
       </span>
       <span aria-hidden className="h-px w-8 shrink-0 bg-border" />
       {squads.map((s) => {
+        const unread = marks.unread.has(s.id);
         const active =
           pathname === `/groups/${s.id}` ||
           pathname.startsWith(`/groups/${s.id}/`);
@@ -129,7 +135,7 @@ export function SquadRail({
             key={s.id}
             className="relative grid shrink-0 place-items-center"
           >
-            <Marker active={active} unread={s.unread} />
+            <Marker active={active} unread={unread} />
             <Tooltip content={s.name} side="right">
               <Link
                 href={`/groups/${s.id}`}
@@ -141,7 +147,7 @@ export function SquadRail({
                   s.pricePaise != null && "ring-2 ring-gold/80",
                 )}
               >
-                {s.unread && !active ? (
+                {unread && !active ? (
                   <span className="sr-only">, new messages</span>
                 ) : null}
                 {/* The squad's banner is its face here too. */}

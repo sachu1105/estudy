@@ -54,7 +54,7 @@ export default async function GroupLayout({
 
   if (!role)
     return (
-      <SquadShell user={user}>
+      <SquadShell className="motion-safe:animate-fade-in">
         <SquadColumn>
           <Visitor user={user} view={view} verified={verified} />
         </SquadColumn>
@@ -73,7 +73,8 @@ export default async function GroupLayout({
 
   return (
     <PricingProvider owner={owner} canPrice={canPrice}>
-      <SquadShell user={user} screen>
+      {/* A new squad fades in beside the rail, which stays still. */}
+      <SquadShell screen className="motion-safe:animate-fade-in">
         <SquadLive groupId={group.id} meId={user.id} />
         <RememberSquad groupId={group.id} />
         <aside

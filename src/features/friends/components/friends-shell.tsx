@@ -23,7 +23,7 @@ export async function FriendsShell({
     friendService.incomingCount(user),
   ]);
   return (
-    <SquadShell user={user} screen>
+    <SquadShell screen>
       <FriendsLive meId={user.id} />
       <aside
         aria-label="Friends and messages"

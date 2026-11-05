@@ -60,7 +60,7 @@ export default async function DiscoverPage({
       : "Popular squads";
 
   return (
-    <SquadShell user={user}>
+    <SquadShell>
       <div className="min-w-0 flex-1 md:scrollbar-thin md:overflow-y-auto">
         <div className="sticky top-0 z-20 hidden h-14 items-center gap-4 border-b border-border bg-bg px-6 md:flex">
           <ExamTabs
