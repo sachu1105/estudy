@@ -5,15 +5,19 @@ import {
   FileText,
   Hash,
   Megaphone,
+  MessageCircle,
   Trophy,
   Users,
 } from "lucide-react";
-import type { ReactNode } from "react";
 
+import { PodCover } from "@/components/blocks/pod-cover";
 import { cn } from "@/lib/utils/cn";
 
-// Sample content, not data. A squad open on its chat, laid out like the app (squad rail,
-// channel list, messages) and running off the cell's right and bottom edges.
+import { Message, PollOption, SquadTile } from "./squad-scene-parts";
+
+// Sample content, not data. A squad open on its chat, laid out like the app (the squad
+// rail with Friends on top and each squad in its own art, the channel list under the
+// squad's banner, messages) and running off the cell's right and bottom edges.
 
 const channels = [
   { icon: Hash, label: "general", active: true },
@@ -25,22 +29,33 @@ const channels = [
 export function SquadScene() {
   return (
     <div className="absolute top-0 left-4 flex h-[30rem] w-[44rem] overflow-hidden rounded-tl-[20px] border-t border-l border-border bg-surface shadow-lg sm:left-8 lg:left-12">
-      <div className="flex w-14 shrink-0 flex-col items-center gap-2 bg-surface-muted py-3">
-        <span className="grid size-9 place-items-center rounded-[12px] bg-accent font-heading text-small font-medium text-on-accent">
-          ES
+      <div className="flex w-16 shrink-0 flex-col items-center gap-2 bg-surface-muted py-3">
+        <span className="relative grid size-10 place-items-center rounded-3xl bg-surface text-ink-muted">
+          <MessageCircle className="size-[18px]" />
+          <span className="absolute -right-1 -bottom-1 grid h-5 min-w-5 place-items-center rounded-full border-2 border-surface-muted bg-accent px-1 text-micro font-medium text-on-accent tabular-nums">
+            2
+          </span>
         </span>
-        <span className="grid size-9 place-items-center rounded-full border border-border bg-surface font-heading text-small text-ink-muted">
-          SC
-        </span>
-        <span className="grid size-9 place-items-center rounded-full border border-border bg-surface text-ink-muted">
-          <Compass className="size-4" />
+        <span className="h-px w-7 bg-border" />
+        <SquadTile initials="ES" preset="blurple" active />
+        <SquadTile initials="SC" preset="ocean" />
+        <SquadTile initials="LD" preset="meadow" />
+        <span className="h-px w-7 bg-border" />
+        <span className="grid size-10 place-items-center rounded-3xl bg-surface text-ink-muted">
+          <Compass className="size-[18px]" />
         </span>
       </div>
 
       <div className="hidden w-44 shrink-0 flex-col gap-1 border-r border-border p-3 sm:flex md:hidden lg:flex">
-        <p className="px-2 pb-2 font-heading text-small font-medium text-ink">
-          Exam squad
-        </p>
+        <span className="relative -mx-3 -mt-3 mb-2 flex h-16 items-end overflow-hidden px-3 pb-2">
+          <PodCover
+            cover={{ kind: "gradient", preset: "blurple" }}
+            className="absolute inset-0"
+          />
+          <span className="relative font-heading text-small font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+            Exam squad
+          </span>
+        </span>
         {channels.map((c) => (
           <span
             key={c.label}
@@ -96,50 +111,5 @@ export function SquadScene() {
         </Message>
       </div>
     </div>
-  );
-}
-
-function Message({
-  name,
-  time,
-  children,
-}: {
-  name: string;
-  time: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex gap-3">
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-surface-muted font-heading text-small font-medium text-ink-muted">
-        {name[0]}
-      </span>
-      <div className="flex min-w-0 flex-col items-start gap-1">
-        <p className="text-small">
-          <span className="font-medium text-ink">{name}</span>{" "}
-          <span className="font-mono text-ink-muted">{time}</span>
-        </p>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function PollOption({
-  label,
-  votes,
-  width,
-}: {
-  label: string;
-  votes: number;
-  width: string;
-}) {
-  return (
-    <span className="relative flex items-center justify-between overflow-hidden rounded-chip border border-border px-2.5 py-1.5 text-small">
-      <span className={cn("absolute inset-y-0 left-0 bg-accent-soft", width)} />
-      <span className="relative text-ink">{label}</span>
-      <span className="relative font-mono text-ink-muted tabular-nums">
-        {votes}
-      </span>
-    </span>
   );
 }

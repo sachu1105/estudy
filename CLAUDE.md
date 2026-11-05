@@ -340,8 +340,8 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   banner (dimmed under white type) at the top of Squads > Discover (`DiscoverHero`).
   The landing page may reuse the same
   cover art: a soft glow behind the hero window, the top of the featured plan card
-  (the admin picks it under Plans and limits), the sample pod card in the features grid,
-  and the giant studypods wordmark at the foot of the page, where the gradient shows
+  (the admin picks it under Plans and limits), the sample pod card and the squads
+  picture (its rail tiles and the squad's banner) in the features grid, and the giant studypods wordmark at the foot of the page, where the gradient shows
   through the letters. Nothing else.
 
 ### Typography (next/font/google)
