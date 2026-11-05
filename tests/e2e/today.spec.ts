@@ -45,8 +45,11 @@ test.describe("today", () => {
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
-    // Start next task: the focus view, with the timer running.
-    await page.getByRole("link", { name: "Start next task" }).click();
+    // Start a task: the focus view, with the timer running.
+    await page
+      .getByRole("link", { name: /^Start / })
+      .first()
+      .click();
     await expect(page).toHaveURL(/\/study\/[0-9a-f-]{36}$/);
     const timer = page.getByRole("timer");
     await expect(timer).not.toHaveText("--:--");
@@ -66,14 +69,18 @@ test.describe("today", () => {
     await page.getByRole("button", { name: "Finish and mark done" }).click();
     await expect(page).toHaveURL(/\/today$/);
     await expect(page.getByRole("region", { name: "Done" })).toBeVisible();
-    await expect(page.getByLabel(/[1-9]\d* day streak/)).toBeVisible();
+    // The streak shows in the header and in its tile; either will do.
+    await expect(
+      page
+        .getByLabel(/[1-9]\d* day streak/)
+        .filter({ visible: true })
+        .first(),
+    ).toBeVisible();
 
-    // Untick from the list.
-    await page
-      .getByRole("region", { name: "Done" })
-      .getByRole("checkbox")
-      .first()
-      .click();
+    // Untick from the list, which folds finished tasks away until opened.
+    const done = page.getByRole("region", { name: "Done" });
+    await done.getByRole("button", { name: /Done today/ }).click();
+    await done.getByRole("checkbox").first().click();
     await expect(page.getByRole("region", { name: "Done" })).toHaveCount(0);
 
     // How the streak works is one tap away.

@@ -1,12 +1,13 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { Check, Pause, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { toast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils/cn";
 
 import {
   beatAction,
@@ -89,57 +90,79 @@ export function FocusTimer({
       router.push("/today");
     });
 
+  const planned = plannedMinutes * 60;
   const percent =
-    seconds === null
-      ? 0
-      : Math.min(100, (seconds / (plannedMinutes * 60)) * 100);
+    seconds === null ? 0 : Math.min(100, (seconds / planned) * 100);
+  const left = seconds === null ? null : Math.ceil((planned - seconds) / 60);
+  const disabled = busy || seconds === null;
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      <ProgressRing
-        value={percent}
-        size={240}
-        strokeWidth={10}
-        label="Time studied against the plan"
-      >
-        <span className="flex flex-col items-center">
-          <span
-            className="font-mono text-display font-medium tabular-nums"
-            role="timer"
-            aria-live="off"
-          >
-            {seconds === null ? "--:--" : clock(seconds)}
-          </span>
-          <span className="text-small text-ink-muted">
-            {paused ? "Paused" : `of ${plannedMinutes} min`}
-          </span>
-        </span>
-      </ProgressRing>
-      <div className="flex w-full max-w-sm flex-col gap-2">
-        <Button
-          variant="primary"
-          disabled={busy || seconds === null}
-          onClick={() => finish(true)}
+    <div className="flex flex-1 flex-col md:flex-none">
+      {/* The ring holds the middle of the screen on a phone; on md+ it sits under the title. */}
+      <div className="flex flex-1 items-center justify-center py-6 md:py-10">
+        <ProgressRing
+          value={percent}
+          size={264}
+          strokeWidth={12}
+          label="Time studied against the plan"
+          className={cn(
+            "transition-opacity duration-[200ms]",
+            paused && "opacity-60",
+          )}
         >
-          Finish and mark done
-        </Button>
-        <div className="grid grid-cols-2 gap-2">
+          <span className="flex flex-col items-center gap-1">
+            <span className="text-micro text-ink-muted uppercase">
+              {paused ? "Paused" : "Focus"}
+            </span>
+            <span
+              className="font-mono text-display font-medium tabular-nums"
+              role="timer"
+              aria-live="off"
+            >
+              {seconds === null ? "--:--" : clock(seconds)}
+            </span>
+            <span className="text-small text-ink-muted">
+              {left === null
+                ? `${plannedMinutes} min planned`
+                : left > 0
+                  ? `${left} min left`
+                  : "Planned time reached"}
+            </span>
+          </span>
+        </ProgressRing>
+      </div>
+
+      {/* Thumb reach on a phone: pause beside finishing, stopping quietly below. */}
+      <div className="mx-auto flex w-full max-w-sm flex-col items-center gap-2">
+        <div className="flex w-full items-center gap-3">
           <Button
             variant="secondary"
-            disabled={busy || seconds === null}
+            size="icon"
+            className="size-14 shrink-0 rounded-full md:size-14 [&_svg]:size-5"
+            aria-label={paused ? "Resume" : "Pause"}
+            disabled={disabled}
             onClick={toggle}
           >
             {paused ? <Play aria-hidden /> : <Pause aria-hidden />}
-            {paused ? "Resume" : "Pause"}
           </Button>
           <Button
-            variant="ghost"
-            disabled={busy || seconds === null}
-            onClick={() => finish(false)}
+            variant="primary"
+            size="lg"
+            className="h-14 flex-1"
+            disabled={disabled}
+            onClick={() => finish(true)}
           >
-            Stop for now
+            <Check aria-hidden /> Finish and mark done
           </Button>
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={disabled}
+          onClick={() => finish(false)}
+        >
+          Stop for now
+        </Button>
       </div>
     </div>
   );

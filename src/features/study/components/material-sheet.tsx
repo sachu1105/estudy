@@ -1,8 +1,6 @@
 "use client";
 
 import { FileText, FolderOpen } from "lucide-react";
-import { useSyncExternalStore } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,12 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const WIDE = "(min-width: 768px)";
-const subscribe = (change: () => void) => {
-  const query = window.matchMedia(WIDE);
-  query.addEventListener("change", change);
-  return () => query.removeEventListener("change", change);
-};
+import { useSheetSide } from "./use-sheet-side";
 
 export type SheetItem = {
   id: string;
@@ -39,25 +32,20 @@ export function MaterialSheet({
   items: SheetItem[];
   podHref: string;
 }) {
-  const wide = useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(WIDE).matches,
-    () => false,
-  );
+  const side = useSheetSide();
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary">
+        <Button variant="secondary" size="sm">
           <FolderOpen aria-hidden /> Material
-          <span className="font-mono text-small tabular-nums">
-            {items.length}
-          </span>
+          {items.length > 0 ? (
+            <span className="font-mono text-ink-muted tabular-nums">
+              {items.length}
+            </span>
+          ) : null}
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side={wide ? "right" : "bottom"}
-        className="overflow-y-auto"
-      >
+      <SheetContent side={side} className="overflow-y-auto">
         <SheetTitle>{topicName}</SheetTitle>
         <SheetDescription>
           Your notes, links and files for this topic.

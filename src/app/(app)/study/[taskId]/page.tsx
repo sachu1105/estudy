@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { taskTitle, whyThis } from "@/features/plans/task-text";
 import { FocusTimer } from "@/features/study/components/focus-timer";
 import { MaterialSheet } from "@/features/study/components/material-sheet";
+import { WhySheet } from "@/features/study/components/why-sheet";
 import { isId } from "@/lib/ids";
 import type { TaskReason } from "@/lib/plan-engine";
 import { requireUser } from "@/server/auth/session";
@@ -53,38 +54,29 @@ export default async function StudyPage({
   const why = whyThis(task.reason as TaskReason, subject);
 
   return (
-    <div className="flex flex-1 flex-col gap-8">
-      <div className="flex flex-col gap-1 text-center">
-        <p className="text-small text-ink-muted">{subject}</p>
-        <h1 className="break-words">{title}</h1>
+    <div className="flex flex-1 flex-col md:justify-center">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <div className="flex flex-col gap-1">
+          <p className="text-small text-ink-muted">{subject}</p>
+          <h1 className="text-balance break-words">{title}</h1>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          {task.topicId ? (
+            <MaterialSheet
+              topicName={topic}
+              podHref={`/pods/topic/${task.topicId}`}
+              items={items.map((i) => ({
+                id: i.id,
+                title: i.title,
+                detail: KIND[i.type],
+                href: `/pods/${i.podId}/items/${i.id}`,
+              }))}
+            />
+          ) : null}
+          {why.length > 0 ? <WhySheet lines={why} /> : null}
+        </div>
       </div>
       <FocusTimer taskId={task.id} plannedMinutes={task.minutes} />
-      <div className="flex flex-wrap justify-center gap-2">
-        {task.topicId ? (
-          <MaterialSheet
-            topicName={topic}
-            podHref={`/pods/topic/${task.topicId}`}
-            items={items.map((i) => ({
-              id: i.id,
-              title: i.title,
-              detail: KIND[i.type],
-              href: `/pods/${i.podId}/items/${i.id}`,
-            }))}
-          />
-        ) : null}
-      </div>
-      {why.length > 0 ? (
-        <details className="rounded-card border border-border bg-surface p-4">
-          <summary className="cursor-pointer text-small font-medium text-accent-ink">
-            Why this?
-          </summary>
-          <ul className="mt-2 flex list-disc flex-col gap-1 pl-4 text-small text-ink-muted">
-            {why.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
     </div>
   );
 }
