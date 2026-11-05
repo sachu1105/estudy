@@ -2,6 +2,8 @@
 // of the icon tints, picked from the paper's id so the card and the sheet always match.
 // Literal classes, so Tailwind sees them.
 
+import { inkOf, type OmrInk } from "@/lib/omr/ink";
+
 export type SheetInk = {
   /** Bubble outlines. */
   line: string;
@@ -15,39 +17,35 @@ export type SheetInk = {
   bar: string;
 };
 
-const INKS: SheetInk[] = [
-  {
+const INKS: Record<OmrInk, SheetInk> = {
+  violet: {
     line: "border-tint-violet/60",
     hover: "group-hover:border-tint-violet",
     text: "text-tint-violet",
     band: "bg-tint-violet/15",
     bar: "bg-tint-violet/50",
   },
-  {
+  sky: {
     line: "border-tint-sky/60",
     hover: "group-hover:border-tint-sky",
     text: "text-tint-sky",
     band: "bg-tint-sky/15",
     bar: "bg-tint-sky/50",
   },
-  {
+  teal: {
     line: "border-tint-teal/60",
     hover: "group-hover:border-tint-teal",
     text: "text-tint-teal",
     band: "bg-tint-teal/15",
     bar: "bg-tint-teal/50",
   },
-  {
+  fuchsia: {
     line: "border-tint-fuchsia/60",
     hover: "group-hover:border-tint-fuchsia",
     text: "text-tint-fuchsia",
     band: "bg-tint-fuchsia/15",
     bar: "bg-tint-fuchsia/50",
   },
-];
+};
 
-export function sheetInk(id: string): SheetInk {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  return INKS[Math.abs(hash) % INKS.length]!;
-}
+export const sheetInk = (id: string): SheetInk => INKS[inkOf(id)];

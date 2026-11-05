@@ -1,5 +1,6 @@
 import type { Clock } from "@/lib/clock";
 import type { IdGenerator } from "@/lib/ids";
+import { inkOf, type Pen } from "@/lib/omr/ink";
 import { blankMarks, normaliseMarks } from "@/lib/omr/marks";
 import { OFF, start, viewAt, type TimerState } from "@/lib/omr/timer";
 import type { EntitlementSubject } from "@/server/entitlements/resolve";
@@ -9,6 +10,7 @@ import type { ObjectStorage } from "@/server/storage/types";
 
 import { failure, sha256Hex, type Result } from "../syllabus/deps";
 import { sniffKind } from "../syllabus/extract";
+import { answerSheetPdf } from "./answer-pdf";
 
 export type OmrDeps = {
   sheets: Pick<
@@ -203,6 +205,29 @@ export function createOmrService(deps: OmrDeps) {
         contentType: "application/pdf",
         expiresInSeconds: VIEW_SECONDS,
       });
+    },
+
+    /** The marked sheet as a PDF to keep, in the pen the person marks with. */
+    async answerPdf(
+      user: User,
+      id: string,
+      options: { pen: Pen; timeZone: string },
+    ) {
+      const sheet = await deps.sheets.findOwned(id, user.id);
+      if (!sheet) return null;
+      const printedAt = new Intl.DateTimeFormat("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: options.timeZone,
+      }).format(deps.clock.now());
+      const bytes = await answerSheetPdf({
+        title: sheet.title,
+        marks: normaliseMarks(sheet.marks),
+        ink: inkOf(sheet.id),
+        pen: options.pen,
+        printedAt,
+      });
+      return { title: sheet.title, bytes };
     },
   };
 }

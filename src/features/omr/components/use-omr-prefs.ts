@@ -2,11 +2,13 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
+import type { Pen } from "@/lib/omr/ink";
+
 // How the person likes their answer sheet: the pen colour, and whether marks are final
 // as with a real pen. A per-browser convenience, so it lives in localStorage; the page
 // draws the defaults until it has read them.
 
-export type Pen = "black" | "blue";
+export type { Pen };
 export type OmrPrefs = { pen: Pen; final: boolean };
 
 const KEY = "omr-prefs";

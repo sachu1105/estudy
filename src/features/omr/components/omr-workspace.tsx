@@ -22,6 +22,7 @@ import type { TimerView } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
 import { ClearSheetButton } from "./clear-sheet-button";
+import { DownloadSheetButton } from "./download-sheet-button";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
 import { SheetDivider } from "./sheet-divider";
@@ -154,6 +155,12 @@ export function OmrWorkspace({
           onStart={startTimer}
         />
         <SheetSettings prefs={prefs} onChange={setPrefs} />
+        <DownloadSheetButton
+          id={id}
+          title={title}
+          pen={prefs.pen}
+          flush={flush}
+        />
         <ClearSheetButton
           disabled={count === 0}
           onClear={() => setMarks(blankMarks())}

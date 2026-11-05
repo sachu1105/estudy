@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Download, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -23,10 +23,13 @@ import { Input, Label } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 
 import { deleteSheetAction, renameSheetAction } from "../actions";
+import { downloadAnswerSheet } from "./download-sheet";
+import { useOmrPrefs } from "./use-omr-prefs";
 
-/** Rename a question paper, or delete it with its marks. */
+/** Rename a question paper, save its marked sheet as a PDF, or delete it with its marks. */
 export function SheetMenu({ id, title }: { id: string; title: string }) {
   const router = useRouter();
+  const [prefs] = useOmrPrefs();
   const [dialog, setDialog] = useState<"rename" | "delete" | null>(null);
   const [draft, setDraft] = useState(title);
   const [pending, start] = useTransition();
@@ -50,6 +53,11 @@ export function SheetMenu({ id, title }: { id: string; title: string }) {
         <DropdownMenuContent align="end">
           <DropdownMenuItem onSelect={() => setDialog("rename")}>
             <Pencil aria-hidden /> Rename
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => void downloadAnswerSheet(id, title, prefs.pen)}
+          >
+            <Download aria-hidden /> Download answer sheet
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setDialog("delete")}>
             <Trash2 aria-hidden /> Delete paper

@@ -1,4 +1,12 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { readFile } from "node:fs/promises";
+
+import {
+  expect,
+  test,
+  type Download,
+  type Locator,
+  type Page,
+} from "@playwright/test";
 
 import { makePdf } from "../support/pdf";
 
@@ -10,6 +18,12 @@ const noSideScroll = (page: Page) =>
       document.documentElement.scrollWidth -
       document.documentElement.clientWidth,
   );
+
+async function expectPdf(download: Download) {
+  expect(download.suggestedFilename()).toBe("LDC 2024 paper answer sheet.pdf");
+  const bytes = await readFile((await download.path())!);
+  expect(bytes.subarray(0, 5).toString()).toBe("%PDF-");
+}
 
 test.describe("question papers", () => {
   test.use({ storageState: { cookies: [], origins: [] } });
@@ -121,6 +135,13 @@ test.describe("question papers", () => {
     await expect(page.getByLabel("2 of 100 marked")).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
+    // The marked sheet downloads as a PDF (the last taps are saved first).
+    const download = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Download the answer sheet as a PDF" })
+      .click();
+    await expectPdf(await download);
+
     // Marks save as you go. A reload leaves the sitting: the clock resets, the marks
     // stay, and the start card says why.
     await expect(page.getByRole("banner").getByRole("status")).toHaveText(
@@ -157,6 +178,11 @@ test.describe("question papers", () => {
       papers.getByRole("link", { name: /LDC 2024 paper.*01\s*of 100 marked/ }),
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+    // The paper's menu downloads it too.
+    await page.getByRole("button", { name: "More for LDC 2024 paper" }).click();
+    const fromMenu = page.waitForEvent("download");
+    await page.getByRole("menuitem", { name: "Download answer sheet" }).click();
+    await expectPdf(await fromMenu);
     await page.getByRole("button", { name: "More for LDC 2024 paper" }).click();
     await page.getByRole("menuitem", { name: "Delete paper" }).click();
     await page.getByRole("button", { name: "Delete paper" }).click();

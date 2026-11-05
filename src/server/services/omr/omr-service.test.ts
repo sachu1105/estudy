@@ -153,6 +153,12 @@ describe("omr sheets", () => {
     ).toBe(false);
     expect(await s.service.get(other, sheetId)).toBeNull();
     expect(await s.service.viewUrl(other, sheetId)).toBeNull();
+    const pdfFor = (who: typeof user) =>
+      s.service.answerPdf(who, sheetId, {
+        pen: "blue",
+        timeZone: "Asia/Kolkata",
+      });
+    expect(await pdfFor(other)).toBeNull();
     expect(await s.service.saveMarks(other, sheetId, [1])).toBe(false);
     expect(await s.service.remove(other, sheetId)).toBe(false);
 
@@ -163,6 +169,9 @@ describe("omr sheets", () => {
       3,
       BLANK,
     ]);
+    const pdf = await pdfFor(user);
+    expect(pdf?.title).toBe("p");
+    expect(new TextDecoder().decode(pdf?.bytes.subarray(0, 5))).toBe("%PDF-");
     expect(await s.service.remove(user, sheetId)).toBe(true);
     expect(s.objects.has(key)).toBe(false);
     expect(s.rows.size).toBe(0);
