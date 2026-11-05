@@ -65,6 +65,13 @@ export function useDm({
     markRead();
   }, [base, markRead]);
 
+  // Opening catches up once: the page may come from the router's cache, from before
+  // messages that arrived while the person was elsewhere.
+  useEffect(() => {
+    const timer = setTimeout(() => void catchUp(), 0);
+    return () => clearTimeout(timer);
+  }, [catchUp]);
+
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     const soon = () => {
