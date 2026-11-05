@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils/cn";
 import { ClearSheetButton } from "./clear-sheet-button";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
+import { sheetInk } from "./sheet-ink";
 import { OmrTimer } from "./omr-timer";
 import { PdfPages } from "./pdf-pages";
 import { useOmrTimer } from "./use-omr-timer";
@@ -147,7 +148,7 @@ export function OmrWorkspace({
             view === "sheet" ? "block" : "hidden md:block",
           )}
         >
-          <OmrGrid marks={marks} onMark={onMark} />
+          <OmrGrid marks={marks} ink={sheetInk(id)} onMark={onMark} />
         </section>
       </div>
 

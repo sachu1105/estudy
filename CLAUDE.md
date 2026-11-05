@@ -325,8 +325,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   glow or a gradient. Paid squad cards and pass cards stay plain; the "Paid" mark has
   no shadow, only a thin gold streak that sweeps over it (`shine-gold`).
 - Icon tints (tint-violet, tint-sky, tint-teal, tint-fuchsia) colour only the icons of
-  option tiles (`ChoiceTiles`), so the choices read at a glance: never a background,
-  text, state or meaning.
+  option tiles (`ChoiceTiles`), so the choices read at a glance, and the printed ink of
+  an OMR answer sheet (its card and the sheet itself, `sheetInk`): never a state or a
+  meaning. A marked bubble is filled in ink, like pen on paper.
 - Never signal state with colour alone: correct = success + check icon, wrong =
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and

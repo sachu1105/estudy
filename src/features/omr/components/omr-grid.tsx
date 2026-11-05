@@ -5,17 +5,23 @@ import { memo } from "react";
 import { OMR_OPTIONS, type Marks } from "@/lib/omr/marks";
 import { cn } from "@/lib/utils/cn";
 
+import type { SheetInk } from "./sheet-ink";
+
 const BLOCK = 20;
 
 /**
- * The answer sheet: 100 questions in blocks of 20, four bubbles each, like the printed
- * OMR sheet. Tapping a bubble fills it; tapping it again rubs it out.
+ * The answer sheet: 100 questions in blocks of 20, four bubbles each, printed like a real
+ * OMR sheet in the paper's own ink (a header band per block, a band every five rows,
+ * timing marks down the edge). Tapping a bubble fills it in pen; tapping it again rubs
+ * it out.
  */
 export function OmrGrid({
   marks,
+  ink,
   onMark,
 }: {
   marks: Marks;
+  ink: SheetInk;
   onMark: (question: number, option: number) => void;
 }) {
   const blocks = Array.from(
@@ -27,17 +33,27 @@ export function OmrGrid({
       {blocks.map((start) => (
         <fieldset
           key={start}
-          className="rounded-card border border-border bg-surface px-2 py-2"
+          className="overflow-hidden rounded-card border border-border bg-surface"
         >
-          <legend className="float-left mb-1 w-full px-2 pt-1 text-micro text-ink-muted uppercase">
-            {start + 1}–{Math.min(start + BLOCK, marks.length)}
+          <legend
+            className={cn(
+              "float-left flex w-full items-center justify-between px-3 py-1.5 text-micro uppercase",
+              ink.band,
+              ink.text,
+            )}
+          >
+            <span>Questions</span>
+            <span className="font-mono">
+              {start + 1}–{Math.min(start + BLOCK, marks.length)}
+            </span>
           </legend>
-          <ol className="clear-both">
+          <ol className="clear-both px-2 py-2">
             {marks.slice(start, start + BLOCK).map((mark, i) => (
               <OmrRow
                 key={start + i}
                 question={start + i}
                 mark={mark}
+                ink={ink}
                 onMark={onMark}
               />
             ))}
@@ -51,10 +67,12 @@ export function OmrGrid({
 const OmrRow = memo(function OmrRow({
   question,
   mark,
+  ink,
   onMark,
 }: {
   question: number;
   mark: number;
+  ink: SheetInk;
   onMark: (question: number, option: number) => void;
 }) {
   return (
@@ -62,10 +80,15 @@ const OmrRow = memo(function OmrRow({
       className={cn(
         "flex items-center gap-1 rounded-chip px-1",
         // A light band every fifth row, as on the printed sheet, so the eye keeps its place.
-        Math.floor(question / 5) % 2 === 1 && "bg-surface-muted/60",
+        Math.floor(question / 5) % 2 === 1 && ink.stripe,
       )}
     >
-      <span className="w-8 shrink-0 text-right font-mono text-small text-ink-muted tabular-nums">
+      <span
+        className={cn(
+          "w-8 shrink-0 text-right font-mono text-small tabular-nums",
+          ink.text,
+        )}
+      >
         {question + 1}
       </span>
       {OMR_OPTIONS.map((letter, option) => {
@@ -82,9 +105,10 @@ const OmrRow = memo(function OmrRow({
             <span
               className={cn(
                 "grid size-7 place-items-center rounded-full border text-small font-medium transition-colors duration-[120ms]",
+                // Filled in pen, as on paper; empty ones are printed in the sheet's ink.
                 on
-                  ? "border-accent bg-accent text-on-accent"
-                  : "border-ink-subtle text-ink-muted group-hover:border-accent group-hover:text-accent-ink",
+                  ? "border-ink bg-ink text-bg"
+                  : cn("bg-surface", ink.line, ink.text, ink.hover),
               )}
             >
               {letter}
@@ -92,6 +116,11 @@ const OmrRow = memo(function OmrRow({
           </button>
         );
       })}
+      {/* The timing mark a scanner reads down the edge of a printed sheet. */}
+      <span
+        aria-hidden
+        className="ml-auto h-2 w-3 shrink-0 rounded-[1px] bg-ink/70"
+      />
     </li>
   );
 });
