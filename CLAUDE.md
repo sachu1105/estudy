@@ -324,6 +324,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   small goldSoft marks on its pass card), never as a large fill, a card edge, a card
   glow or a gradient. Paid squad cards and pass cards stay plain; the "Paid" mark has
   no shadow, only a thin gold streak that sweeps over it (`shine-gold`).
+- Icon tints (tint-violet, tint-sky, tint-teal, tint-fuchsia) colour only the icons of
+  option tiles (`ChoiceTiles`), so the choices read at a glance: never a background,
+  text, state or meaning.
 - Never signal state with colour alone: correct = success + check icon, wrong =
   danger + cross icon.
 - No gradients except a single subtle accent glow behind the streak celebration, and

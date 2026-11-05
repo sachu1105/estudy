@@ -37,6 +37,12 @@
   --success: #1f9d61;
   --success-soft: #e6f5ee;
   --success-ink: #157a4a;
+  /* Icon tints: decorative only, an option's icon colour so choices read at a glance.
+     Never for state, text or the accent's job. */
+  --tint-violet: #6d3fd9;
+  --tint-sky: #0b78b5;
+  --tint-teal: #0f8a7e;
+  --tint-fuchsia: #a62bb8;
   --danger: #e5484d;
   --danger-soft: #fdecec;
   --danger-ink: #c0262c;
@@ -92,6 +98,10 @@
   --success: #3ccb85;
   --success-soft: #12301f;
   --success-ink: #8ee6b9;
+  --tint-violet: #c4b2fb;
+  --tint-sky: #8dd0f5;
+  --tint-teal: #7fdacd;
+  --tint-fuchsia: #eda6f5;
   --danger: #ff6b6f;
   --danger-soft: #3a1517;
   --danger-ink: #ffb4b6;
@@ -149,6 +159,10 @@
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-success-ink: var(--success-ink);
+  --color-tint-violet: var(--tint-violet);
+  --color-tint-sky: var(--tint-sky);
+  --color-tint-teal: var(--tint-teal);
+  --color-tint-fuchsia: var(--tint-fuchsia);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --color-danger-ink: var(--danger-ink);

@@ -10,7 +10,7 @@ import {
 } from "@/lib/squads/access";
 
 import { ChoiceRows } from "./choice-rows";
-import { ChoiceTiles } from "./choice-tiles";
+import { ChoiceTiles, type Tint } from "./choice-tiles";
 
 const ICONS: Record<SquadAccess, LucideIcon> = {
   OPEN: Globe,
@@ -19,11 +19,19 @@ const ICONS: Record<SquadAccess, LucideIcon> = {
   INVITE: Ticket,
 };
 
+const TINTS: Record<SquadAccess, Tint> = {
+  OPEN: "teal",
+  ASK: "sky",
+  PRIVATE: "violet",
+  INVITE: "fuchsia",
+};
+
 const OPTIONS = (Object.keys(SQUAD_ACCESS) as SquadAccess[]).map((value) => ({
   value,
   label: SQUAD_ACCESS[value].label,
   description: SQUAD_ACCESS[value].description,
   icon: ICONS[value],
+  tint: TINTS[value],
 }));
 
 /** Who can join, and the question people answer when they ask. */

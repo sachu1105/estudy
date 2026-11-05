@@ -31,7 +31,7 @@ export function DiscoverHero({
         className="absolute inset-0 -z-10"
       />
       <span aria-hidden className="absolute inset-0 -z-10 bg-black/30" />
-      <div className="mx-auto flex max-w-content flex-col gap-4 px-5 py-10 md:px-8 md:py-16">
+      <div className="mx-auto flex max-w-content flex-col gap-4 px-5 py-14 md:px-8 md:py-24">
         <div className="flex max-w-xl flex-col gap-2">
           <h1 className="font-heading text-display font-semibold text-white">
             {title}

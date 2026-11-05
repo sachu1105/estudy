@@ -7,7 +7,21 @@ import { cn } from "@/lib/utils/cn";
 
 import type { Choice } from "./choice-rows";
 
-export type TileChoice<V extends string> = Choice<V> & { icon: LucideIcon };
+/** The colour of an option's icon: decorative, so choices read at a glance. */
+export type Tint = "violet" | "sky" | "teal" | "fuchsia";
+
+const TINTS: Record<Tint, string> = {
+  violet: "text-tint-violet",
+  sky: "text-tint-sky",
+  teal: "text-tint-teal",
+  fuchsia: "text-tint-fuchsia",
+};
+
+export type TileChoice<V extends string> = Choice<V> & {
+  icon: LucideIcon;
+  /** Left out: the icon takes the tile's own colour. */
+  tint?: Tint;
+};
 
 /**
  * A few options as small tiles side by side, one picked, with only the picked one's
@@ -73,7 +87,13 @@ export function ChoiceTiles<V extends string>({
                   : "border-border bg-surface text-ink-muted hover:bg-surface-muted hover:text-ink",
               )}
             >
-              <Icon className="size-5 shrink-0" aria-hidden />
+              <Icon
+                className={cn(
+                  "size-5 shrink-0",
+                  option.tint && TINTS[option.tint],
+                )}
+                aria-hidden
+              />
               <span className="text-small leading-tight font-medium">
                 {option.label}
               </span>

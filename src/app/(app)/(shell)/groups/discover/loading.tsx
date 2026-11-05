@@ -12,7 +12,7 @@ export default function Loading() {
           ))}
           <Skeleton className="ml-auto h-9 w-60 rounded-full" />
         </div>
-        <Skeleton className="h-56 rounded-card md:h-64 md:rounded-none" />
+        <Skeleton className="h-72 rounded-card md:h-[19rem] md:rounded-none" />
         <div className="mx-auto flex max-w-content flex-col gap-4 pt-6 md:px-8 md:pt-8">
           <Skeleton className="h-6 w-40" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

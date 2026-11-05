@@ -1,6 +1,6 @@
 "use client";
 
-import { GraduationCap, Hash, Plus, Users } from "lucide-react";
+import { Crown, GraduationCap, Hash, Plus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -29,6 +29,7 @@ import {
 
 import { createGroupAction } from "../actions";
 import { ChoiceTiles } from "./choice-tiles";
+import { PaidMark } from "./pay/paid-mark";
 import {
   emptyOffer,
   fromOfferDraft,
@@ -37,12 +38,14 @@ import {
 import { SquadAccessField } from "./squad-access-field";
 
 const ICONS = { EXAM: GraduationCap, CIRCLE: Users, BLANK: Hash } as const;
+const TINTS = { EXAM: "violet", CIRCLE: "sky", BLANK: "teal" } as const;
 
 const TEMPLATES = TEMPLATE_KEYS.map((value) => ({
   value,
   label: SQUAD_TEMPLATES[value].label,
   description: SQUAD_TEMPLATES[value].description,
   icon: ICONS[value],
+  tint: TINTS[value],
 }));
 
 /**
@@ -156,13 +159,18 @@ export function CreateSquadForm({
       </div>
       {canPrice ? (
         <div className="flex flex-col gap-4 rounded-card border border-border p-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <Label htmlFor="group-paid">Paid squad</Label>
+          <div className="flex items-start gap-3">
+            <Crown className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden />
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="flex min-h-6 flex-wrap items-center gap-2">
+                <Label htmlFor="group-paid">Paid squad</Label>
+                {/* How the squad will be marked in Discover, once it's paid. */}
+                {paid ? <PaidMark className="animate-pop-in" /> : null}
+              </span>
               <span className="text-small text-ink-muted">
                 {paid
-                  ? "Listed under Discover. People pay for a pass to join; your invites let people in free."
-                  : "Charge for a pass to join, like a batch or a test series."}
+                  ? "Listed under Discover. People buy a pass to join; your invites stay free."
+                  : "Sell passes to join, like a batch or a test series."}
               </span>
             </div>
             <Switch id="group-paid" checked={paid} onCheckedChange={setPaid} />
