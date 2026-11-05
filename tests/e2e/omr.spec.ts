@@ -47,6 +47,22 @@ test.describe("question papers", () => {
     await expect(page1).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 
+    // Beside the paper, the sheet can be made wider from the divider (keys work too).
+    if (!isMobile) {
+      const sheet = page.getByRole("region", { name: "OMR answer sheet" });
+      const before = (await sheet.boundingBox())!.width;
+      await page
+        .getByRole("separator", { name: "Resize the answer sheet" })
+        .focus();
+      await page.keyboard.press("ArrowLeft");
+      await expect
+        .poll(async () => (await sheet.boundingBox())!.width)
+        .toBeGreaterThan(before + 30);
+      expect(
+        await sheet.evaluate((el) => el.scrollWidth - el.clientWidth),
+      ).toBeLessThanOrEqual(0);
+    }
+
     // It can be made smaller than the pane, and the size is remembered.
     const fitWidth = (await page1.boundingBox())!.width;
     const zoomOut = page.getByRole("button", { name: "Zoom out" });
@@ -90,6 +106,15 @@ test.describe("question papers", () => {
     ).toBeVisible();
     await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "true");
     await bubble(100, "D").click();
+    // Marks are final by default, like pen on paper: another option leaves it as it is.
+    await bubble(1, "C").click();
+    await expect(page.getByText(/Question 1 is already marked/)).toBeVisible();
+    await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "true");
+    // Sheet settings let answers change, and pick the pen.
+    await page.getByRole("button", { name: "Sheet settings" }).click();
+    await page.getByRole("radio", { name: "Blue" }).click();
+    await page.getByRole("switch", { name: "Marks are final" }).click();
+    await page.keyboard.press("Escape");
     await bubble(1, "C").click();
     await expect(bubble(1, "C")).toHaveAttribute("aria-pressed", "true");
     await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "false");
@@ -111,11 +136,17 @@ test.describe("question papers", () => {
     await expect(bubble(100, "D")).toHaveAttribute("aria-pressed", "true");
     await expect(bubble(1, "C")).toHaveAttribute("aria-pressed", "true");
 
-    // A new sitting; tapping a marked bubble rubs it out.
-    await bubble(1, "C").click();
+    // A new sitting starts on a clean sheet: the start card says the old answers go,
+    // and only the tap that started it is marked.
+    await bubble(2, "A").click();
+    await expect(
+      page.getByText(/Starting clears the 2 answers from your last sitting/),
+    ).toBeVisible();
     await page.getByRole("button", { name: "Start exam" }).click();
     await page.getByRole("button", { name: "Start now" }).click();
     await expect(page.getByLabel("1 of 100 marked")).toBeVisible();
+    await expect(bubble(2, "A")).toHaveAttribute("aria-pressed", "true");
+    await expect(bubble(100, "D")).toHaveAttribute("aria-pressed", "false");
 
     // Leaving asks first, then lists the paper with its marks.
     await page.getByRole("link", { name: "Leave the exam" }).click();

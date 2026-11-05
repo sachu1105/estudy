@@ -99,8 +99,9 @@ export function LeaveExam({
           <DialogHeader>
             <DialogTitle>Leave the exam?</DialogTitle>
             <DialogDescription>
-              Leaving ends this sitting, as it would in the hall. The timer
-              resets; the answers you marked stay on the sheet.
+              Leaving ends this sitting, as it would in the hall. The clock
+              resets. Your answers stay to look over, and the next sitting
+              starts on a clean sheet.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

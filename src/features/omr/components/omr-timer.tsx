@@ -30,6 +30,8 @@ export function OmrTimer({
   onOpenChange,
   onDismiss,
   note,
+  final,
+  previous,
   onStart,
 }: {
   title: string;
@@ -40,6 +42,10 @@ export function OmrTimer({
   onDismiss: () => void;
   /** Why the start card is up, shown at its top. */
   note: string | null;
+  /** Marks can't be taken back (the sheet setting). */
+  final: boolean;
+  /** Answers left from an earlier sitting; starting clears them. */
+  previous: number;
   onStart: (limitMin: number | null) => void;
 }) {
   const { view, elapsed, pending, run } = timer;
@@ -127,6 +133,8 @@ export function OmrTimer({
               <ExamStart
                 title={title}
                 note={note}
+                final={final}
+                previous={previous}
                 pending={pending}
                 onStart={(limit) => {
                   setStarting({ limit });

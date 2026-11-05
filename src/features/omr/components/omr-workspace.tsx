@@ -1,11 +1,18 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { toast } from "@/components/ui/toast";
 import {
+  BLANK,
   blankMarks,
   markedCount,
   toggleMark,
@@ -17,6 +24,10 @@ import { cn } from "@/lib/utils/cn";
 import { ClearSheetButton } from "./clear-sheet-button";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
+import { SheetDivider } from "./sheet-divider";
+import { SheetSettings } from "./sheet-settings";
+import { useOmrPrefs } from "./use-omr-prefs";
+import { useSheetWidth } from "./use-sheet-width";
 import { sheetInk } from "./sheet-ink";
 import { OmrTimer } from "./omr-timer";
 import { PdfPages } from "./pdf-pages";
@@ -60,6 +71,13 @@ export function OmrWorkspace({
   useEffect(() => {
     timerOn.current = timer.view.on;
   }, [timer.view.on]);
+  const [prefs, setPrefs] = useOmrPrefs();
+  const sheetWidth = useSheetWidth();
+  // Read inside the tap, which is memoised for the grid's rows.
+  const latest = useRef({ marks, final: prefs.final });
+  useEffect(() => {
+    latest.current = { marks, final: prefs.final };
+  }, [marks, prefs.final]);
 
   const onMark = useCallback(
     (question: number, option: number) => {
@@ -67,6 +85,12 @@ export function OmrWorkspace({
         setWaiting([question, option]);
         return setTimerOpen(true);
       }
+      // Like pen on paper: once marked, an answer stays (unless the setting allows).
+      if (latest.current.final && latest.current.marks[question] !== BLANK)
+        return void toast(
+          `Question ${question + 1} is already marked. Marks are final; change that in sheet settings.`,
+          { id: "omr-final" },
+        );
       setMarks((m) => toggleMark(m, question, option));
     },
     [setMarks],
@@ -74,6 +98,8 @@ export function OmrWorkspace({
   const startTimer = (limitMin: number | null) => {
     timer.run({ op: "start", limitMin });
     timerOn.current = true;
+    // A new sitting is a clean sheet: answers from the last one go.
+    setMarks(blankMarks());
     if (waiting) setMarks((m) => toggleMark(m, ...waiting));
     setWaiting(null);
     setTimerOpen(false);
@@ -120,18 +146,29 @@ export function OmrWorkspace({
             waiting
               ? "Start the clock to mark your first answer, as in the exam."
               : timer.abandoned
-                ? "You left your last sitting, so its clock was reset. Your marks are kept."
+                ? "You left your last sitting, so its clock was reset."
                 : null
           }
+          final={prefs.final}
+          previous={count}
           onStart={startTimer}
         />
+        <SheetSettings prefs={prefs} onChange={setPrefs} />
         <ClearSheetButton
           disabled={count === 0}
           onClear={() => setMarks(blankMarks())}
         />
       </header>
 
-      <div className="grid min-h-0 flex-1 md:grid-cols-[minmax(0,1fr)_300px] lg:grid-cols-[minmax(0,1fr)_500px]">
+      {/* Paper | divider | sheet. The sheet's width is the person's, once they drag. */}
+      <div
+        className="grid min-h-0 flex-1 md:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,300px)] lg:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,500px)]"
+        style={
+          sheetWidth.width === null
+            ? undefined
+            : ({ "--sheet-w": `${sheetWidth.width}px` } as CSSProperties)
+        }
+      >
         <section
           aria-label="Question paper"
           className={cn(
@@ -141,14 +178,24 @@ export function OmrWorkspace({
         >
           <PdfPages src={`/api/omr/${id}/file`} title={title} />
         </section>
+        <SheetDivider
+          width={sheetWidth.width}
+          onResize={sheetWidth.setLive}
+          onCommit={sheetWidth.commit}
+        />
         <section
           aria-label="OMR answer sheet"
           className={cn(
-            "min-h-0 overflow-y-auto overscroll-contain border-border bg-bg p-4 md:border-l",
+            "min-h-0 overflow-y-auto overscroll-contain bg-bg p-4",
             view === "sheet" ? "block" : "hidden md:block",
           )}
         >
-          <OmrGrid marks={marks} ink={sheetInk(id)} onMark={onMark} />
+          <OmrGrid
+            marks={marks}
+            ink={sheetInk(id)}
+            pen={prefs.pen}
+            onMark={onMark}
+          />
         </section>
       </div>
 

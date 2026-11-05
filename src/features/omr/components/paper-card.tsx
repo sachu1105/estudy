@@ -27,7 +27,11 @@ function SheetArt({ id, marks }: { id: string; marks: Marks }) {
   return (
     // A sheet tucked into the folder, clear of the menu in the corner.
     <span className="block size-full bg-surface-muted pt-4 pr-16 pl-5">
-      <span className="flex h-full max-w-72 -rotate-[1.5deg] flex-col gap-2 rounded-t-chip border border-border bg-surface p-2.5 shadow-sm">
+      {/* Paper, so white in any theme. */}
+      <span
+        data-theme="light"
+        className="flex h-full max-w-72 -rotate-[1.5deg] flex-col gap-2 rounded-t-chip border border-border bg-surface p-2.5 shadow-sm"
+      >
         <span
           className={cn(
             "flex items-center gap-1.5 rounded-[3px] px-1.5 py-1",
@@ -51,7 +55,7 @@ function SheetArt({ id, marks }: { id: string; marks: Marks }) {
                 <span
                   key={option}
                   className={cn(
-                    "size-2 shrink-0 rounded-full",
+                    "h-[7px] w-[9px] shrink-0 rounded-[3px]",
                     marks[q] === option ? "bg-ink/85" : cn("border", ink.line),
                   )}
                 />

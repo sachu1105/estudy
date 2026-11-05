@@ -43,6 +43,8 @@
   --tint-sky: #0b78b5;
   --tint-teal: #0d7d72;
   --tint-fuchsia: #a62bb8;
+  /* A ballpoint's blue, for marks on the OMR sheet when the person picks a blue pen. */
+  --pen-blue: #1f3fbf;
   --danger: #e5484d;
   --danger-soft: #fdecec;
   --danger-ink: #c0262c;
@@ -102,6 +104,7 @@
   --tint-sky: #8dd0f5;
   --tint-teal: #7fdacd;
   --tint-fuchsia: #eda6f5;
+  --pen-blue: #8fabff;
   --danger: #ff6b6f;
   --danger-soft: #3a1517;
   --danger-ink: #ffb4b6;
@@ -163,6 +166,7 @@
   --color-tint-sky: var(--tint-sky);
   --color-tint-teal: var(--tint-teal);
   --color-tint-fuchsia: var(--tint-fuchsia);
+  --color-pen-blue: var(--pen-blue);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --color-danger-ink: var(--danger-ink);

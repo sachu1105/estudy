@@ -9,10 +9,8 @@ export type SheetInk = {
   hover: string;
   /** Printed text: letters, numbers, headings. */
   text: string;
-  /** The header band of a block. */
+  /** The sheet's header strip and its shaded five-row blocks. */
   band: string;
-  /** The light band behind every other five rows. */
-  stripe: string;
   /** Printed rules and placeholder lines on the card's small sheet. */
   bar: string;
 };
@@ -23,7 +21,6 @@ const INKS: SheetInk[] = [
     hover: "group-hover:border-tint-violet",
     text: "text-tint-violet",
     band: "bg-tint-violet/15",
-    stripe: "bg-tint-violet/[0.06]",
     bar: "bg-tint-violet/50",
   },
   {
@@ -31,7 +28,6 @@ const INKS: SheetInk[] = [
     hover: "group-hover:border-tint-sky",
     text: "text-tint-sky",
     band: "bg-tint-sky/15",
-    stripe: "bg-tint-sky/[0.06]",
     bar: "bg-tint-sky/50",
   },
   {
@@ -39,7 +35,6 @@ const INKS: SheetInk[] = [
     hover: "group-hover:border-tint-teal",
     text: "text-tint-teal",
     band: "bg-tint-teal/15",
-    stripe: "bg-tint-teal/[0.06]",
     bar: "bg-tint-teal/50",
   },
   {
@@ -47,7 +42,6 @@ const INKS: SheetInk[] = [
     hover: "group-hover:border-tint-fuchsia",
     text: "text-tint-fuchsia",
     band: "bg-tint-fuchsia/15",
-    stripe: "bg-tint-fuchsia/[0.06]",
     bar: "bg-tint-fuchsia/50",
   },
 ];

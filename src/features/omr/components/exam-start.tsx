@@ -1,64 +1,52 @@
 "use client";
 
-import { CircleDot, LogOut, Save, Timer } from "lucide-react";
+import { Eraser, Timer } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Chip } from "@/components/ui/chip";
-import { Input } from "@/components/ui/input";
 import { OMR_OPTIONS, OMR_QUESTIONS } from "@/lib/omr/marks";
-import {
-  DEFAULT_LIMIT_MIN,
-  LIMIT_CHOICES_MIN,
-  MAX_LIMIT_MIN,
-} from "@/lib/omr/timer";
+import { DEFAULT_LIMIT_MIN } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
-const RULES = [
-  [Timer, "The clock runs until time's up. No pause, as in the hall."],
-  [CircleDot, "Tap a bubble to mark it, tap it again to clear it."],
-  [Save, "Every mark saves as you go."],
-  [
-    LogOut,
-    "Leaving the paper ends the sitting and resets the clock. Your marks stay.",
-  ],
-] as const;
-
-const short = (min: number) =>
-  min % 60 === 0 ? `${min / 60} h` : `${min} min`;
+import { ExamRules } from "./exam-rules";
+import { LimitPicker, short } from "./limit-picker";
 
 /**
- * The moment before the paper: what it is, how long it gets, the hall's rules, and one
- * button that breathes until it's pressed. Used to start the timer.
+ * The moment before the paper: how long it gets (the one decision, shown large with when
+ * it would end), the hall's rules at a glance, and one button that breathes until it's
+ * pressed. Used to start the timer.
  */
 export function ExamStart({
   title,
   note,
+  final,
+  previous,
   pending,
   onStart,
 }: {
   title: string;
   /** Why the card is up, when it isn't the paper simply opening. */
   note: string | null;
+  /** Marks can't be taken back (the sheet setting). */
+  final: boolean;
+  /** Answers left from an earlier sitting; starting clears them. */
+  previous: number;
   pending: boolean;
   onStart: (limitMin: number | null) => void;
 }) {
-  const [choice, setChoice] = useState<number | null | "custom">(
+  // Minutes, null for no limit, undefined while a custom time isn't valid yet.
+  const [limit, setLimit] = useState<number | null | undefined>(
     DEFAULT_LIMIT_MIN,
   );
-  const [custom, setCustom] = useState("");
-  const typed = Number(custom);
-  const customOk =
-    Number.isInteger(typed) && typed >= 1 && typed <= MAX_LIMIT_MIN;
-  const limit = choice === "custom" ? (customOk ? typed : undefined) : choice;
-  const tiles = [
-    [String(OMR_QUESTIONS), "questions"],
-    [
-      limit === null ? "∞" : limit === undefined ? "–" : String(limit),
-      "minutes",
-    ],
-    [`${OMR_OPTIONS[0]}–${OMR_OPTIONS.at(-1)}`, "options"],
-  ];
+  const notes = [
+    note ? { icon: Timer, text: note } : null,
+    previous > 0
+      ? {
+          icon: Eraser,
+          text: `Starting clears the ${previous} answer${previous === 1 ? "" : "s"} from your last sitting, for a clean sheet.`,
+        }
+      : null,
+  ].filter((n) => n !== null);
 
   return (
     <form
@@ -68,85 +56,23 @@ export function ExamStart({
         if (limit !== undefined) onStart(limit);
       }}
     >
-      <p className="-mt-2 truncate text-small text-ink-muted">{title}</p>
-      {note ? (
-        <p className="flex items-center gap-2 rounded-control bg-surface-muted px-3 py-2 text-small">
-          <Timer className="size-4 shrink-0 text-ink-muted" aria-hidden />
-          {note}
-        </p>
-      ) : null}
-
-      <dl className="grid grid-cols-3 gap-2">
-        {tiles.map(([value, name]) => (
-          <div
-            key={name}
-            className="flex flex-col items-center gap-1 rounded-card border border-border px-2 py-3"
-          >
-            <dd className="font-heading text-h2 font-semibold tabular-nums">
-              {value}
-            </dd>
-            <dt className="text-micro text-ink-muted uppercase">{name}</dt>
-          </div>
-        ))}
-      </dl>
-
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-small font-medium">How long?</legend>
-        <div
-          role="group"
-          aria-label="Time limit"
-          className="flex flex-wrap gap-2"
+      <p className="-mt-2 truncate text-small text-ink-muted">
+        {title.replaceAll("_", " ")} · {OMR_QUESTIONS} questions ·{" "}
+        {OMR_OPTIONS[0]}–{OMR_OPTIONS.at(-1)}
+      </p>
+      {notes.map(({ icon: Icon, text }) => (
+        <p
+          key={text}
+          className="-mt-2 flex items-start gap-2 rounded-control bg-surface-muted px-3 py-2 text-small"
         >
-          {[...LIMIT_CHOICES_MIN, null, "custom" as const].map((min) => (
-            <Chip
-              key={String(min)}
-              selected={choice === min}
-              onClick={() => setChoice(min)}
-              className="h-11 px-4 md:h-10"
-            >
-              {min === null
-                ? "No limit"
-                : min === "custom"
-                  ? "Custom"
-                  : short(min)}
-            </Chip>
-          ))}
-        </div>
-        {choice === "custom" ? (
-          <div className="flex items-center gap-2">
-            <Input
-              aria-label="Minutes"
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={MAX_LIMIT_MIN}
-              autoFocus
-              placeholder="45"
-              value={custom}
-              onChange={(e) => setCustom(e.target.value)}
-              className="w-28 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-            <span className="text-body text-ink-muted">minutes</span>
-            {custom !== "" && !customOk ? (
-              <span className="text-small text-danger-ink">
-                1 to {MAX_LIMIT_MIN}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-      </fieldset>
+          <Icon className="mt-0.5 size-4 shrink-0 text-ink-muted" aria-hidden />
+          {text}
+        </p>
+      ))}
 
-      <ul className="flex flex-col gap-2.5">
-        {RULES.map(([Icon, text]) => (
-          <li
-            key={text}
-            className="flex items-start gap-3 text-small text-ink-muted"
-          >
-            <Icon className="mt-0.5 size-4 shrink-0" aria-hidden />
-            {text}
-          </li>
-        ))}
-      </ul>
+      <LimitPicker onChange={setLimit} />
+
+      <ExamRules final={final} />
 
       <span className="relative flex">
         <span
@@ -165,6 +91,11 @@ export function ExamStart({
           disabled={pending || limit === undefined}
         >
           <Timer aria-hidden /> Start exam
+          {limit !== undefined ? (
+            <span className="font-normal opacity-80">
+              · {limit === null ? "no limit" : short(limit)}
+            </span>
+          ) : null}
         </Button>
       </span>
     </form>
