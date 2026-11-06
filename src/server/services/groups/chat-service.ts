@@ -56,6 +56,11 @@ export type ChatDeps = {
     groupId: string,
     paperShareId: string,
   ) => Promise<{ channelId: string; sharedById: string } | null>;
+  /** A bundle of question papers offered here: where it landed and who made it. */
+  findBundle?: (
+    groupId: string,
+    bundleId: string,
+  ) => Promise<{ channelId: string | null; ownerId: string } | null>;
   /** Turns photos or a PDF uploaded from a device into a squad item for a message. */
   shareUploads: (
     user: User,
@@ -194,6 +199,15 @@ export function createChatService(deps: ChatDeps) {
               resultsAt: m.paperShare.resultsAt?.toISOString() ?? null,
             }
           : null,
+      bundle:
+        m.bundle && !m.bundle.hiddenAt && !deleted
+          ? {
+              id: m.bundle.id,
+              title: m.bundle.title,
+              papers: m.bundle._count.papers,
+              pricePaise: m.bundle.pricePaise,
+            }
+          : null,
     };
   }
 
@@ -305,6 +319,8 @@ export function createChatService(deps: ChatDeps) {
         groupTestId?: string | null;
         /** A question paper this person just shared into this channel as an exam. */
         paperShareId?: string | null;
+        /** A bundle of papers this person just offered in this channel. */
+        bundleId?: string | null;
       },
     ): Promise<Result<{ message: MessageView }>> {
       const uploads = input.uploads ?? [];
@@ -316,6 +332,7 @@ export function createChatService(deps: ChatDeps) {
         !!input.podItemId,
         !!input.groupTestId,
         !!input.paperShareId,
+        !!input.bundleId,
         !!input.pollOptions,
       ].filter(Boolean).length;
       if (attached > 1)
@@ -357,7 +374,8 @@ export function createChatService(deps: ChatDeps) {
         !input.podItemId &&
         !uploads.length &&
         !input.groupTestId &&
-        !input.paperShareId
+        !input.paperShareId &&
+        !input.bundleId
       )
         return failure("EMPTY", "Write a message first.");
       if (input.groupTestId) {
@@ -377,6 +395,15 @@ export function createChatService(deps: ChatDeps) {
           exam.sharedById !== user.id
         )
           return failure("NOT_FOUND", "That exam isn't one you shared here.");
+      }
+      if (input.bundleId) {
+        const bundle = await deps.findBundle?.(groupId, input.bundleId);
+        if (
+          !bundle ||
+          bundle.channelId !== channelId ||
+          bundle.ownerId !== user.id
+        )
+          return failure("NOT_FOUND", "That bundle isn't one you made here.");
       }
       if (input.replyToId) {
         const target = await deps.messages.find(channelId, input.replyToId);
@@ -417,6 +444,7 @@ export function createChatService(deps: ChatDeps) {
         kind: input.pollOptions ? "POLL" : input.doubt ? "DOUBT" : "TEXT",
         groupTestId: input.groupTestId ?? null,
         paperShareId: input.paperShareId ?? null,
+        bundleId: input.bundleId ?? null,
         pollOptions: input.pollOptions ? pollOptions : undefined,
         at: now(),
       });

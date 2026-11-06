@@ -284,6 +284,12 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   time; the rank list shows register numbers unless the sharer turns names on. Ties
   share a rank (`lib/omr/rank`). Practice on a shared paper opens only after the
   person's own sitting, so it never previews the paper.
+- Paper bundles: someone bundles their own papers in a squad channel (PaperBundle).
+  Anyone who can post there gives one away free; only the squad's owner, with
+  `sellInSquads` and the paid squads switch on, charges for one (₹10 to ₹50,000, once,
+  for good). Having it (BundlePurchase, append-only, a free add has no amount) means
+  sitting every paper in it with its key; stopping sales or leaving the squad never
+  takes it away. Payments are demo only, through the same Checkout as squad passes.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   XP feeds only the squad rank: a squad's members ranked by this week's XP.
 
@@ -336,7 +342,8 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
 - One filled accent button per view. If two actions are both primary, neither is.
 - streak colour appears only on the streak. success and danger only mean right/wrong
   or done/destructive.
-- gold appears only on what is paid (a paid squad's "Paid" mark, a paid channel's mark,
+- gold appears only on what is paid (a paid squad's "Paid" mark, a paid channel's mark, a
+  paid bundle's mark,
   small goldSoft marks on its pass card), never as a large fill, a card edge, a card
   glow or a gradient. Paid squad cards and pass cards stay plain; the "Paid" mark has
   no shadow, only a thin gold streak that sweeps over it (`shine-gold`).
@@ -437,5 +444,6 @@ zoom. Every icon-only button has an aria-label.
 ## Out of scope - refuse if asked
 
 Native mobile apps (web is responsive and installable as a PWA). Voice or video. Ads.
-Selling question banks as exam-accurate content. Live payments before the billing
+Selling question banks as exam-accurate content (bundles of papers are
+allowed: every key says whose it is, and the app never vouches for one). Live payments before the billing
 milestone.

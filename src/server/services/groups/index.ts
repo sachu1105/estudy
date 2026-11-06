@@ -11,6 +11,7 @@ import { progressRepository } from "@/server/repositories/progress-repository";
 import { groupEvents } from "@/server/realtime/group-events";
 import { notificationService } from "@/server/services/notifications";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
+import { bundleRepository } from "@/server/repositories/bundle-repository";
 import { examRepository } from "@/server/repositories/exam-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
@@ -34,7 +35,7 @@ import { createGroupService } from "./group-service";
 import { createSquadCoverService } from "./squad-cover-service";
 import { createGroupTests } from "./group-tests";
 import { createMaterialService } from "./material-service";
-import { createSquadPay } from "./squad-pay";
+import { createSquadPay, type Checkout } from "./squad-pay";
 import { createSquadReports } from "./squad-reports";
 
 /** No 0/O or 1/I/L: codes get read out and typed by hand. */
@@ -62,18 +63,20 @@ export const groupService = createGroupService({
   newCode,
 });
 
+/** Demo only: no money moves until Razorpay is wired in here. */
+export const checkout: Checkout = {
+  charge: async () => ({
+    provider: "DEMO",
+    ref: `demo_${crypto.randomUUID()}`,
+  }),
+};
+
 export const squadPay = createSquadPay({
   groups: groupService,
   repo: groupRepository,
   channels: channelRepository,
   passes: passRepository,
-  // Demo only: no money moves until Razorpay is wired in here.
-  checkout: {
-    charge: async () => ({
-      provider: "DEMO",
-      ref: `demo_${crypto.randomUUID()}`,
-    }),
-  },
+  checkout,
   clock: systemClock,
   salesOn: async () => (await getSetting("paidSquads"))?.enabled ?? false,
   canSell: (user) => can(user, "sellInSquads"),
@@ -162,6 +165,10 @@ export const chatService = createChatService({
     materialService.shareUploads(user, groupId, channelId, keys),
   findTest: (groupId, groupTestId) =>
     groupTestRepository.find(groupId, groupTestId),
+  findBundle: async (groupId, bundleId) => {
+    const bundle = await bundleRepository.find(bundleId);
+    return bundle?.groupId === groupId ? bundle : null;
+  },
   findExam: async (groupId, paperShareId) => {
     const exam = await examRepository.find(paperShareId);
     return exam?.groupId === groupId ? exam : null;

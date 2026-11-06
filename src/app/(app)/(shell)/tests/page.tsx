@@ -3,20 +3,22 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
+import { BundleList } from "@/features/omr/components/bundle-list";
 import { PaperCard } from "@/features/omr/components/paper-card";
 import { SquadExamList } from "@/features/omr/components/squad-exam-list";
 import { UploadPaperButton } from "@/features/omr/components/upload-paper-button";
 import { systemClock } from "@/lib/clock";
 import { requireUser } from "@/server/auth/session";
-import { examService, omrService } from "@/server/services/omr";
+import { bundleService, examService, omrService } from "@/server/services/omr";
 
 export const metadata: Metadata = { title: "Tests" };
 
 export default async function TestsPage() {
   const user = await requireUser();
-  const [sheets, exams] = await Promise.all([
+  const [sheets, exams, bundles] = await Promise.all([
     omrService.list(user),
     examService.list(user),
+    bundleService.mine(user),
   ]);
   const now = systemClock.now();
   const format = new Intl.DateTimeFormat("en-IN", {
@@ -53,6 +55,17 @@ export default async function TestsPage() {
             }))}
           />
         ) : null}
+        {bundles.length > 0 ? (
+          <BundleList
+            bundles={bundles.map((b) => ({
+              id: b.id,
+              title: b.title,
+              papers: b.papers.length,
+              owner: b.owner,
+              by: b.by,
+            }))}
+          />
+        ) : null}
         {sheets.length === 0 ? (
           <EmptyState
             icon={FileText}
@@ -62,7 +75,7 @@ export default async function TestsPage() {
           />
         ) : (
           <section aria-label="Your papers" className="flex flex-col gap-3">
-            {exams.length > 0 ? (
+            {exams.length > 0 || bundles.length > 0 ? (
               <h2 className="font-heading text-h2 font-semibold">
                 Your papers
               </h2>

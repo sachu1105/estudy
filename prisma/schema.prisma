@@ -88,6 +88,8 @@ model User {
   omrSheets          OmrSheet[]
   papers             Paper[]
   paperShares        PaperShare[]
+  paperBundles       PaperBundle[]
+  bundlePurchases    BundlePurchase[]
   paperEntries       PaperEntry[]
   omrSubmissions     OmrSubmission[]
   topicCompletions   TopicCompletion[]
@@ -649,6 +651,7 @@ model Paper {
   sheets        OmrSheet[]
   submissions   OmrSubmission[]
   shares        PaperShare[]
+  bundles       BundlePaper[]
 
   @@index([ownerId, createdAt])
 }
@@ -746,6 +749,61 @@ model PaperEntry {
   @@unique([shareId, userId])
   @@unique([shareId, registerNo])
   @@index([userId])
+}
+
+/// Question papers grouped to give away or sell in a squad channel. Whoever adds it to
+/// their tests (free) or buys it may sit every paper in it, with its key. Stopping sales
+/// hides it from new people; those who have it keep it.
+model PaperBundle {
+  id          String           @id @default(uuid()) @db.Uuid
+  ownerId     String           @db.Uuid
+  owner       User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title       String
+  description String           @default("")
+  /// Null: free.
+  pricePaise  Int?
+  groupId     String?          @db.Uuid
+  group       Group?           @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  channelId   String?          @db.Uuid
+  channel     Channel?         @relation(fields: [channelId], references: [id], onDelete: SetNull)
+  hiddenAt    DateTime?        @db.Timestamptz(6)
+  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
+  papers      BundlePaper[]
+  purchases   BundlePurchase[]
+  messages    Message[]
+
+  @@index([groupId, createdAt])
+  @@index([ownerId, createdAt])
+}
+
+model BundlePaper {
+  bundleId String      @db.Uuid
+  bundle   PaperBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  paperId  String      @db.Uuid
+  paper    Paper       @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  order    Int
+
+  @@id([bundleId, paperId])
+  @@index([paperId])
+}
+
+/// Someone's copy of a bundle: bought, or added free (no amount, no provider).
+/// Append-only (rule 6); DELETE stays allowed so an account can go.
+model BundlePurchase {
+  id          String        @id @default(uuid()) @db.Uuid
+  bundleId    String        @db.Uuid
+  bundle      PaperBundle   @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  userId      String        @db.Uuid
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amountPaise Int
+  provider    PassProvider?
+  /// The provider's payment id: the idempotency key once payments are real.
+  providerRef String?       @unique
+  createdAt   DateTime      @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, createdAt])
+  @@index([bundleId, createdAt])
 }
 
 /// Which topics an item covers. One item can cover several topics.
@@ -1329,17 +1387,18 @@ model Group {
   updatedAt    DateTime        @updatedAt @db.Timestamptz(6)
   deletedAt    DateTime?       @db.Timestamptz(6)
 
-  members     Membership[]
-  passes      SquadPass[]
-  invites     GroupInvite[]
-  requests    JoinRequest[]
-  items       GroupItem[]
-  tests       GroupTest[]
-  paperShares PaperShare[]
-  posts       Post[]
-  categories  ChannelCategory[]
-  channels    Channel[]
-  messages    Message[]
+  members      Membership[]
+  passes       SquadPass[]
+  invites      GroupInvite[]
+  requests     JoinRequest[]
+  items        GroupItem[]
+  tests        GroupTest[]
+  paperShares  PaperShare[]
+  paperBundles PaperBundle[]
+  posts        Post[]
+  categories   ChannelCategory[]
+  channels     Channel[]
+  messages     Message[]
 
   @@index([visibility, deletedAt, examId])
 }
@@ -1386,15 +1445,16 @@ model Channel {
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
   deletedAt   DateTime?        @db.Timestamptz(6)
 
-  items       GroupItem[]
-  tests       GroupTest[]
-  paperShares PaperShare[]
-  posts       Post[]
-  messages    Message[]
-  reads       ChannelRead[]
-  access      ChannelAccess[]
-  notify      ChannelNotify[]
-  passes      SquadPass[]
+  items        GroupItem[]
+  tests        GroupTest[]
+  paperShares  PaperShare[]
+  paperBundles PaperBundle[]
+  posts        Post[]
+  messages     Message[]
+  reads        ChannelRead[]
+  access       ChannelAccess[]
+  notify       ChannelNotify[]
+  passes       SquadPass[]
 
   @@index([groupId, deletedAt, order])
 }
@@ -1426,41 +1486,44 @@ model ChannelNotify {
 
 /// A message in a chat or announcements channel (squads S3). Editable by its author.
 model Message {
-  id               String      @id @default(uuid()) @db.Uuid
-  groupId          String      @db.Uuid
-  group            Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  channelId        String      @db.Uuid
-  channel          Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  authorId         String      @db.Uuid
-  author           User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id               String       @id @default(uuid()) @db.Uuid
+  groupId          String       @db.Uuid
+  group            Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId        String       @db.Uuid
+  channel          Channel      @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  authorId         String       @db.Uuid
+  author           User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   /// Markdown subset, rendered without HTML.
   body             String
   /// The message this answers, shown above it.
-  replyToId        String?     @db.Uuid
-  replyTo          Message?    @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
-  answers          Message[]   @relation("MessageReply")
+  replyToId        String?      @db.Uuid
+  replyTo          Message?     @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
+  answers          Message[]    @relation("MessageReply")
   /// People named with @, checked to be members when sent.
-  mentionIds       String[]    @db.Uuid
+  mentionIds       String[]     @db.Uuid
   /// A pod item shared into the chat: a copy, like any shared material (rule 15).
-  itemId           String?     @db.Uuid
-  item             GroupItem?  @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  itemId           String?      @db.Uuid
+  item             GroupItem?   @relation(fields: [itemId], references: [id], onDelete: SetNull)
   /// A plain message, a doubt for others to answer (replies), or a poll.
-  kind             MessageKind @default(TEXT)
+  kind             MessageKind  @default(TEXT)
   /// A mock test shared into the chat; members take it from the message.
-  groupTestId      String?     @db.Uuid
-  groupTest        GroupTest?  @relation(fields: [groupTestId], references: [id], onDelete: SetNull)
+  groupTestId      String?      @db.Uuid
+  groupTest        GroupTest?   @relation(fields: [groupTestId], references: [id], onDelete: SetNull)
   /// A question paper shared here as an exam.
-  paperShareId     String?     @db.Uuid
-  paperShare       PaperShare? @relation(fields: [paperShareId], references: [id], onDelete: SetNull)
+  paperShareId     String?      @db.Uuid
+  paperShare       PaperShare?  @relation(fields: [paperShareId], references: [id], onDelete: SetNull)
+  /// A bundle of question papers offered here.
+  bundleId         String?      @db.Uuid
+  bundle           PaperBundle? @relation(fields: [bundleId], references: [id], onDelete: SetNull)
   /// On a doubt: the reply its asker marked as the best answer.
-  acceptedAnswerId String?     @db.Uuid
-  acceptedAnswer   Message?    @relation("AcceptedAnswer", fields: [acceptedAnswerId], references: [id], onDelete: SetNull)
-  acceptedFor      Message[]   @relation("AcceptedAnswer")
-  editedAt         DateTime?   @db.Timestamptz(6)
+  acceptedAnswerId String?      @db.Uuid
+  acceptedAnswer   Message?     @relation("AcceptedAnswer", fields: [acceptedAnswerId], references: [id], onDelete: SetNull)
+  acceptedFor      Message[]    @relation("AcceptedAnswer")
+  editedAt         DateTime?    @db.Timestamptz(6)
   /// A squad admin or site admin took it down.
-  hiddenAt         DateTime?   @db.Timestamptz(6)
-  createdAt        DateTime    @default(now()) @db.Timestamptz(6)
-  deletedAt        DateTime?   @db.Timestamptz(6)
+  hiddenAt         DateTime?    @db.Timestamptz(6)
+  createdAt        DateTime     @default(now()) @db.Timestamptz(6)
+  deletedAt        DateTime?    @db.Timestamptz(6)
 
   reactions   MessageReaction[]
   pollOptions PollOption[]

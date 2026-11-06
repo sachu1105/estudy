@@ -41,6 +41,7 @@ export function Composer({
   onCancel,
   onSubmit,
   onPaper,
+  onBundle,
   onTest,
   onPoll,
 }: {
@@ -55,6 +56,7 @@ export function Composer({
   onCancel: () => void;
   onSubmit: (out: Outgoing) => boolean;
   onPaper: () => void;
+  onBundle: () => void;
   onTest: () => void;
   onPoll: () => void;
 }) {
@@ -151,6 +153,7 @@ export function Composer({
               setAttachment(item);
             }}
             onPaper={onPaper}
+            onBundle={onBundle}
             onTest={onTest}
             onPoll={onPoll}
             onDoubt={() => setDoubt(true)}

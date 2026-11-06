@@ -10,6 +10,7 @@ import {
   FileCheck2,
   FileText,
   Images,
+  Layers,
   Paperclip,
   type LucideIcon,
 } from "lucide-react";
@@ -31,7 +32,15 @@ import type { Attachable } from "./attachable";
 const PHOTOS = "image/png,image/jpeg,image/webp";
 
 type TileKey =
-  "gallery" | "camera" | "pdf" | "pods" | "paper" | "test" | "poll" | "doubt";
+  | "gallery"
+  | "camera"
+  | "pdf"
+  | "pods"
+  | "paper"
+  | "bundle"
+  | "test"
+  | "poll"
+  | "doubt";
 
 const TILES: { key: TileKey; label: string; icon: LucideIcon }[] = [
   { key: "gallery", label: "Gallery", icon: Images },
@@ -39,6 +48,7 @@ const TILES: { key: TileKey; label: string; icon: LucideIcon }[] = [
   { key: "pdf", label: "Document", icon: FileText },
   { key: "pods", label: "From my pods", icon: Boxes },
   { key: "paper", label: "Question paper", icon: FileCheck2 },
+  { key: "bundle", label: "Paper bundle", icon: Layers },
   { key: "test", label: "Mock test", icon: ClipboardCheck },
   { key: "poll", label: "Poll", icon: BarChart3 },
   { key: "doubt", label: "Ask a doubt", icon: CircleHelp },
@@ -54,6 +64,7 @@ export function AttachPanel({
   onFiles,
   onPod,
   onPaper,
+  onBundle,
   onTest,
   onPoll,
   onDoubt,
@@ -63,6 +74,8 @@ export function AttachPanel({
   onPod: (item: Attachable) => void;
   /** Share one of the person's question papers as an exam. */
   onPaper: () => void;
+  /** Offer a bundle of the person's question papers, free or for a price. */
+  onBundle: () => void;
   onTest: () => void;
   onPoll: () => void;
   onDoubt: () => void;
@@ -85,6 +98,7 @@ export function AttachPanel({
     if (key === "camera") camera.current?.click();
     if (key === "pdf") pdf.current?.click();
     if (key === "paper") onPaper();
+    if (key === "bundle") onBundle();
     if (key === "test") onTest();
     if (key === "poll") onPoll();
     if (key === "doubt") onDoubt();

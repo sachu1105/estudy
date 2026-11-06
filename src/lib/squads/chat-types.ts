@@ -59,6 +59,13 @@ export type MessageView = {
     closesAt: string | null;
     resultsAt: string | null;
   } | null;
+  /** A bundle of question papers offered with the message: free, or for a price. */
+  bundle: {
+    id: string;
+    title: string;
+    papers: number;
+    pricePaise: number | null;
+  } | null;
 };
 
 /** A message the person just sent, shown before the server has it. */

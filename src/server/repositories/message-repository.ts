@@ -52,6 +52,15 @@ const messageRow = {
       },
     },
   },
+  bundle: {
+    select: {
+      id: true,
+      title: true,
+      pricePaise: true,
+      hiddenAt: true,
+      _count: { select: { papers: true } },
+    },
+  },
   pollOptions: {
     select: { id: true, text: true, votes: { select: { userId: true } } },
     orderBy: { order: "asc" },
@@ -97,6 +106,7 @@ export const messageRepository = {
     kind?: "TEXT" | "DOUBT" | "POLL";
     groupTestId?: string | null;
     paperShareId?: string | null;
+    bundleId?: string | null;
     /** A poll's choices, in order. */
     pollOptions?: string[];
     at: Date;

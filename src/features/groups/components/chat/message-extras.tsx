@@ -12,6 +12,7 @@ import type { PendingMessage } from "@/lib/squads/chat-types";
 import { cn } from "@/lib/utils/cn";
 
 import { TakeGroupTest } from "../group-test-controls";
+import { BundleCard } from "./bundle-card";
 import { ExamCard } from "./exam-card";
 
 /**
@@ -42,6 +43,7 @@ export function MessageExtras({
       {m.answer ? <AnswerMark answer={m.answer} onChoose={onChoose} /> : null}
       {m.test ? <TestCard groupId={groupId} test={m.test} /> : null}
       {m.exam ? <ExamCard exam={m.exam} /> : null}
+      {m.bundle ? <BundleCard bundle={m.bundle} /> : null}
     </>
   );
 }

@@ -3,31 +3,54 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { limit } from "@/server/entitlements";
+import { bundleRepository } from "@/server/repositories/bundle-repository";
 import { examRepository } from "@/server/repositories/exam-repository";
 import { paperRepository } from "@/server/repositories/paper-repository";
 import { podFileRepository } from "@/server/repositories/pod-file-repository";
-import { channelService, groupService } from "@/server/services/groups";
+import {
+  channelService,
+  checkout,
+  groupService,
+  squadPay,
+} from "@/server/services/groups";
+import type { Actor } from "@/server/services/syllabus/deps";
 import { storage } from "@/server/storage";
 
+import { createBundleService } from "./bundle-service";
 import { createExamService } from "./exam-service";
 import { createOmrService } from "./omr-service";
 
 export { PAPER_MAX_BYTES } from "./omr-service";
 
+/**
+ * Squad rules decide who sees an exam or a bundle: membership, and whether the channel
+ * opens for them; with their role, whether they may post, and whether they're muted.
+ */
+async function channelFor(user: Actor, groupId: string, channelId: string) {
+  const found = await channelService.get(user, groupId, channelId);
+  if (!found) return null;
+  const member = await groupService.require(user, groupId, "MEMBER");
+  const muted =
+    !("error" in member) &&
+    !!member.me.mutedUntil &&
+    member.me.mutedUntil > systemClock.now();
+  return { canPost: found.canPost, muted, role: found.role as string };
+}
+
 export const examService = createExamService({
   exams: examRepository,
   papers: paperRepository,
-  // Squad rules decide who sees an exam: membership, and whether the channel opens for them.
-  channel: async (user, groupId, channelId) => {
-    const found = await channelService.get(user, groupId, channelId);
-    if (!found) return null;
-    const member = await groupService.require(user, groupId, "MEMBER");
-    const muted =
-      !("error" in member) &&
-      !!member.me.mutedUntil &&
-      member.me.mutedUntil > systemClock.now();
-    return { canPost: found.canPost, muted };
-  },
+  channel: channelFor,
+  clock: systemClock,
+});
+
+export const bundleService = createBundleService({
+  bundles: bundleRepository,
+  papers: paperRepository,
+  channel: channelFor,
+  canPrice: (user) => squadPay.canPrice(user),
+  selling: (ownerId) => squadPay.selling(ownerId),
+  checkout,
   clock: systemClock,
 });
 
@@ -42,5 +65,17 @@ export const omrService = createOmrService({
     const { getDocumentProxy } = await import("unpdf");
     return (await getDocumentProxy(new Uint8Array(bytes))).numPages;
   },
-  access: (user, paperId) => examService.paperAccess(user, paperId),
+  // A paper someone else owns opens through a squad exam or a bundle they have.
+  access: async (user, paperId) => {
+    const [exam, bundle] = await Promise.all([
+      examService.paperAccess(user, paperId),
+      bundleService.paperAccess(user, paperId),
+    ]);
+    if (!exam && !bundle) return null;
+    return {
+      canView: !!(exam?.canView || bundle?.canView),
+      canPractise: !!(exam?.canPractise || bundle?.canPractise),
+      keyOut: !!(exam?.keyOut || bundle?.keyOut),
+    };
+  },
 });

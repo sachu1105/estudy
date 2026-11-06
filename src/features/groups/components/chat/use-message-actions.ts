@@ -89,6 +89,7 @@ export function useMessageActions({
         : null,
       test: null,
       exam: null,
+      bundle: null,
     };
     const settle = chat.addPending(temp);
     const replyToId = replyTo?.id ?? null;

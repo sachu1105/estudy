@@ -104,6 +104,7 @@ export function DmChat({
       poll: null,
       test: null,
       exam: null,
+      bundle: null,
     });
     void sendDmAction({ userId: person.id, body }).then((r) => {
       settle(r.ok ? r.message : null);

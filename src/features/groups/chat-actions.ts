@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage, type RuleName } from "@/server/ratelimit";
 import { chatService, groupTests } from "@/server/services/groups";
-import { examService } from "@/server/services/omr";
+import { bundleService, examService } from "@/server/services/omr";
 import type { MessageView } from "@/lib/squads/chat-types";
 
 // Squad chat (S3). Every action: requireUser() (rule 9), zod (rule 11), rate limited
@@ -225,6 +225,39 @@ export async function sharePaperInChatAction(
       mentionIds: [],
       podItemId: null,
       paperShareId: shared.id,
+    }),
+  );
+}
+
+/** A bundle of the person's question papers into the chat: free, or (owners) for a price. */
+export async function shareBundleInChatAction(
+  input: unknown,
+): Promise<Result<{ message: MessageView }>> {
+  const g = await guard(
+    input,
+    z.object({
+      ...where,
+      title: z.string().trim().min(3, "Give the bundle a name.").max(120),
+      description: z
+        .string()
+        .trim()
+        .max(1000, "Keep the description under 1,000 characters."),
+      paperIds: z.array(id).min(1, "Pick at least one paper.").max(50),
+      rupees: z.number().int("Use whole rupees.").nullable(),
+    }),
+    "messagePerUser",
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId } = g.data;
+  const made = await bundleService.create(g.user, g.data);
+  if (!made.ok) return out(made);
+  return out(
+    await chatService.send(g.user, groupId, channelId, {
+      body: "",
+      replyToId: null,
+      mentionIds: [],
+      podItemId: null,
+      bundleId: made.id,
     }),
   );
 }

@@ -41,6 +41,7 @@ export function dmView(row: DmRow, me: string): MessageView {
     poll: null,
     test: null,
     exam: null,
+    bundle: null,
   };
 }
 
