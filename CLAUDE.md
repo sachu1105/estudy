@@ -290,7 +290,8 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   for good). Having it (BundlePurchase, append-only, a free add has no amount) means
   sitting every paper in it with its key; stopping sales or leaving the squad never
   takes it away. Payments are demo only, through the same Checkout as squad passes.
-- Papers library: admins (Admin > Papers) list their own papers, one paper or a bundle,
+- Papers library, shown to users as the Store (/store, in the sidebar and Ctrl+K, and
+  linked from Tests): admins (Admin > Papers) list their own papers, one paper or a bundle,
   free or priced (demo payments), and may include an entry free with PRO and/or ELITE.
   New entries are drafts until published; taking one down keeps it for whoever bought or
   added it. Plan inclusion goes through `planIncludes()` in server/entitlements and
@@ -367,7 +368,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   exam board, Today's subjects), which the catalogue reuses to preview each ready
   syllabus as the exam pod it becomes (its card and the cover strip on its page). Squads
   wear the same art: each squad's banner, rail tile and Discover card, and the blurple
-  banner (dimmed under white type) at the top of Squads > Discover (`DiscoverHero`).
+  banner (dimmed under white type) at the top of Squads > Discover (`DiscoverHero`). The
+  Store wears it too: the same banner on top, each item's card art (`StoreCard`, picked
+  from the bundle's id) and that art as a strip on a store item's page.
   The landing page may reuse the same
   cover art: a soft glow behind the hero window, the top of the featured plan card
   (the admin picks it under Plans and limits), the sample pod card and the squads

@@ -11,10 +11,13 @@ export function DiscoverHero({
   title,
   detail,
   children,
+  inset = false,
   className,
 }: {
   title: string;
   detail: string;
+  /** Inside the page's padding (the Store): rounded on every screen, and shorter. */
+  inset?: boolean;
   /** Under the words: the search on phones. */
   children?: ReactNode;
   className?: string;
@@ -22,7 +25,8 @@ export function DiscoverHero({
   return (
     <section
       className={cn(
-        "relative isolate overflow-hidden rounded-card md:rounded-none",
+        "relative isolate overflow-hidden rounded-card",
+        !inset && "md:rounded-none",
         className,
       )}
     >
@@ -31,7 +35,12 @@ export function DiscoverHero({
         className="absolute inset-0 -z-10"
       />
       <span aria-hidden className="absolute inset-0 -z-10 bg-black/30" />
-      <div className="mx-auto flex max-w-content flex-col gap-4 px-5 py-14 md:px-8 md:py-24">
+      <div
+        className={cn(
+          "mx-auto flex max-w-content flex-col gap-4 px-5 md:px-8",
+          inset ? "w-full py-10 md:py-14" : "py-14 md:py-24",
+        )}
+      >
         <div className="flex max-w-xl flex-col gap-2">
           <h1 className="font-heading text-display font-semibold text-white">
             {title}

@@ -19,7 +19,7 @@ export default async function AdminPapers() {
     <>
       <PageHeader
         title="Papers"
-        description="The library everyone sees in Tests. List one paper or a bundle, free or priced, and choose the plans that include it. Build from papers you uploaded in Tests, with their answer keys."
+        description="What everyone sees in the Store. List one paper or a bundle, free or priced, and choose the plans that include it. Build from papers you uploaded in Tests, with their answer keys."
       />
       <LibraryList
         papers={papers.map((p) => ({

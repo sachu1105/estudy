@@ -28,6 +28,8 @@ export type BundleState = {
   hidden: boolean;
   selling: boolean;
   holders: number | null;
+  /** In the Store (Admin > Papers manages it), not a squad's. */
+  library: boolean;
   /** A library bundle the reader's plan includes. */
   included: boolean;
   /** The plans that include it, offered to those who don't have it. */
@@ -55,6 +57,20 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
       done?.();
       router.refresh();
     });
+
+  if (bundle.owner && bundle.library)
+    return (
+      <p className="text-small text-ink-muted">
+        You listed this in the Store. {bundle.holders ?? 0}{" "}
+        {bundle.holders === 1 ? "person has" : "people have"} it.{" "}
+        <Link
+          href="/admin/papers"
+          className="font-medium text-accent-ink hover:underline"
+        >
+          Manage it in Admin
+        </Link>
+      </p>
+    );
 
   if (bundle.owner)
     return (

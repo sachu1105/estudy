@@ -255,6 +255,9 @@ export function createBundleService(deps: BundleDeps) {
           "FORBIDDEN",
           "Only whoever made this bundle can stop it.",
         );
+      // A Store item is taken down in Admin > Papers, where it's audited.
+      if (bundle.catalogue)
+        return failure("FORBIDDEN", "Take it down in Admin > Papers.");
       if (!bundle.hiddenAt) await deps.bundles.hide(id, deps.clock.now());
       return { ok: true };
     },

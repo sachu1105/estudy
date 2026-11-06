@@ -34,7 +34,7 @@ export function TakeDownButton({
           <DialogHeader>
             <DialogTitle>Take down {title}?</DialogTitle>
             <DialogDescription>
-              It leaves the library for good. Everyone who bought or added it
+              It leaves the Store for good. Everyone who bought or added it
               keeps it.
             </DialogDescription>
           </DialogHeader>

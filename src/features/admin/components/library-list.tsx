@@ -48,7 +48,7 @@ export function LibraryList({
     <div className="flex flex-col gap-4">
       {editing === "new" ? (
         <Card className="p-5">
-          <h2 className="mb-4 font-heading text-h3">New library entry</h2>
+          <h2 className="mb-4 font-heading text-h3">New in the Store</h2>
           <LibraryForm
             papers={papers}
             initial={EMPTY}
@@ -66,8 +66,8 @@ export function LibraryList({
       )}
       {entries.length === 0 ? (
         <p className="rounded-card border border-dashed border-border p-6 text-center text-small text-ink-muted">
-          Nothing in the library yet. Upload papers in Tests with their keys,
-          then list them here, one at a time or as a bundle.
+          Nothing in the Store yet. Upload papers in Tests with their keys, then
+          list them here, one at a time or as a bundle.
         </p>
       ) : (
         <ul aria-label="Library" className="flex flex-col gap-3">
@@ -116,7 +116,7 @@ export function LibraryList({
                               }),
                             e.published
                               ? "Back to a draft."
-                              : "Published to everyone.",
+                              : "Published in the Store.",
                           )
                         }
                       >

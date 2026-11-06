@@ -1,13 +1,15 @@
-import { ChevronRight, FileCheck2, Lock } from "lucide-react";
+import { ArrowLeft, ChevronRight, FileCheck2, Lock } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { PodCover } from "@/components/blocks/pod-cover";
 import { PageHeader } from "@/components/shell/page-header";
 import { Card } from "@/components/ui/card";
 import { PaidMark } from "@/features/groups/components/pay/paid-mark";
 import { BundleGet } from "@/features/omr/components/bundle-get";
 import { isId } from "@/lib/ids";
+import { coverFor } from "@/lib/pods/covers";
 import { rupees } from "@/lib/pricing/pricing";
 import { requireUser } from "@/server/auth/session";
 import { bundleService } from "@/server/services/omr";
@@ -32,12 +34,26 @@ export default async function BundlePage({
 
   return (
     <>
+      {bundle.library ? (
+        <div className="mb-6 flex flex-col gap-4">
+          <Link
+            href="/store"
+            className="-ml-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-control px-2 text-small font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
+          >
+            <ArrowLeft className="size-4" aria-hidden /> Store
+          </Link>
+          <PodCover
+            cover={coverFor(bundle.id)}
+            className="h-24 rounded-card md:h-32"
+          />
+        </div>
+      ) : null}
       <PageHeader
         title={bundle.title}
         badge={bundle.pricePaise === null ? undefined : <PaidMark />}
         description={
           bundle.library
-            ? "From the studypods library"
+            ? "From the studypods store"
             : `Bundle by ${bundle.by}${where}`
         }
       />
@@ -67,6 +83,7 @@ export default async function BundlePage({
               selling: bundle.selling,
               holders: bundle.holders,
               included: bundle.included,
+              library: bundle.library,
               includedIn: bundle.includedIn,
             }}
           />

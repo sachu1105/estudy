@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { BundleList } from "@/features/omr/components/bundle-list";
-import { LibraryShelf } from "@/features/omr/components/library-shelf";
+import { StoreLink } from "@/features/omr/components/store-link";
 import { PaperCard } from "@/features/omr/components/paper-card";
 import { SquadExamList } from "@/features/omr/components/squad-exam-list";
 import { UploadPaperButton } from "@/features/omr/components/upload-paper-button";
@@ -39,6 +39,7 @@ export default async function TestsPage() {
         actions={sheets.length > 0 ? <UploadPaperButton /> : undefined}
       />
       <div className="flex flex-col gap-8">
+        {library.length > 0 ? <StoreLink count={library.length} /> : null}
         {exams.length > 0 ? (
           <SquadExamList
             exams={exams.map((e) => ({
@@ -97,19 +98,6 @@ export default async function TestsPage() {
             </ul>
           </section>
         )}
-        {library.length > 0 ? (
-          <LibraryShelf
-            items={library.map((b) => ({
-              id: b.id,
-              title: b.title,
-              papers: b.papers.length,
-              pricePaise: b.pricePaise,
-              have: b.have,
-              included: b.included,
-              includedIn: b.includedIn,
-            }))}
-          />
-        ) : null}
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import {
   ClipboardCheck,
   Settings,
   Shield,
+  Store,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -30,6 +31,8 @@ export const primaryNav: NavItem[] = [
     also: ["/syllabus", "/plan", "/calendar"],
   },
   { href: "/tests", label: "Tests", icon: ClipboardCheck, mobileTab: true },
+  // Papers and bundles from the library. On a phone it's reached from Tests.
+  { href: "/store", label: "Store", icon: Store },
   { href: "/groups", label: "Squads", icon: Users, mobileTab: true },
 ];
 

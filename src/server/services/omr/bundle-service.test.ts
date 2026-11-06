@@ -300,6 +300,9 @@ describe("paper bundles", () => {
     const listed = await s.service.library(member);
     expect(listed.map((b) => [b.id, b.included])).toEqual([[made.id, true]]);
 
+    // Not stopped from its own page: Admin > Papers takes it down, audited.
+    expect((await s.service.stop(admin, made.id)).ok).toBe(false);
+
     // Bought by someone else; then edited, unpublished and taken down.
     expect((await s.service.buy(outsider, made.id)).ok).toBe(true);
     await s.service.adminSave(admin, made.id, {

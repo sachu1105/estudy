@@ -76,18 +76,22 @@ test.describe("the papers library", () => {
     await entry.getByRole("button", { name: "Publish" }).click();
     await expect(entry.getByText("Published")).toBeVisible();
 
-    // A free user: it's in the Library with its price, and it can be bought.
+    // A free user: Tests points to the Store, where it's listed with its price.
     const free = await person(browser, `library-free-${project}`);
     await free.page.goto("/tests");
+    await free.page
+      .getByRole("link", { name: /^Store \d+ previous year/ })
+      .click();
+    await expect(free.page).toHaveURL(/\/store$/);
+    await free.page.getByLabel("Search the store").fill(title);
     const row = free.page
-      .getByRole("region", { name: "Library" })
+      .getByRole("list", { name: "Store" })
       .getByRole("link", { name: new RegExp(title) });
     await expect(row).toContainText("₹149");
-    await expect(row).toContainText("free with Elite");
+    await expect(row).toContainText("Free with Elite");
+    expect(await noSideScroll(free.page)).toBeLessThanOrEqual(0);
     await row.click();
-    await expect(
-      free.page.getByText("From the studypods library"),
-    ).toBeVisible();
+    await expect(free.page.getByText("From the studypods store")).toBeVisible();
     await expect(free.page.getByLabel("Locked")).toHaveCount(1);
     await expect(
       free.page.getByText(/Or get it free with Elite/),
@@ -101,9 +105,10 @@ test.describe("the papers library", () => {
     // An Elite user: in their plan, the paper opens without paying.
     const elite = await person(browser, `library-elite-${project}`);
     await grantElite(elite.email);
-    await elite.page.goto("/tests");
+    await elite.page.goto("/store");
+    await elite.page.getByRole("button", { name: "In your plan" }).click();
     const eliteRow = elite.page
-      .getByRole("region", { name: "Library" })
+      .getByRole("list", { name: "Store" })
       .getByRole("link", { name: new RegExp(title) });
     await expect(eliteRow).toContainText("In your plan");
     await eliteRow.click();
