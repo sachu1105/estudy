@@ -1,10 +1,10 @@
-import { Download, Timer } from "lucide-react";
+import { Check, Timer } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
 
 // Sample content, not data. A question paper on the desk and the OMR answer sheet laid
-// over it, running off the cell's corner, with the exam clock above and the sheet's PDF
-// below. Both are paper, so white in any theme. The sheet copies the app's own
+// over it, running off the cell's corner, with the exam clock above and the score it
+// was marked to below. Both are paper, so white in any theme. The sheet copies the app's own
 // (features/omr/components/omr-grid.tsx): printed in teal ink, oval bubbles, five-row
 // blocks shaded, timing marks down the edge, answers filled in blue pen.
 
@@ -99,8 +99,15 @@ export function PaperScene() {
       <span className="absolute top-2 right-4 z-10 flex items-center gap-2 rounded-full bg-ink px-3 py-1.5 font-mono text-small font-medium text-bg tabular-nums sm:right-8">
         <Timer className="size-4" /> 01:24:07
       </span>
-      <span className="absolute bottom-8 left-6 z-10 flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-small font-medium text-ink shadow-md sm:left-10 lg:left-14">
-        <Download className="size-4 text-ink-muted" /> Answer sheet.pdf
+      {/* Handed in: marked against the key, to the exact fraction. */}
+      <span className="absolute bottom-6 left-6 z-10 flex flex-col gap-1 rounded-card border border-border bg-surface px-4 py-3 shadow-md sm:left-10 lg:left-14">
+        <span className="text-micro text-ink-muted uppercase">Your score</span>
+        <span className="font-mono text-h2 font-medium text-ink tabular-nums">
+          72.67 <span className="text-small text-ink-muted">/ 100</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-small text-ink-muted">
+          <Check className="size-4 text-success" /> Above the 60 cut-off
+        </span>
       </span>
     </>
   );

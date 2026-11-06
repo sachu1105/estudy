@@ -6,11 +6,12 @@ import { Reveal } from "@/components/ui/reveal";
 import { Band } from "./frame";
 import { SectionHeading } from "./section-heading";
 
-// Answers stay honest: only what the app does today, and papers are the user's own.
+// Answers stay honest: only what the app does today. Papers are the user's own or from
+// the Store, and no key is sold as exam-accurate.
 export const faqs = [
   {
     q: "Is it free?",
-    a: "Yes. Pods, the study plan, practice papers and squads are free during launch, with no card needed. Only mock tests made from your own notes need a paid plan. The free plan stays.",
+    a: "Yes. Pods, the study plan, practice papers and squads are free during launch, with no card needed. Only mock tests made from your own notes need a paid plan, and some papers in the Store are priced. The free plan stays.",
   },
   {
     q: "Which exams does it support?",
@@ -30,7 +31,7 @@ export const faqs = [
   },
   {
     q: "Where do the practice papers come from?",
-    a: "From you. Upload any question paper as a PDF and mark your answers on the OMR sheet beside it. We don't sell question banks, and we never claim a question will appear in your exam.",
+    a: "From you, or from the Store. Upload any question paper as a PDF and mark your answers on the OMR sheet beside it, or get previous year papers and bundles from the Store: some free, some paid once, some included in a plan. Every answer key says whose it is, and we never claim a key is exam-accurate or that a question will appear in your exam.",
   },
   {
     q: "Is my data private?",
