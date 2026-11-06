@@ -122,11 +122,13 @@ test.describe("paper bundles", () => {
     ).toContainText("LGS papers is in your tests");
     expect(await noSideScroll(member)).toBeLessThanOrEqual(0);
 
-    // Bought: a paper opens to sit, and its key shows after.
+    // Bought: under "Your bundles"; it opens to its papers, one sat with its key after.
     await member
-      .getByRole("list", { name: "Question papers" })
-      .getByRole("link", { name: /LGS 2021.*From LGS papers.*Not attempted/ })
+      .getByRole("region", { name: "Your bundles" })
+      .getByRole("link", { name: /LGS papers.*Bought.*0 of 1 attempted/ })
       .click();
+    await expect(member).toHaveURL(bundleUrl);
+    await member.getByRole("link", { name: /LGS 2021.*Not attempted/ }).click();
     await expect(member).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
     await member.getByRole("button", { name: "Start exam" }).click();
     await member.getByRole("button", { name: "Start now" }).click();
@@ -143,11 +145,16 @@ test.describe("paper bundles", () => {
       member.getByText("Question 2: you marked C, key A. Wrong."),
     ).toBeVisible();
 
-    // On the member's Tests page it's attempted, with the score; the owner sees who has it.
+    // Tests counts it attempted; the bundle says once, with the score. The owner sees
+    // who has it.
     await member.goto("/tests");
     await expect(
+      member.getByRole("link", { name: /LGS papers.*1 of 1 attempted/ }),
+    ).toBeVisible();
+    await member.goto(bundleUrl);
+    await expect(
       member.getByRole("link", {
-        name: /LGS 2021.*From LGS papers.*Attempted once.*0\.67\s*of 4, last score/,
+        name: /LGS 2021.*last 0\.67 of 4.*Attempted once/,
       }),
     ).toBeVisible();
     await page.goto(bundleUrl);

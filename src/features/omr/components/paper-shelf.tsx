@@ -19,8 +19,8 @@ const FILTERS: { key: "all" | PaperStanding; label: string }[] = [
 ];
 
 /**
- * Every paper the person can sit, theirs and their bundles', in one grid, with filters
- * by where each stands and how many are in each.
+ * The papers the person uploaded, in one grid, with filters by where each stands
+ * (not attempted, in progress, attempted) and how many are in each.
  */
 export function PaperShelf({
   sheets,
@@ -44,9 +44,14 @@ export function PaperShelf({
 
   return (
     <section aria-labelledby="papers" className="flex flex-col gap-4">
-      <h2 id="papers" className="font-heading text-h2 font-semibold">
-        Papers
-      </h2>
+      <div className="flex flex-col gap-0.5">
+        <h2 id="papers" className="font-heading text-h2 font-semibold">
+          Your papers
+        </h2>
+        <p className="text-small text-ink-muted">
+          Papers you uploaded. You set their key and marking.
+        </p>
+      </div>
       <div
         role="group"
         aria-label="Show"

@@ -105,7 +105,11 @@ export function standingOf(
 }
 
 /** The attempt mark: never sat, being sat now, or handed in so many times. */
-function AttemptBadge({ sheet }: { sheet: PaperCardSheet }) {
+export function AttemptBadge({
+  sheet,
+}: {
+  sheet: Pick<PaperCardSheet, "marks" | "timer" | "attempts">;
+}) {
   const standing = standingOf(sheet);
   if (standing === "going")
     return (
@@ -151,7 +155,7 @@ export function PaperCard({
         href={`/omr/${sheet.id}`}
         // File names come with underscores; the words read better without.
         title={sheet.title.replaceAll("_", " ")}
-        subtitle={`${sheet.owner ? "Your upload" : `From ${sheet.from ?? "a bundle"}`} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
+        subtitle={`${sheet.owner ? "" : `From ${sheet.from ?? "a bundle"} · `}${timeAgo(sheet.updatedAt, now, timeZone)}`}
         badges={<AttemptBadge sheet={sheet} />}
         art={<SheetArt id={sheet.id} marks={sheet.marks} />}
         stat={

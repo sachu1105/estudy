@@ -8,11 +8,13 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Card } from "@/components/ui/card";
 import { PaidMark } from "@/features/groups/components/pay/paid-mark";
 import { BundleGet } from "@/features/omr/components/bundle-get";
+import { AttemptBadge } from "@/features/omr/components/paper-card";
 import { isId } from "@/lib/ids";
+import { formatScore } from "@/lib/omr/fraction";
 import { coverFor } from "@/lib/pods/covers";
 import { rupees } from "@/lib/pricing/pricing";
 import { requireUser } from "@/server/auth/session";
-import { bundleService } from "@/server/services/omr";
+import { bundleService, omrService } from "@/server/services/omr";
 
 export const metadata: Metadata = { title: "Bundle" };
 
@@ -28,6 +30,16 @@ export default async function BundlePage({
     : null;
   if (!bundle) notFound();
   const open = bundle.have || bundle.owner;
+  // Where the reader stands on each paper: attempted, how often, the last score.
+  const sat = new Map(
+    (open
+      ? await omrService.list(
+          user,
+          bundle.papers.map((p) => p.id),
+        )
+      : []
+    ).map((p) => [p.id, p]),
+  );
   const where = bundle.squad
     ? ` in ${bundle.squad.name}${bundle.channel ? ` · #${bundle.channel.name}` : ""}`
     : "";
@@ -110,7 +122,15 @@ export default async function BundlePage({
                     <span className="text-small text-ink-muted">
                       {p.questions} questions
                       {p.limitMin ? ` · ${p.limitMin} min` : ""}
+                      {sat.get(p.id)?.last?.keyed
+                        ? ` · last ${formatScore(sat.get(p.id)!.last!.score)} of ${formatScore(sat.get(p.id)!.last!.max)}`
+                        : ""}
                     </span>
+                    {sat.get(p.id) ? (
+                      <span className="mt-1.5 flex">
+                        <AttemptBadge sheet={sat.get(p.id)!} />
+                      </span>
+                    ) : null}
                   </span>
                   {open ? (
                     <ChevronRight
@@ -130,7 +150,7 @@ export default async function BundlePage({
                   {open ? (
                     <Link
                       href={`/omr/${p.id}`}
-                      className="flex min-h-14 items-center gap-3 px-4 py-2 hover:bg-surface-muted"
+                      className="flex min-h-14 items-center gap-3 px-4 py-3 hover:bg-surface-muted"
                     >
                       {body}
                     </Link>

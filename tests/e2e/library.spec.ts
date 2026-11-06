@@ -104,12 +104,14 @@ test.describe("the papers library", () => {
     await expect(
       free.page.getByRole("status").filter({ hasText: "is in your tests" }),
     ).toContainText(`${title} is in your tests`);
+    // Under "Your bundles", as a bundle: how it was got and none attempted yet.
     const bought = free.page
-      .getByRole("list", { name: "Question papers" })
+      .getByRole("region", { name: "Your bundles" })
       .getByRole("link", { name: new RegExp(title) });
-    await expect(bought).toHaveCount(1);
-    await expect(bought).toContainText(`From ${title}`);
-    await expect(bought).toContainText("Not attempted");
+    await expect(bought).toContainText("Bought · from the Store");
+    await expect(bought).toContainText("0 of 1 attempted");
+    await bought.click();
+    await expect(free.page.getByText("Not attempted")).toBeVisible();
 
     // An Elite user: in their plan, the paper opens without paying.
     const elite = await person(browser, `library-elite-${project}`);
