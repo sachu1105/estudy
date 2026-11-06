@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Send } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -9,6 +9,7 @@ import {
   type CSSProperties,
 } from "react";
 
+import { Button } from "@/components/ui/button";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { toast } from "@/components/ui/toast";
 import {
@@ -25,8 +26,10 @@ import { ClearSheetButton } from "./clear-sheet-button";
 import { DownloadSheetButton } from "./download-sheet-button";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
+import type { PaperSummary } from "./paper-summary";
 import { SheetDivider } from "./sheet-divider";
 import { SheetSettings } from "./sheet-settings";
+import { SubmitSheet } from "./submit-sheet";
 import { useOmrPrefs } from "./use-omr-prefs";
 import { useSheetWidth } from "./use-sheet-width";
 import { sheetInk } from "./sheet-ink";
@@ -41,28 +44,28 @@ type View = "paper" | "sheet";
  * The paper on the left, the OMR sheet on the right. On a phone they share the screen
  * one at a time, switched from the bar at the bottom. Marks save as you go. The timer
  * comes first: a tap before it runs asks to start it, then counts. Leaving during the
- * exam ends the sitting and resets the timer.
+ * exam ends the sitting and resets the timer. Submitting hands the sheet in to be marked
+ * against the key; when the time runs out the sheet asks for it.
  */
 export function OmrWorkspace({
-  id,
-  title,
+  paper,
   initialMarks,
   initialTimer,
 }: {
-  id: string;
-  title: string;
+  paper: PaperSummary;
   initialMarks: Marks;
   initialTimer: TimerView;
 }) {
+  const { id, title } = paper;
   const { marks, setMarks, saving, dirty, flush } = useSavedMarks(
     id,
     initialMarks,
   );
   const [view, setView] = useState<View>("paper");
   const count = markedCount(marks);
-  const timer = useOmrTimer(id, initialTimer, () =>
-    toast(`Time's up. You marked ${count} of ${marks.length}.`),
-  );
+  const [submit, setSubmit] = useState<"closed" | "open" | "time-up">("closed");
+  const [submitted, setSubmitted] = useState(false);
+  const timer = useOmrTimer(id, initialTimer, () => setSubmit("time-up"));
   // Every sitting begins on the exam start, as the hall would (a running clock on
   // opening means the last sitting was left, and the hook has reset it).
   const [timerOpen, setTimerOpen] = useState(true);
@@ -100,7 +103,7 @@ export function OmrWorkspace({
     timer.run({ op: "start", limitMin });
     timerOn.current = true;
     // A new sitting is a clean sheet: answers from the last one go.
-    setMarks(blankMarks());
+    setMarks(blankMarks(marks.length));
     if (waiting) setMarks((m) => toggleMark(m, ...waiting));
     setWaiting(null);
     setTimerOpen(false);
@@ -110,7 +113,7 @@ export function OmrWorkspace({
     <div className="flex h-dvh flex-col">
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2 md:px-4">
         <LeaveExam
-          inExam={timer.view.on}
+          inExam={timer.view.on && !submitted}
           dirty={dirty}
           flush={flush}
           endSitting={timer.reset}
@@ -138,7 +141,7 @@ export function OmrWorkspace({
           {count}/{marks.length}
         </span>
         <OmrTimer
-          title={title}
+          paper={paper}
           timer={timer}
           open={timerOpen}
           onOpenChange={setTimerOpen}
@@ -163,9 +166,28 @@ export function OmrWorkspace({
         />
         <ClearSheetButton
           disabled={count === 0}
-          onClear={() => setMarks(blankMarks())}
+          onClear={() => setMarks(blankMarks(marks.length))}
         />
+        <Button
+          variant="primary"
+          className="hidden md:inline-flex"
+          disabled={count === 0}
+          onClick={() => setSubmit("open")}
+        >
+          <Send aria-hidden /> Submit
+        </Button>
       </header>
+      <SubmitSheet
+        paperId={id}
+        open={submit !== "closed"}
+        onOpenChange={(open) => setSubmit(open ? "open" : "closed")}
+        marked={count}
+        questions={marks.length}
+        keyed={paper.keyed}
+        timeUp={submit === "time-up"}
+        flush={flush}
+        onSubmitted={() => setSubmitted(true)}
+      />
 
       {/* Paper | divider | sheet. The sheet's width is the person's, once they drag. */}
       <div
@@ -199,6 +221,7 @@ export function OmrWorkspace({
         >
           <OmrGrid
             marks={marks}
+            options={paper.shape.options}
             ink={sheetInk(id)}
             pen={prefs.pen}
             onMark={onMark}
@@ -208,18 +231,26 @@ export function OmrWorkspace({
 
       <nav
         aria-label="Switch view"
-        className="flex shrink-0 justify-center border-t border-border bg-surface px-4 pt-2 pb-[max(8px,env(safe-area-inset-bottom))] md:hidden"
+        className="flex shrink-0 items-center gap-2 border-t border-border bg-surface px-4 pt-2 pb-[max(8px,env(safe-area-inset-bottom))] md:hidden"
       >
         <SegmentedControl
           value={view}
           onValueChange={setView}
           ariaLabel="Show"
-          className="w-full [&>*]:flex-1"
+          className="min-w-0 flex-1 [&>*]:flex-1"
           options={[
             { value: "paper", label: "Paper" },
-            { value: "sheet", label: `Answer sheet · ${count}` },
+            { value: "sheet", label: `Sheet · ${count}` },
           ]}
         />
+        {/* Within thumb reach on a phone; the header has it on wider screens. */}
+        <Button
+          variant="primary"
+          disabled={count === 0}
+          onClick={() => setSubmit("open")}
+        >
+          Submit
+        </Button>
       </nav>
     </div>
   );

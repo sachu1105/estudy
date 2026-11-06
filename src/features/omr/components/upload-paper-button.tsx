@@ -24,8 +24,8 @@ export function UploadPaperButton({
       return void toast.error("Choose a PDF of the question paper.");
     setProgress(0);
     try {
-      const { sheetId } = await uploadPaper(file, setProgress);
-      router.push(`/omr/${sheetId}`);
+      const { paperId } = await uploadPaper(file, setProgress);
+      router.push(`/omr/${paperId}`);
     } catch (error) {
       toast.error((error as Error).message);
       setProgress(null);

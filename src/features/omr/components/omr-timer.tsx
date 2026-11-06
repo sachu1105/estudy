@@ -14,6 +14,7 @@ import { face } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
 import { ExamStart } from "./exam-start";
+import type { PaperSummary } from "./paper-summary";
 import { StartCountdown } from "./start-countdown";
 import { TimerPanel } from "./timer-panel";
 import type { OmrTimerState } from "./use-omr-timer";
@@ -24,7 +25,7 @@ import type { OmrTimerState } from "./use-omr-timer";
  * it when a bubble is tapped first); on, it shows time left, or time used with no limit.
  */
 export function OmrTimer({
-  title,
+  paper,
   timer,
   open,
   onOpenChange,
@@ -34,7 +35,7 @@ export function OmrTimer({
   previous,
   onStart,
 }: {
-  title: string;
+  paper: PaperSummary;
   timer: OmrTimerState;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -102,6 +103,8 @@ export function OmrTimer({
       <Sheet open={open} onOpenChange={change}>
         <SheetContent
           side="bottom"
+          // A short phone can't fit the whole start card: it scrolls, never clips.
+          className="overflow-y-auto overscroll-contain"
           // Focus the one action, not the first chip (its ring reads as "chosen").
           onOpenAutoFocus={(e) => {
             const start = (
@@ -131,7 +134,7 @@ export function OmrTimer({
                 Choose how long the paper gets, then start the exam.
               </SheetDescription>
               <ExamStart
-                title={title}
+                paper={paper}
                 note={note}
                 final={final}
                 previous={previous}
@@ -147,7 +150,7 @@ export function OmrTimer({
       </Sheet>
       {starting ? (
         <StartCountdown
-          title={title}
+          title={paper.title}
           onDone={() => {
             onStart(starting.limit);
             setStarting(null);

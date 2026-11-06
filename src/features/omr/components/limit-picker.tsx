@@ -29,12 +29,18 @@ type Choice = number | null | "custom";
  * undefined while a custom time isn't valid.
  */
 export function LimitPicker({
+  initial = DEFAULT_LIMIT_MIN,
   onChange,
 }: {
+  /** The paper's own time limit, chosen to begin with. */
+  initial?: number | null;
   onChange: (limit: number | null | undefined) => void;
 }) {
-  const [choice, setChoice] = useState<Choice>(DEFAULT_LIMIT_MIN);
-  const [custom, setCustom] = useState("");
+  const listed =
+    initial === null ||
+    (LIMIT_CHOICES_MIN as readonly number[]).includes(initial);
+  const [choice, setChoice] = useState<Choice>(listed ? initial : "custom");
+  const [custom, setCustom] = useState(listed ? "" : String(initial));
   const valid = (text: string) => {
     const typed = Number(text);
     return Number.isInteger(typed) && typed >= 1 && typed <= MAX_LIMIT_MIN

@@ -1,6 +1,14 @@
 "use client";
 
-import { Download, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  Download,
+  KeyRound,
+  ListChecks,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -26,8 +34,19 @@ import { deleteSheetAction, renameSheetAction } from "../actions";
 import { downloadAnswerSheet } from "./download-sheet";
 import { useOmrPrefs } from "./use-omr-prefs";
 
-/** Rename a question paper, save its marked sheet as a PDF, or delete it with its marks. */
-export function SheetMenu({ id, title }: { id: string; title: string }) {
+/**
+ * A question paper's other doors: its answer key and marking, its last result, its
+ * marked sheet as a PDF, rename, and delete with its marks.
+ */
+export function SheetMenu({
+  id,
+  title,
+  lastResultId,
+}: {
+  id: string;
+  title: string;
+  lastResultId: string | null;
+}) {
   const router = useRouter();
   const [prefs] = useOmrPrefs();
   const [dialog, setDialog] = useState<"rename" | "delete" | null>(null);
@@ -51,6 +70,18 @@ export function SheetMenu({ id, title }: { id: string; title: string }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem asChild>
+            <Link href={`/omr/${id}/key`}>
+              <KeyRound aria-hidden /> Answer key and marking
+            </Link>
+          </DropdownMenuItem>
+          {lastResultId ? (
+            <DropdownMenuItem asChild>
+              <Link href={`/omr/${id}/result/${lastResultId}`}>
+                <ListChecks aria-hidden /> Last result
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem onSelect={() => setDialog("rename")}>
             <Pencil aria-hidden /> Rename
           </DropdownMenuItem>
@@ -109,7 +140,8 @@ export function SheetMenu({ id, title }: { id: string; title: string }) {
           <DialogHeader>
             <DialogTitle>Delete this paper?</DialogTitle>
             <DialogDescription>
-              The PDF and the marks on its answer sheet go for good.
+              The PDF, its answer key, the marks on its sheet and every result
+              go for good.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

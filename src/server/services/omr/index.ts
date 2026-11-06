@@ -3,7 +3,7 @@ import "server-only";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
 import { limit } from "@/server/entitlements";
-import { omrSheetRepository } from "@/server/repositories/omr-sheet-repository";
+import { paperRepository } from "@/server/repositories/paper-repository";
 import { podFileRepository } from "@/server/repositories/pod-file-repository";
 import { storage } from "@/server/storage";
 
@@ -12,7 +12,7 @@ import { createOmrService } from "./omr-service";
 export { PAPER_MAX_BYTES } from "./omr-service";
 
 export const omrService = createOmrService({
-  sheets: omrSheetRepository,
+  papers: paperRepository,
   podBytesUsed: (ownerId) => podFileRepository.bytesUsed(ownerId),
   storage,
   ids: randomIds,

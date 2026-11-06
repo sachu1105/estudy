@@ -8,12 +8,12 @@ import {
 } from "pdf-lib";
 
 import type { OmrInk, Pen } from "@/lib/omr/ink";
-import { BLANK, OMR_OPTIONS, type Marks } from "@/lib/omr/marks";
+import { BLANK, letters, type Marks } from "@/lib/omr/marks";
 
 // The marked answer sheet as an A4 PDF, drawn like the sheet on screen: printed in the
 // paper's ink, four ruled columns of 25 with every five rows shaded in a checkerboard,
 // timing marks down the right edge, a barcode at the foot, and each answer filled in
-// the person's pen. Colours are the light theme's tokens (paper is white in any theme).
+// the person's pen. A paper past 100 questions runs onto more pages. Colours are the light theme's tokens (paper is white in any theme).
 
 const hex = (value: string): RGB =>
   rgb(
@@ -35,6 +35,8 @@ const WHITE = rgb(1, 1, 1);
 const [W, H] = [595.28, 841.89];
 const MARGIN = 36;
 const COLUMN = 25;
+/** Four columns of 25 to a page. */
+const PER_PAGE = 100;
 const NUMBER_W = 26;
 const BUBBLE = { w: 17, h: 11.5, r: 4.5 };
 const BARCODE = [1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1];
@@ -73,13 +75,14 @@ function fit(font: PDFFont, text: string, size: number, width: number) {
 export async function answerSheetPdf(sheet: {
   title: string;
   marks: Marks;
+  /** Options per question: 4 is A-D. */
+  options: number;
   ink: OmrInk;
   pen: Pen;
   /** When it was printed, already written out in the person's time zone. */
   printedAt: string;
 }) {
   const doc = await PDFDocument.create();
-  const page = doc.addPage([W, H]);
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const ink = INK[sheet.ink];
@@ -89,7 +92,42 @@ export async function answerSheetPdf(sheet: {
   doc.setTitle(`${title} - answer sheet`);
   doc.setCreator("studypods");
   doc.setProducer("studypods");
+  const pages = Math.max(1, Math.ceil(sheet.marks.length / PER_PAGE));
+  for (let p = 0; p < pages; p++) {
+    const first = p * PER_PAGE;
+    drawPage(
+      doc.addPage([W, H]),
+      { ink, pen, font, bold, title, marked, options: sheet.options },
+      sheet.marks.slice(first, first + PER_PAGE),
+      first,
+      {
+        total: sheet.marks.length,
+        page: p + 1,
+        pages,
+        printedAt: sheet.printedAt,
+      },
+    );
+  }
 
+  return doc.save();
+}
+
+function drawPage(
+  page: PDFPage,
+  at: {
+    ink: RGB;
+    pen: RGB;
+    font: PDFFont;
+    bold: PDFFont;
+    title: string;
+    marked: number;
+    options: number;
+  },
+  marks: Marks,
+  first: number,
+  foot: { total: number; page: number; pages: number; printedAt: string },
+) {
+  const { ink, pen, font, bold, title, marked } = at;
   // Header band: what the sheet is, which paper, and how much is marked.
   const bandTop = H - MARGIN;
   page.drawRectangle({
@@ -121,7 +159,7 @@ export async function answerSheetPdf(sheet: {
     font,
     color: ink,
   });
-  const count = `Marked ${marked} of ${sheet.marks.length}`;
+  const count = `Marked ${marked} of ${foot.total}`;
   page.drawText(count, {
     x: W - MARGIN - 14 - bold.widthOfTextAtSize(count, 11),
     y: bandTop - 38,
@@ -137,7 +175,7 @@ export async function answerSheetPdf(sheet: {
   const gridW = W - 2 * MARGIN - 18;
   const gap = 10;
   const colW = (gridW - gap * 3) / 4;
-  for (let c = 0; c * COLUMN < sheet.marks.length; c++) {
+  for (let c = 0; c * COLUMN < marks.length; c++) {
     const x = MARGIN + c * (colW + gap);
     page.drawRectangle({
       x,
@@ -148,13 +186,13 @@ export async function answerSheetPdf(sheet: {
       borderWidth: 0.75,
       borderOpacity: 0.6,
     });
-    for (let i = 0; i < COLUMN && c * COLUMN + i < sheet.marks.length; i++) {
+    for (let i = 0; i < COLUMN && c * COLUMN + i < marks.length; i++) {
       const y = gridTop - (i + 1) * rowH;
       drawRow(
         page,
-        { x, y, colW, rowH, ink, pen, font, bold },
-        c * COLUMN + i,
-        sheet.marks[c * COLUMN + i]!,
+        { x, y, colW, rowH, ink, pen, font, bold, options: at.options },
+        first + c * COLUMN + i,
+        marks[c * COLUMN + i]!,
         (Math.floor(i / 5) + c) % 2 === 1,
       );
     }
@@ -181,16 +219,14 @@ export async function answerSheetPdf(sheet: {
       });
     bar += width * 1.2 + 1.2;
   });
-  const foot = `Printed from studypods on ${sheet.printedAt}`;
-  page.drawText(foot, {
-    x: W - MARGIN - font.widthOfTextAtSize(foot, 8),
+  const printed = `${foot.pages > 1 ? `Page ${foot.page} of ${foot.pages} · ` : ""}Printed from studypods on ${foot.printedAt}`;
+  page.drawText(printed, {
+    x: W - MARGIN - font.widthOfTextAtSize(printed, 8),
     y: MARGIN + 5,
     size: 8,
     font,
     color: MUTED,
   });
-
-  return doc.save();
 }
 
 function drawRow(
@@ -204,12 +240,14 @@ function drawRow(
     pen: RGB;
     font: PDFFont;
     bold: PDFFont;
+    options: number;
   },
   question: number,
   mark: number,
   shaded: boolean,
 ) {
   const { x, y, colW, rowH, ink, pen, font, bold } = at;
+  const optionLetters = letters(at.options);
   if (shaded)
     page.drawRectangle({
       x,
@@ -236,13 +274,15 @@ function drawRow(
   });
 
   const room = colW - NUMBER_W;
-  const space =
-    (room - OMR_OPTIONS.length * BUBBLE.w) / (OMR_OPTIONS.length + 1);
-  OMR_OPTIONS.forEach((letter, o) => {
-    const bx = x + NUMBER_W + space + o * (BUBBLE.w + space);
+  const n = optionLetters.length;
+  // Five options take narrower bubbles to keep a gap between them.
+  const bw = Math.min(BUBBLE.w, (room - 3 * (n + 1)) / n);
+  const space = (room - n * bw) / (n + 1);
+  optionLetters.forEach((letter, o) => {
+    const bx = x + NUMBER_W + space + o * (bw + space);
     const by = y + (rowH + BUBBLE.h) / 2;
     const filled = mark === o;
-    page.drawSvgPath(rounded(BUBBLE.w, BUBBLE.h, BUBBLE.r), {
+    page.drawSvgPath(rounded(bw, BUBBLE.h, BUBBLE.r), {
       x: bx,
       y: by,
       color: filled ? pen : undefined,
@@ -251,7 +291,7 @@ function drawRow(
       borderOpacity: filled ? 1 : 0.7,
     });
     page.drawText(letter, {
-      x: bx + (BUBBLE.w - font.widthOfTextAtSize(letter, 7)) / 2,
+      x: bx + (bw - font.widthOfTextAtSize(letter, 7)) / 2,
       y: by - BUBBLE.h / 2 - 2.5,
       size: 7,
       font,

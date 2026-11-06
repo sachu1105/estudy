@@ -13,7 +13,7 @@ export async function uploadPaper(
     size: file.size,
   });
   await putWithProgress(upload.url, file, upload.headers, onProgress);
-  return postJson<{ sheetId: string }>("/api/uploads/omr/complete", {
+  return postJson<{ paperId: string }>("/api/uploads/omr/complete", {
     key: upload.key,
     name: file.name,
   });

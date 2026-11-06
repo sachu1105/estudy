@@ -1,12 +1,15 @@
 "use client";
 
-import { Eraser, Timer } from "lucide-react";
+import { ChevronRight, Eraser, KeyRound, Timer } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { OMR_OPTIONS, OMR_QUESTIONS } from "@/lib/omr/marks";
-import { DEFAULT_LIMIT_MIN } from "@/lib/omr/timer";
+import { letters } from "@/lib/omr/marks";
+import { describeMarking } from "@/lib/omr/marking";
 import { cn } from "@/lib/utils/cn";
+
+import type { PaperSummary } from "./paper-summary";
 
 import { ExamRules } from "./exam-rules";
 import { LimitPicker, short } from "./limit-picker";
@@ -17,14 +20,14 @@ import { LimitPicker, short } from "./limit-picker";
  * pressed. Used to start the timer.
  */
 export function ExamStart({
-  title,
+  paper,
   note,
   final,
   previous,
   pending,
   onStart,
 }: {
-  title: string;
+  paper: PaperSummary;
   /** Why the card is up, when it isn't the paper simply opening. */
   note: string | null;
   /** Marks can't be taken back (the sheet setting). */
@@ -35,9 +38,9 @@ export function ExamStart({
   onStart: (limitMin: number | null) => void;
 }) {
   // Minutes, null for no limit, undefined while a custom time isn't valid yet.
-  const [limit, setLimit] = useState<number | null | undefined>(
-    DEFAULT_LIMIT_MIN,
-  );
+  const [limit, setLimit] = useState<number | null | undefined>(paper.limitMin);
+  const { questions, options } = paper.shape;
+  const optionLetters = letters(options);
   const notes = [
     note ? { icon: Timer, text: note } : null,
     previous > 0
@@ -57,8 +60,9 @@ export function ExamStart({
       }}
     >
       <p className="-mt-2 truncate text-small text-ink-muted">
-        {title.replaceAll("_", " ")} · {OMR_QUESTIONS} questions ·{" "}
-        {OMR_OPTIONS[0]}–{OMR_OPTIONS.at(-1)}
+        {paper.title.replaceAll("_", " ")} · {questions} questions ·{" "}
+        {optionLetters[0]}–{optionLetters.at(-1)} ·{" "}
+        {describeMarking(paper.marking)}
       </p>
       {notes.map(({ icon: Icon, text }) => (
         <p
@@ -70,9 +74,25 @@ export function ExamStart({
         </p>
       ))}
 
-      <LimitPicker onChange={setLimit} />
+      <LimitPicker initial={paper.limitMin} onChange={setLimit} />
 
       <ExamRules final={final} />
+
+      <Link
+        href={`/omr/${paper.id}/key`}
+        className="-my-2 flex min-h-11 items-center gap-3 rounded-control px-1 text-small text-ink-muted hover:text-ink"
+      >
+        <KeyRound className="size-4 shrink-0" aria-hidden />
+        <span className="flex-1">
+          {paper.keyed === 0
+            ? "No answer key yet"
+            : paper.keyed < questions
+              ? `Key: ${paper.keyed} of ${questions}`
+              : "Answer key added"}
+        </span>
+        <span className="font-medium text-accent-ink">Key and marking</span>
+        <ChevronRight className="size-4 shrink-0" aria-hidden />
+      </Link>
 
       <span className="relative flex">
         <span

@@ -163,7 +163,7 @@ Run test, lint and typecheck before declaring any task done.
      job fails visibly. Never save unvalidated AI output.
 
 6. LOGS ARE APPEND-ONLY. StudySession, TaskCompletion, TopicCompletion, TestAttempt,
-   AttemptAnswer, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
+   AttemptAnswer, OmrSubmission, XpLedger and AuditLog are never updated or deleted. Streaks, XP, proficiency,
    coverage and the squad rank are derived from them. The squad rank's weekly XP board
    in Redis is rebuildable from Postgres at any time.
 
@@ -268,6 +268,13 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   item mapped to it, across the pod.
 - Previous year questions keep their exam, post and year. Answers come from the official
   answer key when one is uploaded; otherwise they are marked unverified until checked.
+- Question papers (Tests): a Paper is the PDF, its shape (1-200 questions, A-D or A-E),
+  its marking (marks for right, penalty for wrong, cut-off, time limit, what a cancelled
+  question is worth) and its answer key (one or more accepted options, or cancelled).
+  Marks are exact fractions (+1, -1/3), never rounded floats. A handed-in sheet
+  (OmrSubmission) stores marks only; the score is always worked out from the current key
+  by `lib/omr/score`, so a corrected key corrects every result. Keys say whose they are
+  (the owner's or the official one); the app never claims a key is exam-accurate.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   XP feeds only the squad rank: a squad's members ranked by this week's XP.
 

@@ -24,6 +24,7 @@ describe("answer sheet pdf", () => {
     const bytes = await answerSheetPdf({
       title: "LDC_2024_paper",
       marks,
+      options: 4,
       ink: "teal",
       pen: "blue",
       printedAt: "5 Nov 2026, 3:42 pm",
@@ -40,6 +41,7 @@ describe("answer sheet pdf", () => {
     const mixed = await answerSheetPdf({
       title: "LDC paper — മലയാളം",
       marks,
+      options: 4,
       ink: "violet",
       pen: "black",
       printedAt: "today",
@@ -49,10 +51,27 @@ describe("answer sheet pdf", () => {
     const none = await answerSheetPdf({
       title: "മലയാളം",
       marks,
+      options: 4,
       ink: "violet",
       pen: "black",
       printedAt: "today",
     });
     expect(await textOf(none)).toContain("Question paper");
+  });
+
+  it("runs a long paper onto more pages, with A to E", async () => {
+    const bytes = await answerSheetPdf({
+      title: "Degree level",
+      marks: blankMarks(150).map((_, i) => (i === 149 ? 4 : BLANK)),
+      options: 5,
+      ink: "sky",
+      pen: "black",
+      printedAt: "today",
+    });
+    expect((await getDocumentProxy(new Uint8Array(bytes))).numPages).toBe(2);
+    const text = await textOf(bytes);
+    expect(text).toContain("Marked 1 of 150");
+    expect(text).toContain("150");
+    expect(text).toContain("Page 2 of 2");
   });
 });

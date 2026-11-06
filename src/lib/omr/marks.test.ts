@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   BLANK,
-  OMR_QUESTIONS,
+  DEFAULT_SHAPE,
   blankMarks,
   markedCount,
   normaliseMarks,
@@ -10,10 +10,10 @@ import {
 } from "./marks";
 
 describe("omr marks", () => {
-  it("is always 100 questions of blank or A-D", () => {
-    expect(blankMarks()).toHaveLength(OMR_QUESTIONS);
+  it("is 100 questions of blank or A-D unless the paper says otherwise", () => {
+    expect(blankMarks()).toHaveLength(DEFAULT_SHAPE.questions);
     const marks = normaliseMarks([0, 3, 4, -2, 1.5, "1", null]);
-    expect(marks).toHaveLength(OMR_QUESTIONS);
+    expect(marks).toHaveLength(100);
     expect(marks.slice(0, 7)).toEqual([
       0,
       3,
@@ -23,8 +23,14 @@ describe("omr marks", () => {
       BLANK,
       BLANK,
     ]);
-    expect(normaliseMarks(new Array(150).fill(2))).toHaveLength(OMR_QUESTIONS);
+    expect(normaliseMarks(new Array(150).fill(2))).toHaveLength(100);
     expect(normaliseMarks(null)).toEqual(blankMarks());
+  });
+
+  it("follows the paper's shape: 120 questions, A to E", () => {
+    const marks = normaliseMarks([4, 5, 0], { questions: 120, options: 5 });
+    expect(marks).toHaveLength(120);
+    expect(marks.slice(0, 3)).toEqual([4, BLANK, 0]);
   });
 
   it("marks, changes and clears a bubble", () => {

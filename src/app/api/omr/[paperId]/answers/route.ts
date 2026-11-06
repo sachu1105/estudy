@@ -9,14 +9,14 @@ import { omrService } from "@/server/services/omr";
 const query = z.object({ pen: z.enum(OMR_PENS).catch("black") });
 
 // The marked answer sheet as a PDF, to its owner only (rule 15), drawn fresh each time.
-export const GET = withUser<RouteContext<"/api/omr/[sheetId]/answers">>(
+export const GET = withUser<RouteContext<"/api/omr/[paperId]/answers">>(
   async (request, user, context) => {
-    const { sheetId } = await context.params;
+    const { paperId } = await context.params;
     const { pen } = query.parse({
       pen: new URL(request.url).searchParams.get("pen"),
     });
-    const pdf = isId(sheetId)
-      ? await omrService.answerPdf(user, sheetId, {
+    const pdf = isId(paperId)
+      ? await omrService.answerPdf(user, paperId, {
           pen,
           timeZone: user.timezone,
         })

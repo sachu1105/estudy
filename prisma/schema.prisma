@@ -86,6 +86,8 @@ model User {
   podItems           PodItem[]
   podFiles           PodFile[]
   omrSheets          OmrSheet[]
+  papers             Paper[]
+  omrSubmissions     OmrSubmission[]
   topicCompletions   TopicCompletion[]
   planDrafts         PlanDraft[]
   studyAvailability  StudyAvailability?
@@ -597,18 +599,65 @@ model PodFile {
   @@index([itemId, order])
 }
 
-/// A question paper the user uploaded as a PDF, with an OMR sheet they mark beside it.
-/// Private to its owner (rule 15). `marks` holds one entry per question: -1 for blank,
-/// 0-3 for A-D.
+/// Who wrote a paper's answer key: the paper's owner, or the exam board's official key.
+enum PaperKeySource {
+  OWN
+  OFFICIAL
+}
+
+/// What a cancelled question is worth: everyone gets its mark, or it is left out and the
+/// rest are scaled up to the full total.
+enum CancelRule {
+  AWARD
+  SCALE
+}
+
+/// A question paper: its PDF, how it is marked and its answer key. Private to its owner
+/// for now (rule 15). Marks are exact fractions (numerator / denominator), so a third of a
+/// mark stays a third and thirty wrong answers cost exactly ten.
+model Paper {
+  id            String         @id @default(uuid()) @db.Uuid
+  ownerId       String         @db.Uuid
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title         String
+  storageKey    String         @unique
+  sizeBytes     Int
+  sha256        String
+  pageCount     Int?
+  questionCount Int            @default(100)
+  optionCount   Int            @default(4)
+  rightNum      Int            @default(1)
+  rightDen      Int            @default(1)
+  /// Taken off for a wrong answer; 0 for no negative marking.
+  wrongNum      Int            @default(1)
+  wrongDen      Int            @default(3)
+  /// The cut-off mark; null for none.
+  cutoffNum     Int?
+  cutoffDen     Int?
+  /// The time limit the exam start offers, in minutes; null for none.
+  limitMin      Int?           @default(75)
+  /// One entry per question (lib/omr/key): 0 not keyed yet, -1 cancelled, otherwise a
+  /// bitmask of the accepted options (bit 0 is A).
+  answerKey     Int[]
+  keySource     PaperKeySource @default(OWN)
+  cancelRule    CancelRule     @default(AWARD)
+  keyUpdatedAt  DateTime?      @db.Timestamptz(6)
+  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime       @updatedAt @db.Timestamptz(6)
+  sheets        OmrSheet[]
+  submissions   OmrSubmission[]
+
+  @@index([ownerId, createdAt])
+}
+
+/// One person's OMR sheet for a paper: the sitting in progress. `marks` holds one entry
+/// per question: -1 for blank, 0.. for A, B, and on.
 model OmrSheet {
   id                String    @id @default(uuid()) @db.Uuid
   ownerId           String    @db.Uuid
   owner             User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  title             String
-  storageKey        String    @unique
-  sizeBytes         Int
-  sha256            String
-  pageCount         Int?
+  paperId           String    @db.Uuid
+  paper             Paper     @relation(fields: [paperId], references: [id], onDelete: Cascade)
   marks             Int[]
   /// The timer (lib/omr/timer): on once started; a limit counts down, none counts up.
   /// Time runs from `timerRunningSince` on the server's clock, on top of
@@ -620,7 +669,26 @@ model OmrSheet {
   createdAt         DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime  @updatedAt @db.Timestamptz(6)
 
-  @@index([ownerId, createdAt])
+  @@unique([paperId, ownerId])
+  @@index([ownerId, updatedAt])
+}
+
+/// A handed-in sheet. Append-only (rule 6): the score is never stored, it is worked out
+/// from these marks and the paper's current key, so a corrected key corrects every result.
+model OmrSubmission {
+  id          String   @id @default(uuid()) @db.Uuid
+  paperId     String   @db.Uuid
+  paper       Paper    @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marks       Int[]
+  /// Seconds on the clock when handed in, and the limit it ran to (null for none).
+  timeUsedSec Int
+  limitSec    Int?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([paperId, userId, createdAt])
+  @@index([userId, createdAt])
 }
 
 /// Which topics an item covers. One item can cover several topics.

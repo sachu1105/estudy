@@ -10,7 +10,7 @@ const bodySchema = z.object({
   name: z.string().max(255),
 });
 
-// The browser finished its PUT: check the PDF and make the answer sheet.
+// The browser finished its PUT: check the PDF and make the paper and its answer sheet.
 export const POST = withUser(async (request, user) => {
   const body = bodySchema.safeParse(await request.json().catch(() => null));
   if (!body.success)
@@ -30,5 +30,5 @@ export const POST = withUser(async (request, user) => {
       { error: result.message, code: result.code },
       { status: 422 },
     );
-  return NextResponse.json({ sheetId: result.sheetId });
+  return NextResponse.json({ paperId: result.paperId });
 });

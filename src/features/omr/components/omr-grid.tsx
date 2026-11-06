@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 
-import { OMR_OPTIONS, type Marks } from "@/lib/omr/marks";
+import { letters, type Marks } from "@/lib/omr/marks";
 import { cn } from "@/lib/utils/cn";
 
 import type { SheetInk } from "./sheet-ink";
@@ -27,11 +27,14 @@ const BARCODE = [1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1];
  */
 export function OmrGrid({
   marks,
+  options,
   ink,
   pen,
   onMark,
 }: {
   marks: Marks;
+  /** Options per question: 4 is A-D. */
+  options: number;
   ink: SheetInk;
   /** The colour a mark is filled in. */
   pen: Pen;
@@ -63,7 +66,14 @@ export function OmrGrid({
         {/* As many whole columns as fit, stretched evenly across the width (auto-fit: no
             empty tracks once all four are out). A column is never narrower than its row
             (number + four bubbles + rules), so nothing is cut at any width. */}
-        <div className="grid min-w-0 flex-1 grid-cols-[repeat(auto-fit,minmax(216px,1fr))] gap-x-3 gap-y-11 md:grid-cols-[repeat(auto-fit,minmax(184px,1fr))] md:gap-y-9">
+        <div
+          className={cn(
+            "grid min-w-0 flex-1 gap-x-3 gap-y-11 md:gap-y-9",
+            options === 5
+              ? "grid-cols-[repeat(auto-fit,minmax(260px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]"
+              : "grid-cols-[repeat(auto-fit,minmax(216px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(184px,1fr))]",
+          )}
+        >
           {columns.map((start, c) => (
             <fieldset key={start} className={cn("border", ink.line)}>
               <legend className="sr-only">
@@ -76,6 +86,7 @@ export function OmrGrid({
                     key={start + i}
                     question={start + i}
                     mark={mark}
+                    options={options}
                     ink={ink}
                     pen={pen}
                     // Five-row blocks shaded in a checkerboard across the columns.
@@ -111,6 +122,7 @@ export function OmrGrid({
 const OmrRow = memo(function OmrRow({
   question,
   mark,
+  options,
   ink,
   pen,
   shaded,
@@ -118,6 +130,7 @@ const OmrRow = memo(function OmrRow({
 }: {
   question: number;
   mark: number;
+  options: number;
   ink: SheetInk;
   pen: Pen;
   shaded: boolean;
@@ -135,7 +148,7 @@ const OmrRow = memo(function OmrRow({
         {question + 1}
       </span>
       <span className="flex flex-1 items-center justify-around">
-        {OMR_OPTIONS.map((letter, option) => {
+        {letters(options).map((letter, option) => {
           const on = mark === option;
           return (
             <button

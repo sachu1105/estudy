@@ -1,6 +1,7 @@
 import { PodTile } from "@/components/blocks/pod-tile";
 import { timeAgo } from "@/lib/format/ago";
-import { markedCount, OMR_QUESTIONS, type Marks } from "@/lib/omr/marks";
+import { formatScore, type Fraction } from "@/lib/omr/fraction";
+import { markedCount, type Marks } from "@/lib/omr/marks";
 import type { TimerView } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
@@ -68,17 +69,31 @@ function SheetArt({ id, marks }: { id: string; marks: Marks }) {
   );
 }
 
-/** Where a paper stands: not touched, being worked on, or every answer marked. */
-function status(marked: number, timer: TimerView) {
-  if (marked === OMR_QUESTIONS) return "All marked";
+/** Where a paper stands: not touched, being worked on, every answer marked, or handed in. */
+function status(
+  marked: number,
+  total: number,
+  timer: TimerView,
+  done: boolean,
+) {
+  if (marked === total) return "All marked";
   if (timer.running) return "Timer running";
-  return marked > 0 ? "In progress" : "Not started";
+  if (marked > 0) return "In progress";
+  return done ? "Submitted" : "Not started";
 }
+
+type LastResult = {
+  id: string;
+  score: Fraction;
+  max: Fraction;
+  /** Some of the key is in, so the score means something. */
+  keyed: boolean;
+};
 
 /**
  * A question paper on the Tests page, shaped like a pod: its answer sheet on top, then
- * its name, where it stands and how much is marked. The menu in the corner renames or
- * deletes it.
+ * its name, where it stands, and how much is marked (or, between sittings, the last
+ * score). The menu in the corner holds the key, the last result, rename and delete.
  */
 export function PaperCard({
   sheet,
@@ -91,11 +106,15 @@ export function PaperCard({
     updatedAt: Date;
     marks: Marks;
     timer: TimerView;
+    last: LastResult | null;
   };
   now: Date;
   timeZone: string;
 }) {
   const marked = markedCount(sheet.marks);
+  const total = sheet.marks.length;
+  const between = marked === 0 && !sheet.timer.running;
+  const last = sheet.last;
 
   return (
     <li className="relative flex">
@@ -103,21 +122,36 @@ export function PaperCard({
         href={`/omr/${sheet.id}`}
         // File names come with underscores; the words read better without.
         title={sheet.title.replaceAll("_", " ")}
-        subtitle={`${status(marked, sheet.timer)} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
+        subtitle={`${status(marked, total, sheet.timer, last !== null)} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
         art={<SheetArt id={sheet.id} marks={sheet.marks} />}
-        stat={{ value: marked, unit: `of ${OMR_QUESTIONS} marked` }}
-        aside={
-          marked === OMR_QUESTIONS
-            ? "Review"
-            : marked > 0 || sheet.timer.running
-              ? "Continue"
-              : "Start"
+        stat={
+          between && last
+            ? last.keyed
+              ? {
+                  value: formatScore(last.score),
+                  unit: `of ${formatScore(last.max)}, last score`,
+                }
+              : { value: "–", unit: "add the key to score it" }
+            : { value: marked, unit: `of ${total} marked` }
         }
-        progress={(marked / OMR_QUESTIONS) * 100}
+        aside={
+          marked === total
+            ? "Review"
+            : !between
+              ? "Continue"
+              : last
+                ? "Sit again"
+                : "Start"
+        }
+        progress={(marked / total) * 100}
       />
       {/* Beside the link, not in it: a menu can't sit inside a link. */}
       <div className="absolute top-2 right-2 rounded-control bg-surface/90 backdrop-blur-sm">
-        <SheetMenu id={sheet.id} title={sheet.title} />
+        <SheetMenu
+          id={sheet.id}
+          title={sheet.title}
+          lastResultId={last?.id ?? null}
+        />
       </div>
     </li>
   );

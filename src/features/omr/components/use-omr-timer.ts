@@ -25,7 +25,7 @@ const OFF: TimerView = {
  * left (closed, reloaded, the phone died): the clock is reset and `abandoned` is true.
  */
 export function useOmrTimer(
-  sheetId: string,
+  paperId: string,
   initial: TimerView,
   onTimeUp: () => void,
 ) {
@@ -60,8 +60,8 @@ export function useOmrTimer(
   }, [elapsed, view.limitSec, view.running]);
 
   useEffect(() => {
-    if (abandoned) void timerAction({ id: sheetId, timer: { op: "reset" } });
-  }, [abandoned, sheetId]);
+    if (abandoned) void timerAction({ id: paperId, timer: { op: "reset" } });
+  }, [abandoned, paperId]);
 
   function show(next: TimerView) {
     const at = Date.now();
@@ -79,7 +79,7 @@ export function useOmrTimer(
         running: true,
       });
     startTransition(async () => {
-      const result = await timerAction({ id: sheetId, timer: input });
+      const result = await timerAction({ id: paperId, timer: input });
       if (!result.ok) {
         toast.error(result.error);
         return show(previous);
@@ -90,7 +90,7 @@ export function useOmrTimer(
 
   /** Reset and wait for it: leaving the exam does this before it navigates. */
   async function reset() {
-    const result = await timerAction({ id: sheetId, timer: { op: "reset" } });
+    const result = await timerAction({ id: paperId, timer: { op: "reset" } });
     if (result.ok) show(result.timer);
     return result.ok;
   }

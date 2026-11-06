@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { OMR_QUESTIONS } from "@/lib/omr/marks";
+import { parseFraction } from "@/lib/omr/fraction";
+import { CANCELLED } from "@/lib/omr/key";
+import {
+  MAX_QUESTIONS,
+  MIN_QUESTIONS,
+  OPTION_COUNTS,
+  OPTION_LETTERS,
+} from "@/lib/omr/marks";
 import { MAX_LIMIT_MIN, type TimerView } from "@/lib/omr/timer";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
@@ -34,7 +41,16 @@ export async function saveMarksAction(input: unknown): Promise<Done> {
   const parsed = z
     .object({
       id: z.uuid(),
-      marks: z.array(z.int().min(-1).max(3)).length(OMR_QUESTIONS),
+      // The service cuts it to the paper's own shape.
+      marks: z
+        .array(
+          z
+            .int()
+            .min(-1)
+            .max(OPTION_LETTERS.length - 1),
+        )
+        .min(1)
+        .max(MAX_QUESTIONS),
     })
     .safeParse(input);
   if (!parsed.success) return invalid;
@@ -97,4 +113,87 @@ export async function deleteSheetAction(input: unknown): Promise<Done> {
   if (!done) return missing;
   revalidatePath("/tests");
   return { ok: true };
+}
+
+/** A mark typed as "1", "0.25" or "1/3". */
+const mark = (message: string) =>
+  z.string().transform((text, ctx) => {
+    const value = parseFraction(text);
+    if (value === null) ctx.addIssue({ code: "custom", message });
+    return value ?? z.NEVER;
+  });
+
+const settingsSchema = z.object({
+  id: z.uuid(),
+  questionCount: z.int().min(MIN_QUESTIONS).max(MAX_QUESTIONS),
+  optionCount: z.union(OPTION_COUNTS.map((n) => z.literal(n))),
+  right: mark("Write the mark for a right answer as 1, 0.5 or 1/3."),
+  wrong: mark("Write what a wrong answer costs as 0, 0.25 or 1/3."),
+  cutoff: mark("Write the cut-off as a number, like 45 or 42.67.").nullable(),
+  limitMin: z.int().min(1).max(MAX_LIMIT_MIN).nullable(),
+  cancelRule: z.enum(["AWARD", "SCALE"]),
+});
+
+/** How the paper is marked: its shape, the marks, the cut-off and the time. */
+export async function savePaperSettingsAction(input: unknown): Promise<Done> {
+  const user = await requireUser();
+  const parsed = settingsSchema.safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? invalid.error,
+    };
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const { id, ...settings } = parsed.data;
+  const result = await omrService.saveSettings(user, id, settings);
+  if (!result.ok) return { ok: false, error: result.message };
+  revalidatePath(`/omr/${id}`, "layout");
+  revalidatePath("/tests");
+  return { ok: true };
+}
+
+/** The answer key, saved as it's filled in. */
+export async function saveKeyAction(input: unknown): Promise<Done> {
+  const user = await requireUser();
+  const parsed = z
+    .object({
+      id: z.uuid(),
+      answerKey: z
+        .array(
+          z
+            .int()
+            .min(CANCELLED)
+            .max((1 << OPTION_LETTERS.length) - 1),
+        )
+        .min(1)
+        .max(MAX_QUESTIONS),
+      source: z.enum(["OWN", "OFFICIAL"]),
+    })
+    .safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const { id, ...key } = parsed.data;
+  const saved = await omrService.saveKey(user, id, key);
+  if (!saved) return missing;
+  revalidatePath(`/omr/${id}`, "layout");
+  revalidatePath("/tests");
+  return { ok: true };
+}
+
+/** Hand the sheet in; the page goes on to its result. */
+export async function submitSheetAction(
+  input: unknown,
+): Promise<{ ok: true; submissionId: string } | { ok: false; error: string }> {
+  const user = await requireUser();
+  const parsed = z.object({ id: z.uuid() }).safeParse(input);
+  if (!parsed.success) return invalid;
+  const result = await rateLimit([["testPerUser", user.id]]);
+  if (!result.ok)
+    return { ok: false, error: retryMessage(result.retryAfterMs) };
+  const handed = await omrService.submit(user, parsed.data.id);
+  if (!handed.ok) return { ok: false, error: handed.message };
+  revalidatePath("/tests");
+  return { ok: true, submissionId: handed.submissionId };
 }
