@@ -93,6 +93,9 @@ function memoryPapers(ids: ReturnType<typeof sequentialIds>, now: () => Date) {
             .slice(0, 1),
         }));
     },
+    async find(id) {
+      return papers.get(id) ?? null;
+    },
     async findOwned(id, ownerId) {
       return owned(id, ownerId);
     },
@@ -371,8 +374,8 @@ describe("question papers", () => {
     let result = await s.service.result(user, id, handed.submissionId);
     expect(result?.submission.timeUsedSec).toBe(125);
     expect(result?.submission.limitSec).toBe(600);
-    expect(result?.score.unkeyed).toBe(4);
-    expect(result?.score.passed).toBeNull();
+    expect(result?.score?.unkeyed).toBe(4);
+    expect(result?.score?.passed).toBeNull();
 
     // A, A, A, cancelled: 2 right, 1 wrong, 1 blank... and the cancelled one is awarded.
     await s.service.saveKey(user, id, {
@@ -380,14 +383,14 @@ describe("question papers", () => {
       source: "OWN",
     });
     result = await s.service.result(user, id, handed.submissionId);
-    expect(result?.score.outcomes).toEqual([
+    expect(result?.score?.outcomes).toEqual([
       "right",
       "wrong",
       "blank",
       "cancelled",
     ]);
-    expect(formatScore(result!.score.score)).toBe("1.67");
-    expect(result?.score.passed).toBe(false);
+    expect(formatScore(result!.score!.score)).toBe("1.67");
+    expect(result?.score?.passed).toBe(false);
     expect(result?.answerKey).toEqual([1, 1, 1, CANCELLED]);
     expect(result?.sittings).toHaveLength(1);
 
@@ -402,7 +405,7 @@ describe("question papers", () => {
     if (!again.ok) throw new Error(again.message);
     result = await s.service.result(user, id, again.submissionId);
     expect(result?.submission.timeUsedSec).toBe(0);
-    expect(result?.score.passed).toBe(true);
+    expect(result?.score?.passed).toBe(true);
     expect(result?.sittings.map((x) => x.number)).toEqual([2, 1]);
 
     expect(await s.service.result(other, id, again.submissionId)).toBeNull();

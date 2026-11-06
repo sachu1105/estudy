@@ -5,14 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "@/components/ui/toast";
 import type { Marks } from "@/lib/omr/marks";
 
-import { saveMarksAction } from "../actions";
+import type { SheetApi } from "./sheet-api";
 
 /**
  * The sheet's marks, saved half a second after the last tap. Anything not yet sent goes
  * when the tab is hidden (a phone switching apps) or the sheet closes; `flush` lets a
  * link wait for it, and a tab close with unsent marks asks first.
  */
-export function useSavedMarks(id: string, initial: Marks) {
+export function useSavedMarks(save: SheetApi["saveMarks"], initial: Marks) {
   const [marks, setMarks] = useState(initial);
   const [saving, setSaving] = useState(false);
   const saved = useRef(initial);
@@ -20,12 +20,12 @@ export function useSavedMarks(id: string, initial: Marks) {
 
   const send = useCallback(
     async (next: Marks) => {
-      const result = await saveMarksAction({ id, marks: next });
+      const result = await save(next);
       if (!result.ok) return void toast.error(result.error);
       saved.current = next;
       if (latest.current === next) setSaving(false);
     },
-    [id],
+    [save],
   );
   const dirty = useCallback(() => latest.current !== saved.current, []);
   const flush = useCallback(

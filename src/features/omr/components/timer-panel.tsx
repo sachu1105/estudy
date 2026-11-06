@@ -18,7 +18,8 @@ export function TimerPanel({
   view: TimerView;
   elapsed: number;
   pending: boolean;
-  onReset: () => void;
+  /** Left out for a squad exam, whose clock can't be reset. */
+  onReset?: () => void;
 }) {
   const [confirming, setConfirming] = useState(false);
   const shown = face(view.limitSec, elapsed);
@@ -30,7 +31,9 @@ export function TimerPanel({
         {view.limitSec === null
           ? "Counting up, no limit."
           : `${clock(Math.min(elapsed, view.limitSec))} used of ${clock(view.limitSec)}.`}{" "}
-        Like the exam hall clock, it can&apos;t be paused.
+        {onReset
+          ? "Like the exam hall clock, it can't be paused."
+          : "It can't be paused or reset."}
       </SheetDescription>
       <p
         className={cn(
@@ -45,7 +48,7 @@ export function TimerPanel({
           Time&apos;s up. The extra time shows with a plus.
         </p>
       ) : null}
-      {confirming ? (
+      {!onReset ? null : confirming ? (
         <div className="flex flex-col gap-3 rounded-card border border-border p-4">
           <p className="text-body">
             Reset the timer? It goes back to the start, and your marks stay.

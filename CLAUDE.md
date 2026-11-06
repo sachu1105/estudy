@@ -30,8 +30,8 @@ day, and for each subject how well they already know it (confidence 1-5) and how
 they want to push it (intensity). It gives a day-by-day plan and tracks progress at every
 step. Completed topics and test results change next week's plan. A daily streak keeps
 them coming back. Groups (squads) let them share material and mock tests, discuss, ask
-questions and compete on a squad rank. XP and the squad rank are all the competition
-there is.
+questions and compete on a squad rank. XP, the squad rank and the rank list of an exam
+shared inside a squad are all the competition there is.
 
 Previous year question papers are parsed once into questions tagged to syllabus topics,
 then reused for practice and mock tests by everyone preparing for the same exam.
@@ -275,6 +275,15 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   (OmrSubmission) stores marks only; the score is always worked out from the current key
   by `lib/omr/score`, so a corrected key corrects every result. Keys say whose they are
   (the owner's or the official one); the app never claims a key is exam-accurate.
+- Squad exams: a paper's owner shares it into a squad channel (PaperShare) with an open
+  time, an optional close, and a results time (right away, at the close, or a set time).
+  Everyone who can open the channel sits it once for the rank list (PaperEntry): a
+  register number from 1001, a server clock that can't be reset (leaving doesn't stop
+  it; late starters get until the close), and the sheet handed in as it stands when time
+  runs out. The key, scores and rank list stay hidden from takers until the results
+  time; the rank list shows register numbers unless the sharer turns names on. Ties
+  share a rank (`lib/omr/rank`). Practice on a shared paper opens only after the
+  person's own sitting, so it never previews the paper.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   XP feeds only the squad rank: a squad's members ranked by this week's XP.
 

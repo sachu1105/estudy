@@ -9,4 +9,13 @@ export type PaperSummary = {
   marking: Marking;
   limitMin: number | null;
   keyed: number;
+  /** The person's own paper: they set its key and marking. */
+  owner: boolean;
+};
+
+/** A squad exam's one ranked sitting: its register number and when the exam closes. */
+export type ExamSitting = {
+  id: string;
+  registerNo: number | null;
+  closesAt: string | null;
 };

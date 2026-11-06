@@ -87,6 +87,8 @@ model User {
   podFiles           PodFile[]
   omrSheets          OmrSheet[]
   papers             Paper[]
+  paperShares        PaperShare[]
+  paperEntries       PaperEntry[]
   omrSubmissions     OmrSubmission[]
   topicCompletions   TopicCompletion[]
   planDrafts         PlanDraft[]
@@ -616,36 +618,37 @@ enum CancelRule {
 /// for now (rule 15). Marks are exact fractions (numerator / denominator), so a third of a
 /// mark stays a third and thirty wrong answers cost exactly ten.
 model Paper {
-  id            String         @id @default(uuid()) @db.Uuid
-  ownerId       String         @db.Uuid
-  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  id            String          @id @default(uuid()) @db.Uuid
+  ownerId       String          @db.Uuid
+  owner         User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   title         String
-  storageKey    String         @unique
+  storageKey    String          @unique
   sizeBytes     Int
   sha256        String
   pageCount     Int?
-  questionCount Int            @default(100)
-  optionCount   Int            @default(4)
-  rightNum      Int            @default(1)
-  rightDen      Int            @default(1)
+  questionCount Int             @default(100)
+  optionCount   Int             @default(4)
+  rightNum      Int             @default(1)
+  rightDen      Int             @default(1)
   /// Taken off for a wrong answer; 0 for no negative marking.
-  wrongNum      Int            @default(1)
-  wrongDen      Int            @default(3)
+  wrongNum      Int             @default(1)
+  wrongDen      Int             @default(3)
   /// The cut-off mark; null for none.
   cutoffNum     Int?
   cutoffDen     Int?
   /// The time limit the exam start offers, in minutes; null for none.
-  limitMin      Int?           @default(75)
+  limitMin      Int?            @default(75)
   /// One entry per question (lib/omr/key): 0 not keyed yet, -1 cancelled, otherwise a
   /// bitmask of the accepted options (bit 0 is A).
   answerKey     Int[]
-  keySource     PaperKeySource @default(OWN)
-  cancelRule    CancelRule     @default(AWARD)
-  keyUpdatedAt  DateTime?      @db.Timestamptz(6)
-  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime       @updatedAt @db.Timestamptz(6)
+  keySource     PaperKeySource  @default(OWN)
+  cancelRule    CancelRule      @default(AWARD)
+  keyUpdatedAt  DateTime?       @db.Timestamptz(6)
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @updatedAt @db.Timestamptz(6)
   sheets        OmrSheet[]
   submissions   OmrSubmission[]
+  shares        PaperShare[]
 
   @@index([ownerId, createdAt])
 }
@@ -676,19 +679,73 @@ model OmrSheet {
 /// A handed-in sheet. Append-only (rule 6): the score is never stored, it is worked out
 /// from these marks and the paper's current key, so a corrected key corrects every result.
 model OmrSubmission {
-  id          String   @id @default(uuid()) @db.Uuid
-  paperId     String   @db.Uuid
-  paper       Paper    @relation(fields: [paperId], references: [id], onDelete: Cascade)
-  userId      String   @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String      @id @default(uuid()) @db.Uuid
+  paperId     String      @db.Uuid
+  paper       Paper       @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  userId      String      @db.Uuid
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   marks       Int[]
   /// Seconds on the clock when handed in, and the limit it ran to (null for none).
   timeUsedSec Int
   limitSec    Int?
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  /// Set when this was someone's sitting in a shared exam.
+  entry       PaperEntry?
 
   @@index([paperId, userId, createdAt])
   @@index([userId, createdAt])
+}
+
+/// A paper shared into a squad channel as an exam. Everyone who can open the channel
+/// sits it once for the rank list (a PaperEntry); results, and the key, come out at
+/// `resultsAt` (null: as each sheet is handed in).
+model PaperShare {
+  id         String       @id @default(uuid()) @db.Uuid
+  paperId    String       @db.Uuid
+  paper      Paper        @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  groupId    String       @db.Uuid
+  group      Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  channelId  String       @db.Uuid
+  channel    Channel      @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sharedById String       @db.Uuid
+  sharedBy   User         @relation(fields: [sharedById], references: [id], onDelete: Cascade)
+  opensAt    DateTime     @db.Timestamptz(6)
+  /// After this, sittings no longer count for the rank list. Null: never closes.
+  closesAt   DateTime?    @db.Timestamptz(6)
+  resultsAt  DateTime?    @db.Timestamptz(6)
+  /// The rank list shows names, not only register numbers.
+  showNames  Boolean      @default(false)
+  hiddenAt   DateTime?    @db.Timestamptz(6)
+  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
+  entries    PaperEntry[]
+  messages   Message[]
+
+  @@index([groupId, createdAt])
+  @@index([paperId])
+}
+
+/// One person's place in a shared exam: their register number and their one sitting for
+/// the rank list. The clock runs on the server from `startedAt` and can't be reset; at
+/// `endsAt` the sheet is handed in as it stands.
+model PaperEntry {
+  id           String         @id @default(uuid()) @db.Uuid
+  shareId      String         @db.Uuid
+  share        PaperShare     @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  userId       String         @db.Uuid
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  registerNo   Int
+  marks        Int[]
+  startedAt    DateTime       @db.Timestamptz(6)
+  /// The paper's time from the start, never past the exam's close. Null: no limit.
+  endsAt       DateTime?      @db.Timestamptz(6)
+  submissionId String?        @unique @db.Uuid
+  submission   OmrSubmission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(6)
+
+  @@unique([shareId, userId])
+  @@unique([shareId, registerNo])
+  @@index([userId])
 }
 
 /// Which topics an item covers. One item can cover several topics.
@@ -1272,16 +1329,17 @@ model Group {
   updatedAt    DateTime        @updatedAt @db.Timestamptz(6)
   deletedAt    DateTime?       @db.Timestamptz(6)
 
-  members    Membership[]
-  passes     SquadPass[]
-  invites    GroupInvite[]
-  requests   JoinRequest[]
-  items      GroupItem[]
-  tests      GroupTest[]
-  posts      Post[]
-  categories ChannelCategory[]
-  channels   Channel[]
-  messages   Message[]
+  members     Membership[]
+  passes      SquadPass[]
+  invites     GroupInvite[]
+  requests    JoinRequest[]
+  items       GroupItem[]
+  tests       GroupTest[]
+  paperShares PaperShare[]
+  posts       Post[]
+  categories  ChannelCategory[]
+  channels    Channel[]
+  messages    Message[]
 
   @@index([visibility, deletedAt, examId])
 }
@@ -1328,14 +1386,15 @@ model Channel {
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
   deletedAt   DateTime?        @db.Timestamptz(6)
 
-  items    GroupItem[]
-  tests    GroupTest[]
-  posts    Post[]
-  messages Message[]
-  reads    ChannelRead[]
-  access   ChannelAccess[]
-  notify   ChannelNotify[]
-  passes   SquadPass[]
+  items       GroupItem[]
+  tests       GroupTest[]
+  paperShares PaperShare[]
+  posts       Post[]
+  messages    Message[]
+  reads       ChannelRead[]
+  access      ChannelAccess[]
+  notify      ChannelNotify[]
+  passes      SquadPass[]
 
   @@index([groupId, deletedAt, order])
 }
@@ -1390,6 +1449,9 @@ model Message {
   /// A mock test shared into the chat; members take it from the message.
   groupTestId      String?     @db.Uuid
   groupTest        GroupTest?  @relation(fields: [groupTestId], references: [id], onDelete: SetNull)
+  /// A question paper shared here as an exam.
+  paperShareId     String?     @db.Uuid
+  paperShare       PaperShare? @relation(fields: [paperShareId], references: [id], onDelete: SetNull)
   /// On a doubt: the reply its asker marked as the best answer.
   acceptedAnswerId String?     @db.Uuid
   acceptedAnswer   Message?    @relation("AcceptedAnswer", fields: [acceptedAnswerId], references: [id], onDelete: SetNull)

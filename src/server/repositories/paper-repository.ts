@@ -31,7 +31,7 @@ const SHEET_SELECT = {
 } as const;
 
 /** Everything about a paper but its file: how it's marked and its key. */
-const PAPER_SELECT = {
+export const PAPER_SELECT = {
   id: true,
   ownerId: true,
   title: true,
@@ -112,6 +112,11 @@ export const paperRepository = {
         p.submissions[0]?.createdAt.getTime() ?? 0,
       );
     return papers.sort((a, b) => touched(b) - touched(a));
+  },
+
+  /** Any paper; the caller decides whether this person may open it. */
+  async find(id: string) {
+    return prisma.paper.findUnique({ where: { id }, select: PAPER_SELECT });
   },
 
   async findOwned(id: string, ownerId: string) {

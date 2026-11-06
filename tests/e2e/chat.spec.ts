@@ -241,6 +241,7 @@ test.describe("squad chat", () => {
       "Camera",
       "Document",
       "From my pods",
+      "Question paper",
       "Mock test",
       "Poll",
       "Ask a doubt",

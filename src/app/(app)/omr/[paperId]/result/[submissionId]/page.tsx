@@ -1,9 +1,10 @@
-import { KeyRound, RotateCcw } from "lucide-react";
+import { EyeOff, KeyRound, RotateCcw } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { BackLink } from "@/features/omr/components/back-link";
 import { ResultReview } from "@/features/omr/components/result-review";
 import { ResultScore } from "@/features/omr/components/result-score";
@@ -25,8 +26,8 @@ export default async function ResultPage({
       ? await omrService.result(user, paperId, submissionId)
       : null;
   if (!result) notFound();
-  const { paper, submission, score } = result;
-  const scored = score.unkeyed < score.outcomes.length;
+  const { paper, submission, score, answerKey } = result;
+  const scored = !!score && score.unkeyed < score.outcomes.length;
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
@@ -40,20 +41,35 @@ export default async function ResultPage({
         </div>
       </header>
       <main className="mx-auto flex w-full max-w-[1120px] flex-col gap-6 px-4 pt-4 pb-[max(24px,env(safe-area-inset-bottom))] md:pt-6">
-        <ResultScore
-          paperId={paper.id}
-          score={score}
-          marking={paper.marking}
-          timeUsedSec={submission.timeUsedSec}
-          limitSec={submission.limitSec}
-        />
+        {score ? (
+          <ResultScore
+            paperId={paper.id}
+            score={score}
+            marking={paper.marking}
+            timeUsedSec={submission.timeUsedSec}
+            limitSec={submission.limitSec}
+            owner={result.owner}
+          />
+        ) : (
+          // A squad exam keeps its key until results are out: what was marked, no score.
+          <Card className="flex items-start gap-3 p-5">
+            <EyeOff
+              className="mt-0.5 size-5 shrink-0 text-ink-muted"
+              aria-hidden
+            />
+            <p className="text-body">
+              Handed in. Your score and the key come out with the exam&apos;s
+              results; the exam&apos;s page says when.
+            </p>
+          </Card>
+        )}
         <div className="flex flex-wrap gap-2">
           <Button asChild>
             <Link href={`/omr/${paper.id}`}>
               <RotateCcw aria-hidden /> Sit again
             </Link>
           </Button>
-          {scored ? (
+          {scored && result.owner ? (
             <Button asChild variant="ghost">
               <Link href={`/omr/${paper.id}/key`}>
                 <KeyRound aria-hidden /> Answer key and marking
@@ -61,12 +77,14 @@ export default async function ResultPage({
             </Button>
           ) : null}
         </div>
-        <ResultReview
-          marks={submission.marks}
-          answerKey={result.answerKey}
-          outcomes={score.outcomes}
-          options={paper.shape.options}
-        />
+        {score && answerKey ? (
+          <ResultReview
+            marks={submission.marks}
+            answerKey={answerKey}
+            outcomes={score.outcomes}
+            options={paper.shape.options}
+          />
+        ) : null}
         {result.sittings.length > 1 ? (
           <SittingsList
             paperId={paper.id}

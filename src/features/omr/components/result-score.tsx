@@ -49,12 +49,15 @@ export function ResultScore({
   marking,
   timeUsedSec,
   limitSec,
+  owner,
 }: {
   paperId: string;
   score: Score;
   marking: Marking;
   timeUsedSec: number;
   limitSec: number | null;
+  /** The paper's owner can add or finish the key; someone else only waits for it. */
+  owner: boolean;
 }) {
   const keyLink = `/omr/${paperId}/key`;
   const total = score.outcomes.length;
@@ -67,11 +70,13 @@ export function ResultScore({
           This sheet has no answer key to be marked against. Add the key and
           your score appears here, for this sitting and every other.
         </p>
-        <Button asChild variant="primary">
-          <Link href={keyLink}>
-            <KeyRound aria-hidden /> Add the answer key
-          </Link>
-        </Button>
+        {owner ? (
+          <Button asChild variant="primary">
+            <Link href={keyLink}>
+              <KeyRound aria-hidden /> Add the answer key
+            </Link>
+          </Button>
+        ) : null}
         {timeUsedSec > 0 ? (
           <p className="font-mono text-small text-ink-muted tabular-nums">
             Time {clock(timeUsedSec)}
@@ -98,12 +103,14 @@ export function ResultScore({
             {score.unkeyed} question{score.unkeyed === 1 ? " has" : "s have"} no
             key yet, so {score.unkeyed === 1 ? "it isn't" : "they aren't"}{" "}
             scored.{" "}
-            <Link
-              href={keyLink}
-              className="font-medium text-accent-ink underline-offset-2 hover:underline"
-            >
-              Finish the key
-            </Link>
+            {owner ? (
+              <Link
+                href={keyLink}
+                className="font-medium text-accent-ink underline-offset-2 hover:underline"
+              >
+                Finish the key
+              </Link>
+            ) : null}
           </p>
         ) : null}
         {score.cancelled > 0 ? (

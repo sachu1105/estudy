@@ -197,3 +197,24 @@ export async function submitSheetAction(
   revalidatePath("/tests");
   return { ok: true, submissionId: handed.submissionId };
 }
+
+/** The person's papers, to pick one to share as a squad exam. */
+export async function myPapersAction(): Promise<
+  {
+    id: string;
+    title: string;
+    questions: number;
+    keyed: number;
+    limitMin: number | null;
+  }[]
+> {
+  const user = await requireUser();
+  const papers = await omrService.list(user);
+  return papers.map((p) => ({
+    id: p.id,
+    title: p.title,
+    questions: p.shape.questions,
+    keyed: p.keyed,
+    limitMin: p.limitMin,
+  }));
+}

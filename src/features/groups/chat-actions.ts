@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
 import { rateLimit, retryMessage, type RuleName } from "@/server/ratelimit";
 import { chatService, groupTests } from "@/server/services/groups";
+import { examService } from "@/server/services/omr";
 import type { MessageView } from "@/lib/squads/chat-types";
 
 // Squad chat (S3). Every action: requireUser() (rule 9), zod (rule 11), rate limited
@@ -187,6 +188,43 @@ export async function shareTestInChatAction(
       mentionIds: [],
       podItemId: null,
       groupTestId: shared.id,
+    }),
+  );
+}
+
+const when = z.iso.datetime({ offset: true }).transform((t) => new Date(t));
+
+/**
+ * One of the person's question papers into the chat as an exam: it opens (now or at a
+ * time), may close, and its results come out right away, when it closes, or at a time.
+ */
+export async function sharePaperInChatAction(
+  input: unknown,
+): Promise<Result<{ message: MessageView }>> {
+  const g = await guard(
+    input,
+    z.object({
+      ...where,
+      paperId: id,
+      opensAt: when.nullable(),
+      closesAt: when.nullable(),
+      results: z.enum(["now", "close", "at"]),
+      resultsAt: when.nullable(),
+      showNames: z.boolean(),
+    }),
+    "messagePerUser",
+  );
+  if (g.fail) return g.fail;
+  const { groupId, channelId } = g.data;
+  const shared = await examService.share(g.user, g.data);
+  if (!shared.ok) return out(shared);
+  return out(
+    await chatService.send(g.user, groupId, channelId, {
+      body: "",
+      replyToId: null,
+      mentionIds: [],
+      podItemId: null,
+      paperShareId: shared.id,
     }),
   );
 }

@@ -49,6 +49,16 @@ export type MessageView = {
     questions: number;
     minutes: number | null;
   } | null;
+  /** A question paper shared with the message as an exam. */
+  exam: {
+    id: string;
+    title: string;
+    questions: number;
+    minutes: number | null;
+    opensAt: string;
+    closesAt: string | null;
+    resultsAt: string | null;
+  } | null;
 };
 
 /** A message the person just sent, shown before the server has it. */

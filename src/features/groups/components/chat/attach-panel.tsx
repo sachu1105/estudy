@@ -7,6 +7,7 @@ import {
   Camera,
   CircleHelp,
   ClipboardCheck,
+  FileCheck2,
   FileText,
   Images,
   Paperclip,
@@ -30,13 +31,14 @@ import type { Attachable } from "./attachable";
 const PHOTOS = "image/png,image/jpeg,image/webp";
 
 type TileKey =
-  "gallery" | "camera" | "pdf" | "pods" | "test" | "poll" | "doubt";
+  "gallery" | "camera" | "pdf" | "pods" | "paper" | "test" | "poll" | "doubt";
 
 const TILES: { key: TileKey; label: string; icon: LucideIcon }[] = [
   { key: "gallery", label: "Gallery", icon: Images },
   { key: "camera", label: "Camera", icon: Camera },
   { key: "pdf", label: "Document", icon: FileText },
   { key: "pods", label: "From my pods", icon: Boxes },
+  { key: "paper", label: "Question paper", icon: FileCheck2 },
   { key: "test", label: "Mock test", icon: ClipboardCheck },
   { key: "poll", label: "Poll", icon: BarChart3 },
   { key: "doubt", label: "Ask a doubt", icon: CircleHelp },
@@ -51,6 +53,7 @@ export function AttachPanel({
   attachable,
   onFiles,
   onPod,
+  onPaper,
   onTest,
   onPoll,
   onDoubt,
@@ -58,6 +61,8 @@ export function AttachPanel({
   attachable: Attachable[];
   onFiles: (files: File[]) => void;
   onPod: (item: Attachable) => void;
+  /** Share one of the person's question papers as an exam. */
+  onPaper: () => void;
   onTest: () => void;
   onPoll: () => void;
   onDoubt: () => void;
@@ -79,6 +84,7 @@ export function AttachPanel({
     if (key === "gallery") gallery.current?.click();
     if (key === "camera") camera.current?.click();
     if (key === "pdf") pdf.current?.click();
+    if (key === "paper") onPaper();
     if (key === "test") onTest();
     if (key === "poll") onPoll();
     if (key === "doubt") onDoubt();

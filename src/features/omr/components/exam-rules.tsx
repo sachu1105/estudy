@@ -3,7 +3,7 @@ import { LogOut, PenLine, Save, Timer, type LucideIcon } from "lucide-react";
 type Rule = { icon: LucideIcon; name: string; line: string };
 
 /** The hall's rules, short; how a mark behaves follows the sheet setting. */
-function rules(final: boolean): Rule[] {
+function rules(final: boolean, exam: boolean): Rule[] {
   return [
     { icon: Timer, name: "No pause", line: "The clock runs until time's up." },
     final
@@ -18,19 +18,32 @@ function rules(final: boolean): Rule[] {
       name: "Saves as you go",
       line: "Every mark, at once.",
     },
-    {
-      icon: LogOut,
-      name: "Leaving ends it",
-      line: "The next sitting starts clean.",
-    },
+    exam
+      ? {
+          icon: LogOut,
+          name: "One sitting",
+          line: "Leaving doesn't stop the clock.",
+        }
+      : {
+          icon: LogOut,
+          name: "Leaving ends it",
+          line: "The next sitting starts clean.",
+        },
   ];
 }
 
 /** The rules of the sitting as four small tiles, two by two. */
-export function ExamRules({ final }: { final: boolean }) {
+export function ExamRules({
+  final,
+  exam = false,
+}: {
+  final: boolean;
+  /** A squad exam: one sitting, on a clock that keeps running. */
+  exam?: boolean;
+}) {
   return (
     <ul className="grid grid-cols-2 gap-2">
-      {rules(final).map(({ icon: Icon, name, line }) => (
+      {rules(final, exam).map(({ icon: Icon, name, line }) => (
         <li
           key={name}
           className="flex items-start gap-2.5 rounded-control border border-border p-3"

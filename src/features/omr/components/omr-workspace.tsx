@@ -4,6 +4,7 @@ import { Check, Send } from "lucide-react";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -26,10 +27,11 @@ import { ClearSheetButton } from "./clear-sheet-button";
 import { DownloadSheetButton } from "./download-sheet-button";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
-import type { PaperSummary } from "./paper-summary";
+import type { ExamSitting, PaperSummary } from "./paper-summary";
+import { sheetApi } from "./sheet-api";
 import { SheetDivider } from "./sheet-divider";
 import { SheetSettings } from "./sheet-settings";
-import { SubmitSheet } from "./submit-sheet";
+import { SubmitSheet, useHandIn } from "./submit-sheet";
 import { useOmrPrefs } from "./use-omr-prefs";
 import { useSheetWidth } from "./use-sheet-width";
 import { sheetInk } from "./sheet-ink";
@@ -46,29 +48,42 @@ type View = "paper" | "sheet";
  * comes first: a tap before it runs asks to start it, then counts. Leaving during the
  * exam ends the sitting and resets the timer. Submitting hands the sheet in to be marked
  * against the key; when the time runs out the sheet asks for it.
+ *
+ * A squad exam is the one sitting for its rank list: the clock starts once and keeps
+ * running (leaving doesn't stop it, reopening carries on), and when it runs out the sheet
+ * is handed in as it stands.
  */
 export function OmrWorkspace({
   paper,
+  exam = null,
   initialMarks,
   initialTimer,
 }: {
   paper: PaperSummary;
+  exam?: ExamSitting | null;
   initialMarks: Marks;
   initialTimer: TimerView;
 }) {
   const { id, title } = paper;
+  const examId = exam?.id ?? null;
+  const api = useMemo(() => sheetApi(id, examId), [id, examId]);
   const { marks, setMarks, saving, dirty, flush } = useSavedMarks(
-    id,
+    api.saveMarks,
     initialMarks,
   );
   const [view, setView] = useState<View>("paper");
   const count = markedCount(marks);
   const [submit, setSubmit] = useState<"closed" | "open" | "time-up">("closed");
   const [submitted, setSubmitted] = useState(false);
-  const timer = useOmrTimer(id, initialTimer, () => setSubmit("time-up"));
+  const autoHandIn = useHandIn(api, flush, () => setSubmitted(true));
+  const timer = useOmrTimer(api, initialTimer, () =>
+    // An exam's sheet is collected when time's up; practice asks first.
+    exam ? void autoHandIn.handIn() : setSubmit("time-up"),
+  );
   // Every sitting begins on the exam start, as the hall would (a running clock on
-  // opening means the last sitting was left, and the hook has reset it).
-  const [timerOpen, setTimerOpen] = useState(true);
+  // opening means the last sitting was left, and the hook has reset it). A squad
+  // exam already under way opens straight onto the sheet.
+  const [timerOpen, setTimerOpen] = useState(!(exam && initialTimer.on));
   // The bubble tapped before the timer ran; it counts once the timer starts.
   const [waiting, setWaiting] = useState<[number, number] | null>(null);
   const timerOn = useRef(timer.view.on);
@@ -114,6 +129,7 @@ export function OmrWorkspace({
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2 md:px-4">
         <LeaveExam
           inExam={timer.view.on && !submitted}
+          keepsRunning={exam !== null}
           dirty={dirty}
           flush={flush}
           endSitting={timer.reset}
@@ -142,6 +158,7 @@ export function OmrWorkspace({
         </span>
         <OmrTimer
           paper={paper}
+          exam={exam}
           timer={timer}
           open={timerOpen}
           onOpenChange={setTimerOpen}
@@ -158,27 +175,31 @@ export function OmrWorkspace({
           onStart={startTimer}
         />
         <SheetSettings prefs={prefs} onChange={setPrefs} />
-        <DownloadSheetButton
-          id={id}
-          title={title}
-          pen={prefs.pen}
-          flush={flush}
-        />
-        <ClearSheetButton
-          disabled={count === 0}
-          onClear={() => setMarks(blankMarks(marks.length))}
-        />
+        {exam ? null : (
+          <>
+            <DownloadSheetButton
+              id={id}
+              title={title}
+              pen={prefs.pen}
+              flush={flush}
+            />
+            <ClearSheetButton
+              disabled={count === 0}
+              onClear={() => setMarks(blankMarks(marks.length))}
+            />
+          </>
+        )}
         <Button
           variant="primary"
           className="hidden md:inline-flex"
-          disabled={count === 0}
+          disabled={count === 0 || autoHandIn.pending}
           onClick={() => setSubmit("open")}
         >
           <Send aria-hidden /> Submit
         </Button>
       </header>
       <SubmitSheet
-        paperId={id}
+        api={api}
         open={submit !== "closed"}
         onOpenChange={(open) => setSubmit(open ? "open" : "closed")}
         marked={count}

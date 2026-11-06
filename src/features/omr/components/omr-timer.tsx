@@ -14,7 +14,7 @@ import { face } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
 import { ExamStart } from "./exam-start";
-import type { PaperSummary } from "./paper-summary";
+import type { ExamSitting, PaperSummary } from "./paper-summary";
 import { StartCountdown } from "./start-countdown";
 import { TimerPanel } from "./timer-panel";
 import type { OmrTimerState } from "./use-omr-timer";
@@ -26,6 +26,7 @@ import type { OmrTimerState } from "./use-omr-timer";
  */
 export function OmrTimer({
   paper,
+  exam,
   timer,
   open,
   onOpenChange,
@@ -36,6 +37,7 @@ export function OmrTimer({
   onStart,
 }: {
   paper: PaperSummary;
+  exam: ExamSitting | null;
   timer: OmrTimerState;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -126,7 +128,9 @@ export function OmrTimer({
               view={view}
               elapsed={elapsed}
               pending={pending}
-              onReset={() => run({ op: "reset" })}
+              onReset={
+                timer.resettable ? () => run({ op: "reset" }) : undefined
+              }
             />
           ) : (
             <>
@@ -135,6 +139,7 @@ export function OmrTimer({
               </SheetDescription>
               <ExamStart
                 paper={paper}
+                exam={exam}
                 note={note}
                 final={final}
                 previous={previous}

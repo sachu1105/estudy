@@ -14,14 +14,42 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/toast";
 
-import { submitSheetAction } from "../actions";
+import type { SheetApi } from "./sheet-api";
+
+/**
+ * Handing the sheet in: the last marks are saved first, then the page moves on to the
+ * result (or, for a squad exam, the exam's page). `onSubmitted` runs before it moves, so
+ * leaving isn't taken for walking out.
+ */
+export function useHandIn(
+  api: SheetApi,
+  flush: () => Promise<void>,
+  onSubmitted: () => void,
+) {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  async function handIn() {
+    setPending(true);
+    await flush();
+    const result = await api.submit();
+    if (!result.ok) {
+      setPending(false);
+      toast.error(result.error);
+      return false;
+    }
+    onSubmitted();
+    router.push(result.href);
+    return true;
+  }
+  return { pending, handIn };
+}
 
 /**
  * Handing the sheet in, as at the end of the exam: one question first, then the marks
  * are kept for good, the sheet is cleared for the next sitting, and the result opens.
  */
 export function SubmitSheet({
-  paperId,
+  api,
   open,
   onOpenChange,
   marked,
@@ -31,7 +59,7 @@ export function SubmitSheet({
   flush,
   onSubmitted,
 }: {
-  paperId: string;
+  api: SheetApi;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   marked: number;
@@ -44,21 +72,8 @@ export function SubmitSheet({
   /** Called before the page moves on, so leaving isn't treated as walking out. */
   onSubmitted: () => void;
 }) {
-  const router = useRouter();
-  const [pending, setPending] = useState(false);
+  const { pending, handIn } = useHandIn(api, flush, onSubmitted);
   const left = questions - marked;
-
-  async function submit() {
-    setPending(true);
-    await flush();
-    const result = await submitSheetAction({ id: paperId });
-    if (!result.ok) {
-      setPending(false);
-      return void toast.error(result.error);
-    }
-    onSubmitted();
-    router.push(`/omr/${paperId}/result/${result.submissionId}`);
-  }
 
   return (
     <Dialog open={open} onOpenChange={(next) => !pending && onOpenChange(next)}>
@@ -70,17 +85,22 @@ export function SubmitSheet({
           <DialogDescription>
             You marked {marked} of {questions}
             {left > 0 ? `, ${left} left blank` : ""}.{" "}
-            {keyed === 0
-              ? "There's no answer key yet: add it after and your score appears."
-              : "It's marked against the answer key straight away."}{" "}
-            The sheet then clears for your next sitting.
+            {api.examId
+              ? "This is your one sitting for the rank list: once handed in, it's final."
+              : keyed === 0
+                ? "There's no answer key yet: add it after and your score appears. The sheet then clears for your next sitting."
+                : "It's marked against the answer key straight away, and the sheet clears for your next sitting."}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button disabled={pending} onClick={() => onOpenChange(false)}>
             Keep answering
           </Button>
-          <Button variant="primary" disabled={pending} onClick={submit}>
+          <Button
+            variant="primary"
+            disabled={pending}
+            onClick={() => void handIn()}
+          >
             {pending ? "Submitting" : "Submit sheet"}
           </Button>
         </DialogFooter>

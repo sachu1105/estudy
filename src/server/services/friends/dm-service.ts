@@ -40,6 +40,7 @@ export function dmView(row: DmRow, me: string): MessageView {
     answer: null,
     poll: null,
     test: null,
+    exam: null,
   };
 }
 

@@ -9,7 +9,8 @@ import { letters } from "@/lib/omr/marks";
 import { describeMarking } from "@/lib/omr/marking";
 import { cn } from "@/lib/utils/cn";
 
-import type { PaperSummary } from "./paper-summary";
+import { ExamTime } from "./exam-time";
+import type { ExamSitting, PaperSummary } from "./paper-summary";
 
 import { ExamRules } from "./exam-rules";
 import { LimitPicker, short } from "./limit-picker";
@@ -21,6 +22,7 @@ import { LimitPicker, short } from "./limit-picker";
  */
 export function ExamStart({
   paper,
+  exam,
   note,
   final,
   previous,
@@ -28,6 +30,8 @@ export function ExamStart({
   onStart,
 }: {
   paper: PaperSummary;
+  /** A squad exam: the time is the paper's, and there's one sitting. */
+  exam: ExamSitting | null;
   /** Why the card is up, when it isn't the paper simply opening. */
   note: string | null;
   /** Marks can't be taken back (the sheet setting). */
@@ -74,25 +78,31 @@ export function ExamStart({
         </p>
       ))}
 
-      <LimitPicker initial={paper.limitMin} onChange={setLimit} />
+      {exam ? (
+        <ExamTime limitMin={paper.limitMin} closesAt={exam.closesAt} />
+      ) : (
+        <LimitPicker initial={paper.limitMin} onChange={setLimit} />
+      )}
 
-      <ExamRules final={final} />
+      <ExamRules final={final} exam={exam !== null} />
 
-      <Link
-        href={`/omr/${paper.id}/key`}
-        className="-my-2 flex min-h-11 items-center gap-3 rounded-control px-1 text-small text-ink-muted hover:text-ink"
-      >
-        <KeyRound className="size-4 shrink-0" aria-hidden />
-        <span className="flex-1">
-          {paper.keyed === 0
-            ? "No answer key yet"
-            : paper.keyed < questions
-              ? `Key: ${paper.keyed} of ${questions}`
-              : "Answer key added"}
-        </span>
-        <span className="font-medium text-accent-ink">Key and marking</span>
-        <ChevronRight className="size-4 shrink-0" aria-hidden />
-      </Link>
+      {paper.owner ? (
+        <Link
+          href={`/omr/${paper.id}/key`}
+          className="-my-2 flex min-h-11 items-center gap-3 rounded-control px-1 text-small text-ink-muted hover:text-ink"
+        >
+          <KeyRound className="size-4 shrink-0" aria-hidden />
+          <span className="flex-1">
+            {paper.keyed === 0
+              ? "No answer key yet"
+              : paper.keyed < questions
+                ? `Key: ${paper.keyed} of ${questions}`
+                : "Answer key added"}
+          </span>
+          <span className="font-medium text-accent-ink">Key and marking</span>
+          <ChevronRight className="size-4 shrink-0" aria-hidden />
+        </Link>
+      ) : null}
 
       <span className="relative flex">
         <span

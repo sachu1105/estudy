@@ -8,6 +8,7 @@ import type { Mention } from "@/lib/markdown/markdown";
 import type { PendingMessage } from "@/lib/squads/chat-types";
 
 import type { Attachable } from "./attachable";
+import { ChatPaperDialog } from "./chat-paper-dialog";
 import { ChatTestDialog } from "./chat-test-dialog";
 import { Composer } from "./composer";
 import { MessageExtras } from "./message-extras";
@@ -64,6 +65,7 @@ export function ChatView({
   const polls = usePollActions({ groupId, channelId: channel.id, chat });
   const [pollOpen, setPollOpen] = useState(false);
   const [testOpen, setTestOpen] = useState(false);
+  const [paperOpen, setPaperOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [now] = useState(() => new Date());
   const flashId = useJumpToMessage(chat.reach);
@@ -177,6 +179,7 @@ export function ChatView({
           editing={act.editing?.body ?? null}
           onCancel={act.cancel}
           onSubmit={act.submit}
+          onPaper={() => setPaperOpen(true)}
           onTest={() => setTestOpen(true)}
           onPoll={() => setPollOpen(true)}
         />
@@ -208,6 +211,13 @@ export function ChatView({
             mine={myTests}
             open={testOpen}
             onOpenChange={setTestOpen}
+            onShared={() => void chat.catchUp()}
+          />
+          <ChatPaperDialog
+            groupId={groupId}
+            channelId={channel.id}
+            open={paperOpen}
+            onOpenChange={setPaperOpen}
             onShared={() => void chat.catchUp()}
           />
         </>

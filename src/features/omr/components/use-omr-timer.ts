@@ -5,9 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "@/components/ui/toast";
 import type { TimerView } from "@/lib/omr/timer";
 
-import { timerAction } from "../actions";
-
-type Op = { op: "start"; limitMin: number | null } | { op: "reset" };
+import type { SheetApi, TimerOp as Op } from "./sheet-api";
 
 const OFF: TimerView = {
   on: false,
@@ -23,15 +21,17 @@ const OFF: TimerView = {
  *
  * Leaving a sitting ends it, so a paper that opens with its clock still running was
  * left (closed, reloaded, the phone died): the clock is reset and `abandoned` is true.
+ * A squad exam's clock is different: it runs on, so it opens as it stands.
  */
 export function useOmrTimer(
-  paperId: string,
+  api: SheetApi,
   initial: TimerView,
   onTimeUp: () => void,
 ) {
-  const [abandoned] = useState(initial.on);
+  const resettable = api.examId === null;
+  const [abandoned] = useState(resettable && initial.on);
   const [base, setBase] = useState(() => ({
-    view: initial.on ? OFF : initial,
+    view: resettable && initial.on ? OFF : initial,
     at: Date.now(),
   }));
   const [now, setNow] = useState(base.at);
@@ -60,8 +60,8 @@ export function useOmrTimer(
   }, [elapsed, view.limitSec, view.running]);
 
   useEffect(() => {
-    if (abandoned) void timerAction({ id: paperId, timer: { op: "reset" } });
-  }, [abandoned, paperId]);
+    if (abandoned) void api.timer({ op: "reset" });
+  }, [abandoned, api]);
 
   function show(next: TimerView) {
     const at = Date.now();
@@ -79,7 +79,7 @@ export function useOmrTimer(
         running: true,
       });
     startTransition(async () => {
-      const result = await timerAction({ id: paperId, timer: input });
+      const result = await api.timer(input);
       if (!result.ok) {
         toast.error(result.error);
         return show(previous);
@@ -90,12 +90,12 @@ export function useOmrTimer(
 
   /** Reset and wait for it: leaving the exam does this before it navigates. */
   async function reset() {
-    const result = await timerAction({ id: paperId, timer: { op: "reset" } });
+    const result = await api.timer({ op: "reset" });
     if (result.ok) show(result.timer);
     return result.ok;
   }
 
-  return { view, elapsed, pending, abandoned, run, reset };
+  return { view, elapsed, pending, abandoned, resettable, run, reset };
 }
 
 export type OmrTimerState = ReturnType<typeof useOmrTimer>;

@@ -11,6 +11,7 @@ import { progressRepository } from "@/server/repositories/progress-repository";
 import { groupEvents } from "@/server/realtime/group-events";
 import { notificationService } from "@/server/services/notifications";
 import { groupItemRepository } from "@/server/repositories/group-item-repository";
+import { examRepository } from "@/server/repositories/exam-repository";
 import { groupTestRepository } from "@/server/repositories/group-test-repository";
 import { questionRepository } from "@/server/repositories/question-repository";
 import { catalogueRepository } from "@/server/repositories/catalogue-repository";
@@ -161,6 +162,10 @@ export const chatService = createChatService({
     materialService.shareUploads(user, groupId, channelId, keys),
   findTest: (groupId, groupTestId) =>
     groupTestRepository.find(groupId, groupTestId),
+  findExam: async (groupId, paperShareId) => {
+    const exam = await examRepository.find(paperShareId);
+    return exam?.groupId === groupId ? exam : null;
+  },
   clock: systemClock,
   emit: groupEvents.emit,
   notify: (rows) => notificationService.notify(rows),

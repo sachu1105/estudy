@@ -51,6 +51,11 @@ export type ChatDeps = {
     groupId: string,
     groupTestId: string,
   ) => Promise<{ channelId: string; sharedById: string } | null>;
+  /** A question paper shared here as an exam: where it landed and who shared it. */
+  findExam?: (
+    groupId: string,
+    paperShareId: string,
+  ) => Promise<{ channelId: string; sharedById: string } | null>;
   /** Turns photos or a PDF uploaded from a device into a squad item for a message. */
   shareUploads: (
     user: User,
@@ -177,6 +182,18 @@ export function createChatService(deps: ChatDeps) {
                 : null,
             }
           : null,
+      exam:
+        m.paperShare && !m.paperShare.hiddenAt && !deleted
+          ? {
+              id: m.paperShare.id,
+              title: m.paperShare.paper.title,
+              questions: m.paperShare.paper.questionCount,
+              minutes: m.paperShare.paper.limitMin,
+              opensAt: m.paperShare.opensAt.toISOString(),
+              closesAt: m.paperShare.closesAt?.toISOString() ?? null,
+              resultsAt: m.paperShare.resultsAt?.toISOString() ?? null,
+            }
+          : null,
     };
   }
 
@@ -286,6 +303,8 @@ export function createChatService(deps: ChatDeps) {
         pollOptions?: string[];
         /** A mock test this person just shared into this channel. */
         groupTestId?: string | null;
+        /** A question paper this person just shared into this channel as an exam. */
+        paperShareId?: string | null;
       },
     ): Promise<Result<{ message: MessageView }>> {
       const uploads = input.uploads ?? [];
@@ -296,6 +315,7 @@ export function createChatService(deps: ChatDeps) {
         uploads.length > 0,
         !!input.podItemId,
         !!input.groupTestId,
+        !!input.paperShareId,
         !!input.pollOptions,
       ].filter(Boolean).length;
       if (attached > 1)
@@ -332,7 +352,13 @@ export function createChatService(deps: ChatDeps) {
           `This channel is in slow mode. You can write again in ${wait} second${wait === 1 ? "" : "s"}.`,
         );
       const body = input.body.trim();
-      if (!body && !input.podItemId && !uploads.length && !input.groupTestId)
+      if (
+        !body &&
+        !input.podItemId &&
+        !uploads.length &&
+        !input.groupTestId &&
+        !input.paperShareId
+      )
         return failure("EMPTY", "Write a message first.");
       if (input.groupTestId) {
         const test = await deps.findTest(groupId, input.groupTestId);
@@ -342,6 +368,15 @@ export function createChatService(deps: ChatDeps) {
           test.sharedById !== user.id
         )
           return failure("NOT_FOUND", "That test isn't one you shared here.");
+      }
+      if (input.paperShareId) {
+        const exam = await deps.findExam?.(groupId, input.paperShareId);
+        if (
+          !exam ||
+          exam.channelId !== channelId ||
+          exam.sharedById !== user.id
+        )
+          return failure("NOT_FOUND", "That exam isn't one you shared here.");
       }
       if (input.replyToId) {
         const target = await deps.messages.find(channelId, input.replyToId);
@@ -381,6 +416,7 @@ export function createChatService(deps: ChatDeps) {
         itemId,
         kind: input.pollOptions ? "POLL" : input.doubt ? "DOUBT" : "TEXT",
         groupTestId: input.groupTestId ?? null,
+        paperShareId: input.paperShareId ?? null,
         pollOptions: input.pollOptions ? pollOptions : undefined,
         at: now(),
       });

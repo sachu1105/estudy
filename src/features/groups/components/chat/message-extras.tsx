@@ -12,6 +12,7 @@ import type { PendingMessage } from "@/lib/squads/chat-types";
 import { cn } from "@/lib/utils/cn";
 
 import { TakeGroupTest } from "../group-test-controls";
+import { ExamCard } from "./exam-card";
 
 /**
  * What a message is besides its words: a poll to vote on, a doubt waiting for answers,
@@ -40,6 +41,7 @@ export function MessageExtras({
       {m.doubt ? <DoubtFooter doubt={m.doubt} onAnswer={onAnswer} /> : null}
       {m.answer ? <AnswerMark answer={m.answer} onChoose={onChoose} /> : null}
       {m.test ? <TestCard groupId={groupId} test={m.test} /> : null}
+      {m.exam ? <ExamCard exam={m.exam} /> : null}
     </>
   );
 }

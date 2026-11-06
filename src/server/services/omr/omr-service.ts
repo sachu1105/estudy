@@ -1,16 +1,10 @@
 import type { Clock } from "@/lib/clock";
 import type { IdGenerator } from "@/lib/ids";
-import { compare, frac, ZERO, type Fraction } from "@/lib/omr/fraction";
+import { compare, ZERO, type Fraction } from "@/lib/omr/fraction";
 import { inkOf, type Pen } from "@/lib/omr/ink";
-import { blankKey, keyedCount, normaliseKey } from "@/lib/omr/key";
-import {
-  blankMarks,
-  normaliseMarks,
-  type Marks,
-  type Shape,
-} from "@/lib/omr/marks";
-import type { CancelRule, Marking } from "@/lib/omr/marking";
-import { scoreSheet } from "@/lib/omr/score";
+import { blankKey, normaliseKey } from "@/lib/omr/key";
+import { blankMarks, normaliseMarks, type Marks } from "@/lib/omr/marks";
+import type { CancelRule } from "@/lib/omr/marking";
 import {
   elapsedAt,
   OFF,
@@ -31,12 +25,14 @@ import type { ObjectStorage } from "@/server/storage/types";
 import { failure, sha256Hex, type Result } from "../syllabus/deps";
 import { sniffKind } from "../syllabus/extract";
 import { answerSheetPdf } from "./answer-pdf";
+import { paperView, scored, shapeOf, type KeySource } from "./paper-view";
 
 export type OmrDeps = {
   papers: Pick<
     PaperRepository,
     | "create"
     | "listOwned"
+    | "find"
     | "findOwned"
     | "sheet"
     | "setMarks"
@@ -56,6 +52,18 @@ export type OmrDeps = {
   clock: Clock;
   limit: (user: EntitlementSubject, feature: LimitFeature) => number;
   pageCount: (bytes: Uint8Array) => Promise<number | null>;
+  /**
+   * What someone who doesn't own a paper may do with it, through squad exams (the exam
+   * service). Left out: only owners open papers.
+   */
+  access?: (
+    user: User,
+    paperId: string,
+  ) => Promise<{
+    canView: boolean;
+    canPractise: boolean;
+    keyOut: boolean;
+  } | null>;
 };
 
 type User = EntitlementSubject & { id: string };
@@ -63,7 +71,7 @@ type User = EntitlementSubject & { id: string };
 export type TimerOp =
   { op: "start"; limitMin: number | null } | { op: "reset" };
 
-export type KeySource = "OWN" | "OFFICIAL";
+export type { KeySource, PaperView } from "./paper-view";
 
 /** How a paper is marked, as the settings form sends it. */
 export type SettingsInput = {
@@ -89,48 +97,6 @@ const toColumns = (state: TimerState): TimerColumns => ({
   timerElapsedSec: state.elapsedSec,
   timerRunningSince: state.runningSince,
 });
-
-const shapeOf = (p: PaperRow): Shape => ({
-  questions: p.questionCount,
-  options: p.optionCount,
-});
-
-const markingOf = (p: PaperRow): Marking => ({
-  right: frac(p.rightNum, p.rightDen),
-  wrong: frac(p.wrongNum, p.wrongDen),
-  cutoff:
-    p.cutoffNum === null || p.cutoffDen === null
-      ? null
-      : frac(p.cutoffNum, p.cutoffDen),
-  cancelled: p.cancelRule,
-});
-
-/** A paper as the pages get it: everything but the file and the key itself. */
-function paperView(p: PaperRow) {
-  const key = normaliseKey(p.answerKey, shapeOf(p));
-  return {
-    id: p.id,
-    title: p.title,
-    pageCount: p.pageCount,
-    shape: shapeOf(p),
-    marking: markingOf(p),
-    limitMin: p.limitMin,
-    keySource: p.keySource as KeySource,
-    keyed: keyedCount(key),
-    keyUpdatedAt: p.keyUpdatedAt,
-  };
-}
-export type PaperView = ReturnType<typeof paperView>;
-
-/** A hand-in marked against the paper's current key. */
-function scored(p: PaperRow, marks: number[]) {
-  const shape = shapeOf(p);
-  return scoreSheet(
-    normaliseMarks(marks, shape),
-    normaliseKey(p.answerKey, shape),
-    markingOf(p),
-  );
-}
 
 export const PAPER_MAX_BYTES = 25 * 1024 * 1024;
 /** Signed links to a paper last this long (rule 15). */
@@ -158,16 +124,31 @@ export function createOmrService(deps: OmrDeps) {
         );
   }
 
-  /** The paper and the person's sheet for it, or null when it isn't theirs to open. */
-  async function open(user: User, paperId: string) {
-    const paper = await deps.papers.findOwned(paperId, user.id);
+  /**
+   * The paper and what this person may do with it: everything when it's theirs; through
+   * a squad exam, view it, practise on it after their sitting, and see the key once
+   * results are out.
+   */
+  async function reach(user: User, paperId: string) {
+    const paper = await deps.papers.find(paperId);
     if (!paper) return null;
+    if (paper.ownerId === user.id)
+      return { paper, owner: true, canPractise: true, keyOut: true };
+    const access = await deps.access?.(user, paperId);
+    return access ? { paper, owner: false, ...access } : null;
+  }
+
+  /** The paper and the person's own sheet for it, when they may sit it here. */
+  async function open(user: User, paperId: string) {
+    const reached = await reach(user, paperId);
+    if (!reached?.canPractise) return null;
+    const { paper } = reached;
     const sheet = await deps.papers.sheet(
       paperId,
       user.id,
       blankMarks(paper.questionCount),
     );
-    return { paper, sheet };
+    return { paper, sheet, owner: reached.owner };
   }
 
   const sheetMarks = (paper: PaperRow, sheet: SheetRow) =>
@@ -212,6 +193,7 @@ export function createOmrService(deps: OmrDeps) {
       const { paper, sheet } = opened;
       return {
         paper: paperView(paper),
+        owner: opened.owner,
         marks: sheetMarks(paper, sheet),
         timer: viewAt(fromColumns(sheet), deps.clock.now()),
       };
@@ -331,14 +313,19 @@ export function createOmrService(deps: OmrDeps) {
      * every earlier sitting of the same paper.
      */
     async result(user: User, paperId: string, submissionId: string) {
-      const paper = await deps.papers.findOwned(paperId, user.id);
-      if (!paper) return null;
+      const reached = await reach(user, paperId);
+      if (!reached) return null;
+      const { paper } = reached;
       const all = await deps.papers.submissions(paperId, user.id);
       const mine = all.find((s) => s.id === submissionId);
       if (!mine) return null;
       const shape = shapeOf(paper);
+      // Before results are out, a squad exam's sheet shows what was marked, never the key.
+      const hidden = !reached.keyOut;
       return {
         paper: paperView(paper),
+        owner: reached.owner,
+        keyOut: !hidden,
         submission: {
           id: mine.id,
           createdAt: mine.createdAt,
@@ -346,13 +333,13 @@ export function createOmrService(deps: OmrDeps) {
           limitSec: mine.limitSec,
           marks: normaliseMarks(mine.marks, shape) as Marks,
         },
-        answerKey: normaliseKey(paper.answerKey, shape),
-        score: scored(paper, mine.marks),
+        answerKey: hidden ? null : normaliseKey(paper.answerKey, shape),
+        score: hidden ? null : scored(paper, mine.marks),
         sittings: all.map((s, i) => ({
           id: s.id,
           number: all.length - i,
           createdAt: s.createdAt,
-          score: scored(paper, s.marks).score,
+          score: hidden ? null : scored(paper, s.marks).score,
         })),
       };
     },
@@ -434,11 +421,11 @@ export function createOmrService(deps: OmrDeps) {
       return true;
     },
 
-    /** A 5-minute link to the user's own paper (rule 15). */
+    /** A 5-minute link to the paper, for its owner or someone sitting it in a squad (rule 15). */
     async viewUrl(user: User, paperId: string) {
-      const paper = await deps.papers.findOwned(paperId, user.id);
-      if (!paper) return null;
-      return deps.storage.signDownload(paper.storageKey, {
+      const reached = await reach(user, paperId);
+      if (!reached) return null;
+      return deps.storage.signDownload(reached.paper.storageKey, {
         contentType: "application/pdf",
         expiresInSeconds: VIEW_SECONDS,
       });

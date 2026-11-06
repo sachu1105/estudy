@@ -13,7 +13,12 @@ export function SittingsList({
 }: {
   paperId: string;
   current: string;
-  sittings: { id: string; number: number; createdAt: Date; score: Fraction }[];
+  sittings: {
+    id: string;
+    number: number;
+    createdAt: Date;
+    score: Fraction | null;
+  }[];
   /** Some of the key is in: scores mean something. */
   scored: boolean;
   timeZone: string;
@@ -45,7 +50,7 @@ export function SittingsList({
                 {when.format(s.createdAt)}
               </span>
               <span className="font-mono tabular-nums">
-                {scored ? formatScore(s.score) : "–"}
+                {scored && s.score ? formatScore(s.score) : "–"}
               </span>
             </Link>
           </li>

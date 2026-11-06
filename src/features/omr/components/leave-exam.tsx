@@ -24,11 +24,14 @@ import {
  */
 export function LeaveExam({
   inExam,
+  keepsRunning = false,
   dirty,
   flush,
   endSitting,
 }: {
   inExam: boolean;
+  /** A squad exam: leaving doesn't stop or reset its clock. */
+  keepsRunning?: boolean;
   /** Marks not yet saved. */
   dirty: () => boolean;
   flush: () => Promise<void>;
@@ -64,7 +67,7 @@ export function LeaveExam({
     setLeaving(true);
     left.current = true;
     await flush();
-    await endSitting();
+    if (!keepsRunning) await endSitting();
     router.push("/tests");
   }
 
@@ -99,9 +102,9 @@ export function LeaveExam({
           <DialogHeader>
             <DialogTitle>Leave the exam?</DialogTitle>
             <DialogDescription>
-              Leaving ends this sitting, as it would in the hall. The clock
-              resets. Your answers stay to look over, and the next sitting
-              starts on a clean sheet.
+              {keepsRunning
+                ? "Your clock keeps running while you're away, and your marks are saved. Come back before it runs out; when it does, your sheet is handed in as it stands."
+                : "Leaving ends this sitting, as it would in the hall. The clock resets. Your answers stay to look over, and the next sitting starts on a clean sheet."}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -109,7 +112,11 @@ export function LeaveExam({
               Stay in the exam
             </Button>
             <Button variant="danger" disabled={leaving} onClick={leave}>
-              {leaving ? "Leaving" : "Leave and reset timer"}
+              {leaving
+                ? "Leaving"
+                : keepsRunning
+                  ? "Leave, clock running"
+                  : "Leave and reset timer"}
             </Button>
           </DialogFooter>
         </DialogContent>
