@@ -1,11 +1,11 @@
-import { Check, FileText } from "lucide-react";
+import { Check, FileText, Store } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { PageHeader } from "@/components/shell/page-header";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { BundleList } from "@/features/omr/components/bundle-list";
-import { StoreLink } from "@/features/omr/components/store-link";
-import { PaperCard } from "@/features/omr/components/paper-card";
+import { PaperShelf } from "@/features/omr/components/paper-shelf";
 import { SquadExamList } from "@/features/omr/components/squad-exam-list";
 import { UploadPaperButton } from "@/features/omr/components/upload-paper-button";
 import { systemClock } from "@/lib/clock";
@@ -14,24 +14,45 @@ import { bundleService, examService, omrService } from "@/server/services/omr";
 
 export const metadata: Metadata = { title: "Tests" };
 
+const StoreButton = () => (
+  <Button asChild>
+    <Link href="/store">
+      <Store aria-hidden /> Store
+    </Link>
+  </Button>
+);
+
+/**
+ * Tests: squad exams on top, then every paper the person can sit in one grid, their
+ * uploads and their bundles' papers alike, each saying where it's from and whether
+ * it's been attempted. Bundles are bought and browsed in the Store.
+ */
 export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
   const user = await requireUser();
-  const [sheets, exams, owned, library, query] = await Promise.all([
-    omrService.list(user),
+  const [exams, owned, library, query] = await Promise.all([
     examService.list(user),
     bundleService.mine(user),
     bundleService.library(user),
     searchParams,
   ]);
-  // What they have: bought, added or made, then Store items their plan includes.
+  // Bundles they have: bought, added or made, then Store items their plan includes.
   const ownedIds = new Set(owned.map((b) => b.id));
   const bundles = [
     ...owned,
     ...library.filter((b) => b.included && !ownedIds.has(b.id)),
   ];
-  // Just bought or added (the Store sends them here): said at the top, outlined below.
+  // Just bought or added (the Store sends them here): said at the top, its papers first.
   const added = bundles.find((b) => b.id === query.added) ?? null;
   if (added) bundles.sort((a, b) => Number(b === added) - Number(a === added));
+  // Each paper once, named by the first bundle it came in.
+  const from = new Map<string, string>();
+  for (const b of bundles)
+    for (const p of b.papers) if (!from.has(p.id)) from.set(p.id, b.title);
+  const listed = await omrService.list(user, [...from.keys()]);
+  const first = new Set(added?.papers.map((p) => p.id) ?? []);
+  const sheets = listed
+    .map((p) => ({ ...p, from: from.get(p.id) ?? null }))
+    .sort((a, b) => Number(first.has(b.id)) - Number(first.has(a.id)));
   const now = systemClock.now();
   const format = new Intl.DateTimeFormat("en-IN", {
     day: "numeric",
@@ -45,8 +66,15 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
     <>
       <PageHeader
         title="Tests"
-        description="Upload a question paper as a PDF and mark your answers on an OMR sheet beside it."
-        actions={sheets.length > 0 ? <UploadPaperButton /> : undefined}
+        description="Sit question papers on an OMR sheet with a timer: your own uploads, and papers from the Store."
+        actions={
+          <div className="flex w-full gap-2 sm:w-auto">
+            <StoreButton />
+            {sheets.length > 0 ? (
+              <UploadPaperButton className="flex-1 sm:flex-none" />
+            ) : null}
+          </div>
+        }
       />
       <div className="flex flex-col gap-8">
         {added ? (
@@ -57,11 +85,10 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
             <Check className="size-5 shrink-0 text-success" aria-hidden />
             <span>
               <span className="font-medium">{added.title}</span> is in your
-              tests, yours for good. Sit any paper below.
+              tests, yours for good. Its papers are first below.
             </span>
           </p>
         ) : null}
-        {library.length > 0 ? <StoreLink count={library.length} /> : null}
         {exams.length > 0 ? (
           <SquadExamList
             exams={exams.map((e) => ({
@@ -80,51 +107,15 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
             }))}
           />
         ) : null}
-        {bundles.length > 0 ? (
-          <BundleList
-            bundles={bundles.map((b) => ({
-              id: b.id,
-              title: b.title,
-              papers: b.papers.map((p) => ({
-                id: p.id,
-                title: p.title,
-                questions: p.questions,
-              })),
-              owner: b.owner,
-              by: b.library ? "studypods" : b.by,
-              included: b.included,
-            }))}
-            added={added?.id ?? null}
-          />
-        ) : null}
         {sheets.length === 0 ? (
           <EmptyState
             icon={FileText}
             title="No question papers yet"
-            description="Upload a previous paper or a mock as a PDF. It opens next to a 100-question answer sheet."
+            description="Upload a previous paper or a mock as a PDF, or get one from the Store. It opens next to an OMR answer sheet."
             action={<UploadPaperButton />}
           />
         ) : (
-          <section aria-label="Your papers" className="flex flex-col gap-3">
-            {exams.length > 0 || bundles.length > 0 ? (
-              <h2 className="font-heading text-h2 font-semibold">
-                Your papers
-              </h2>
-            ) : null}
-            <ul
-              aria-label="Question papers"
-              className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {sheets.map((sheet) => (
-                <PaperCard
-                  key={sheet.id}
-                  sheet={sheet}
-                  now={now}
-                  timeZone={user.timezone}
-                />
-              ))}
-            </ul>
-          </section>
+          <PaperShelf sheets={sheets} now={now} timeZone={user.timezone} />
         )}
       </div>
     </>

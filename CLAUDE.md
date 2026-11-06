@@ -290,6 +290,9 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   for good). Having it (BundlePurchase, append-only, a free add has no amount) means
   sitting every paper in it with its key; stopping sales or leaving the squad never
   takes it away. Payments are demo only, through the same Checkout as squad passes.
+  Tests lists every paper a person can sit in one grid, their uploads and their bundles'
+  papers (each once), each saying where it's from and whether it's been attempted (how
+  many hand-ins, the last score); bundles are browsed and bought in the Store.
 - Papers library, shown to users as the Store (/store, in the sidebar and Ctrl+K, and
   linked from Tests): admins (Admin > Papers) list their own papers, one paper or a bundle,
   free or priced (demo payments), and may include an entry free with PRO and/or ELITE.

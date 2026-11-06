@@ -124,8 +124,8 @@ test.describe("paper bundles", () => {
 
     // Bought: a paper opens to sit, and its key shows after.
     await member
-      .getByRole("list", { name: "Papers in LGS papers" })
-      .getByRole("link", { name: /LGS 2021/ })
+      .getByRole("list", { name: "Question papers" })
+      .getByRole("link", { name: /LGS 2021.*From LGS papers.*Not attempted/ })
       .click();
     await expect(member).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
     await member.getByRole("button", { name: "Start exam" }).click();
@@ -143,10 +143,12 @@ test.describe("paper bundles", () => {
       member.getByText("Question 2: you marked C, key A. Wrong."),
     ).toBeVisible();
 
-    // It's on the member's Tests page; the owner sees who has it.
+    // On the member's Tests page it's attempted, with the score; the owner sees who has it.
     await member.goto("/tests");
     await expect(
-      member.getByRole("link", { name: /LGS papers.*by/ }),
+      member.getByRole("link", {
+        name: /LGS 2021.*From LGS papers.*Attempted once.*0\.67\s*of 4, last score/,
+      }),
     ).toBeVisible();
     await page.goto(bundleUrl);
     await expect(page.getByText(/1 person has it/)).toBeVisible();

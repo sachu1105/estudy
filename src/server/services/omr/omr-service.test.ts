@@ -79,19 +79,22 @@ function memoryPapers(ids: ReturnType<typeof sequentialIds>, now: () => Date) {
       });
       return { id };
     },
-    async listOwned(ownerId) {
+    async listFor(userId, paperIds = []) {
       return [...papers.values()]
-        .filter((p) => p.ownerId === ownerId)
-        .map((p) => ({
-          ...p,
-          sheets: sheets.filter(
-            (s) => s.paperId === p.id && s.ownerId === ownerId,
-          ),
-          submissions: submissions
-            .filter((s) => s.paperId === p.id && s.userId === ownerId)
-            .reverse()
-            .slice(0, 1),
-        }));
+        .filter((p) => p.ownerId === userId || paperIds.includes(p.id))
+        .map((p) => {
+          const mine = submissions.filter(
+            (s) => s.paperId === p.id && s.userId === userId,
+          );
+          return {
+            ...p,
+            sheets: sheets.filter(
+              (s) => s.paperId === p.id && s.ownerId === userId,
+            ),
+            submissions: [...mine].reverse().slice(0, 1),
+            _count: { submissions: mine.length },
+          };
+        });
     },
     async find(id) {
       return papers.get(id) ?? null;
@@ -394,10 +397,16 @@ describe("question papers", () => {
     expect(result?.answerKey).toEqual([1, 1, 1, CANCELLED]);
     expect(result?.sittings).toHaveLength(1);
 
-    // The Tests page shows the last result.
+    // The Tests page shows the last result, and that it's been attempted once.
     const [listed] = await s.service.list(user);
     expect(listed?.last?.id).toBe(handed.submissionId);
     expect(listed?.last?.score).toEqual(frac(5, 3));
+    expect(listed?.attempts).toBe(1);
+    expect(listed?.owner).toBe(true);
+    // Someone given the paper (a bundle) sees it too, not yet attempted, not theirs.
+    expect(await s.service.list(other)).toEqual([]);
+    const [given] = await s.service.list(other, [id]);
+    expect(given).toMatchObject({ id, owner: false, attempts: 0, last: null });
 
     // A second sitting without a clock still hands in, with no time on it.
     await s.service.saveMarks(user, id, [0, 0, 0, 0]);
@@ -407,6 +416,7 @@ describe("question papers", () => {
     expect(result?.submission.timeUsedSec).toBe(0);
     expect(result?.score?.passed).toBe(true);
     expect(result?.sittings.map((x) => x.number)).toEqual([2, 1]);
+    expect((await s.service.list(user))[0]?.attempts).toBe(2);
 
     expect(await s.service.result(other, id, again.submissionId)).toBeNull();
     expect(await s.service.result(user, id, "nope")).toBeNull();

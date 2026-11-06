@@ -1,4 +1,7 @@
+import { Check, PenLine } from "lucide-react";
+
 import { PodTile } from "@/components/blocks/pod-tile";
+import { Badge } from "@/components/ui/badge";
 import { timeAgo } from "@/lib/format/ago";
 import { formatScore, type Fraction } from "@/lib/omr/fraction";
 import { markedCount, type Marks } from "@/lib/omr/marks";
@@ -69,19 +72,6 @@ function SheetArt({ id, marks }: { id: string; marks: Marks }) {
   );
 }
 
-/** Where a paper stands: not touched, being worked on, every answer marked, or handed in. */
-function status(
-  marked: number,
-  total: number,
-  timer: TimerView,
-  done: boolean,
-) {
-  if (marked === total) return "All marked";
-  if (timer.running) return "Timer running";
-  if (marked > 0) return "In progress";
-  return done ? "Submitted" : "Not started";
-}
-
 type LastResult = {
   id: string;
   score: Fraction;
@@ -90,30 +80,69 @@ type LastResult = {
   keyed: boolean;
 };
 
+export type PaperCardSheet = {
+  id: string;
+  title: string;
+  updatedAt: Date;
+  marks: Marks;
+  timer: TimerView;
+  last: LastResult | null;
+  /** How many times they've handed it in. */
+  attempts: number;
+  /** Their own upload, or a paper from a bundle (named here). */
+  owner: boolean;
+  from: string | null;
+};
+
+/** Where a paper stands for its sitter, as the filters on Tests count it. */
+export type PaperStanding = "new" | "going" | "done";
+
+export function standingOf(
+  sheet: Pick<PaperCardSheet, "marks" | "timer" | "attempts">,
+): PaperStanding {
+  if (sheet.timer.running || markedCount(sheet.marks) > 0) return "going";
+  return sheet.attempts > 0 ? "done" : "new";
+}
+
+/** The attempt mark: never sat, being sat now, or handed in so many times. */
+function AttemptBadge({ sheet }: { sheet: PaperCardSheet }) {
+  const standing = standingOf(sheet);
+  if (standing === "going")
+    return (
+      <Badge tone="accent">
+        <PenLine aria-hidden />
+        {markedCount(sheet.marks) === sheet.marks.length
+          ? "All marked, not submitted"
+          : "In progress"}
+      </Badge>
+    );
+  if (sheet.attempts === 0) return <Badge tone="neutral">Not attempted</Badge>;
+  return (
+    <Badge tone="success">
+      <Check aria-hidden /> Attempted
+      {sheet.attempts > 1 ? ` ${sheet.attempts} times` : " once"}
+    </Badge>
+  );
+}
+
 /**
  * A question paper on the Tests page, shaped like a pod: its answer sheet on top, then
- * its name, where it stands, and how much is marked (or, between sittings, the last
- * score). The menu in the corner holds the key, the last result, rename and delete.
+ * its name, where it's from, whether it's been attempted (and how often), and the
+ * marks so far or the last score. Their own papers' menu holds the key, the last
+ * result, rename and delete.
  */
 export function PaperCard({
   sheet,
   now,
   timeZone,
 }: {
-  sheet: {
-    id: string;
-    title: string;
-    updatedAt: Date;
-    marks: Marks;
-    timer: TimerView;
-    last: LastResult | null;
-  };
+  sheet: PaperCardSheet;
   now: Date;
   timeZone: string;
 }) {
   const marked = markedCount(sheet.marks);
   const total = sheet.marks.length;
-  const between = marked === 0 && !sheet.timer.running;
+  const standing = standingOf(sheet);
   const last = sheet.last;
 
   return (
@@ -122,37 +151,42 @@ export function PaperCard({
         href={`/omr/${sheet.id}`}
         // File names come with underscores; the words read better without.
         title={sheet.title.replaceAll("_", " ")}
-        subtitle={`${status(marked, total, sheet.timer, last !== null)} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
+        subtitle={`${sheet.owner ? "Your upload" : `From ${sheet.from ?? "a bundle"}`} · ${timeAgo(sheet.updatedAt, now, timeZone)}`}
+        badges={<AttemptBadge sheet={sheet} />}
         art={<SheetArt id={sheet.id} marks={sheet.marks} />}
         stat={
-          between && last
-            ? last.keyed
-              ? {
-                  value: formatScore(last.score),
-                  unit: `of ${formatScore(last.max)}, last score`,
-                }
-              : { value: "–", unit: "add the key to score it" }
-            : { value: marked, unit: `of ${total} marked` }
+          standing === "going"
+            ? { value: marked, unit: `of ${total} marked` }
+            : last
+              ? last.keyed
+                ? {
+                    value: formatScore(last.score),
+                    unit: `of ${formatScore(last.max)}, last score`,
+                  }
+                : { value: "–", unit: "add the key to score it" }
+              : { value: total, unit: "questions" }
         }
         aside={
-          marked === total
-            ? "Review"
-            : !between
-              ? "Continue"
-              : last
-                ? "Sit again"
-                : "Start"
+          standing === "going"
+            ? marked === total
+              ? "Review"
+              : "Continue"
+            : last
+              ? "Sit again"
+              : "Start"
         }
-        progress={(marked / total) * 100}
+        progress={standing === "going" ? (marked / total) * 100 : undefined}
       />
-      {/* Beside the link, not in it: a menu can't sit inside a link. */}
-      <div className="absolute top-2 right-2 rounded-control bg-surface/90 backdrop-blur-sm">
-        <SheetMenu
-          id={sheet.id}
-          title={sheet.title}
-          lastResultId={last?.id ?? null}
-        />
-      </div>
+      {sheet.owner ? (
+        // Beside the link, not in it: a menu can't sit inside a link.
+        <div className="absolute top-2 right-2 rounded-control bg-surface/90 backdrop-blur-sm">
+          <SheetMenu
+            id={sheet.id}
+            title={sheet.title}
+            lastResultId={last?.id ?? null}
+          />
+        </div>
+      ) : null}
     </li>
   );
 }

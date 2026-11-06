@@ -90,19 +90,23 @@ export const paperRepository = {
     });
   },
 
-  /** The owner's papers, newest work first, each with their sheet and last hand-in. */
-  async listOwned(ownerId: string) {
+  /**
+   * The papers this person sits: their own and the ones given (from their bundles),
+   * newest work first, each with their sheet, last hand-in and how many hand-ins.
+   */
+  async listFor(userId: string, paperIds: string[] = []) {
     const papers = await prisma.paper.findMany({
-      where: { ownerId },
+      where: { OR: [{ ownerId: userId }, { id: { in: paperIds } }] },
       select: {
         ...PAPER_SELECT,
-        sheets: { where: { ownerId }, select: SHEET_SELECT, take: 1 },
+        sheets: { where: { ownerId: userId }, select: SHEET_SELECT, take: 1 },
         submissions: {
-          where: { userId: ownerId },
+          where: { userId },
           orderBy: { createdAt: "desc" },
           select: { id: true, marks: true, createdAt: true },
           take: 1,
         },
+        _count: { select: { submissions: { where: { userId } } } },
       },
     });
     const touched = (p: (typeof papers)[number]) =>

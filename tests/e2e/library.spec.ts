@@ -80,7 +80,8 @@ test.describe("the papers library", () => {
     const free = await person(browser, `library-free-${project}`);
     await free.page.goto("/tests");
     await free.page
-      .getByRole("link", { name: /^Store \d+ previous year/ })
+      .getByRole("main")
+      .getByRole("link", { name: "Store", exact: true })
       .click();
     await expect(free.page).toHaveURL(/\/store$/);
     await free.page.getByLabel("Search the store").fill(title);
@@ -103,11 +104,12 @@ test.describe("the papers library", () => {
     await expect(
       free.page.getByRole("status").filter({ hasText: "is in your tests" }),
     ).toContainText(`${title} is in your tests`);
-    await expect(
-      free.page
-        .getByRole("list", { name: `Papers in ${title}` })
-        .getByRole("link"),
-    ).toHaveCount(1);
+    const bought = free.page
+      .getByRole("list", { name: "Question papers" })
+      .getByRole("link", { name: new RegExp(title) });
+    await expect(bought).toHaveCount(1);
+    await expect(bought).toContainText(`From ${title}`);
+    await expect(bought).toContainText("Not attempted");
 
     // An Elite user: in their plan, the paper opens without paying.
     const elite = await person(browser, `library-elite-${project}`);

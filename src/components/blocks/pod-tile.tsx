@@ -23,6 +23,8 @@ type PodTileProps = {
   aside?: ReactNode;
   /** 0-100: a hairline under the stats. */
   progress?: number;
+  /** Small marks under the name, e.g. whether a paper has been attempted. */
+  badges?: ReactNode;
 };
 
 /**
@@ -39,6 +41,7 @@ export function PodTile({
   stat,
   aside,
   progress,
+  badges,
 }: PodTileProps) {
   const top =
     "absolute inset-x-0 top-0 -z-10 h-32 transition-transform duration-[300ms] group-hover:scale-[1.03]";
@@ -92,6 +95,9 @@ export function PodTile({
               <span className="truncate text-small text-ink-muted">
                 {subtitle}
               </span>
+            ) : null}
+            {badges ? (
+              <span className="mt-2 flex flex-wrap gap-1.5">{badges}</span>
             ) : null}
           </span>
           <span className="mt-auto flex flex-col gap-2">

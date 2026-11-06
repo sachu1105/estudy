@@ -12,8 +12,10 @@ import { uploadPaper } from "../upload";
 /** Pick a question paper's PDF; it opens beside a fresh answer sheet. */
 export function UploadPaperButton({
   variant = "primary",
+  className,
 }: {
   variant?: "primary" | "secondary";
+  className?: string;
 }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
@@ -49,13 +51,19 @@ export function UploadPaperButton({
       />
       <Button
         variant={variant}
+        className={className}
         disabled={progress !== null}
         onClick={() => input.current?.click()}
       >
         <FileUp aria-hidden />
-        {progress === null
-          ? "Upload question paper"
-          : `Uploading ${Math.round(progress * 100)}%`}
+        {progress === null ? (
+          // "Upload paper" on a phone, so it sits beside the Store button.
+          <span>
+            Upload<span className="hidden sm:inline"> question</span> paper
+          </span>
+        ) : (
+          `Uploading ${Math.round(progress * 100)}%`
+        )}
       </Button>
     </>
   );

@@ -31,7 +31,7 @@ export type OmrDeps = {
   papers: Pick<
     PaperRepository,
     | "create"
-    | "listOwned"
+    | "listFor"
     | "find"
     | "findOwned"
     | "sheet"
@@ -155,8 +155,13 @@ export function createOmrService(deps: OmrDeps) {
     normaliseMarks(sheet.marks, shapeOf(paper));
 
   return {
-    async list(user: User) {
-      const papers = await deps.papers.listOwned(user.id);
+    /**
+     * The papers on this person's Tests page: their own, and `given` (papers of bundles
+     * the caller has already found they have). Each with where it stands, the last
+     * score and how many times they've handed it in.
+     */
+    async list(user: User, given: string[] = []) {
+      const papers = await deps.papers.listFor(user.id, given);
       const now = deps.clock.now();
       return papers.map((p) => {
         const sheet = p.sheets[0];
@@ -171,6 +176,8 @@ export function createOmrService(deps: OmrDeps) {
               last?.createdAt.getTime() ?? 0,
             ),
           ),
+          owner: p.ownerId === user.id,
+          attempts: p._count.submissions,
           marks: normaliseMarks(sheet?.marks, shapeOf(p)),
           timer: viewAt(sheet ? fromColumns(sheet) : OFF, now),
           last:
