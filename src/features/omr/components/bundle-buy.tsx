@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -11,45 +11,24 @@ import { rupees } from "@/lib/pricing/pricing";
 
 import { buyBundleAction } from "../bundle-actions";
 
-type Step = "offer" | "review" | "done";
+type Step = "offer" | "review";
 
 /**
  * Paying for a bundle inside its card, as with squad passes: the price, then a review
- * with how it's paid, then a receipt. Demo payments for now: nothing is charged.
+ * with how it's paid; paid, straight to Tests, where its papers wait. Demo payments for
+ * now: nothing is charged.
  */
 export function BundleBuy({
   id,
-  title,
   pricePaise,
 }: {
   id: string;
-  title: string;
   pricePaise: number;
 }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>("offer");
   const [pending, start] = useTransition();
   const price = rupees(pricePaise);
-
-  if (step === "done")
-    return (
-      <div
-        role="status"
-        className="flex animate-pop-in flex-col items-center gap-3 py-2 text-center"
-      >
-        <span className="grid size-12 place-items-center rounded-full bg-success-soft text-success">
-          <Check className="size-6" strokeWidth={2.5} aria-hidden />
-        </span>
-        <p className="text-h3">Payment done</p>
-        <p className="text-small text-ink-muted">
-          <span className="font-medium text-ink">{title}</span> is yours for
-          good, in your tests.
-        </p>
-        <Button variant="primary" onClick={() => router.refresh()}>
-          Open the papers
-        </Button>
-      </div>
-    );
 
   if (step === "review")
     return (
@@ -87,7 +66,7 @@ export function BundleBuy({
             start(async () => {
               const result = await buyBundleAction({ id });
               if (!result.ok) return void toast.error(result.error);
-              setStep("done");
+              router.push(`/tests?added=${id}`);
             })
           }
         >

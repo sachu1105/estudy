@@ -135,7 +135,13 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
         variant="primary"
         className="self-start"
         disabled={pending}
-        onClick={() => run(() => claimBundleAction({ id: bundle.id }))}
+        onClick={() =>
+          start(async () => {
+            const result = await claimBundleAction({ id: bundle.id });
+            if (!result.ok) return void toast.error(result.error);
+            router.push(`/tests?added=${bundle.id}`);
+          })
+        }
       >
         <Plus aria-hidden /> Add to my tests
       </Button>
@@ -155,11 +161,7 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
 
   return bundle.selling ? (
     <div className="flex flex-col gap-3">
-      <BundleBuy
-        id={bundle.id}
-        title={bundle.title}
-        pricePaise={bundle.pricePaise}
-      />
+      <BundleBuy id={bundle.id} pricePaise={bundle.pricePaise} />
       {withPlan}
     </div>
   ) : (

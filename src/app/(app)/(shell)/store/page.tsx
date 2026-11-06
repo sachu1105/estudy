@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { EmptyState } from "@/components/ui/empty-state";
 import { DiscoverHero } from "@/features/groups/components/discover/discover-hero";
 import { StoreBrowser } from "@/features/omr/components/store-browser";
+import { StoreHeroArt } from "@/features/omr/components/store-hero-art";
 import { requireUser } from "@/server/auth/session";
 import { bundleService } from "@/server/services/omr";
 
@@ -28,23 +29,29 @@ export default async function StorePage() {
     included: b.included,
     includedIn: b.includedIn,
   }));
+  // Bundles lead, as the Shop's bundles do; newest first within each.
+  items.sort((a, b) => Number(b.papers > 1) - Number(a.papers > 1));
 
   return (
-    <div className="flex flex-col gap-8">
+    <div data-wide className="flex flex-col gap-8">
       <DiscoverHero
         title="Store"
         detail="Previous year papers and bundles, each with its answer key. Sit them on the OMR sheet with a timer and see your exact score."
-        inset
+        preset="dusk"
+        full
+        art={<StoreHeroArt />}
       />
-      {items.length === 0 ? (
-        <EmptyState
-          icon={Store}
-          title="The store is stocking up"
-          description="Papers and bundles show up here as they're added. Until then, upload your own in Tests."
-        />
-      ) : (
-        <StoreBrowser items={items} />
-      )}
+      <div className="mx-auto w-full max-w-content px-4 md:px-8">
+        {items.length === 0 ? (
+          <EmptyState
+            icon={Store}
+            title="The store is stocking up"
+            description="Papers and bundles show up here as they're added. Until then, upload your own in Tests."
+          />
+        ) : (
+          <StoreBrowser items={items} />
+        )}
+      </div>
     </div>
   );
 }

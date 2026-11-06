@@ -369,8 +369,9 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   syllabus as the exam pod it becomes (its card and the cover strip on its page). Squads
   wear the same art: each squad's banner, rail tile and Discover card, and the blurple
   banner (dimmed under white type) at the top of Squads > Discover (`DiscoverHero`). The
-  Store wears it too: the same banner on top, each item's card art (`StoreCard`, picked
-  from the bundle's id) and that art as a strip on a store item's page.
+  Store wears it too: the same banner on top, edge to edge in its own colour (dusk), each
+  item's card art (`StoreCard`, picked from the bundle's id) and that art as a strip on a
+  store item's page.
   The landing page may reuse the same
   cover art: a soft glow behind the hero window, the top of the featured plan card
   (the admin picks it under Plans and limits), the sample pod card and the squads

@@ -115,13 +115,18 @@ test.describe("paper bundles", () => {
     await expect(member.getByLabel("Locked")).toHaveCount(1);
     await member.getByRole("button", { name: "Buy · ₹299" }).click();
     await member.getByRole("button", { name: "Pay ₹299" }).click();
-    await expect(member.getByText("Payment done")).toBeVisible();
-    await member.getByRole("button", { name: "Open the papers" }).click();
-    await expect(member.getByText(/In your tests/)).toBeVisible();
+    // Paid: straight to Tests, where the bundle's papers wait.
+    await expect(member).toHaveURL(/\/tests\?added=[0-9a-f-]{36}$/);
+    await expect(
+      member.getByRole("status").filter({ hasText: "is in your tests" }),
+    ).toContainText("LGS papers is in your tests");
     expect(await noSideScroll(member)).toBeLessThanOrEqual(0);
 
     // Bought: a paper opens to sit, and its key shows after.
-    await member.getByRole("link", { name: /LGS 2021/ }).click();
+    await member
+      .getByRole("list", { name: "Papers in LGS papers" })
+      .getByRole("link", { name: /LGS 2021/ })
+      .click();
     await expect(member).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
     await member.getByRole("button", { name: "Start exam" }).click();
     await member.getByRole("button", { name: "Start now" }).click();

@@ -18,7 +18,8 @@
     "db:seed": "prisma db seed",
     "worker": "tsx watch --conditions=react-server src/worker/index.ts",
     "postinstall": "prisma generate",
-    "fixtures:plan": "tsx scripts/plan-fixtures.ts"
+    "fixtures:plan": "tsx scripts/plan-fixtures.ts",
+    "demo:store": "tsx --conditions=react-server scripts/demo-store.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1146.0",

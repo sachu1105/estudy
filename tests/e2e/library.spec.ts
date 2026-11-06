@@ -98,9 +98,16 @@ test.describe("the papers library", () => {
     ).toBeVisible();
     await free.page.getByRole("button", { name: "Buy · ₹149" }).click();
     await free.page.getByRole("button", { name: "Pay ₹149" }).click();
-    await expect(free.page.getByText("Payment done")).toBeVisible();
-    await free.page.getByRole("button", { name: "Open the papers" }).click();
-    await expect(free.page.getByText(/In your tests/)).toBeVisible();
+    // Paid: straight to Tests, the paper ready to sit.
+    await expect(free.page).toHaveURL(/\/tests\?added=[0-9a-f-]{36}$/);
+    await expect(
+      free.page.getByRole("status").filter({ hasText: "is in your tests" }),
+    ).toContainText(`${title} is in your tests`);
+    await expect(
+      free.page
+        .getByRole("list", { name: `Papers in ${title}` })
+        .getByRole("link"),
+    ).toHaveCount(1);
 
     // An Elite user: in their plan, the paper opens without paying.
     const elite = await person(browser, `library-elite-${project}`);

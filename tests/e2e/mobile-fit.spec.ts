@@ -21,6 +21,7 @@ const appRoutes = [
   "/pods/search",
   "/pods/trash",
   "/tests",
+  "/store",
   "/groups",
   "/groups/discover",
   "/groups/friends",
