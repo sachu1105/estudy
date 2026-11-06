@@ -1,11 +1,12 @@
 "use client";
 
-import { ExternalLink, Minus, Plus } from "lucide-react";
+import { ExternalLink, Minus, Plus, ShieldCheck } from "lucide-react";
 import type { getDocumentProxy } from "unpdf";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils/cn";
 
 import { PdfPage } from "./pdf-page";
 
@@ -29,8 +30,20 @@ function storedZoom() {
 /**
  * The question paper, drawn page by page with PDF.js, so it scrolls the same on a phone
  * as on a laptop (phones can't show a PDF inside a page). Pages draw as they come near.
+ *
+ * Someone else's paper (a bundle, the Store, a squad exam) is `personal`: the server
+ * sends a copy stamped with the reader's name, and here it's for reading only, with no
+ * new-tab link, no right-click menu and nothing to print.
  */
-export function PdfPages({ src, title }: { src: string; title: string }) {
+export function PdfPages({
+  src,
+  title,
+  personal = false,
+}: {
+  src: string;
+  title: string;
+  personal?: boolean;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const [doc, setDoc] = useState<Doc | null>(null);
   const [failed, setFailed] = useState(false);
@@ -81,10 +94,18 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex h-12 shrink-0 items-center gap-1 border-b border-border px-2">
-        <span className="min-w-0 flex-1 truncate px-2 text-small text-ink-muted">
-          {doc
-            ? `${doc.numPages} page${doc.numPages === 1 ? "" : "s"}`
-            : "Question paper"}
+        <span className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden px-2 text-small text-ink-muted">
+          {personal ? (
+            <ShieldCheck
+              className="size-4 shrink-0"
+              aria-label="Your personal copy"
+            />
+          ) : null}
+          <span className="min-w-0 truncate">
+            {doc
+              ? `${doc.numPages} page${doc.numPages === 1 ? "" : "s"}${personal ? " · your copy, marked with your name" : ""}`
+              : "Question paper"}
+          </span>
         </span>
         <Button
           variant="ghost"
@@ -113,20 +134,26 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
         >
           <Plus aria-hidden />
         </Button>
-        <Button asChild variant="ghost" size="icon">
-          <a
-            href={src}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open the PDF in a new tab"
-          >
-            <ExternalLink aria-hidden />
-          </a>
-        </Button>
+        {personal ? null : (
+          <Button asChild variant="ghost" size="icon">
+            <a
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open the PDF in a new tab"
+            >
+              <ExternalLink aria-hidden />
+            </a>
+          </Button>
+        )}
       </div>
       <div
         ref={box}
-        className="min-h-0 flex-1 overflow-auto overscroll-contain bg-surface-muted"
+        className={cn(
+          "min-h-0 flex-1 overflow-auto overscroll-contain bg-surface-muted",
+          personal && "select-none print:hidden",
+        )}
+        onContextMenu={personal ? (e) => e.preventDefault() : undefined}
         aria-label={`${title}, the question paper`}
         role="region"
         tabIndex={0}
@@ -134,14 +161,17 @@ export function PdfPages({ src, title }: { src: string; title: string }) {
         {failed ? (
           <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
             <p className="text-body text-ink-muted">
-              The paper couldn&apos;t be shown here. Open it in a new tab and
-              keep marking on this sheet.
+              {personal
+                ? "The paper couldn't be shown. Reload the page to try again."
+                : "The paper couldn't be shown here. Open it in a new tab and keep marking on this sheet."}
             </p>
-            <Button asChild variant="secondary">
-              <a href={src} target="_blank" rel="noopener noreferrer">
-                <ExternalLink aria-hidden /> Open PDF
-              </a>
-            </Button>
+            {personal ? null : (
+              <Button asChild variant="secondary">
+                <a href={src} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink aria-hidden /> Open PDF
+                </a>
+              </Button>
+            )}
           </div>
         ) : !doc || pageWidth === 0 ? (
           <div className="flex flex-col items-center gap-3 p-3">

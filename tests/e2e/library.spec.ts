@@ -43,6 +43,12 @@ test.describe("the papers library", () => {
       buffer: Buffer.from(makePdf(["1. A question"])),
     });
     await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
+    const paperId = page.url().split("/").pop()!;
+    // Its owner gets the file itself (a short storage link).
+    const own = await page.request.get(`/api/omr/${paperId}/file`, {
+      maxRedirects: 0,
+    });
+    expect(own.status()).toBe(302);
     await page.goto(`${page.url()}/key`);
     await page.getByRole("button", { name: "Edit" }).click();
     await page.getByLabel("Questions").fill("4");
@@ -123,9 +129,24 @@ test.describe("the papers library", () => {
       .getByRole("link", { name: new RegExp(title) });
     await expect(eliteRow).toContainText("In your plan");
     await eliteRow.click();
-    await expect(elite.page.getByText(/Included in your plan/)).toBeVisible();
+    await expect(
+      elite.page.getByText(/Free with your plan while you're subscribed/),
+    ).toBeVisible();
     await elite.page.getByRole("link", { name: new RegExp(title) }).click();
     await expect(elite.page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
+    // Not theirs: never the file, only a personal copy marked with their name, to read.
+    const copy = await elite.page.request.get(`/api/omr/${paperId}/file`, {
+      maxRedirects: 0,
+    });
+    expect(copy.status()).toBe(200);
+    expect(copy.headers()["content-type"]).toBe("application/pdf");
+    expect(copy.headers()["cache-control"]).toContain("no-store");
+    await expect(
+      elite.page.getByText(/your copy, marked with your name/),
+    ).toBeVisible();
+    await expect(
+      elite.page.getByRole("link", { name: "Open the PDF in a new tab" }),
+    ).toHaveCount(0);
     await elite.page.getByRole("button", { name: "Start exam" }).click();
     await elite.page.getByRole("button", { name: "Start now" }).click();
     if (isMobile)

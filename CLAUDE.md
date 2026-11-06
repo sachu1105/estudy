@@ -275,6 +275,10 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   (OmrSubmission) stores marks only; the score is always worked out from the current key
   by `lib/omr/score`, so a corrected key corrects every result. Keys say whose they are
   (the owner's or the official one); the app never claims a key is exam-accurate.
+  Only a paper's owner ever gets its file. Anyone else who may open it (a bundle, the
+  Store, a squad exam) gets a personal copy stamped on every page with their name,
+  email, IP and the time (`services/omr/watermark`), shown read-only: no new-tab link,
+  no right-click, no printing, and it can't be shared or bundled on.
 - Squad exams: a paper's owner shares it into a squad channel (PaperShare) with an open
   time, an optional close, and a results time (right away, at the close, or a set time).
   Everyone who can open the channel sits it once for the rank list (PaperEntry): a

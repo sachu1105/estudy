@@ -212,7 +212,7 @@ export function OmrWorkspace({
 
       {/* Paper | divider | sheet. The sheet's width is the person's, once they drag. */}
       <div
-        className="grid min-h-0 flex-1 md:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,300px)] lg:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,500px)]"
+        className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,300px)] lg:grid-cols-[minmax(0,1fr)_auto_var(--sheet-w,500px)]"
         style={
           sheetWidth.width === null
             ? undefined
@@ -226,7 +226,11 @@ export function OmrWorkspace({
             view === "paper" ? "block" : "hidden md:block",
           )}
         >
-          <PdfPages src={`/api/omr/${id}/file`} title={title} />
+          <PdfPages
+            src={`/api/omr/${id}/file`}
+            title={title}
+            personal={!paper.owner}
+          />
         </section>
         <SheetDivider
           width={sheetWidth.width}

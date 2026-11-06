@@ -25,6 +25,7 @@ import type { ObjectStorage } from "@/server/storage/types";
 import { failure, sha256Hex, type Result } from "../syllabus/deps";
 import { sniffKind } from "../syllabus/extract";
 import { answerSheetPdf } from "./answer-pdf";
+import { watermark } from "./watermark";
 import { paperView, scored, shapeOf, type KeySource } from "./paper-view";
 
 export type OmrDeps = {
@@ -428,14 +429,42 @@ export function createOmrService(deps: OmrDeps) {
       return true;
     },
 
-    /** A 5-minute link to the paper, for its owner or someone sitting it in a squad (rule 15). */
-    async viewUrl(user: User, paperId: string) {
+    /**
+     * The paper's PDF for whoever may open it (rule 15). Its owner gets a 5-minute link
+     * to the file itself. Anyone else (a bundle, the Store, a squad exam) never gets the
+     * file: they get a personal copy with their name, email, IP and the time stamped
+     * on every page, so a copy that leaves the app says whose it was.
+     */
+    async paperFile(
+      user: User,
+      paperId: string,
+      viewer: { name: string; email: string; ip: string; timeZone: string },
+    ): Promise<
+      | { kind: "link"; url: string }
+      | { kind: "copy"; bytes: Uint8Array; title: string }
+      | null
+    > {
       const reached = await reach(user, paperId);
       if (!reached) return null;
-      return deps.storage.signDownload(reached.paper.storageKey, {
-        contentType: "application/pdf",
-        expiresInSeconds: VIEW_SECONDS,
-      });
+      if (reached.owner)
+        return {
+          kind: "link",
+          url: await deps.storage.signDownload(reached.paper.storageKey, {
+            contentType: "application/pdf",
+            expiresInSeconds: VIEW_SECONDS,
+          }),
+        };
+      const at = new Intl.DateTimeFormat("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: viewer.timeZone,
+      }).format(deps.clock.now());
+      const original = await deps.storage.getBytes(reached.paper.storageKey);
+      return {
+        kind: "copy",
+        bytes: await watermark(original, { ...viewer, at }),
+        title: reached.paper.title,
+      };
     },
 
     /** The marked sheet as a PDF to keep, in the pen the person marks with. */

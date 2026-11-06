@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -61,7 +61,7 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
   if (bundle.owner && bundle.library)
     return (
       <p className="text-small text-ink-muted">
-        You listed this in the Store. {bundle.holders ?? 0}{" "}
+        Listed in the Store. {bundle.holders ?? 0}{" "}
         {bundle.holders === 1 ? "person has" : "people have"} it.{" "}
         <Link
           href="/admin/papers"
@@ -76,7 +76,7 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
     return (
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-small text-ink-muted">
-          You made this. {bundle.holders ?? 0}{" "}
+          {bundle.holders ?? 0}{" "}
           {bundle.holders === 1 ? "person has" : "people have"} it.
           {bundle.hidden ? " It's no longer offered; they keep it." : ""}
         </p>
@@ -113,27 +113,14 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
       </div>
     );
 
-  if (bundle.included)
-    return (
-      <p className="flex items-center gap-2 text-small">
-        <Check className="size-4 text-success" aria-hidden /> Included in your
-        plan. Sit any paper below.
-      </p>
-    );
-
-  if (bundle.have)
-    return (
-      <p className="flex items-center gap-2 text-small">
-        <Check className="size-4 text-success" aria-hidden /> In your tests. Sit
-        any paper below.
-      </p>
-    );
+  // Having it, the panel's headline says so: nothing to do here.
+  if (bundle.included || bundle.have) return null;
 
   if (bundle.pricePaise === null)
     return (
       <Button
         variant="primary"
-        className="self-start"
+        className="w-full"
         disabled={pending}
         onClick={() =>
           start(async () => {

@@ -1,25 +1,22 @@
-import { ArrowLeft, ChevronRight, FileCheck2, Lock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { PodCover } from "@/components/blocks/pod-cover";
-import { PageHeader } from "@/components/shell/page-header";
-import { Card } from "@/components/ui/card";
-import { PaidMark } from "@/features/groups/components/pay/paid-mark";
-import { BundleGet } from "@/features/omr/components/bundle-get";
-import { AttemptBadge } from "@/features/omr/components/paper-card";
+import { BundleHero } from "@/features/omr/components/bundle/bundle-hero";
+import { BundlePanel } from "@/features/omr/components/bundle/bundle-panel";
+import { BundlePapers } from "@/features/omr/components/bundle/bundle-papers";
 import { isId } from "@/lib/ids";
-import { formatScore } from "@/lib/omr/fraction";
-import { coverFor } from "@/lib/pods/covers";
-import { rupees } from "@/lib/pricing/pricing";
 import { requireUser } from "@/server/auth/session";
 import { bundleService, omrService } from "@/server/services/omr";
 
 export const metadata: Metadata = { title: "Bundle" };
 
-// A bundle of question papers: what's in it, its price, and (once you have it) a way
-// into each paper.
+/**
+ * A bundle of question papers, laid out as a store's product page: its cover and name,
+ * then its papers beside a panel with where the reader stands, the one thing to do and
+ * what having it gives. On a phone the panel comes first.
+ */
 export default async function BundlePage({
   params,
 }: PageProps<"/bundles/[bundleId]">) {
@@ -40,51 +37,40 @@ export default async function BundlePage({
       : []
     ).map((p) => [p.id, p]),
   );
-  const where = bundle.squad
+  const questions = bundle.papers.reduce((n, p) => n + p.questions, 0);
+  const squad = bundle.squad
     ? ` in ${bundle.squad.name}${bundle.channel ? ` · #${bundle.channel.name}` : ""}`
     : "";
+  const from = bundle.library
+    ? "From the studypods store"
+    : `By ${bundle.by}${squad}`;
+  const back = bundle.library
+    ? { href: "/store", label: "Store" }
+    : { href: "/tests", label: "Tests" };
 
   return (
-    <>
-      {bundle.library ? (
-        <div className="mb-6 flex flex-col gap-4">
-          <Link
-            href="/store"
-            className="-ml-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-control px-2 text-small font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
-          >
-            <ArrowLeft className="size-4" aria-hidden /> Store
-          </Link>
-          <PodCover
-            cover={coverFor(bundle.id)}
-            className="h-24 rounded-card md:h-32"
-          />
-        </div>
-      ) : null}
-      <PageHeader
+    <div className="flex flex-col gap-6">
+      <Link
+        href={back.href}
+        className="-mb-2 -ml-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-control px-2 text-small font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
+      >
+        <ArrowLeft className="size-4" aria-hidden /> {back.label}
+      </Link>
+      <BundleHero
+        id={bundle.id}
         title={bundle.title}
-        badge={bundle.pricePaise === null ? undefined : <PaidMark />}
-        description={
-          bundle.library
-            ? "From the studypods store"
-            : `Bundle by ${bundle.by}${where}`
+        kicker={
+          bundle.papers.length === 1
+            ? "Paper"
+            : `Bundle · ${bundle.papers.length} papers`
         }
+        from={from}
       />
-      <div className="flex flex-col gap-6">
-        <Card className="flex flex-col gap-4 p-5">
-          {bundle.description ? (
-            <p className="text-body whitespace-pre-line">
-              {bundle.description}
-            </p>
-          ) : null}
-          <p className="text-small text-ink-muted">
-            {bundle.papers.length} paper{bundle.papers.length === 1 ? "" : "s"}{" "}
-            ·{" "}
-            {bundle.pricePaise === null
-              ? "Free"
-              : `${rupees(bundle.pricePaise)} once, yours for good`}{" "}
-            · each paper&apos;s key shows after you sit it
-          </p>
-          <BundleGet
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_20rem] md:items-start">
+        <aside className="md:sticky md:top-6 md:col-start-2 md:row-start-1">
+          <BundlePanel
+            papers={bundle.papers.length}
+            questions={questions}
             bundle={{
               id: bundle.id,
               title: bundle.title,
@@ -99,72 +85,40 @@ export default async function BundlePage({
               includedIn: bundle.includedIn,
             }}
           />
-        </Card>
-        <section
-          aria-labelledby="bundle-papers"
-          className="flex flex-col gap-3"
-        >
-          <h2 id="bundle-papers" className="font-heading text-h2 font-semibold">
-            Papers
-          </h2>
-          <ul className="divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
-            {bundle.papers.map((p) => {
-              const body = (
-                <>
-                  <FileCheck2
-                    className="size-5 shrink-0 text-ink-muted"
-                    aria-hidden
-                  />
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-body font-medium">
-                      {p.title.replaceAll("_", " ")}
-                    </span>
-                    <span className="text-small text-ink-muted">
-                      {p.questions} questions
-                      {p.limitMin ? ` · ${p.limitMin} min` : ""}
-                      {sat.get(p.id)?.last?.keyed
-                        ? ` · last ${formatScore(sat.get(p.id)!.last!.score)} of ${formatScore(sat.get(p.id)!.last!.max)}`
-                        : ""}
-                    </span>
-                    {sat.get(p.id) ? (
-                      <span className="mt-1.5 flex">
-                        <AttemptBadge sheet={sat.get(p.id)!} />
-                      </span>
-                    ) : null}
-                  </span>
-                  {open ? (
-                    <ChevronRight
-                      className="size-4 shrink-0 text-ink-muted"
-                      aria-hidden
-                    />
-                  ) : (
-                    <Lock
-                      className="size-4 shrink-0 text-ink-muted"
-                      aria-label="Locked"
-                    />
-                  )}
-                </>
-              );
-              return (
-                <li key={p.id}>
-                  {open ? (
-                    <Link
-                      href={`/omr/${p.id}`}
-                      className="flex min-h-14 items-center gap-3 px-4 py-3 hover:bg-surface-muted"
-                    >
-                      {body}
-                    </Link>
-                  ) : (
-                    <div className="flex min-h-14 items-center gap-3 px-4 py-2">
-                      {body}
-                    </div>
-                  )}
-                </li>
-              );
+        </aside>
+        <div className="flex min-w-0 flex-col gap-6 md:col-start-1 md:row-start-1">
+          {bundle.description ? (
+            <section aria-labelledby="about" className="flex flex-col gap-2">
+              <h2 id="about" className="font-heading text-h2 font-semibold">
+                About
+              </h2>
+              <p className="text-body whitespace-pre-line text-ink-muted">
+                {bundle.description}
+              </p>
+            </section>
+          ) : null}
+          <BundlePapers
+            open={open}
+            papers={bundle.papers.map((p) => {
+              const mine = sat.get(p.id);
+              return {
+                id: p.id,
+                title: p.title,
+                questions: p.questions,
+                limitMin: p.limitMin,
+                sat: mine
+                  ? {
+                      marks: mine.marks,
+                      timer: mine.timer,
+                      attempts: mine.attempts,
+                      last: mine.last,
+                    }
+                  : null,
+              };
             })}
-          </ul>
-        </section>
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 }

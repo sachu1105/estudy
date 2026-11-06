@@ -12,6 +12,8 @@ import type {
 } from "@/server/repositories/paper-repository";
 import { createMemoryStorage } from "@/server/storage/memory";
 
+import { makePdf } from "../../../../tests/support/pdf";
+
 import { createOmrService, type OmrDeps } from "./omr-service";
 
 type Paper = PaperRow & { sizeBytes: number };
@@ -162,7 +164,7 @@ function memoryPapers(ids: ReturnType<typeof sequentialIds>, now: () => Date) {
   return { repo, papers, sheets, submissions };
 }
 
-function setup(room = 10_000) {
+function setup(room = 10_000, access?: OmrDeps["access"]) {
   const { storage, objects } = createMemoryStorage();
   const ids = sequentialIds();
   const clock = fixedClock("2026-10-26T04:30:00Z");
@@ -175,6 +177,7 @@ function setup(room = 10_000) {
     clock,
     limit: () => room,
     pageCount: async () => 3,
+    access,
   });
   return { service, objects, db, clock };
 }
@@ -183,7 +186,7 @@ const user = { id: "00000000-0000-4000-8000-0000000000aa" } as never;
 const other = { id: "00000000-0000-4000-8000-0000000000bb" } as never;
 const pdf = new TextEncoder().encode("%PDF-1.7 a question paper");
 
-async function uploaded(s: ReturnType<typeof setup>, body = pdf) {
+async function uploaded(s: ReturnType<typeof setup>, body: Uint8Array = pdf) {
   const signed = await s.service.requestUpload(user, {
     contentType: "application/pdf",
     size: body.byteLength,
@@ -193,9 +196,9 @@ async function uploaded(s: ReturnType<typeof setup>, body = pdf) {
   return signed.upload.key;
 }
 
-async function paper(s: ReturnType<typeof setup>) {
+async function paper(s: ReturnType<typeof setup>, body: Uint8Array = pdf) {
   const made = await s.service.completeUpload(user, {
-    key: await uploaded(s),
+    key: await uploaded(s, body),
     name: "p.pdf",
   });
   if (!made.ok) throw new Error(made.message);
@@ -270,7 +273,14 @@ describe("question papers", () => {
     ).toBe(false);
     expect(await s.service.get(other, id)).toBeNull();
     expect(await s.service.withKey(other, id)).toBeNull();
-    expect(await s.service.viewUrl(other, id)).toBeNull();
+    expect(
+      await s.service.paperFile(other, id, {
+        name: "B",
+        email: "b@example.com",
+        ip: "203.0.113.9",
+        timeZone: "UTC",
+      }),
+    ).toBeNull();
     expect(
       await s.service.answerPdf(other, id, { pen: "blue", timeZone: "UTC" }),
     ).toBeNull();
@@ -299,6 +309,35 @@ describe("question papers", () => {
     expect(await s.service.remove(user, id)).toBe(true);
     expect(s.objects.has(storageKey)).toBe(false);
     expect(s.db.papers.size).toBe(0);
+  });
+
+  it("gives the owner the file, and anyone else only a copy stamped with who, where and when", async () => {
+    // `other` has the paper through a bundle; nobody else does.
+    const s = setup(10_000, async (u) =>
+      (u as { id: string }).id === (other as { id: string }).id
+        ? { canView: true, canPractise: true, keyOut: true }
+        : null,
+    );
+    const id = await paper(s, makePdf(["1. Which is the capital of Kerala?"]));
+    const viewer = {
+      name: "Asha Nair",
+      email: "asha@example.com",
+      ip: "203.0.113.7",
+      timeZone: "Asia/Kolkata",
+    };
+    expect((await s.service.paperFile(user, id, viewer))?.kind).toBe("link");
+    const copy = await s.service.paperFile(other, id, viewer);
+    if (copy?.kind !== "copy") throw new Error("Expected a stamped copy");
+    const { extractText, getDocumentProxy } = await import("unpdf");
+    const { text } = await extractText(await getDocumentProxy(copy.bytes), {
+      mergePages: true,
+    });
+    expect(text).toContain("Which is the capital of Kerala?");
+    expect(text).toContain("Personal copy for Asha Nair (asha@example.com)");
+    expect(text).toContain("IP 203.0.113.7");
+    expect(text).toContain("26 Oct 2026");
+    const third = { id: "00000000-0000-4000-8000-0000000000cc" } as never;
+    expect(await s.service.paperFile(third, id, viewer)).toBeNull();
   });
 
   it("keeps time on the server: a reload sees the clock still running", async () => {
