@@ -17,6 +17,7 @@ import { createHash, randomUUID } from "node:crypto";
 import type { Plan } from "@/server/db/generated/prisma/client";
 
 import { systemClock } from "@/lib/clock";
+import { blankMarks } from "@/lib/omr/marks";
 import { prisma } from "@/server/db";
 import { env } from "@/server/env";
 import { bundleRepository } from "@/server/repositories/bundle-repository";
@@ -472,6 +473,14 @@ async function add() {
     });
     if (found) {
       paperIds.push(found.id);
+      // Earlier runs made the sheet all 0s (every answer A): blank it if untouched.
+      await prisma.omrSheet.updateMany({
+        where: {
+          paperId: found.id,
+          marks: { equals: Array<number>(paper.questions.length).fill(0) },
+        },
+        data: { marks: blankMarks(paper.questions.length) },
+      });
       continue;
     }
     const bytes = pdfOf(paperLines(paper));
@@ -493,7 +502,8 @@ async function add() {
         answerKey: paper.questions.map(([, , answer]) => 1 << answer),
         keySource: "OWN",
         keyUpdatedAt: systemClock.now(),
-        sheets: { create: { ownerId, marks: Array<number>(count).fill(0) } },
+        // A clean sheet: BLANK (-1) everywhere. 0 would be every answer marked A.
+        sheets: { create: { ownerId, marks: blankMarks(count) } },
       },
       select: { id: true },
     });
