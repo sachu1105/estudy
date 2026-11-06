@@ -290,6 +290,13 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   for good). Having it (BundlePurchase, append-only, a free add has no amount) means
   sitting every paper in it with its key; stopping sales or leaving the squad never
   takes it away. Payments are demo only, through the same Checkout as squad passes.
+- Papers library: admins (Admin > Papers) list their own papers, one paper or a bundle,
+  free or priced (demo payments), and may include an entry free with PRO and/or ELITE.
+  New entries are drafts until published; taking one down keeps it for whoever bought or
+  added it. Plan inclusion goes through `planIncludes()` in server/entitlements and
+  counts only a real subscription (paid or admin-granted), like paidOnly features: the
+  free launch's ELITE for everyone doesn't include library bundles. Every admin change
+  is in the audit log.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   XP feeds only the squad rank: a squad's members ranked by this week's XP.
 

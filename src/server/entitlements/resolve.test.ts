@@ -70,6 +70,18 @@ describe("entitlements with billing disabled", () => {
   });
 });
 
+describe("plan-included library bundles", () => {
+  const { planIncludes } = createEntitlements({ billingEnabled: false, clock });
+
+  it("count the plan someone really holds, not the free launch's ELITE", () => {
+    expect(planIncludes(free, ["PRO", "ELITE"])).toBe(false);
+    expect(planIncludes(pro(), ["PRO", "ELITE"])).toBe(true);
+    expect(planIncludes(pro(), ["ELITE"])).toBe(false);
+    expect(planIncludes(pro({ status: "EXPIRED" }), ["PRO"])).toBe(false);
+    expect(planIncludes(pro(), [])).toBe(false);
+  });
+});
+
 describe("entitlements with billing enabled", () => {
   const { can, limit, planOf } = createEntitlements({
     billingEnabled: true,

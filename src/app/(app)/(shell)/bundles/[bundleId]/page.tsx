@@ -35,7 +35,11 @@ export default async function BundlePage({
       <PageHeader
         title={bundle.title}
         badge={bundle.pricePaise === null ? undefined : <PaidMark />}
-        description={`Bundle by ${bundle.by}${where}`}
+        description={
+          bundle.library
+            ? "From the studypods library"
+            : `Bundle by ${bundle.by}${where}`
+        }
       />
       <div className="flex flex-col gap-6">
         <Card className="flex flex-col gap-4 p-5">
@@ -62,6 +66,8 @@ export default async function BundlePage({
               hidden: bundle.hidden,
               selling: bundle.selling,
               holders: bundle.holders,
+              included: bundle.included,
+              includedIn: bundle.includedIn,
             }}
           />
         </Card>

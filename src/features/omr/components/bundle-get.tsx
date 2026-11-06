@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -27,7 +28,14 @@ export type BundleState = {
   hidden: boolean;
   selling: boolean;
   holders: number | null;
+  /** A library bundle the reader's plan includes. */
+  included: boolean;
+  /** The plans that include it, offered to those who don't have it. */
+  includedIn: string[];
 };
+
+const planName = (p: string) =>
+  p === "PRO" ? "Pro" : p === "ELITE" ? "Elite" : p;
 
 /**
  * The one thing to do with a bundle: add it (free), buy it, or, for whoever made it,
@@ -89,6 +97,14 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
       </div>
     );
 
+  if (bundle.included)
+    return (
+      <p className="flex items-center gap-2 text-small">
+        <Check className="size-4 text-success" aria-hidden /> Included in your
+        plan. Sit any paper below.
+      </p>
+    );
+
   if (bundle.have)
     return (
       <p className="flex items-center gap-2 text-small">
@@ -109,12 +125,27 @@ export function BundleGet({ bundle }: { bundle: BundleState }) {
       </Button>
     );
 
+  const withPlan = bundle.includedIn.length ? (
+    <p className="text-small text-ink-muted">
+      Or get it free with {bundle.includedIn.map(planName).join(" or ")}.{" "}
+      <Link
+        href="/settings/plan"
+        className="font-medium text-accent-ink hover:underline"
+      >
+        See the plans
+      </Link>
+    </p>
+  ) : null;
+
   return bundle.selling ? (
-    <BundleBuy
-      id={bundle.id}
-      title={bundle.title}
-      pricePaise={bundle.pricePaise}
-    />
+    <div className="flex flex-col gap-3">
+      <BundleBuy
+        id={bundle.id}
+        title={bundle.title}
+        pricePaise={bundle.pricePaise}
+      />
+      {withPlan}
+    </div>
   ) : (
     <p className="rounded-control bg-surface-muted p-3 text-small text-ink-muted">
       This bundle isn&apos;t on sale right now. Try again later.

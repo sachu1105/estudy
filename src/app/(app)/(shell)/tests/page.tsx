@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { BundleList } from "@/features/omr/components/bundle-list";
+import { LibraryShelf } from "@/features/omr/components/library-shelf";
 import { PaperCard } from "@/features/omr/components/paper-card";
 import { SquadExamList } from "@/features/omr/components/squad-exam-list";
 import { UploadPaperButton } from "@/features/omr/components/upload-paper-button";
@@ -15,10 +16,11 @@ export const metadata: Metadata = { title: "Tests" };
 
 export default async function TestsPage() {
   const user = await requireUser();
-  const [sheets, exams, bundles] = await Promise.all([
+  const [sheets, exams, bundles, library] = await Promise.all([
     omrService.list(user),
     examService.list(user),
     bundleService.mine(user),
+    bundleService.library(user),
   ]);
   const now = systemClock.now();
   const format = new Intl.DateTimeFormat("en-IN", {
@@ -62,7 +64,7 @@ export default async function TestsPage() {
               title: b.title,
               papers: b.papers.length,
               owner: b.owner,
-              by: b.by,
+              by: b.library ? "studypods" : b.by,
             }))}
           />
         ) : null}
@@ -95,6 +97,19 @@ export default async function TestsPage() {
             </ul>
           </section>
         )}
+        {library.length > 0 ? (
+          <LibraryShelf
+            items={library.map((b) => ({
+              id: b.id,
+              title: b.title,
+              papers: b.papers.length,
+              pricePaise: b.pricePaise,
+              have: b.have,
+              included: b.included,
+              includedIn: b.includedIn,
+            }))}
+          />
+        ) : null}
       </div>
     </>
   );

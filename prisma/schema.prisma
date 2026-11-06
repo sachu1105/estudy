@@ -751,9 +751,10 @@ model PaperEntry {
   @@index([userId])
 }
 
-/// Question papers grouped to give away or sell in a squad channel. Whoever adds it to
-/// their tests (free) or buys it may sit every paper in it, with its key. Stopping sales
-/// hides it from new people; those who have it keep it.
+/// Question papers grouped to give away or sell in a squad channel, or in the app's own
+/// library. Whoever adds it to their tests (free), buys it, or holds a plan that includes
+/// it may sit every paper in it, with its key. Stopping sales hides it from new people;
+/// those who bought or added it keep it.
 model PaperBundle {
   id          String           @id @default(uuid()) @db.Uuid
   ownerId     String           @db.Uuid
@@ -766,6 +767,13 @@ model PaperBundle {
   group       Group?           @relation(fields: [groupId], references: [id], onDelete: SetNull)
   channelId   String?          @db.Uuid
   channel     Channel?         @relation(fields: [channelId], references: [id], onDelete: SetNull)
+  /// In the app's own library (Admin > Papers), sold or given by studypods, not a squad.
+  catalogue   Boolean          @default(false)
+  /// Plans that include a library bundle at no cost, checked against the real
+  /// subscription (server/entitlements: planIncludes).
+  includedIn  Plan[]
+  /// A library bundle shows to everyone once published. Null: a draft.
+  publishedAt DateTime?        @db.Timestamptz(6)
   hiddenAt    DateTime?        @db.Timestamptz(6)
   createdAt   DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
@@ -775,6 +783,7 @@ model PaperBundle {
 
   @@index([groupId, createdAt])
   @@index([ownerId, createdAt])
+  @@index([catalogue, publishedAt])
 }
 
 model BundlePaper {

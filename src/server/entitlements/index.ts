@@ -34,6 +34,7 @@ export const can = entitlements.can;
 export const limit = entitlements.limit;
 export const planOf = entitlements.planOf;
 export const isPaidOnly = entitlements.isPaidOnly;
+export const planIncludes = entitlements.planIncludes;
 /** Billing as it is now: the admin's switch, else the environment. */
 export const billingEnabled = () =>
   cachedSettings().billing?.enabled ?? env.BILLING_ENABLED;

@@ -2,7 +2,8 @@ import "server-only";
 
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
-import { limit } from "@/server/entitlements";
+import { limit, planIncludes } from "@/server/entitlements";
+import { auditLogRepository } from "@/server/repositories/audit-log-repository";
 import { bundleRepository } from "@/server/repositories/bundle-repository";
 import { examRepository } from "@/server/repositories/exam-repository";
 import { paperRepository } from "@/server/repositories/paper-repository";
@@ -52,6 +53,8 @@ export const bundleService = createBundleService({
   selling: (ownerId) => squadPay.selling(ownerId),
   checkout,
   clock: systemClock,
+  planIncludes: (user, plans) => planIncludes(user, plans),
+  audit: (entry) => auditLogRepository.append(entry),
 });
 
 export const omrService = createOmrService({

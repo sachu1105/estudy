@@ -4,6 +4,7 @@
 export const ADMIN_AREAS = {
   dashboard: { label: "Dashboard", href: "/admin" },
   catalogue: { label: "Catalogue", href: "/admin/catalogue" },
+  papers: { label: "Papers", href: "/admin/papers" },
   reports: { label: "Reports", href: "/admin/reports" },
   users: { label: "Users", href: "/admin/users" },
   settings: { label: "Site", href: "/admin/settings" },
@@ -28,6 +29,7 @@ const ACCESS: Record<Role, readonly AdminArea[]> = {
     "catalogue",
     "reports",
     "exams",
+    "papers",
     "users",
     "settings",
     "jobs",
@@ -38,6 +40,7 @@ const ACCESS: Record<Role, readonly AdminArea[]> = {
     "catalogue",
     "reports",
     "exams",
+    "papers",
     "users",
     "settings",
     "plans",

@@ -21,11 +21,14 @@ const PAPERS: Record<string, string> = {
   p2: idOf(owner),
   p3: idOf(admin),
 };
+/** Who holds a real PRO plan, for library bundles included in plans. */
+const proUsers = new Set([idOf(member)]);
 
 function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
   const bundles = new Map<string, BundleRow>();
   const purchases: { bundleId: string; userId: string; amountPaise: number }[] =
     [];
+  const audit: string[] = [];
   const state = {
     selling: opts.selling ?? true,
     canPrice: opts.canPrice ?? true,
@@ -43,10 +46,17 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
         groupId: data.groupId,
         channelId: data.channelId,
         hiddenAt: null,
+        catalogue: data.catalogue ?? false,
+        includedIn: data.includedIn ?? [],
+        publishedAt: data.publishedAt ?? null,
         createdAt: new Date(0),
         owner: { id: data.ownerId, displayName: "Owner" },
-        group: { id: data.groupId, name: "Squad", ownerId: idOf(owner) },
-        channel: { id: data.channelId, name: "general" },
+        group: data.groupId
+          ? { id: data.groupId, name: "Squad", ownerId: idOf(owner) }
+          : null,
+        channel: data.channelId
+          ? { id: data.channelId, name: "general" }
+          : null,
         papers: data.paperIds.map((id) => ({
           paper: { id, title: id, questionCount: 100, limitMin: 75 },
         })),
@@ -58,6 +68,52 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
     },
     async hide(id, at) {
       bundles.get(id)!.hiddenAt = at;
+    },
+    async update(id, data) {
+      const b = bundles.get(id)!;
+      Object.assign(b, {
+        title: data.title,
+        description: data.description,
+        pricePaise: data.pricePaise,
+        includedIn: data.includedIn,
+        papers: data.paperIds.map((p) => ({
+          paper: { id: p, title: p, questionCount: 100, limitMin: 75 },
+        })),
+      });
+    },
+    async setPublished(id, at) {
+      bundles.get(id)!.publishedAt = at;
+    },
+    async library() {
+      return [...bundles.values()].filter(
+        (b) => b.catalogue && b.publishedAt && !b.hiddenAt,
+      );
+    },
+    async catalogue() {
+      return [...bundles.values()]
+        .filter((b) => b.catalogue && !b.hiddenAt)
+        .map((b) => ({
+          ...b,
+          _count: {
+            purchases: purchases.filter((p) => p.bundleId === b.id).length,
+          },
+        }));
+    },
+    async includedWithPaper(paperId) {
+      return [...bundles.values()]
+        .filter(
+          (b) =>
+            b.catalogue &&
+            b.publishedAt &&
+            !b.hiddenAt &&
+            b.papers.some((x) => x.paper.id === paperId),
+        )
+        .map((b) => b.includedIn);
+    },
+    async ownedIds(userId) {
+      return purchases
+        .filter((p) => p.userId === userId)
+        .map((p) => p.bundleId);
     },
     async purchase(bundleId, userId) {
       const p = purchases.find(
@@ -107,8 +163,11 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
       charge: async () => ({ provider: "DEMO", ref: `demo_${n++}` }),
     },
     clock: fixedClock("2026-11-08T10:00:00Z"),
+    planIncludes: (user, plans) =>
+      proUsers.has(idOf(user)) && plans.includes("PRO"),
+    audit: async (entry) => void audit.push(entry.action),
   });
-  return { service, purchases, state };
+  return { service, purchases, state, audit };
 }
 
 const input = {
@@ -204,5 +263,64 @@ describe("paper bundles", () => {
     expect(await s.service.claim(outsider, free.id)).toMatchObject({
       ok: false,
     });
+  });
+
+  it("keeps library drafts hidden, publishes them to everyone, and opens plan-included ones", async () => {
+    const s = setup();
+    const library = {
+      title: "LDC 2024",
+      description: "",
+      paperIds: ["p3"],
+      rupees: 149,
+      includedIn: ["PRO" as const],
+    };
+    expect(
+      (await s.service.adminSave(admin, null, { ...library, paperIds: ["p1"] }))
+        .ok,
+    ).toBe(false);
+    expect(
+      (await s.service.adminSave(admin, null, { ...library, rupees: 1 })).ok,
+    ).toBe(false);
+    const made = await s.service.adminSave(admin, null, library);
+    if (!made.ok) throw new Error(made.message);
+    // A draft: nobody but its maker sees it.
+    expect(await s.service.get(outsider, made.id)).toBeNull();
+    expect(await s.service.library(outsider)).toEqual([]);
+
+    await s.service.adminSet(admin, made.id, "publish");
+    const seen = await s.service.get(outsider, made.id);
+    expect(seen?.have).toBe(false);
+    expect(seen?.library).toBe(true);
+    expect(seen?.selling).toBe(true);
+    // The member's PRO plan includes it: in without paying, papers open.
+    const mine = await s.service.get(member, made.id);
+    expect(mine?.have && mine.included).toBe(true);
+    expect(await s.service.paperAccess(member, "p3")).not.toBeNull();
+    expect(await s.service.paperAccess(outsider, "p3")).toBeNull();
+    const listed = await s.service.library(member);
+    expect(listed.map((b) => [b.id, b.included])).toEqual([[made.id, true]]);
+
+    // Bought by someone else; then edited, unpublished and taken down.
+    expect((await s.service.buy(outsider, made.id)).ok).toBe(true);
+    await s.service.adminSave(admin, made.id, {
+      ...library,
+      title: "LDC 2024 set",
+    });
+    expect((await s.service.adminList())[0]).toMatchObject({
+      title: "LDC 2024 set",
+      holders: 1,
+    });
+    await s.service.adminSet(admin, made.id, "unpublish");
+    expect(await s.service.paperAccess(member, "p3")).toBeNull();
+    expect(await s.service.paperAccess(outsider, "p3")).not.toBeNull();
+    await s.service.adminSet(admin, made.id, "remove");
+    expect(await s.service.adminList()).toEqual([]);
+    expect(s.audit).toEqual([
+      "library.create",
+      "library.publish",
+      "library.update",
+      "library.unpublish",
+      "library.remove",
+    ]);
   });
 });

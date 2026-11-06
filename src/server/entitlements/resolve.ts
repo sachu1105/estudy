@@ -126,5 +126,15 @@ export function createEntitlements({
     return PAID_ONLY.has(feature);
   }
 
-  return { planOf, subscribedPlanOf, limit, can, isPaidOnly };
+  /**
+   * Whether something the admin includes in some plans (a library bundle) comes with this
+   * person's plan. It counts the plan they really hold, paid or granted, as paid-only
+   * features do: the free launch's ELITE for everyone doesn't include it.
+   */
+  function planIncludes(subject: EntitlementSubject, plans: readonly PlanName[]) {
+    const plan = subscribedPlanOf(subject);
+    return plan !== "FREE" && plans.includes(plan);
+  }
+
+  return { planOf, subscribedPlanOf, limit, can, isPaidOnly, planIncludes };
 }
