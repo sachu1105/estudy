@@ -1,6 +1,8 @@
-import { Check } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import { cn } from "@/lib/utils/cn";
+
+import { glide, SceneTick } from "./hover";
 
 // Sample content, not data. The week's tasks as a staircase of rows that run off the
 // cell's right edge; the front one is open on "Why this?".
@@ -8,15 +10,27 @@ import { cn } from "@/lib/utils/cn";
 const days = [
   { day: "Mon", title: "Rivers of India", minutes: "30m", done: true },
   { day: "Tue", title: "Percentages", minutes: "39m", done: true },
-  { day: "Wed", title: "Fundamental rights", minutes: "45m", done: false },
+  // Ticked while the cell is hovered.
+  { day: "Wed", title: "Fundamental rights", minutes: "45m", later: true },
 ];
 
-const row =
-  "absolute -right-10 rounded-l-card border-y border-l border-border bg-surface shadow-sm";
+const row = cn(
+  "absolute -right-10 rounded-l-card border-y border-l border-border bg-surface shadow-sm",
+  glide,
+  "motion-safe:group-hover/feature:translate-x-(--fan)",
+);
 
-/** Each step back sits one step further right: a narrower step on a phone. */
-function stepLeft(stepsBack: number) {
-  return `calc(${stepsBack} * var(--step) + var(--gutter))`;
+/**
+ * Each step back sits one step further right: a narrower step on a phone. On hover the
+ * staircase fans out, each step back moving a little further (the rows run 40px past the
+ * cell, so the gap never shows).
+ */
+function step(stepsBack: number, top: number): CSSProperties {
+  return {
+    top,
+    left: `calc(${stepsBack} * var(--step) + var(--gutter))`,
+    ["--fan" as string]: `${stepsBack * 8}px`,
+  };
 }
 
 export function PlanScene() {
@@ -26,7 +40,7 @@ export function PlanScene() {
         <div
           key={d.day}
           className={cn(row, "flex h-14 items-center")}
-          style={{ top: 16 + i * 60, left: stepLeft(days.length - i) }}
+          style={step(days.length - i, 16 + i * 60)}
         >
           <Tab {...d} />
         </div>
@@ -34,7 +48,7 @@ export function PlanScene() {
 
       <div
         className={cn(row, "flex flex-col shadow-md")}
-        style={{ top: 16 + days.length * 60, left: stepLeft(0) }}
+        style={step(0, 16 + days.length * 60)}
       >
         <div className="flex h-14 items-center border-b border-border">
           <Tab day="Thu" title="Constitution revision" minutes="20m" />
@@ -62,22 +76,22 @@ function Tab({
   title,
   minutes,
   done = false,
+  later = false,
 }: {
   day: string;
   title: string;
   minutes: string;
   done?: boolean;
+  later?: boolean;
 }) {
   return (
     <span className="flex h-full items-center gap-3 border-r border-border px-4">
-      <span
-        className={cn(
-          "grid size-5 shrink-0 place-items-center rounded-[6px] border",
-          done ? "border-success bg-success text-white" : "border-edge",
-        )}
-      >
-        {done ? <Check className="size-3.5" /> : null}
-      </span>
+      <SceneTick
+        done={done}
+        later={later}
+        className="size-5 rounded-[6px]"
+        iconClassName="size-3.5"
+      />
       <span className="font-mono text-small text-ink-muted uppercase">
         {day}
       </span>

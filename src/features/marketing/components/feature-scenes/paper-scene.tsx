@@ -2,6 +2,8 @@ import { Check, Timer } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
 
+import { after, glide } from "./hover";
+
 // Sample content, not data. A question paper on the desk and the OMR answer sheet laid
 // over it, running off the cell's corner, with the exam clock above and the score it
 // was marked to below. Both are paper, so white in any theme. The sheet copies the app's own
@@ -18,6 +20,9 @@ const sheet = [
   [27, 0],
   [28, -1],
 ] as const;
+
+// The blank row gets answered in pen while the cell is hovered.
+const penOnHover = { row: 25, option: 2 };
 
 export function PaperScene() {
   return (
@@ -48,7 +53,11 @@ export function PaperScene() {
 
       <div
         data-theme="light"
-        className="absolute top-20 left-[38%] w-72 rotate-2 overflow-hidden rounded-tl-[6px] border-t border-l border-border bg-surface text-ink [color-scheme:light] shadow-lg"
+        className={cn(
+          "absolute top-20 left-[38%] w-72 rotate-2 overflow-hidden rounded-tl-[6px] border-t border-l border-border bg-surface text-ink [color-scheme:light] shadow-lg",
+          glide,
+          "motion-safe:group-hover/feature:-translate-y-2 motion-safe:group-hover/feature:rotate-0",
+        )}
       >
         <p className="flex justify-between bg-tint-teal/15 px-3 py-1.5 text-micro text-tint-teal uppercase">
           <span>Answer sheet</span>
@@ -76,6 +85,13 @@ export function PaperScene() {
                         i === mark
                           ? "border-pen-blue bg-pen-blue text-bg"
                           : "border-tint-teal/60 text-tint-teal",
+                        n === penOnHover.row &&
+                          i === penOnHover.option &&
+                          cn(
+                            glide,
+                            after,
+                            "group-hover/feature:border-pen-blue group-hover/feature:bg-pen-blue group-hover/feature:text-bg",
+                          ),
                       )}
                     >
                       {letter}
@@ -100,7 +116,13 @@ export function PaperScene() {
         <Timer className="size-4" /> 01:24:07
       </span>
       {/* Handed in: marked against the key, to the exact fraction. */}
-      <span className="absolute bottom-6 left-6 z-10 flex flex-col gap-1 rounded-card border border-border bg-surface px-4 py-3 shadow-md sm:left-10 lg:left-14">
+      <span
+        className={cn(
+          "absolute bottom-6 left-6 z-10 flex flex-col gap-1 rounded-card border border-border bg-surface px-4 py-3 shadow-md sm:left-10 lg:left-14",
+          glide,
+          "group-hover/feature:shadow-lg motion-safe:group-hover/feature:-translate-y-1.5",
+        )}
+      >
         <span className="text-micro text-ink-muted uppercase">Your score</span>
         <span className="font-mono text-h2 font-medium text-ink tabular-nums">
           72.67 <span className="text-small text-ink-muted">/ 100</span>

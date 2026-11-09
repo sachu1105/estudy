@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PodCover } from "@/components/blocks/pod-cover";
 import { Button } from "@/components/ui/button";
+import { Glare, glareHost } from "@/components/ui/glare";
 import {
   blurbs,
   planLabel,
@@ -21,7 +22,7 @@ export type PublicPlan = {
 /**
  * The plans for someone not signed in: read, then register. No checkout here. The
  * featured plan (the admin picks it) is raised, with a cover on top and the one
- * filled button.
+ * filled button, and only it catches a glare of light when hovered or focused.
  */
 export function PublicPlanCards({
   plans,
@@ -85,10 +86,9 @@ function PlanCard({
         } as React.CSSProperties
       }
       className={cn(
+        featured && glareHost,
         "flex flex-col gap-5 rounded-[24px] border bg-surface p-2 pb-6 md:row-span-(--rows) md:grid md:grid-rows-subgrid md:gap-y-3",
-        featured
-          ? "border-accent/40 shadow-lg"
-          : "border-border shadow-sm",
+        featured ? "border-accent/40 shadow-lg" : "border-border shadow-sm",
       )}
     >
       <div className="relative isolate flex flex-col gap-4 overflow-hidden rounded-[18px] p-5">
@@ -146,7 +146,12 @@ function PlanCard({
           {blurbs[plan]}
         </p>
         {/* On the cover a plain raised button reads best; colour is the cover's job. */}
-        <Button asChild variant="secondary" size="lg" className="mt-auto w-full">
+        <Button
+          asChild
+          variant="secondary"
+          size="lg"
+          className="mt-auto w-full"
+        >
           <Link href={href}>{cta}</Link>
         </Button>
       </div>
@@ -174,6 +179,7 @@ function PlanCard({
           </li>
         ))}
       </ul>
+      {featured ? <Glare duration={600} /> : null}
     </section>
   );
 }

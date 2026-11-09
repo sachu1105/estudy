@@ -13,6 +13,7 @@ import {
 import { PodCover } from "@/components/blocks/pod-cover";
 import { cn } from "@/lib/utils/cn";
 
+import { after, glide } from "./hover";
 import { Message, PollOption, SquadTile } from "./squad-scene-parts";
 
 // Sample content, not data. A squad open on its chat, laid out like the app (the squad
@@ -28,7 +29,13 @@ const channels = [
 
 export function SquadScene() {
   return (
-    <div className="absolute top-0 left-4 flex h-[30rem] w-[44rem] overflow-hidden rounded-tl-[20px] border-t border-l border-border bg-surface shadow-lg sm:left-8 lg:left-12">
+    <div
+      className={cn(
+        "absolute top-0 left-4 flex h-[30rem] w-[44rem] overflow-hidden rounded-tl-[20px] border-t border-l border-border bg-surface shadow-lg sm:left-8 lg:left-12",
+        glide,
+        "motion-safe:group-hover/feature:-translate-y-1.5",
+      )}
+    >
       <div className="flex w-16 shrink-0 flex-col items-center gap-2 bg-surface-muted py-3">
         <span className="relative grid size-10 place-items-center rounded-3xl bg-surface text-ink-muted">
           <MessageCircle className="size-[18px]" />
@@ -104,7 +111,16 @@ export function SquadScene() {
             <span className="flex items-center gap-1 font-medium text-ink">
               <CircleHelp className="size-4 text-accent" /> Doubt
             </span>
-            <span className="flex items-center gap-1 font-medium text-success">
+            {/* Where a pointer can hover, the doubt gets answered on hover; phones
+                always show it answered. */}
+            <span
+              className={cn(
+                "flex items-center gap-1 font-medium text-success",
+                glide,
+                after,
+                "group-hover/feature:opacity-100 motion-safe:group-hover/feature:translate-x-0 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:motion-safe:-translate-x-1",
+              )}
+            >
               <CircleCheck className="size-4" /> Answered
             </span>
           </span>

@@ -224,8 +224,8 @@
   /* The exam start: a soft ring that breathes around the one thing to press. */
   --animate-pulse-ring: pulse-ring 1.8s var(--ease-out) infinite;
   --animate-count-in: count-in 400ms var(--ease-out);
-  /* Landing features: dashes travel along a line, material -> pod -> topic. */
-  --animate-dash-flow: dash-flow 1.4s linear infinite;
+  /* Landing features: a poll bar fills again from empty while its cell is hovered. */
+  --animate-bar-grow: bar-grow 900ms var(--ease-out);
 }
 
 @keyframes pulse-ring {
@@ -236,9 +236,9 @@
     box-shadow: 0 0 0 16px color-mix(in srgb, var(--accent) 0%, transparent);
   }
 }
-@keyframes dash-flow {
-  to {
-    stroke-dashoffset: -16;
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
   }
 }
 @keyframes count-in {

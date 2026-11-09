@@ -25,7 +25,12 @@ export function FeatureCell({
   className?: string;
 }) {
   return (
-    <article className={cn("flex min-w-0 flex-col overflow-hidden", className)}>
+    <article
+      className={cn(
+        "group/feature flex min-w-0 flex-col overflow-hidden",
+        className,
+      )}
+    >
       <div className="flex flex-col items-start px-4 pt-10 sm:px-8 lg:px-12 lg:pt-12">
         <h3 className="text-h2 text-balance sm:text-h1">{feature.title}</h3>
         <p className="mt-2 max-w-[56ch] text-body text-pretty text-ink-muted">

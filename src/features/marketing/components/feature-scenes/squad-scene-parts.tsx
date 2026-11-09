@@ -75,7 +75,12 @@ export function PollOption({
 }) {
   return (
     <span className="relative flex items-center justify-between overflow-hidden rounded-chip border border-border px-2.5 py-1.5 text-small">
-      <span className={cn("absolute inset-y-0 left-0 bg-accent-soft", width)} />
+      <span
+        className={cn(
+          "absolute inset-y-0 left-0 origin-left bg-accent-soft motion-safe:group-hover/feature:animate-bar-grow",
+          width,
+        )}
+      />
       <span className="relative text-ink">{label}</span>
       <span className="relative font-mono text-ink-muted tabular-nums">
         {votes}
