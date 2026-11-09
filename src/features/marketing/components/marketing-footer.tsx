@@ -66,7 +66,7 @@ export function MarketingFooter({ year }: { year: number }) {
           <Logo />
           <p className="max-w-xs text-body text-ink-muted">
             A study space for competitive exam aspirants: a pod for every
-            subject, real papers to practise on, and squads to study with.
+            subject, previous papers on an OMR sheet, and squads to study with.
           </p>
           <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-4">
             <p className="text-small text-ink-muted">

@@ -54,7 +54,7 @@ test.describe("landing, signed out", () => {
   }) => {
     await page.goto("/");
     const grid = page.getByRole("region", {
-      name: "Built around your syllabus",
+      name: "Everything your exam prep needs",
     });
     for (const [title, link] of [
       ["Every subject gets its own pod", "Open pods"],

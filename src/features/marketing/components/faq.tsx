@@ -15,7 +15,11 @@ export const faqs = [
   },
   {
     q: "Which exams does it support?",
-    a: "Any competitive exam. Pick its syllabus from our catalogue if it's there, or upload it (PDF, Word or pasted text) and every subject becomes a pod.",
+    a: "Any competitive exam, state exams included. Pick its syllabus from our catalogue if it's there, or upload it (PDF, Word or pasted text) and every subject becomes a pod.",
+  },
+  {
+    q: "Is it linked to any exam board?",
+    a: "No. studypods is an independent study app, not affiliated with any exam board or commission. Every answer key says whose it is, and we never claim a key or a question is official or exam-accurate.",
   },
   {
     q: "Can I upload my own syllabus?",

@@ -7,7 +7,7 @@
 
 export type Testimonial = {
   name: string;
-  /** Who they are, in their words: "Banking aspirant". */
+  /** Who they are, in their words: "State exam aspirant". */
   role: string;
   quote: string;
 };
@@ -17,25 +17,25 @@ export const testimonials: { sample: boolean; quotes: Testimonial[] } = {
   quotes: [
     {
       name: "Sample aspirant",
-      role: "Public service aspirant",
+      role: "Assistant post aspirant",
       quote:
         "I finally know what to study each morning. The plan fits the two hours I get after work.",
     },
     {
       name: "Sample aspirant",
-      role: "Banking aspirant",
+      role: "State exam aspirant",
       quote:
         "The short test after every topic shows me what didn't stick, and the plan brings it back.",
     },
     {
       name: "Sample aspirant",
-      role: "Staff selection aspirant",
+      role: "Clerical exam aspirant",
       quote:
         "Our squad shares notes and mock tests. Seeing the weekly rank keeps all five of us going.",
     },
     {
       name: "Sample aspirant",
-      role: "Railways aspirant",
+      role: "Police exam aspirant",
       quote:
         "I uploaded the syllabus PDF and every subject was there to check in a few minutes.",
     },

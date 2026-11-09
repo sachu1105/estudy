@@ -45,9 +45,10 @@ export function Hero({ signedIn }: { signedIn: boolean }) {
           {/* What it does, beside the headline (under it on a phone). */}
           <div className="flex flex-col gap-3 lg:pt-12">
             <p className="text-body text-pretty text-ink-muted sm:text-[17px] sm:leading-7">
-              Every subject becomes a pod. Tick off topics as you go, keep your
-              notes, PDFs and links where they belong, and watch your progress
-              grow. Sit real papers on an OMR sheet, and study with your squad.
+              Every subject becomes a pod: topics to tick off, and your notes,
+              PDFs and links kept where they belong. Sit previous papers on an
+              OMR sheet with real negative marking, and prepare with your squad:
+              share notes, clear doubts and sit exams together.
             </p>
             {signedIn ? null : (
               <p className="text-small text-ink-muted">

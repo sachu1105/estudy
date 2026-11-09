@@ -5,22 +5,21 @@ export const site = {
   company: "Veraft",
   tagline: "Your syllabus, one pod at a time.",
   description:
-    "Track your syllabus subject by subject: every subject becomes a pod for its topics, notes, PDFs and links, with your progress at a glance and AI mock tests from your own notes. For competitive exam aspirants.",
+    "A study space for competitive exam aspirants. Every subject of your syllabus becomes a pod for its topics, notes, PDFs and links. Sit previous papers on an OMR sheet with negative marking, and prepare together in squads.",
   // TODO(owner): replace with the real inbox before launch.
   contactEmail: "hello@example.com",
   // TODO(owner): add real handles; the footer renders only what is listed here.
   social: [] as { label: string; href: string }[],
 };
 
-// Kinds of competitive exam, for the landing marquee. Any syllabus works; none is named.
+// Kinds of competitive exam, for the landing marquee, state exams first. Any syllabus
+// works; no state, commission or post is named.
 export const examKinds = [
   "Public service exams",
-  "Staff selection",
-  "Banking",
-  "Railways",
+  "State government exams",
+  "Clerical and assistant posts",
+  "Police and forest service",
   "Teaching eligibility",
-  "Defence",
-  "Entrance exams",
 ];
 
 export const landingSections = [

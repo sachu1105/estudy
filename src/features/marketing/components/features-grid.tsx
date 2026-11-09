@@ -25,17 +25,17 @@ function features(signedIn: boolean): Feature[] {
       body: "An OMR sheet beside the paper, against the clock.",
       points: [
         "Your exact score, negative marks and all",
-        "PYQ bundles in the Store",
+        "Previous question papers in the Store",
       ],
       link: { label: "Open tests", href: to("/tests") },
       scene: <PaperScene />,
     },
     {
       title: "Squads to study with",
-      body: "Channels, one chat, everything shared.",
+      body: "Channels to chat, share notes and clear doubts.",
       points: [
-        "Timed exams with a rank list",
-        "Doubts, polls and a weekly rank",
+        "Share the papers you've prepared",
+        "Squad exams with a rank list",
       ],
       link: { label: "Find a squad", href: to("/groups") },
       scene: <SquadScene />,
@@ -64,10 +64,10 @@ export function FeaturesGrid({ signedIn }: { signedIn: boolean }) {
           <SectionHeading
             id="features-title"
             eyebrow="Features"
-            title="Built around your syllabus"
+            title="Everything your exam prep needs"
           >
-            Your subjects as pods, real papers to practise on, a squad to study
-            with, and a plan that fits your days.
+            Your subjects as pods, previous papers on an OMR sheet, a squad to
+            study with, and a plan that fits your days.
           </SectionHeading>
         </Reveal>
       </Band>

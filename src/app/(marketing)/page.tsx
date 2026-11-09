@@ -18,7 +18,7 @@ import { env } from "@/server/env";
 
 export const metadata: Metadata = {
   title: {
-    absolute: `${site.name}: daily study plans for competitive exams`,
+    absolute: `${site.name}: a study space for competitive exams`,
   },
   description: site.description,
   alternates: { canonical: "/" },

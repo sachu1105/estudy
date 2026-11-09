@@ -25,9 +25,10 @@ export default function AboutPage() {
         actually are. There is no overdue list, ever.
       </p>
       <p>
-        We are built for competitive exam aspirants, whichever exam they are
-        working towards: bring its syllabus and every subject becomes a pod.
-        Beginner mode exists for anyone sitting their first exam.
+        We are built for competitive exam aspirants, state exams included,
+        whichever exam they are working towards: pick or bring its syllabus and
+        every subject becomes a pod. Beginner mode exists for anyone sitting
+        their first exam.
       </p>
       <h2>Who builds it</h2>
       <p>
