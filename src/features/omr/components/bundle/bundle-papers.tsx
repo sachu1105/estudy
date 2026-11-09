@@ -17,7 +17,12 @@ export type BundlePaper = {
     marks: Marks;
     timer: TimerView;
     attempts: number;
-    last: { score: Fraction; max: Fraction; keyed: boolean } | null;
+    /** Score and max are null while the owner holds results back. */
+    last: {
+      score: Fraction | null;
+      max: Fraction | null;
+      keyed: boolean;
+    } | null;
   } | null;
 };
 
@@ -70,7 +75,7 @@ export function BundlePapers({
                 <span className="text-small text-ink-muted">
                   {p.questions} questions
                   {p.limitMin ? ` · ${p.limitMin} min` : ""}
-                  {last?.keyed
+                  {last?.keyed && last.score && last.max
                     ? ` · last ${formatScore(last.score)} of ${formatScore(last.max)}`
                     : ""}
                 </span>

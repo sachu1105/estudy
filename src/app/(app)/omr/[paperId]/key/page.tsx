@@ -4,11 +4,30 @@ import { notFound } from "next/navigation";
 import { BackLink } from "@/features/omr/components/back-link";
 import { KeyEditor } from "@/features/omr/components/key-editor";
 import { MarkingCard } from "@/features/omr/components/marking-card";
+import { ReleaseCard } from "@/features/omr/components/release-card";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { omrService } from "@/server/services/omr";
 
 export const metadata: Metadata = { title: "Answer key and marking" };
+
+/** A time as a datetime-local value ("2026-11-10T18:00") in the person's time zone. */
+function localInput(at: Date, timeZone: string) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(at)
+      .map((p) => [p.type, p.value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+}
 
 // A paper's answer key and how it's marked, set before the exam or after it.
 export default async function PaperKeyPage({
@@ -40,6 +59,13 @@ export default async function PaperKeyPage({
           marking={paper.marking}
           limitMin={paper.limitMin}
           startOpen={false}
+        />
+        <ReleaseCard
+          paperId={paper.id}
+          initialAt={
+            paper.resultsAt ? localInput(paper.resultsAt, user.timezone) : null
+          }
+          initialKeyHidden={paper.keyHidden}
         />
         <KeyEditor
           // A new shape is a new key: start from what the server cut it to.

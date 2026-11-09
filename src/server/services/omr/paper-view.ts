@@ -37,6 +37,10 @@ export function paperView(p: PaperRow) {
     keySource: p.keySource as KeySource,
     keyed: keyedCount(key),
     keyUpdatedAt: p.keyUpdatedAt,
+    /** For anyone but the owner: when scores come out (null: on hand-in). */
+    resultsAt: p.resultsAt,
+    /** For anyone but the owner: the score only, never the key. */
+    keyHidden: p.keyHidden,
   };
 }
 export type PaperView = ReturnType<typeof paperView>;

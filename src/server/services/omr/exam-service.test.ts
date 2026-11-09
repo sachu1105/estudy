@@ -34,6 +34,8 @@ const PAPER: PaperRow = {
   keySource: "OFFICIAL",
   cancelRule: "AWARD",
   keyUpdatedAt: null,
+  resultsAt: null,
+  keyHidden: false,
   createdAt: new Date(0),
   updatedAt: new Date(0),
 };
@@ -286,6 +288,34 @@ describe("squad exams", () => {
     expect(s.submissions.get(bens.submissionId!)?.timeUsedSec).toBe(600);
     expect((await s.service.paperAccess(ben, PAPER.id))?.keyOut).toBe(true);
     expect(await s.service.open(outsider, examId)).toBeNull();
+  });
+
+  it("waits for the paper's own results time when it's later than the exam's", async () => {
+    const s = setup();
+    const examId = await s.service.share(teacher, {
+      ...shareInput,
+      results: "now",
+    });
+    if (!examId.ok) throw new Error(examId.message);
+    await s.service.start(ann, examId.id);
+    await s.service.submit(ann, examId.id);
+    expect((await s.service.view(ann, examId.id))?.released).toBe(true);
+
+    // The paper's owner holds results until the next day: the exam waits too.
+    const paperAt = new Date("2026-11-08T10:00:00Z");
+    const share = await s.service.view(teacher, examId.id);
+    expect(share?.paper.resultsAt).toBeNull();
+    PAPER.resultsAt = paperAt;
+    try {
+      const held = await s.service.view(ann, examId.id);
+      expect(held?.released).toBe(false);
+      expect(held?.resultsAt).toEqual(paperAt);
+      expect(held?.results).toBeNull();
+      s.clock.advance(24 * 3_600_000);
+      expect((await s.service.view(ann, examId.id))?.released).toBe(true);
+    } finally {
+      PAPER.resultsAt = null;
+    }
   });
 
   it("lets whoever shared it publish early, show names, and stop sharing", async () => {

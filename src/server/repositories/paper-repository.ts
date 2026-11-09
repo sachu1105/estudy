@@ -50,6 +50,8 @@ export const PAPER_SELECT = {
   keySource: true,
   cancelRule: true,
   keyUpdatedAt: true,
+  resultsAt: true,
+  keyHidden: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -194,6 +196,19 @@ export const paperRepository = {
       keySource: PaperKeySource;
       keyUpdatedAt: Date;
     },
+  ) {
+    const { count } = await prisma.paper.updateMany({
+      where: { id, ownerId },
+      data,
+    });
+    return count === 1;
+  },
+
+  /** When people who don't own the paper see their score, and whether they see the key. */
+  async setRelease(
+    id: string,
+    ownerId: string,
+    data: { resultsAt: Date | null; keyHidden: boolean },
   ) {
     const { count } = await prisma.paper.updateMany({
       where: { id, ownerId },

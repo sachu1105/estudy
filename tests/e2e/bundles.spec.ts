@@ -45,7 +45,8 @@ test.describe("paper bundles", () => {
       buffer: Buffer.from(makePdf(["1. A question"])),
     });
     await expect(page).toHaveURL(/\/omr\/[0-9a-f-]{36}$/);
-    await page.goto(`${page.url()}/key`);
+    const keyUrl = `${page.url()}/key`;
+    await page.goto(keyUrl);
     await page.getByRole("button", { name: "Edit" }).click();
     await page.getByLabel("Questions").fill("4");
     await page.getByRole("button", { name: "Save marking" }).click();
@@ -138,6 +139,7 @@ test.describe("paper bundles", () => {
     await member.getByRole("button", { name: "Submit", exact: true }).click();
     await member.getByRole("button", { name: "Submit sheet" }).click();
     await expect(member).toHaveURL(/\/result\/[0-9a-f-]{36}$/);
+    const resultUrl = member.url();
     await expect(member.locator("p", { hasText: "/ 4" })).toHaveText(
       /^0\.67\s*\/ 4$/,
     );
@@ -159,5 +161,43 @@ test.describe("paper bundles", () => {
     ).toBeVisible();
     await page.goto(bundleUrl);
     await expect(page.getByText(/1 person has it/)).toBeVisible();
+
+    // The owner keeps the key: the member sees the score, never which answer was right.
+    await page.goto(keyUrl);
+    // The card's own "Saved" (the key above has one too) shows once a save lands.
+    const release = page
+      .locator("form")
+      .filter({
+        has: page.getByRole("switch", { name: "Show the answer key" }),
+      });
+    await page.getByRole("switch", { name: "Show the answer key" }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(release.getByText("Saved", { exact: true })).toBeVisible();
+    expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
+    await member.goto(resultUrl);
+    await expect(member.locator("p", { hasText: "/ 4" })).toHaveText(
+      /^0\.67\s*\/ 4$/,
+    );
+    await expect(
+      member.getByText(
+        /The answer key for this paper stays with whoever set it/,
+      ),
+    ).toBeVisible();
+    await expect(member.getByText(/you marked C, key A/)).toHaveCount(0);
+
+    // Results at a time (tomorrow, by default): until then, no score at all.
+    await page.getByRole("radio", { name: "At a time" }).click();
+    await expect(page.getByLabel("Results at")).not.toHaveValue("");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(release.getByText("Saved", { exact: true })).toBeVisible();
+    await member.goto(resultUrl);
+    await expect(
+      member.getByText(/Handed in\. Your score comes out/),
+    ).toBeVisible();
+    await expect(member.locator("p", { hasText: "/ 4" })).toHaveCount(0);
+    await member.goto(bundleUrl);
+    await expect(
+      member.getByRole("link", { name: /LGS 2021.*Attempted once/ }),
+    ).not.toContainText("last 0.67");
   });
 });

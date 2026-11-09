@@ -26,8 +26,16 @@ export default async function ResultPage({
       ? await omrService.result(user, paperId, submissionId)
       : null;
   if (!result) notFound();
-  const { paper, submission, score, answerKey } = result;
-  const scored = !!score && score.unkeyed < score.outcomes.length;
+  const { paper, submission, score, answerKey, heldUntil } = result;
+  const scored =
+    !!score &&
+    score.unkeyed <
+      score.right + score.wrong + score.blank + score.cancelled + score.unkeyed;
+  const when = new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: user.timezone,
+  });
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
@@ -50,6 +58,19 @@ export default async function ResultPage({
             limitSec={submission.limitSec}
             owner={result.owner}
           />
+        ) : heldUntil ? (
+          // The paper's owner holds results until a time: what was marked, no score.
+          <Card className="flex items-start gap-3 p-5">
+            <EyeOff
+              className="mt-0.5 size-5 shrink-0 text-ink-muted"
+              aria-hidden
+            />
+            <p className="text-body">
+              Handed in. Your score
+              {paper.keyHidden ? "" : " and the answer key"} come
+              {paper.keyHidden ? "s" : ""} out {when.format(heldUntil)}.
+            </p>
+          </Card>
         ) : (
           // A squad exam keeps its key until results are out: what was marked, no score.
           <Card className="flex items-start gap-3 p-5">
@@ -63,6 +84,18 @@ export default async function ResultPage({
             </p>
           </Card>
         )}
+        {result.keyWithheld ? (
+          <Card className="flex items-start gap-3 p-5">
+            <EyeOff
+              className="mt-0.5 size-5 shrink-0 text-ink-muted"
+              aria-hidden
+            />
+            <p className="text-body">
+              The answer key for this paper stays with whoever set it. You see
+              your score and how many were right or wrong, not which ones.
+            </p>
+          </Card>
+        ) : null}
         <div className="flex flex-wrap gap-2">
           <Button asChild>
             <Link href={`/omr/${paper.id}`}>

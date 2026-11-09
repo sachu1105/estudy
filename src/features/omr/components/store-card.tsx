@@ -70,7 +70,7 @@ export function StoreCard({ item }: { item: StoreItem }) {
           </span>
         ) : null}
         <span className="text-small text-ink-muted">
-          {item.questions} questions · answer keys
+          {item.questions} questions · scored on an OMR sheet
         </span>
         <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3">
           <Standing item={item} />

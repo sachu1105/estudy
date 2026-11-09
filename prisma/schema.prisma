@@ -646,6 +646,12 @@ model Paper {
   keySource     PaperKeySource  @default(OWN)
   cancelRule    CancelRule      @default(AWARD)
   keyUpdatedAt  DateTime?       @db.Timestamptz(6)
+  /// For anyone but the owner (bundles, the Store, squad exams): scores and the key
+  /// come out at this time; null for straight after each hand-in.
+  resultsAt     DateTime?       @db.Timestamptz(6)
+  /// For anyone but the owner: the score only, never the key or a question-by-question
+  /// review.
+  keyHidden     Boolean         @default(false)
   createdAt     DateTime        @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime        @updatedAt @db.Timestamptz(6)
   sheets        OmrSheet[]

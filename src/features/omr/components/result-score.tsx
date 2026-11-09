@@ -60,7 +60,9 @@ export function ResultScore({
   owner: boolean;
 }) {
   const keyLink = `/omr/${paperId}/key`;
-  const total = score.outcomes.length;
+  // From the counts, not the outcomes: a score shown without its key has no outcomes.
+  const total =
+    score.right + score.wrong + score.blank + score.cancelled + score.unkeyed;
 
   if (score.unkeyed === total)
     return (

@@ -5,6 +5,8 @@ import { inkOf, type Pen } from "@/lib/omr/ink";
 import { blankKey, normaliseKey } from "@/lib/omr/key";
 import { blankMarks, normaliseMarks, type Marks } from "@/lib/omr/marks";
 import type { CancelRule } from "@/lib/omr/marking";
+import { resultsOut } from "@/lib/omr/release";
+import type { Score } from "@/lib/omr/score";
 import {
   elapsedAt,
   OFF,
@@ -40,6 +42,7 @@ export type OmrDeps = {
     | "setTimer"
     | "setSettings"
     | "setKey"
+    | "setRelease"
     | "rename"
     | "delete"
     | "bytesUsed"
@@ -54,8 +57,9 @@ export type OmrDeps = {
   limit: (user: EntitlementSubject, feature: LimitFeature) => number;
   pageCount: (bytes: Uint8Array) => Promise<number | null>;
   /**
-   * What someone who doesn't own a paper may do with it, through squad exams (the exam
-   * service). Left out: only owners open papers.
+   * What someone who doesn't own a paper may do with it, through squad exams and bundles.
+   * `keyOut` is that route's own say (a squad exam's results time); the paper's own
+   * results time and hidden key apply on top. Left out: only owners open papers.
    */
   access?: (
     user: User,
@@ -127,16 +131,32 @@ export function createOmrService(deps: OmrDeps) {
 
   /**
    * The paper and what this person may do with it: everything when it's theirs; through
-   * a squad exam, view it, practise on it after their sitting, and see the key once
-   * results are out.
+   * a squad exam or a bundle, view it, practise on it, and see their score once results
+   * are out (the exam's results time and the paper's own, whichever is later), and the
+   * key with it unless the owner keeps the key hidden.
    */
   async function reach(user: User, paperId: string) {
     const paper = await deps.papers.find(paperId);
     if (!paper) return null;
     if (paper.ownerId === user.id)
-      return { paper, owner: true, canPractise: true, keyOut: true };
+      return {
+        paper,
+        owner: true,
+        canPractise: true,
+        resultsOut: true,
+        keyOut: true,
+      };
     const access = await deps.access?.(user, paperId);
-    return access ? { paper, owner: false, ...access } : null;
+    if (!access) return null;
+    const out = access.keyOut && resultsOut(paper, deps.clock.now());
+    return {
+      paper,
+      owner: false,
+      canView: access.canView,
+      canPractise: access.canPractise,
+      resultsOut: out,
+      keyOut: out && !paper.keyHidden,
+    };
   }
 
   /** The paper and the person's own sheet for it, when they may sit it here. */
@@ -151,6 +171,13 @@ export function createOmrService(deps: OmrDeps) {
     );
     return { paper, sheet, owner: reached.owner };
   }
+
+  /**
+   * A score as someone sees it: with the key held back, the totals only, never which
+   * question was right or wrong (that would give the key away).
+   */
+  const withheld = (score: Score, keyOut: boolean): Score =>
+    keyOut ? score : { ...score, outcomes: [] };
 
   const sheetMarks = (paper: PaperRow, sheet: SheetRow) =>
     normaliseMarks(sheet.marks, shapeOf(paper));
@@ -167,7 +194,9 @@ export function createOmrService(deps: OmrDeps) {
       return papers.map((p) => {
         const sheet = p.sheets[0];
         const last = p.submissions[0];
-        const result = last ? scored(p, last.marks) : null;
+        // Someone else's paper keeps its scores until its results time.
+        const held = p.ownerId !== user.id && !resultsOut(p, now);
+        const result = last && !held ? scored(p, last.marks) : null;
         return {
           ...paperView(p),
           updatedAt: new Date(
@@ -181,16 +210,25 @@ export function createOmrService(deps: OmrDeps) {
           attempts: p._count.submissions,
           marks: normaliseMarks(sheet?.marks, shapeOf(p)),
           timer: viewAt(sheet ? fromColumns(sheet) : OFF, now),
-          last:
-            last && result
+          last: last
+            ? result
               ? {
                   id: last.id,
                   score: result.score,
                   max: result.max,
                   passed: result.passed,
                   keyed: result.unkeyed < p.questionCount,
+                  heldUntil: null,
                 }
-              : null,
+              : {
+                  id: last.id,
+                  score: null,
+                  max: null,
+                  passed: null,
+                  keyed: false,
+                  heldUntil: p.resultsAt,
+                }
+            : null,
         };
       });
     },
@@ -199,9 +237,17 @@ export function createOmrService(deps: OmrDeps) {
       const opened = await open(user, paperId);
       if (!opened) return null;
       const { paper, sheet } = opened;
+      const now = deps.clock.now();
       return {
         paper: paperView(paper),
         owner: opened.owner,
+        // What a hand-in will show someone who doesn't own the paper.
+        release: opened.owner
+          ? null
+          : {
+              resultsAt: resultsOut(paper, now) ? null : paper.resultsAt,
+              keyHidden: paper.keyHidden,
+            },
         marks: sheetMarks(paper, sheet),
         timer: viewAt(fromColumns(sheet), deps.clock.now()),
       };
@@ -328,12 +374,21 @@ export function createOmrService(deps: OmrDeps) {
       const mine = all.find((s) => s.id === submissionId);
       if (!mine) return null;
       const shape = shapeOf(paper);
-      // Before results are out, a squad exam's sheet shows what was marked, never the key.
-      const hidden = !reached.keyOut;
+      // Before results are out, the sheet shows what was marked: no score, no key. A
+      // paper whose owner keeps the key shows the score alone, never the key.
+      const hidden = !reached.resultsOut;
+      const now = deps.clock.now();
       return {
         paper: paperView(paper),
         owner: reached.owner,
-        keyOut: !hidden,
+        keyOut: reached.keyOut,
+        /** The paper's own results time, when that's what holds this score back. */
+        heldUntil:
+          hidden && paper.resultsAt && now < paper.resultsAt
+            ? paper.resultsAt
+            : null,
+        /** The score is out but the owner keeps the key. */
+        keyWithheld: !hidden && !reached.keyOut,
         submission: {
           id: mine.id,
           createdAt: mine.createdAt,
@@ -341,8 +396,10 @@ export function createOmrService(deps: OmrDeps) {
           limitSec: mine.limitSec,
           marks: normaliseMarks(mine.marks, shape) as Marks,
         },
-        answerKey: hidden ? null : normaliseKey(paper.answerKey, shape),
-        score: hidden ? null : scored(paper, mine.marks),
+        answerKey: reached.keyOut ? normaliseKey(paper.answerKey, shape) : null,
+        score: hidden
+          ? null
+          : withheld(scored(paper, mine.marks), reached.keyOut),
         sittings: all.map((s, i) => ({
           id: s.id,
           number: all.length - i,
@@ -415,6 +472,15 @@ export function createOmrService(deps: OmrDeps) {
         marks: blankMarks(100),
       });
       return { ok: true, paperId: paper.id };
+    },
+
+    /** When people who don't own the paper see their score, and whether they see the key. */
+    async setRelease(
+      user: User,
+      paperId: string,
+      input: { resultsAt: Date | null; keyHidden: boolean },
+    ) {
+      return deps.papers.setRelease(paperId, user.id, input);
     },
 
     async rename(user: User, paperId: string, title: string) {

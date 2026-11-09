@@ -68,12 +68,13 @@ export function OmrTimer({
     <>
       {view.on ? (
         <Button
-          variant="ghost"
-          className="h-11 px-2 md:h-10"
+          variant="secondary"
+          className="px-3"
           aria-label={`Timer ${shown.text}${shown.over ? ", over time" : ""}. Open timer`}
           aria-busy={pending || undefined}
           onClick={() => change(true)}
         >
+          <Timer className="text-ink-muted" aria-hidden />
           <span
             role="timer"
             className={cn(
@@ -86,8 +87,8 @@ export function OmrTimer({
         </Button>
       ) : (
         <Button
-          variant="ghost"
-          className="h-11 px-2 md:h-10"
+          variant="secondary"
+          className="px-3 sm:px-4"
           aria-label="Start the exam timer"
           onClick={() => change(true)}
         >

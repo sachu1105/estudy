@@ -44,6 +44,25 @@ export function useHandIn(
   return { pending, handIn };
 }
 
+/** What a hand-in shows on someone else's paper whose owner holds results or the key. */
+function afterHandIn(release: {
+  resultsAt: string | null;
+  keyHidden: boolean;
+}) {
+  const score = release.resultsAt
+    ? `Your score comes out ${new Intl.DateTimeFormat("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(
+        new Date(release.resultsAt),
+      )}; until then you see what you marked.`
+    : "You see your score straight away.";
+  const key = release.keyHidden
+    ? " The answer key stays with whoever set the paper."
+    : "";
+  return `${score}${key} The sheet then clears for your next sitting.`;
+}
+
 /**
  * Handing the sheet in, as at the end of the exam: one question first, then the marks
  * are kept for good, the sheet is cleared for the next sitting, and the result opens.
@@ -55,6 +74,7 @@ export function SubmitSheet({
   marked,
   questions,
   keyed,
+  release,
   timeUp,
   flush,
   onSubmitted,
@@ -66,6 +86,8 @@ export function SubmitSheet({
   questions: number;
   /** Questions with a key: none means the score waits for the key. */
   keyed: number;
+  /** Someone else's paper: what its owner lets a hand-in show, and when. */
+  release: { resultsAt: string | null; keyHidden: boolean } | null;
   /** The clock ran out: the dialog says so. */
   timeUp: boolean;
   flush: () => Promise<void>;
@@ -87,9 +109,11 @@ export function SubmitSheet({
             {left > 0 ? `, ${left} left blank` : ""}.{" "}
             {api.examId
               ? "This is your one sitting for the rank list: once handed in, it's final."
-              : keyed === 0
-                ? "There's no answer key yet: add it after and your score appears. The sheet then clears for your next sitting."
-                : "It's marked against the answer key straight away, and the sheet clears for your next sitting."}
+              : release && (release.resultsAt || release.keyHidden)
+                ? afterHandIn(release)
+                : keyed === 0
+                  ? "There's no answer key yet: add it after and your score appears. The sheet then clears for your next sitting."
+                  : "It's marked against the answer key straight away, and the sheet clears for your next sitting."}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

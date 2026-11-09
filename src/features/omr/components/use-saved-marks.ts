@@ -17,6 +17,13 @@ export function useSavedMarks(save: SheetApi["saveMarks"], initial: Marks) {
   const [saving, setSaving] = useState(false);
   const saved = useRef(initial);
   const latest = useRef(initial);
+  // The save waiting out the half second. A flush sends now and cancels it, so it can't
+  // land later (after a hand-in has cleared the sheet) and write the old marks back.
+  const waiting = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancel = useCallback(() => {
+    if (waiting.current) clearTimeout(waiting.current);
+    waiting.current = null;
+  }, []);
 
   const send = useCallback(
     async (next: Marks) => {
@@ -28,18 +35,21 @@ export function useSavedMarks(save: SheetApi["saveMarks"], initial: Marks) {
     [save],
   );
   const dirty = useCallback(() => latest.current !== saved.current, []);
-  const flush = useCallback(
-    async () => void (dirty() && (await send(latest.current))),
-    [dirty, send],
-  );
+  const flush = useCallback(async () => {
+    cancel();
+    if (dirty()) await send(latest.current);
+  }, [cancel, dirty, send]);
 
   useEffect(() => {
     latest.current = marks;
     if (marks === saved.current) return;
     setSaving(true);
-    const timer = setTimeout(() => void send(marks), 500);
-    return () => clearTimeout(timer);
-  }, [marks, send]);
+    waiting.current = setTimeout(() => {
+      waiting.current = null;
+      void send(marks);
+    }, 500);
+    return cancel;
+  }, [marks, send, cancel]);
 
   useEffect(() => {
     const hidden = () => document.visibilityState === "hidden" && void flush();

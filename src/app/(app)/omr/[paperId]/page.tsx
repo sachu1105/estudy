@@ -62,6 +62,12 @@ export default async function OmrPage({
         limitMin: paper.limitMin,
         keyed: paper.keyed,
         owner: opened.owner,
+        release: opened.release
+          ? {
+              resultsAt: opened.release.resultsAt?.toISOString() ?? null,
+              keyHidden: opened.release.keyHidden,
+            }
+          : null,
       }}
       initialMarks={opened.marks}
       initialTimer={opened.timer}

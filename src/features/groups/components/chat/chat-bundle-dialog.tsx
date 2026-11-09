@@ -24,7 +24,8 @@ type Loaded = {
 
 /**
  * A bundle of the person's question papers into the chat. Whoever adds it (free) or buys
- * it sits every paper in it, with the key after each sitting, and keeps it for good.
+ * it sits every paper in it, with its score (and the key, unless the owner keeps it)
+ * after each sitting, and keeps it for good.
  */
 export function ChatBundleDialog({
   groupId,

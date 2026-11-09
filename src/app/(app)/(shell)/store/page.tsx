@@ -36,7 +36,7 @@ export default async function StorePage() {
     <div data-wide className="flex flex-col gap-8">
       <DiscoverHero
         title="Store"
-        detail="Previous year papers and bundles, each with its answer key. Sit them on the OMR sheet with a timer and see your exact score."
+        detail="Previous year papers and bundles. Sit them on the OMR sheet with a timer and see your exact score."
         preset="dusk"
         full
         art={<StoreHeroArt />}

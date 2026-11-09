@@ -23,14 +23,13 @@ import {
 import type { TimerView } from "@/lib/omr/timer";
 import { cn } from "@/lib/utils/cn";
 
-import { ClearSheetButton } from "./clear-sheet-button";
-import { DownloadSheetButton } from "./download-sheet-button";
+import { downloadAnswerSheet } from "./download-sheet";
 import { LeaveExam } from "./leave-exam";
 import { OmrGrid } from "./omr-grid";
 import type { ExamSitting, PaperSummary } from "./paper-summary";
 import { sheetApi } from "./sheet-api";
 import { SheetDivider } from "./sheet-divider";
-import { SheetSettings } from "./sheet-settings";
+import { SheetTools } from "./sheet-tools";
 import { SubmitSheet, useHandIn } from "./submit-sheet";
 import { useOmrPrefs } from "./use-omr-prefs";
 import { useSheetWidth } from "./use-sheet-width";
@@ -91,6 +90,11 @@ export function OmrWorkspace({
     timerOn.current = timer.view.on;
   }, [timer.view.on]);
   const [prefs, setPrefs] = useOmrPrefs();
+  // The owner reaches the key between sittings, never in the middle of one.
+  const keyHref =
+    paper.owner && !exam && !(timer.view.on && !submitted)
+      ? `/omr/${id}/key`
+      : null;
   const sheetWidth = useSheetWidth();
   // Read inside the tap, which is memoised for the grid's rows.
   const latest = useRef({ marks, final: prefs.final });
@@ -126,7 +130,13 @@ export function OmrWorkspace({
 
   return (
     <div className="flex h-dvh flex-col">
-      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2 md:px-4">
+      {/*
+        Who and where on the left: the way out, the paper, and how the sheet stands.
+        What to do on the right: the sheet's tools, then (past a divider) the exam's
+        own pair, the clock and Submit. On a phone the tools menu sits last and Submit
+        moves to the bottom bar.
+      */}
+      <header className="flex h-14 shrink-0 items-center gap-1 border-b border-border bg-surface px-2 md:gap-2 md:px-4">
         <LeaveExam
           inExam={timer.view.on && !submitted}
           keepsRunning={exam !== null}
@@ -134,28 +144,45 @@ export function OmrWorkspace({
           flush={flush}
           endSitting={timer.reset}
         />
-        <h1 className="min-w-0 flex-1 truncate font-heading text-h3">
-          {title}
-        </h1>
-        <span
-          role="status"
-          className="sr-only items-center gap-1 text-small text-ink-muted sm:not-sr-only sm:flex"
-        >
-          {saving ? (
-            "Saving"
-          ) : (
-            <>
-              <Check className="size-4" aria-hidden /> Saved
-            </>
-          )}
-        </span>
-        <span
-          // On phones the count rides on the bottom bar's "Answer sheet" tab instead.
-          className="sr-only shrink-0 font-mono text-small tabular-nums sm:not-sr-only"
-          aria-label={`${count} of ${marks.length} marked`}
-        >
-          {count}/{marks.length}
-        </span>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <h1 className="truncate font-heading text-h3">{title}</h1>
+          <p className="flex min-w-0 items-center gap-1.5 text-small text-ink-muted">
+            <span
+              role="status"
+              className="inline-flex shrink-0 items-center gap-1"
+            >
+              {saving ? (
+                "Saving"
+              ) : (
+                <>
+                  <Check className="size-3.5" aria-hidden /> Saved
+                </>
+              )}
+            </span>
+            <span aria-hidden>·</span>
+            <span
+              className="truncate tabular-nums"
+              aria-label={`${count} of ${marks.length} marked`}
+            >
+              {count} of {marks.length} marked
+            </span>
+          </p>
+        </div>
+        <div className="order-last md:order-none">
+          <SheetTools
+            keyHref={keyHref}
+            inExam={exam !== null}
+            marked={count}
+            prefs={prefs}
+            onPrefs={setPrefs}
+            onDownload={async () => {
+              await flush();
+              await downloadAnswerSheet(id, title, prefs.pen);
+            }}
+            onClear={() => setMarks(blankMarks(marks.length))}
+          />
+        </div>
+        <span aria-hidden className="mx-1 hidden h-6 w-px bg-border md:block" />
         <OmrTimer
           paper={paper}
           exam={exam}
@@ -174,21 +201,6 @@ export function OmrWorkspace({
           previous={count}
           onStart={startTimer}
         />
-        <SheetSettings prefs={prefs} onChange={setPrefs} />
-        {exam ? null : (
-          <>
-            <DownloadSheetButton
-              id={id}
-              title={title}
-              pen={prefs.pen}
-              flush={flush}
-            />
-            <ClearSheetButton
-              disabled={count === 0}
-              onClear={() => setMarks(blankMarks(marks.length))}
-            />
-          </>
-        )}
         <Button
           variant="primary"
           className="hidden md:inline-flex"
@@ -205,6 +217,7 @@ export function OmrWorkspace({
         marked={count}
         questions={marks.length}
         keyed={paper.keyed}
+        release={paper.release ?? null}
         timeUp={submit === "time-up"}
         flush={flush}
         onSubmitted={() => setSubmitted(true)}

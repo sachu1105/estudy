@@ -69,6 +69,8 @@ function memoryPapers(ids: ReturnType<typeof sequentialIds>, now: () => Date) {
         keySource: "OWN",
         cancelRule: "AWARD",
         keyUpdatedAt: null,
+        resultsAt: null,
+        keyHidden: false,
         createdAt: now(),
         updatedAt: now(),
       });
@@ -131,6 +133,11 @@ function memoryPapers(ids: ReturnType<typeof sequentialIds>, now: () => Date) {
       return true;
     },
     async setKey(id, ownerId, data) {
+      const paper = owned(id, ownerId);
+      if (paper) Object.assign(paper, data);
+      return !!paper;
+    },
+    async setRelease(id, ownerId, data) {
       const paper = owned(id, ownerId);
       if (paper) Object.assign(paper, data);
       return !!paper;
@@ -459,5 +466,81 @@ describe("question papers", () => {
 
     expect(await s.service.result(other, id, again.submissionId)).toBeNull();
     expect(await s.service.result(user, id, "nope")).toBeNull();
+  });
+
+  it("holds a bundle holder's score and key until the owner's results time, and can keep the key for good", async () => {
+    // `other` has the paper through a bundle.
+    const s = setup(10_000, async (u) =>
+      (u as { id: string }).id === (other as { id: string }).id
+        ? { canView: true, canPractise: true, keyOut: true }
+        : null,
+    );
+    const id = await paper(s);
+    await s.service.saveSettings(user, id, { ...settings, questionCount: 4 });
+    await s.service.saveKey(user, id, {
+      answerKey: [1, 1, 1, 1],
+      source: "OWN",
+    });
+    const at = new Date(s.clock.now().getTime() + 3_600_000);
+    // Only the owner sets it.
+    expect(
+      await s.service.setRelease(other, id, {
+        resultsAt: null,
+        keyHidden: false,
+      }),
+    ).toBe(false);
+    expect(
+      await s.service.setRelease(user, id, { resultsAt: at, keyHidden: false }),
+    ).toBe(true);
+
+    expect((await s.service.get(other, id))?.release).toEqual({
+      resultsAt: at,
+      keyHidden: false,
+    });
+    expect((await s.service.get(user, id))?.release).toBeNull();
+    await s.service.saveMarks(other, id, [0, 1, BLANK, 0]);
+    const handed = await s.service.submit(other, id);
+    if (!handed.ok) throw new Error(handed.message);
+
+    // Before the results time: what was marked, no score, no key.
+    let result = await s.service.result(other, id, handed.submissionId);
+    expect(result?.score).toBeNull();
+    expect(result?.answerKey).toBeNull();
+    expect(result?.heldUntil).toEqual(at);
+    expect(result?.sittings[0]?.score).toBeNull();
+    const [held] = await s.service.list(other, [id]);
+    expect(held?.last).toMatchObject({ score: null, heldUntil: at });
+    // The owner's own sittings are never held.
+    await s.service.saveMarks(user, id, [0, 0, 0, 0]);
+    const own = await s.service.submit(user, id);
+    if (!own.ok) throw new Error(own.message);
+    expect(
+      (await s.service.result(user, id, own.submissionId))?.answerKey,
+    ).toEqual([1, 1, 1, 1]);
+
+    // At the results time: the score and the key.
+    s.clock.advance(3_600_000);
+    result = await s.service.result(other, id, handed.submissionId);
+    expect(formatScore(result!.score!.score)).toBe("1.67");
+    expect(result?.score?.outcomes).toHaveLength(4);
+    expect(result?.answerKey).toEqual([1, 1, 1, 1]);
+    expect(result?.heldUntil).toBeNull();
+
+    // The key kept for good: the score and its totals, never the key or which was right.
+    await s.service.setRelease(user, id, { resultsAt: null, keyHidden: true });
+    result = await s.service.result(other, id, handed.submissionId);
+    expect(result?.score?.right).toBe(2);
+    expect(result?.score?.wrong).toBe(1);
+    expect(result?.score?.outcomes).toEqual([]);
+    expect(result?.answerKey).toBeNull();
+    expect(result?.keyWithheld).toBe(true);
+    expect((await s.service.get(other, id))?.release).toEqual({
+      resultsAt: null,
+      keyHidden: true,
+    });
+    // Still the owner's to see.
+    const mine = await s.service.result(user, id, own.submissionId);
+    expect(mine?.answerKey).toEqual([1, 1, 1, 1]);
+    expect(mine?.keyWithheld).toBe(false);
   });
 });

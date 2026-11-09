@@ -74,11 +74,35 @@ function SheetArt({ id, marks }: { id: string; marks: Marks }) {
 
 type LastResult = {
   id: string;
-  score: Fraction;
-  max: Fraction;
+  /** Null while the paper's owner holds results back (see heldUntil). */
+  score: Fraction | null;
+  max: Fraction | null;
   /** Some of the key is in, so the score means something. */
   keyed: boolean;
+  /** Someone else's paper whose results come out at this time. */
+  heldUntil: Date | null;
 };
+
+/** The last score's line on the card: the score, when it comes out, or the key it needs. */
+function lastStat(last: LastResult, timeZone: string) {
+  if (last.score && last.max)
+    return last.keyed
+      ? {
+          value: formatScore(last.score),
+          unit: `of ${formatScore(last.max)}, last score`,
+        }
+      : { value: "–", unit: "add the key to score it" };
+  if (last.heldUntil)
+    return {
+      value: "–",
+      unit: `results ${new Intl.DateTimeFormat("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone,
+      }).format(last.heldUntil)}`,
+    };
+  return { value: "–", unit: "results to come" };
+}
 
 export type PaperCardSheet = {
   id: string;
@@ -162,12 +186,7 @@ export function PaperCard({
           standing === "going"
             ? { value: marked, unit: `of ${total} marked` }
             : last
-              ? last.keyed
-                ? {
-                    value: formatScore(last.score),
-                    unit: `of ${formatScore(last.max)}, last score`,
-                  }
-                : { value: "–", unit: "add the key to score it" }
+              ? lastStat(last, timeZone)
               : { value: total, unit: "questions" }
         }
         aside={

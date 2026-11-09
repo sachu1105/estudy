@@ -48,7 +48,12 @@ const messageRow = {
       closesAt: true,
       resultsAt: true,
       paper: {
-        select: { title: true, questionCount: true, limitMin: true },
+        select: {
+          title: true,
+          questionCount: true,
+          limitMin: true,
+          resultsAt: true,
+        },
       },
     },
   },

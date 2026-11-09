@@ -11,6 +11,11 @@ export type PaperSummary = {
   keyed: number;
   /** The person's own paper: they set its key and marking. */
   owner: boolean;
+  /**
+   * Someone else's paper: when their score comes out (null: on submitting) and whether
+   * the owner keeps the key. Null for the owner's own paper and in a squad exam.
+   */
+  release?: { resultsAt: string | null; keyHidden: boolean } | null;
 };
 
 /** A squad exam's one ranked sitting: its register number and when the exam closes. */

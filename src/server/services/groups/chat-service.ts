@@ -1,5 +1,6 @@
 import type { Clock } from "@/lib/clock";
 import { plainText } from "@/lib/markdown/markdown";
+import { laterResults } from "@/lib/omr/release";
 import { canModerate } from "@/lib/squads/roles";
 import type { MessageView } from "@/lib/squads/chat-types";
 import type {
@@ -196,7 +197,12 @@ export function createChatService(deps: ChatDeps) {
               minutes: m.paperShare.paper.limitMin,
               opensAt: m.paperShare.opensAt.toISOString(),
               closesAt: m.paperShare.closesAt?.toISOString() ?? null,
-              resultsAt: m.paperShare.resultsAt?.toISOString() ?? null,
+              // Results wait for the paper's own results time too.
+              resultsAt:
+                laterResults(
+                  m.paperShare.resultsAt,
+                  m.paperShare.paper.resultsAt,
+                )?.toISOString() ?? null,
             }
           : null,
       bundle:

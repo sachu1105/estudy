@@ -9,6 +9,7 @@ import {
 } from "@/lib/omr/exam";
 import { blankMarks, normaliseMarks } from "@/lib/omr/marks";
 import { rankList } from "@/lib/omr/rank";
+import { laterResults } from "@/lib/omr/release";
 import type { TimerView } from "@/lib/omr/timer";
 import type {
   EntryRow,
@@ -125,6 +126,11 @@ export function createExamService(deps: ExamDeps) {
 
   function summary(share: ShareRow, entry: EntryRow | null, host: boolean) {
     const at = now();
+    // Results wait for the paper's own results time too, whichever is later.
+    const results = {
+      ...share,
+      resultsAt: laterResults(share.resultsAt, share.paper.resultsAt),
+    };
     return {
       id: share.id,
       paper: paperView(share.paper),
@@ -133,9 +139,9 @@ export function createExamService(deps: ExamDeps) {
       sharedBy: share.sharedBy.displayName,
       opensAt: share.opensAt,
       closesAt: share.closesAt,
-      resultsAt: share.resultsAt,
+      resultsAt: results.resultsAt,
       status: examStatus(share, at),
-      released: released(share, at),
+      released: released(results, at),
       showNames: share.showNames,
       host,
       mine: entry

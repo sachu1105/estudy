@@ -182,6 +182,33 @@ export async function saveKeyAction(input: unknown): Promise<Done> {
   return { ok: true };
 }
 
+/**
+ * When people who don't own the paper (bundles, the Store, squad exams) see their score,
+ * and whether they ever see the key.
+ */
+export async function savePaperReleaseAction(input: unknown): Promise<Done> {
+  const user = await requireUser();
+  const parsed = z
+    .object({
+      id: z.uuid(),
+      resultsAt: z.iso
+        .datetime({ offset: true })
+        .transform((t) => new Date(t))
+        .nullable(),
+      keyHidden: z.boolean(),
+    })
+    .safeParse(input);
+  if (!parsed.success) return invalid;
+  const blocked = await limited(user.id);
+  if (blocked) return blocked;
+  const { id, ...release } = parsed.data;
+  const saved = await omrService.setRelease(user, id, release);
+  if (!saved) return missing;
+  revalidatePath(`/omr/${id}`, "layout");
+  revalidatePath("/tests");
+  return { ok: true };
+}
+
 /** Hand the sheet in; the page goes on to its result. */
 export async function submitSheetAction(
   input: unknown,

@@ -124,7 +124,8 @@ test.describe("question papers", () => {
     await expect(page.getByText(/Question 1 is already marked/)).toBeVisible();
     await expect(bubble(1, "B")).toHaveAttribute("aria-pressed", "true");
     // Sheet settings let answers change, and pick the pen.
-    await page.getByRole("button", { name: "Sheet settings" }).click();
+    await page.getByRole("button", { name: "Sheet tools" }).click();
+    await page.getByRole("menuitem", { name: "Sheet settings" }).click();
     await page.getByRole("radio", { name: "Blue" }).click();
     await page.getByRole("switch", { name: "Marks are final" }).click();
     await page.keyboard.press("Escape");
@@ -136,9 +137,8 @@ test.describe("question papers", () => {
 
     // The marked sheet downloads as a PDF (the last taps are saved first).
     const download = page.waitForEvent("download");
-    await page
-      .getByRole("button", { name: "Download the answer sheet as a PDF" })
-      .click();
+    await page.getByRole("button", { name: "Sheet tools" }).click();
+    await page.getByRole("menuitem", { name: "Download answer sheet" }).click();
     await expectPdf(await download);
 
     // Marks save as you go. A reload leaves the sitting: the clock resets, the marks

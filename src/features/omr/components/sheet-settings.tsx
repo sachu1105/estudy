@@ -1,9 +1,5 @@
 "use client";
 
-import { Settings2 } from "lucide-react";
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,26 +18,24 @@ const PENS: { value: Pen; label: string; swatch: string }[] = [
   { value: "blue", label: "Blue", swatch: "bg-pen-blue" },
 ];
 
-/** The pen the sheet is marked with, and whether a mark can be taken back. */
+/**
+ * The pen the sheet is marked with, and whether a mark can be taken back. Opened from
+ * the sheet tools menu.
+ */
 export function SheetSettings({
+  open,
+  onOpenChange,
   prefs,
   onChange,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   prefs: OmrPrefs;
   onChange: (change: Partial<OmrPrefs>) => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
     <>
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label="Sheet settings"
-        onClick={() => setOpen(true)}
-      >
-        <Settings2 aria-hidden />
-      </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Answer sheet</DialogTitle>
