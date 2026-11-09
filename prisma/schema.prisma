@@ -90,6 +90,7 @@ model User {
   paperShares        PaperShare[]
   paperBundles       PaperBundle[]
   bundlePurchases    BundlePurchase[]
+  examFollows        ExamFollow[]
   paperEntries       PaperEntry[]
   omrSubmissions     OmrSubmission[]
   topicCompletions   TopicCompletion[]
@@ -403,6 +404,7 @@ model SyllabusVersion {
   planDrafts     PlanDraft[]
   studyPlans     StudyPlan[]
   examPriorities ExamPriority[]
+  examFollows    ExamFollow[]
   examCovers     ExamCover[]
 
   @@index([ownerId, deletedAt])
@@ -1805,6 +1807,9 @@ enum NotificationKind {
   FRIEND_REQUEST
   /// Someone said yes to your friend request.
   FRIEND_ACCEPTED
+  /// A post they follow: confirmation opens or closes, tickets are out, the exam is near,
+  /// or its date moved.
+  EXAM_DATE
 }
 
 /// A thread in a group: a discussion, or a question tagged with a topic.
@@ -1966,4 +1971,149 @@ model DirectMessage {
   createdAt DateTime     @db.Timestamptz(6)
 
   @@index([threadId, createdAt])
+}
+
+// ---- Exam dates (the exam calendar) --------------------------------------------------
+
+/// What stage a published exam programme is at. Kerala PSC publishes each month's
+/// programme for confirmation, then finalised after it, and sometimes modified.
+enum ProgrammeStage {
+  FOR_CONFIRMATION
+  AFTER_CONFIRMATION
+  MODIFIED
+  OTHER
+}
+
+enum ProgrammeStatus {
+  /// Read, waiting for an admin.
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+/// A page an admin asked the app to watch for exam programmes (Admin > Exam dates). The
+/// worker checks it once a day, politely, and reads each new programme PDF by rules.
+model ExamSource {
+  id            String          @id @default(uuid()) @db.Uuid
+  /// "Kerala PSC", shown on every date read from it.
+  board         String
+  listUrl       String
+  /// Which reader understands its programmes (lib/exam-calendar).
+  reader        String          @default("kerala-psc-programme")
+  /// Only links whose text contains this (any case) are fetched.
+  linkText      String          @default("EXAMINATION PROGRAMME")
+  enabled       Boolean         @default(true)
+  lastCheckedAt DateTime?       @db.Timestamptz(6)
+  lastError     String?
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @updatedAt @db.Timestamptz(6)
+  programmes    ExamProgramme[]
+}
+
+/// One programme document, fetched from a source or uploaded by an admin. Read by rules,
+/// never by AI, and PENDING until an admin publishes it (the human gate, rule 5).
+model ExamProgramme {
+  id           String          @id @default(uuid()) @db.Uuid
+  sourceId     String?         @db.Uuid
+  source       ExamSource?     @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  board        String
+  /// Where it was published, shown to users as the source.
+  url          String?
+  /// Our copy of the PDF.
+  storageKey   String?
+  sha256       String          @unique
+  title        String
+  /// The first day of the month it covers.
+  month        DateTime?       @db.Date
+  stage        ProgrammeStage
+  status       ProgrammeStatus @default(PENDING)
+  /// Lines from above its table: changes, cancellations, postponements.
+  notes        String[]
+  /// Category numbers its notes say are cancelled.
+  cancelled    String[]
+  /// What the reader couldn't make sense of, for the admin.
+  problems     String[]
+  reviewedById String?         @db.Uuid
+  reviewedAt   DateTime?       @db.Timestamptz(6)
+  createdAt    DateTime        @default(now()) @db.Timestamptz(6)
+  dates        ExamDate[]
+
+  @@index([status, createdAt])
+}
+
+/// One exam: a post on a date (a district-wise post has a row per district), from a
+/// programme or added by hand. Users see it once published and not replaced.
+model ExamDate {
+  id          String         @id @default(uuid()) @db.Uuid
+  programmeId String?        @db.Uuid
+  programme   ExamProgramme? @relation(fields: [programmeId], references: [id], onDelete: Cascade)
+  board       String
+  /// The category number, "707/2023": what people follow.
+  catNo       String?
+  post        String
+  department  String?
+  /// "STATEWIDE" or the district.
+  scope       String?
+  examOn      DateTime       @db.Date
+  /// The time and batches as printed, "9.00 am to 11.30 am".
+  timeText    String?
+  confirmFrom DateTime?      @db.Date
+  confirmTo   DateTime?      @db.Date
+  /// "Confirmation not required", when it says so.
+  confirmNote String?
+  ticketsFrom DateTime?      @db.Date
+  mode        String?
+  medium      String?
+  duration    String?
+  candidates  Int?
+  syllabusUrl String?
+  cancelled   Boolean        @default(false)
+  /// Set when its programme is published, or when an admin saves it by hand.
+  publishedAt DateTime?      @db.Timestamptz(6)
+  /// A later programme's row for the same post and place replaced this one.
+  replacedAt  DateTime?      @db.Timestamptz(6)
+  createdById String?        @db.Uuid
+  createdAt   DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime       @updatedAt @db.Timestamptz(6)
+
+  @@index([catNo])
+  @@index([publishedAt, examOn])
+}
+
+/// Someone follows a post by its category number, optionally for one of their exam pods
+/// (whose plan can then use the date).
+model ExamFollow {
+  id                String           @id @default(uuid()) @db.Uuid
+  userId            String           @db.Uuid
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catNo             String
+  syllabusVersionId String?          @db.Uuid
+  syllabusVersion   SyllabusVersion? @relation(fields: [syllabusVersionId], references: [id], onDelete: SetNull)
+  createdAt         DateTime         @default(now()) @db.Timestamptz(6)
+
+  @@unique([userId, catNo])
+  @@index([catNo])
+}
+
+enum ExamReminderKind {
+  CONFIRM_OPEN
+  CONFIRM_CLOSING
+  TICKETS
+  WEEK_TO_GO
+  DAY_BEFORE
+  MOVED
+  CANCELLED
+}
+
+/// Each exam reminder is sent once per person, post, date and kind (a district-wise post
+/// is one reminder, not fourteen).
+model ExamReminder {
+  id     String           @id @default(uuid()) @db.Uuid
+  userId String           @db.Uuid
+  catNo  String
+  examOn DateTime         @db.Date
+  kind   ExamReminderKind
+  sentAt DateTime         @default(now()) @db.Timestamptz(6)
+
+  @@unique([userId, catNo, examOn, kind])
 }

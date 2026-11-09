@@ -20,6 +20,7 @@ const TEXT = {
   REPORT: "reported",
   FRIEND_REQUEST: "sent you a friend request",
   FRIEND_ACCEPTED: "accepted your friend request",
+  EXAM_DATE: "",
 } as const;
 
 /** Mentions, replies, accepted answers, new group tests, and reports for squad staff. */
@@ -34,13 +35,17 @@ export default async function NotificationsPage() {
         <EmptyState
           icon={Bell}
           title="Nothing new"
-          description="Mentions, replies to your posts, friend requests and tests shared in your squads show up here."
+          description="Mentions, replies to your posts, friend requests, tests shared in your squads and reminders for exams you follow show up here."
         />
       ) : (
         <NotificationList
           items={items.map((n) => ({
             id: n.id,
-            text: `${n.actor?.displayName ?? "Someone"} ${TEXT[n.kind]}`,
+            // An exam date reminder has no one behind it: it just says what's coming.
+            text:
+              n.kind === "EXAM_DATE"
+                ? "Exam dates"
+                : `${n.actor?.displayName ?? "Someone"} ${TEXT[n.kind]}`,
             subject: n.subject,
             href: n.href,
             when: timeAgo(n.createdAt, now, user.timezone),

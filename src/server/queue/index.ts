@@ -103,6 +103,16 @@ export async function schedulePodMaintenance() {
     { name: "expire-subscriptions", data: { kind: "expire-subscriptions" } },
   );
   await bullPodQueue().upsertJobScheduler(
+    "check-exam-sources",
+    { pattern: "15 6 * * *", tz: "Asia/Kolkata" },
+    { name: "check-exam-sources", data: { kind: "check-exam-sources" } },
+  );
+  await bullPodQueue().upsertJobScheduler(
+    "exam-reminders",
+    { pattern: "30 7 * * *", tz: "Asia/Kolkata" },
+    { name: "exam-reminders", data: { kind: "exam-reminders" } },
+  );
+  await bullPodQueue().upsertJobScheduler(
     "rebuild-ranks-nightly",
     { pattern: "30 2 * * *", tz: "Asia/Kolkata" },
     { name: "rebuild-ranks", data: { kind: "rebuild-ranks" } },

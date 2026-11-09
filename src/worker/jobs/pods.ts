@@ -8,6 +8,7 @@ import {
   type PodJob,
 } from "@/server/queue";
 import { billingService } from "@/server/services/billing";
+import { examCalendarService } from "@/server/services/exam-calendar";
 import { notifyService } from "@/server/services/notifications/notify";
 import { planService } from "@/server/services/plans";
 import { rankService } from "@/server/services/rank";
@@ -53,6 +54,18 @@ export async function startPodWorker() {
           if (ended) console.log(`[worker] ${ended} subscriptions expired`);
           return;
         }
+        case "check-exam-sources": {
+          const { added, errors } = await examCalendarService.checkSources();
+          console.log(
+            `[worker] exam sources checked: ${added} new programmes${errors.length ? `; ${errors.join("; ")}` : ""}`,
+          );
+          return;
+        }
+        case "exam-reminders": {
+          const sent = await examCalendarService.runReminders();
+          if (sent) console.log(`[worker] ${sent} exam date reminders sent`);
+          return;
+        }
         case "replan-week": {
           if (!(await flagOn("weeklyReplan"))) {
             console.log("[worker] weekly re-plan is switched off by an admin");
@@ -70,7 +83,7 @@ export async function startPodWorker() {
     console.warn(`[worker] pod job ${job?.name} failed: ${error.message}`),
   );
   console.log(
-    `[worker] ${POD_QUEUE}: link previews, file text, trash purge, weekly re-plan, reminders`,
+    `[worker] ${POD_QUEUE}: link previews, file text, trash purge, weekly re-plan, reminders, exam dates`,
   );
   return worker;
 }

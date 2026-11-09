@@ -37,6 +37,10 @@ export const podJobSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("send-reminders") }),
   // Nightly: paid plans whose grace or paid-up period has passed drop to FREE.
   z.object({ kind: z.literal("expire-subscriptions") }),
+  // Each morning: the boards' pages admins watch, read for new exam programmes.
+  z.object({ kind: z.literal("check-exam-sources") }),
+  // Each morning: exam date reminders for the posts people follow.
+  z.object({ kind: z.literal("exam-reminders") }),
 ]);
 export type PodJob = z.infer<typeof podJobSchema>;
 
