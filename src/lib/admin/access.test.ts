@@ -8,6 +8,8 @@ describe("admin access", () => {
       "dashboard",
       "catalogue",
       "reports",
+      // Answering feedback and problem reports is moderation too.
+      "feedback",
     ]);
     expect(canAdmin("ADMIN", "users")).toBe(true);
     expect(canAdmin("ADMIN", "plans")).toBe(false);

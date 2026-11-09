@@ -21,6 +21,7 @@ const TEXT = {
   FRIEND_REQUEST: "sent you a friend request",
   FRIEND_ACCEPTED: "accepted your friend request",
   EXAM_DATE: "",
+  FEEDBACK: "",
 } as const;
 
 /** Mentions, replies, accepted answers, new group tests, and reports for squad staff. */
@@ -42,10 +43,13 @@ export default async function NotificationsPage() {
           items={items.map((n) => ({
             id: n.id,
             // An exam date reminder has no one behind it: it just says what's coming.
+            // Feedback answers come from the team, never from a named staff member.
             text:
               n.kind === "EXAM_DATE"
                 ? "Exam dates"
-                : `${n.actor?.displayName ?? "Someone"} ${TEXT[n.kind]}`,
+                : n.kind === "FEEDBACK"
+                  ? "The studypods team answered your feedback"
+                  : `${n.actor?.displayName ?? "Someone"} ${TEXT[n.kind]}`,
             subject: n.subject,
             href: n.href,
             when: timeAgo(n.createdAt, now, user.timezone),

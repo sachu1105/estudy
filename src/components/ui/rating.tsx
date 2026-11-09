@@ -66,7 +66,8 @@ export function Rating({
             aria-checked={level === value}
             aria-label={`${level}, ${word}`}
             title={`${level} · ${word}`}
-            tabIndex={level === value ? 0 : -1}
+            // Nothing picked yet: the first star takes the tab stop.
+            tabIndex={level === Math.max(1, value) ? 0 : -1}
             onClick={() => onChange(level)}
             className={cn(
               "grid shrink-0 cursor-pointer place-items-center rounded-chip transition-[color,transform] duration-[120ms] active:scale-90",

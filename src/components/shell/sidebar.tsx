@@ -71,9 +71,18 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Settings, with the collapse toggle as a quiet icon beside it. */}
-      <div className="flex items-center gap-1 border-t border-border pt-3 sidebar-collapsed:flex-col">
-        {secondaryNav.map((item) => (
+      {/* Feedback, then Settings with the collapse toggle as a quiet icon beside it. */}
+      <div className="flex flex-col gap-1 border-t border-border pt-3">
+        {secondaryNav.slice(0, -1).map((item) => (
+          <SidebarLink
+            key={item.href}
+            item={item}
+            active={isActive(pathname, item.href, item.also)}
+          />
+        ))}
+      </div>
+      <div className="mt-1 flex items-center gap-1 sidebar-collapsed:flex-col">
+        {secondaryNav.slice(-1).map((item) => (
           <div
             key={item.href}
             className="min-w-0 flex-1 sidebar-collapsed:w-full"

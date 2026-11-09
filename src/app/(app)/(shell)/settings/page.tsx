@@ -1,4 +1,4 @@
-import { LogOut, Shield, Trash2 } from "lucide-react";
+import { LogOut, MessageSquareHeart, Shield, Trash2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -144,6 +144,18 @@ export default async function SettingsPage() {
             }
           />
           <SettingsRow label="Password" control={<ChangePasswordButton />} />
+          {/* Feedback has no tab on a phone: this is its way in. */}
+          <SettingsRow
+            label="Feedback"
+            hint="Rate studypods, suggest ideas, report a problem"
+            control={
+              <Button asChild variant="secondary" size="sm">
+                <Link href="/feedback">
+                  <MessageSquareHeart aria-hidden /> Open
+                </Link>
+              </Button>
+            }
+          />
           {/* The way out on a phone, where there's no avatar menu in the top bar. */}
           <SettingsRow
             label="Signed in as"

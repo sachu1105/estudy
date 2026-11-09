@@ -37,6 +37,8 @@ export const rules = {
   reactPerUser: { limit: 200, windowMs: 10 * MINUTE },
   // Chat messages: a quick back-and-forth fits, a flood does not (squads S3).
   messagePerUser: { limit: 40, windowMs: MINUTE },
+  // Feedback: ratings, ideas and problem reports. Plenty for honest use, not a flood.
+  feedbackPerUser: { limit: 20, windowMs: 60 * MINUTE },
   // Friend requests, answers and blocks: a handful at a time, never a sweep of usernames.
   friendPerUser: { limit: 30, windowMs: 10 * MINUTE },
   // Friend search runs as the person types: brisk typing fits, scraping the list does not.

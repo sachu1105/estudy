@@ -2,6 +2,7 @@ import {
   Boxes,
   CalendarCheck,
   ClipboardCheck,
+  MessageSquareHeart,
   Settings,
   Shield,
   Store,
@@ -37,6 +38,8 @@ export const primaryNav: NavItem[] = [
 ];
 
 export const secondaryNav: NavItem[] = [
+  // Rating the app, ideas and problem reports. On a phone it's reached from Settings.
+  { href: "/feedback", label: "Feedback", icon: MessageSquareHeart },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

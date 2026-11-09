@@ -1,8 +1,8 @@
 "use client";
 
-import { LogOut, Moon, Search, Sun } from "lucide-react";
+import { Bug, Lightbulb, LogOut, Moon, Search, Sun } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -43,6 +43,7 @@ type TopBarProps = {
 
 export function TopBar({ viewer, logout }: TopBarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const groups: CommandGroup[] = [
@@ -54,6 +55,26 @@ export function TopBar({ viewer, logout }: TopBarProps) {
         icon: item.icon,
         onSelect: () => router.push(item.href),
       })),
+    },
+    {
+      heading: "Feedback",
+      items: [
+        {
+          id: "feedback-problem",
+          label: "Report a problem on this page",
+          icon: Bug,
+          onSelect: () =>
+            router.push(
+              `/feedback?tab=problems&from=${encodeURIComponent(pathname)}`,
+            ),
+        },
+        {
+          id: "feedback-idea",
+          label: "Suggest an idea",
+          icon: Lightbulb,
+          onSelect: () => router.push("/feedback?tab=ideas"),
+        },
+      ],
     },
     {
       heading: "Theme",

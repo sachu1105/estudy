@@ -6,6 +6,7 @@ export const ADMIN_AREAS = {
   catalogue: { label: "Catalogue", href: "/admin/catalogue" },
   papers: { label: "Papers", href: "/admin/papers" },
   reports: { label: "Reports", href: "/admin/reports" },
+  feedback: { label: "Feedback", href: "/admin/feedback" },
   users: { label: "Users", href: "/admin/users" },
   settings: { label: "Site", href: "/admin/settings" },
   plans: { label: "Plans and limits", href: "/admin/plans" },
@@ -23,11 +24,12 @@ type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 // SUPER_ADMIN: everything.
 const ACCESS: Record<Role, readonly AdminArea[]> = {
   USER: [],
-  MODERATOR: ["dashboard", "catalogue", "reports"],
+  MODERATOR: ["dashboard", "catalogue", "reports", "feedback"],
   ADMIN: [
     "dashboard",
     "catalogue",
     "reports",
+    "feedback",
     "exams",
     "papers",
     "users",
@@ -39,6 +41,7 @@ const ACCESS: Record<Role, readonly AdminArea[]> = {
     "dashboard",
     "catalogue",
     "reports",
+    "feedback",
     "exams",
     "papers",
     "users",
