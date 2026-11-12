@@ -88,6 +88,14 @@ export const announcementSchema = z.object({
  */
 export const paidSquadsSchema = z.object({ enabled: z.boolean() });
 
+/**
+ * studypods' share of what a seller's Store listing sells for, fixed on each sale as it
+ * happens. Left out, lib/omr/store's default applies.
+ */
+export const storeCutSchema = z.object({
+  percent: z.number().int().min(0).max(50),
+});
+
 export const maintenanceSchema = z.object({
   on: z.boolean(),
   message: z.string().trim().max(300),
@@ -197,6 +205,7 @@ export const settingSchemas = {
   flags: featureFlagsSchema,
   ai: aiSettingSchema,
   paidSquads: paidSquadsSchema,
+  storeCut: storeCutSchema,
   aiProvider: aiProviderSchema,
   aiPrompts: aiPromptsSchema,
 } as const;

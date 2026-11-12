@@ -16,6 +16,7 @@ import {
   maintenanceSchema,
   paidSquadsSchema,
   planPricesSchema,
+  storeCutSchema,
 } from "@/lib/settings/schemas";
 import { editableTreeSchema } from "@/lib/syllabus/tree";
 import { rateLimit, retryMessage } from "@/server/ratelimit";
@@ -270,6 +271,7 @@ const settings = {
   featuredPlan: { area: "plans", schema: featuredPlanSchema },
   planPrices: { area: "plans", schema: planPricesSchema },
   paidSquads: { area: "plans", schema: paidSquadsSchema },
+  storeCut: { area: "papers", schema: storeCutSchema },
   ai: { area: "ai", schema: aiSettingSchema },
 } as const;
 

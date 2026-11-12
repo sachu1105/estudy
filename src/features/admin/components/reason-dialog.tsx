@@ -27,6 +27,8 @@ export function ReasonDialog({
   danger = false,
   run,
   done,
+  label = "Reason",
+  placeholder = "What happened, for the audit log",
 }: {
   trigger: string;
   title: string;
@@ -35,6 +37,9 @@ export function ReasonDialog({
   danger?: boolean;
   run: (reason: string) => Promise<Result>;
   done: string;
+  /** For a note someone else reads (a seller's listing sent back). */
+  label?: string;
+  placeholder?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -63,13 +68,13 @@ export function ReasonDialog({
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="admin-reason">Reason</Label>
+            <Label htmlFor="admin-reason">{label}</Label>
             <Textarea
               id="admin-reason"
               value={reason}
               maxLength={300}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="What happened, for the audit log"
+              placeholder={placeholder}
             />
           </div>
           <DialogFooter>

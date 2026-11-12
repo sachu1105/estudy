@@ -7,6 +7,8 @@ import { Sidebar } from "@/components/shell/sidebar";
 import { TopBar } from "@/components/shell/top-bar";
 import { Toaster } from "@/components/ui/toast";
 import { logoutAction } from "@/features/auth/actions";
+import { FeedbackDialog } from "@/features/feedback/components/feedback-dialog";
+import { NotificationMenu } from "@/features/notifications/components/notification-menu";
 import { requireUser } from "@/server/auth/session";
 import { notificationService } from "@/server/services/notifications";
 import { loadSettings } from "@/server/settings";
@@ -29,7 +31,6 @@ export default async function ShellLayout({
     email: user.email,
     avatarUrl: user.avatarUrl,
     staff: user.role !== "USER",
-    unread,
   };
 
   // Drive style on md+: the top bar and sidebar sit on the canvas, and the page lives in
@@ -42,7 +43,11 @@ export default async function ShellLayout({
       >
         Skip to content
       </a>
-      <TopBar viewer={viewer} logout={logoutAction} />
+      <TopBar
+        viewer={viewer}
+        logout={logoutAction}
+        notifications={<NotificationMenu initial={unread} />}
+      />
       <div className="flex min-h-0 flex-1">
         <Sidebar />
         <div
@@ -68,6 +73,7 @@ export default async function ShellLayout({
         </div>
       </div>
       <BottomTabs viewer={viewer} />
+      <FeedbackDialog />
       <Toaster />
     </div>
   );

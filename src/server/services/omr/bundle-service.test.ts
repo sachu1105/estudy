@@ -4,6 +4,7 @@ import { fixedClock } from "@/lib/clock";
 import type { BundleRow } from "@/server/repositories/bundle-repository";
 
 import { createBundleService, type BundleDeps } from "./bundle-service";
+import { createStoreListingService } from "./store-listing-service";
 
 const owner = { id: "00000000-0000-4000-8000-0000000000a1" } as never;
 const admin = { id: "00000000-0000-4000-8000-0000000000a2" } as never;
@@ -20,14 +21,29 @@ const PAPERS: Record<string, string> = {
   p1: idOf(owner),
   p2: idOf(owner),
   p3: idOf(admin),
+  p4: idOf(owner),
 };
+const fakePaper = (id: string) => ({
+  id,
+  title: id,
+  questionCount: 100,
+  limitMin: 75,
+  wrongNum: 1,
+  wrongDen: 3,
+  keySource: "OWN" as const,
+});
+
 /** Who holds a real PRO plan, for library bundles included in plans. */
 const proUsers = new Set([idOf(member)]);
 
 function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
   const bundles = new Map<string, BundleRow>();
-  const purchases: { bundleId: string; userId: string; amountPaise: number }[] =
-    [];
+  const purchases: {
+    bundleId: string;
+    userId: string;
+    amountPaise: number;
+    cutPaise?: number | null;
+  }[] = [];
   const audit: string[] = [];
   const state = {
     selling: opts.selling ?? true,
@@ -49,6 +65,9 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
         catalogue: data.catalogue ?? false,
         includedIn: data.includedIn ?? [],
         publishedAt: data.publishedAt ?? null,
+        listing: data.listing ?? null,
+        listingNote: null,
+        listedAt: data.listedAt ?? null,
         createdAt: new Date(0),
         owner: { id: data.ownerId, displayName: "Owner" },
         group: data.groupId
@@ -57,9 +76,7 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
         channel: data.channelId
           ? { id: data.channelId, name: "general" }
           : null,
-        papers: data.paperIds.map((id) => ({
-          paper: { id, title: id, questionCount: 100, limitMin: 75 },
-        })),
+        papers: data.paperIds.map((id) => ({ paper: fakePaper(id) })),
       });
       return { id };
     },
@@ -76,9 +93,7 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
         description: data.description,
         pricePaise: data.pricePaise,
         includedIn: data.includedIn,
-        papers: data.paperIds.map((p) => ({
-          paper: { id: p, title: p, questionCount: 100, limitMin: 75 },
-        })),
+        papers: data.paperIds.map((p) => ({ paper: fakePaper(p) })),
       });
     },
     async setPublished(id, at) {
@@ -86,7 +101,20 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
     },
     async library() {
       return [...bundles.values()].filter(
-        (b) => b.catalogue && b.publishedAt && !b.hiddenAt,
+        (b) =>
+          !b.hiddenAt && (b.catalogue ? !!b.publishedAt : b.listing === "LIVE"),
+      );
+    },
+    async setListing(id, data) {
+      Object.assign(bundles.get(id)!, data);
+    },
+    async listedWithPaper(paperId) {
+      return [...bundles.values()].some(
+        (b) =>
+          !b.catalogue &&
+          !b.hiddenAt &&
+          (b.listing === "PENDING" || b.listing === "LIVE") &&
+          b.papers.some((x) => x.paper.id === paperId),
       );
     },
     async catalogue() {
@@ -131,11 +159,23 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
       return purchases.filter((p) => p.bundleId === bundleId).length;
     },
     async forUser(userId) {
-      return [...bundles.values()].filter(
-        (b) =>
-          purchases.some((p) => p.bundleId === b.id && p.userId === userId) ||
-          (b.ownerId === userId && !b.hiddenAt),
-      );
+      return [...bundles.values()]
+        .filter(
+          (b) =>
+            purchases.some((p) => p.bundleId === b.id && p.userId === userId) ||
+            (b.ownerId === userId && !b.hiddenAt),
+        )
+        .map((b) => ({
+          ...b,
+          purchases: purchases.some(
+            (p) => p.bundleId === b.id && p.userId === userId,
+          )
+            ? [{ createdAt: new Date(0) }]
+            : [],
+          _count: {
+            purchases: purchases.filter((p) => p.bundleId === b.id).length,
+          },
+        }));
     },
     async hasPaper(userId, paperId) {
       return purchases.some(
@@ -166,8 +206,10 @@ function setup(opts: { selling?: boolean; canPrice?: boolean } = {}) {
     planIncludes: (user, plans) =>
       proUsers.has(idOf(user)) && plans.includes("PRO"),
     audit: async (entry) => void audit.push(entry.action),
+    cutPercent: async () => 20,
+    reviewer: async (user) => idOf(user) === idOf(admin),
   });
-  return { service, purchases, state, audit };
+  return { service, purchases, state, audit, repo, bundles };
 }
 
 const input = {
@@ -325,5 +367,140 @@ describe("paper bundles", () => {
       "library.unpublish",
       "library.remove",
     ]);
+  });
+});
+
+/** Each paper's key, for listings: p4 is still missing an answer. */
+const KEYS: Record<string, number[]> = {
+  p1: [1, 2],
+  p2: [4, -1],
+  p3: [8, 1],
+  p4: [1, 0],
+};
+
+function storeSetup(opts: { canPrice?: boolean } = {}) {
+  const s = setup(opts);
+  const told: { userId: string; subject: string }[] = [];
+  const store = createStoreListingService({
+    bundles: s.repo,
+    papers: {
+      async findOwned(id, ownerId) {
+        return PAPERS[id] === ownerId
+          ? ({ id, title: id, questionCount: 2, answerKey: KEYS[id] } as never)
+          : null;
+      },
+    },
+    canPrice: async () => s.state.canPrice,
+    notify: async (rows) => void told.push(...rows),
+    audit: async (entry) => void s.audit.push(entry.action),
+    clock: fixedClock("2026-11-12T10:00:00Z"),
+  });
+  return { ...s, store, told };
+}
+
+const sale = {
+  title: "LDC 2024 by Anjali",
+  description: "Two sets with my keys",
+  paperIds: ["p1", "p2"],
+  rupees: null,
+};
+
+describe("selling in the Store", () => {
+  it("lists only the seller's own, fully keyed papers, and a price only for sellers", async () => {
+    const s = storeSetup({ canPrice: false });
+    expect(
+      await s.store.sell(owner, { ...sale, paperIds: ["p1", "p4"] }),
+    ).toMatchObject({ ok: false, code: "UNKEYED" });
+    expect(
+      await s.store.sell(owner, { ...sale, paperIds: ["p3"] }),
+    ).toMatchObject({ ok: false, code: "NOT_FOUND" });
+    expect(await s.store.sell(owner, { ...sale, rupees: 149 })).toMatchObject({
+      ok: false,
+      code: "NOT_SELLER",
+    });
+    expect((await s.store.sell(owner, sale)).ok).toBe(true);
+  });
+
+  it("waits for an admin, then anyone finds it; sending it back needs a note", async () => {
+    const s = storeSetup();
+    const made = await s.store.sell(owner, sale);
+    if (!made.ok) throw new Error(made.message);
+
+    // Waiting: nobody else sees it, but a reviewer reads its papers (not to sit).
+    expect(await s.service.library(outsider)).toEqual([]);
+    expect(await s.service.get(outsider, made.id)).toBeNull();
+    expect(await s.service.paperAccess(admin, "p2")).toEqual({
+      canView: true,
+      canPractise: false,
+      keyOut: true,
+    });
+    expect(await s.service.paperAccess(outsider, "p2")).toBeNull();
+    expect(
+      await s.store.adminReview(admin, made.id, "reject", "no"),
+    ).toMatchObject({ ok: false, code: "NOTE" });
+
+    expect(
+      (await s.store.adminReview(admin, made.id, "approve", null)).ok,
+    ).toBe(true);
+    expect(s.told).toEqual([
+      expect.objectContaining({
+        userId: idOf(owner),
+        subject: "LDC 2024 by Anjali is live in the Store",
+      }),
+    ]);
+    const item = (await s.service.library(outsider))[0];
+    expect(item).toMatchObject({
+      id: made.id,
+      listing: "LIVE",
+      library: false,
+    });
+    expect((await s.service.claim(outsider, made.id)).ok).toBe(true);
+    expect(await s.service.paperAccess(outsider, "p1")).not.toBeNull();
+
+    // Taken down with a note: gone from the Store, kept by whoever has it.
+    await s.store.adminReview(
+      admin,
+      made.id,
+      "reject",
+      "The key for Q2 is wrong.",
+    );
+    expect(await s.service.library(member)).toEqual([]);
+    expect(await s.service.paperAccess(outsider, "p1")).not.toBeNull();
+    expect((await s.service.get(owner, made.id))?.listingNote).toBe(
+      "The key for Q2 is wrong.",
+    );
+    expect(s.audit).toEqual(["store.approve", "store.reject"]);
+  });
+
+  it("takes studypods' share of a seller's sale, never of a squad's", async () => {
+    const s = storeSetup();
+    const made = await s.store.sell(owner, { ...sale, rupees: 149 });
+    if (!made.ok) throw new Error(made.message);
+    await s.store.adminReview(admin, made.id, "approve", null);
+    expect((await s.service.buy(member, made.id)).ok).toBe(true);
+    expect(s.purchases.at(-1)).toMatchObject({
+      amountPaise: 14900,
+      cutPaise: 2980,
+    });
+
+    const squad = await s.service.create(owner, input);
+    if (!squad.ok) throw new Error(squad.message);
+    expect((await s.service.buy(member, squad.id)).ok).toBe(true);
+    expect(s.purchases.at(-1)).toMatchObject({ cutPaise: null });
+  });
+
+  it("asks a squad bundle into the Store, and the seller can withdraw it", async () => {
+    const s = storeSetup();
+    const squad = await s.service.create(owner, input);
+    if (!squad.ok) throw new Error(squad.message);
+    expect((await s.store.list(member, squad.id)).ok).toBe(false);
+    expect((await s.store.list(owner, squad.id)).ok).toBe(true);
+    expect((await s.service.get(owner, squad.id))?.listing).toBe("PENDING");
+    await s.store.adminReview(admin, squad.id, "approve", null);
+    // Live: someone outside the squad finds it now.
+    expect(await s.service.get(outsider, squad.id)).not.toBeNull();
+    expect((await s.store.withdraw(owner, squad.id)).ok).toBe(true);
+    expect(await s.service.get(outsider, squad.id)).toBeNull();
+    expect(await s.service.get(member, squad.id)).not.toBeNull();
   });
 });

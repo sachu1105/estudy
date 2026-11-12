@@ -41,7 +41,7 @@ export function ReadMethodPicker({
       />
       <p className="text-small text-ink-muted">
         {value === "ai"
-          ? `${reader.model} (${reader.provider}) reads it in the background${reader.readsPages ? ", PDFs and photos page by page" : ""}. Its cost goes in Jobs and AI, and you check every subject and topic before approving.`
+          ? `${reader.model} (${reader.provider}) reads it in the background${reader.readsPages ? ", PDFs and photos page by page" : ""}. Its cost is logged on the AI page, and you check every subject and topic before approving.`
           : "Headings (Part I, (i) History, Module 1, a line ending in a colon) become subjects; the lists under them become topics. Stated marks set topic weights. No AI, no cost."}
       </p>
     </div>

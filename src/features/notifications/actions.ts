@@ -15,3 +15,13 @@ export async function markReadAction(input: unknown) {
   revalidatePath("/notifications");
   return { ok: true as const };
 }
+
+/** Deletes one of the user's own notifications. */
+export async function deleteNotificationAction(input: unknown) {
+  const user = await requireUser();
+  const parsed = z.object({ id: z.uuid() }).safeParse(input);
+  if (!parsed.success) return { ok: false as const, error: "Try again." };
+  await notificationService.remove(user, parsed.data.id);
+  revalidatePath("/notifications");
+  return { ok: true as const };
+}

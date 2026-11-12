@@ -1,4 +1,4 @@
-import { LogOut, MessageSquareHeart, Shield, Trash2 } from "lucide-react";
+import { LogOut, Shield, Trash2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/features/auth/actions";
 import { ChangePasswordButton } from "@/features/auth/components/change-password";
-import { CoverButton } from "@/features/profile/components/cover-button";
+import { RateButton } from "@/features/feedback/components/rate-button";
 import { EditProfileButton } from "@/features/profile/components/profile-editor";
 import { ProfileBanner } from "@/features/profile/components/profile-banner";
 import { FindableSwitch } from "@/features/profile/components/findable-switch";
@@ -61,15 +61,11 @@ export default async function SettingsPage() {
           <ProfileBanner
             user={profile}
             joinedAt={profile.joinedAt}
-            overlay={
-              <CoverButton
-                userId={user.id}
-                selection={profile.coverSelection}
-                cover={profile.cover}
-              />
-            }
             actions={
               <EditProfileButton
+                userId={user.id}
+                cover={profile.cover}
+                coverSelection={profile.coverSelection}
                 initial={{
                   displayName: profile.displayName,
                   bio: profile.bio,
@@ -147,14 +143,8 @@ export default async function SettingsPage() {
           {/* Feedback has no tab on a phone: this is its way in. */}
           <SettingsRow
             label="Feedback"
-            hint="Rate studypods, suggest ideas, report a problem"
-            control={
-              <Button asChild variant="secondary" size="sm">
-                <Link href="/feedback">
-                  <MessageSquareHeart aria-hidden /> Open
-                </Link>
-              </Button>
-            }
+            hint="Rate studypods and tell us what to keep or fix"
+            control={<RateButton />}
           />
           {/* The way out on a phone, where there's no avatar menu in the top bar. */}
           <SettingsRow

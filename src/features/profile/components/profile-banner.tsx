@@ -23,7 +23,6 @@ export function ProfileBanner({
   user,
   joinedAt,
   actions,
-  overlay,
   stats,
   verified = false,
 }: {
@@ -33,18 +32,13 @@ export function ProfileBanner({
   joinedAt?: Date;
   /** Buttons beside the name. */
   actions?: ReactNode;
-  /** Controls drawn on the cover itself, like "Change cover". */
-  overlay?: ReactNode;
-  /** A row under the bio: streak, XP, squads. */
+  /** A row under the bio: streak, time studied, squads. */
   stats?: ReactNode;
 }) {
   return (
     <section className="overflow-hidden rounded-card border border-border bg-surface">
       <div className="relative">
         <PodCover cover={user.cover} className="h-28 sm:h-36" />
-        {overlay ? (
-          <div className="absolute top-3 right-3 flex gap-2">{overlay}</div>
-        ) : null}
       </div>
 
       <div className="px-4 pb-4 sm:px-6 sm:pb-6">

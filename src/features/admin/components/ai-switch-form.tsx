@@ -36,7 +36,7 @@ export function AiSwitchForm({
           </h2>
           <p className="text-small text-ink-muted">
             {value.enabled
-              ? "On. The jobs switched on below call the model set up on this page. Each call's cost is logged under Jobs and AI."
+              ? "On. The jobs switched on below call the model set up on this page. Each call's cost is listed at the foot of this page."
               : "Off. Syllabuses are read by their headings and lists, with no AI and no cost. Plans, tests and progress never use AI."}
           </p>
         </div>

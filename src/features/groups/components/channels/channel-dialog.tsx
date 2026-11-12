@@ -1,5 +1,6 @@
 "use client";
 
+import { ShieldCheck, UserCheck, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -23,33 +24,40 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { channelName } from "@/lib/squads/channel-name";
+import { cn } from "@/lib/utils/cn";
 
 import {
   createChannelAction,
   updateChannelAction,
 } from "../../channel-actions";
-import { ChoiceRows } from "../choice-rows";
+import { ChoiceTiles, type TileChoice } from "../choice-tiles";
 import { fromDraft, PriceFields, priceDraft } from "../pay/price-fields";
 import { usePricing } from "../pay/pricing-context";
 import { channelHref, type ChannelSummary } from "./channel-icon";
 
 const NONE = "none";
 
-const VIEW_RULES = [
+const VIEW_RULES: TileChoice<"EVERYONE" | "PICKED" | "ADMINS">[] = [
   {
-    value: "EVERYONE" as const,
-    label: "Everyone in the squad",
-    description: "Listed for every member.",
+    value: "EVERYONE",
+    label: "Everyone",
+    description: "Listed for every member of the squad.",
+    icon: Users,
+    tint: "violet",
   },
   {
-    value: "PICKED" as const,
+    value: "PICKED",
     label: "People you pick",
     description: "Hidden from everyone else. Choose them after saving.",
+    icon: UserCheck,
+    tint: "sky",
   },
   {
-    value: "ADMINS" as const,
-    label: "Admins and moderators",
-    description: "For the people who run the squad.",
+    value: "ADMINS",
+    label: "Admins and mods",
+    description: "Only the admins and moderators who run the squad.",
+    icon: ShieldCheck,
+    tint: "teal",
   },
 ];
 
@@ -177,43 +185,53 @@ export function ChannelDialog({
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="channel-category">Category</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger id="channel-category">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NONE}>No category</SelectItem>
-                {categories.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {subjects.length ? (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="channel-subject">Subject (optional)</Label>
-              <Select value={subject} onValueChange={setSubject}>
-                <SelectTrigger id="channel-subject">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>No subject</SelectItem>
-                  {subjects.map((name) => (
-                    <SelectItem key={name} value={name}>
-                      {name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="text-small text-ink-muted">
-                Everything posted here is tagged with it, and its topics come
-                first.
-              </span>
+            <div
+              className={cn(
+                "grid gap-4",
+                subjects.length && "sm:grid-cols-2 sm:gap-3",
+              )}
+            >
+              <div className="flex min-w-0 flex-col gap-2">
+                <Label htmlFor="channel-category">Category</Label>
+                <Select value={categoryId} onValueChange={setCategoryId}>
+                  <SelectTrigger id="channel-category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE}>No category</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {subjects.length ? (
+                <div className="flex min-w-0 flex-col gap-2">
+                  <Label htmlFor="channel-subject">Subject (optional)</Label>
+                  <Select value={subject} onValueChange={setSubject}>
+                    <SelectTrigger id="channel-subject">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={NONE}>No subject</SelectItem>
+                      {subjects.map((name) => (
+                        <SelectItem key={name} value={name}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : null}
             </div>
-          ) : null}
+            {subject !== NONE ? (
+              <span className="text-small text-ink-muted">
+                Posts here are tagged {subject}, and its topics come first.
+              </span>
+            ) : null}
+          </div>
           {showPrice ? (
             <div className="flex flex-col gap-3 rounded-card border border-border p-3">
               <div className="flex items-start justify-between gap-4">
@@ -245,7 +263,7 @@ export function ChannelDialog({
           {paid ? null : (
             <div className="flex flex-col gap-2">
               <span className="text-small font-medium">Who can see it</span>
-              <ChoiceRows
+              <ChoiceTiles
                 label="Who can see it"
                 options={VIEW_RULES}
                 value={viewRule}
@@ -254,39 +272,45 @@ export function ChannelDialog({
             </div>
           )}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="channel-slow">Slow mode</Label>
-            <Select
-              value={String(slowModeSec)}
-              onValueChange={(v) => setSlowModeSec(Number(v))}
-            >
-              <SelectTrigger id="channel-slow">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SLOW_MODES.map((s) => (
-                  <SelectItem key={s} value={String(s)}>
-                    {slowLabel(s)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <span className="text-small text-ink-muted">
-              How long a member waits between messages. Admins and moderators
-              are never slowed.
-            </span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-small font-medium">Who can post</span>
-            <SegmentedControl
-              ariaLabel="Who can post"
-              value={postRule}
-              onValueChange={setPostRule}
-              options={[
-                { value: "EVERYONE", label: "Everyone" },
-                { value: "ADMINS", label: "Admins only" },
-              ]}
-              className="self-start"
-            />
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-3">
+              <div className="flex min-w-0 flex-col gap-2">
+                <Label htmlFor="channel-slow">Slow mode</Label>
+                <Select
+                  value={String(slowModeSec)}
+                  onValueChange={(v) => setSlowModeSec(Number(v))}
+                >
+                  <SelectTrigger id="channel-slow">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SLOW_MODES.map((s) => (
+                      <SelectItem key={s} value={String(s)}>
+                        {slowLabel(s)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex min-w-0 flex-col gap-2">
+                <span className="text-small font-medium">Who can post</span>
+                <SegmentedControl
+                  ariaLabel="Who can post"
+                  value={postRule}
+                  onValueChange={setPostRule}
+                  options={[
+                    { value: "EVERYONE", label: "Everyone" },
+                    { value: "ADMINS", label: "Admins only" },
+                  ]}
+                  className="self-start"
+                />
+              </div>
+            </div>
+            {slowModeSec ? (
+              <span className="text-small text-ink-muted">
+                Members wait {slowLabel(slowModeSec)} between messages. Admins
+                and moderators are never slowed.
+              </span>
+            ) : null}
           </div>
           <DialogFooter>
             <Button

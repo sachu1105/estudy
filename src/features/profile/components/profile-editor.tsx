@@ -15,31 +15,45 @@ import {
 } from "@/components/ui/dialog";
 import { FieldHint, Input, Label, fieldClasses } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
+import type { PodCover as Cover } from "@/lib/pods/covers";
 import { BIO_MAX } from "@/lib/profile/profile";
 import { cn } from "@/lib/utils/cn";
 
 import { saveProfileAction, setAvatarAction } from "../actions";
 import { uploadProfileImage } from "../upload";
+import { CoverField, type CoverSelection } from "./cover-field";
 import { ImageButton } from "./image-button";
 
+type Initial = {
+  displayName: string;
+  bio: string | null;
+  avatarUrl: string | null;
+  hasAvatar: boolean;
+};
+
+/** The cover as the server has it: current after every pick, so read from props. */
+type CoverProps = {
+  userId: string;
+  cover: Cover;
+  coverSelection: CoverSelection;
+};
+
 /**
- * Name, photo and bio. The photo saves the moment it is chosen (there is nothing to
- * confirm about a picture); the name and bio save with the button.
+ * Cover, photo, name and bio. The cover and photo save the moment they are chosen
+ * (there is nothing to confirm about a picture); the name and bio save with the button.
  */
 export function ProfileEditor({
   open,
   onOpenChange,
   initial,
+  userId,
+  cover,
+  coverSelection,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initial: {
-    displayName: string;
-    bio: string | null;
-    avatarUrl: string | null;
-    hasAvatar: boolean;
-  };
-}) {
+  initial: Initial;
+} & CoverProps) {
   const [displayName, setDisplayName] = useState(initial.displayName);
   const [bio, setBio] = useState(initial.bio ?? "");
   const [avatar, setAvatar] = useState(initial.avatarUrl);
@@ -112,6 +126,11 @@ export function ProfileEditor({
         </DialogHeader>
 
         <div className="flex flex-col gap-5">
+          <CoverField
+            userId={userId}
+            selection={coverSelection}
+            cover={cover}
+          />
           <div className="flex items-center gap-4">
             <Avatar
               name={displayName || "?"}
@@ -189,14 +208,7 @@ export function ProfileEditor({
 }
 
 /** The button that opens the editor, kept here so pages only import one thing. */
-export function EditProfileButton(props: {
-  initial: {
-    displayName: string;
-    bio: string | null;
-    avatarUrl: string | null;
-    hasAvatar: boolean;
-  };
-}) {
+export function EditProfileButton(props: { initial: Initial } & CoverProps) {
   const [open, setOpen] = useState(false);
   return (
     <>

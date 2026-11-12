@@ -114,7 +114,8 @@ test.describe("the papers library", () => {
     const bought = free.page
       .getByRole("region", { name: "Your bundles" })
       .getByRole("link", { name: new RegExp(title) });
-    await expect(bought).toContainText("Bought · from the Store");
+    // When it was bought, then where from.
+    await expect(bought).toContainText(/Bought \d{1,2} \w{3} · from the Store/);
     await expect(bought).toContainText("0 of 1 attempted");
     await bought.click();
     await expect(free.page.getByText("Not attempted")).toBeVisible();

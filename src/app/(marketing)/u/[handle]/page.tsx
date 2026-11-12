@@ -1,4 +1,4 @@
-import { Flame, Sparkles, Users } from "lucide-react";
+import { Clock, Flame, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -50,9 +50,19 @@ function Stat({
   );
 }
 
+/** Whole hours once there is an hour to show ("38 h studied"), minutes before that. */
+function studied(minutes: number) {
+  return minutes < 60
+    ? { value: String(minutes), label: "min studied" }
+    : {
+        value: Math.floor(minutes / 60).toLocaleString("en-IN"),
+        label: "h studied",
+      };
+}
+
 /**
  * A shared profile. Everything here is what the owner chose to share: name, bio, photo,
- * cover, how long their streak is, the XP they have earned and the public squads they
+ * cover, how long their streak is, the time they have studied and the public squads they
  * are in. Nothing about their plan, pods or email appears, beyond the verified seal
  * that every paid plan shows beside the name.
  */
@@ -63,9 +73,9 @@ export default async function PublicProfilePage({ params }: Props) {
   const owner = await userRepository.findById(profile.id);
   if (!owner) notFound();
 
-  const [streak, xp, squads, signedIn, verified] = await Promise.all([
+  const [streak, minutes, squads, signedIn, verified] = await Promise.all([
     progressService.streak(owner),
-    progressRepository.xpTotal(profile.id),
+    progressRepository.studyMinutesTotal(profile.id),
     groupRepository.publicSquadsOf(profile.id),
     hasSession(),
     verifiedIds([profile.id]),
@@ -84,11 +94,7 @@ export default async function PublicProfilePage({ params }: Props) {
               value={String(streak.current)}
               label="day streak"
             />
-            <Stat
-              icon={Sparkles}
-              value={xp.toLocaleString("en-IN")}
-              label="XP"
-            />
+            <Stat icon={Clock} {...studied(minutes)} />
             <Stat
               icon={Users}
               value={String(squads.length)}

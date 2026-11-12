@@ -47,6 +47,8 @@ type BandProps = {
   as?: "section" | "div" | "footer";
   /** The sheet's first band: it draws the rule above it and marks the top corners. */
   first?: boolean;
+  /** Whether its bottom corners get accent marks. Off around the closing banner. */
+  marks?: boolean;
   /** Classes for the column inside the side rules: grids, padding, a pattern. */
   inner?: string;
   className?: string;
@@ -60,6 +62,7 @@ type BandProps = {
 export function Band({
   as: Tag = "section",
   first = false,
+  marks: marked = true,
   inner,
   className,
   children,
@@ -76,9 +79,7 @@ export function Band({
     >
       <div className={cn("relative mx-auto max-w-content", inner)}>
         {first ? marks.top.map((at) => <Mark key={at} at={at} />) : null}
-        {marks.bottom.map((at) => (
-          <Mark key={at} at={at} />
-        ))}
+        {marked ? marks.bottom.map((at) => <Mark key={at} at={at} />) : null}
         {children}
       </div>
     </Tag>

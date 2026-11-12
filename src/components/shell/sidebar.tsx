@@ -7,7 +7,14 @@ import { usePathname } from "next/navigation";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils/cn";
 
-import { isActive, primaryNav, secondaryNav, type NavItem } from "./nav-items";
+import {
+  feedbackNav,
+  isActive,
+  primaryNav,
+  secondaryNav,
+  type NavItem,
+} from "./nav-items";
+import { openFeedback } from "./open-feedback";
 
 // Collapsed state lives on <html data-sidebar> (set before paint by BootScript), so CSS
 // alone decides the width and there is no flash or hydration mismatch.
@@ -23,23 +30,45 @@ function toggleCollapsed() {
   }
 }
 
-function SidebarLink({ item, active }: { item: NavItem; active: boolean }) {
-  const link = (
-    <Link
-      href={item.href}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "flex h-10 items-center gap-3 rounded-control px-3 font-heading text-body font-medium transition-colors duration-[120ms]",
-        "sidebar-collapsed:justify-center sidebar-collapsed:px-0",
-        active
-          ? "bg-accent-soft text-accent-ink"
-          : "text-ink-muted hover:bg-ink/5 hover:text-ink",
-      )}
-    >
+const linkClass = (active: boolean) =>
+  cn(
+    "flex h-10 w-full cursor-pointer items-center gap-3 rounded-control px-3 font-heading text-body font-medium transition-colors duration-[120ms]",
+    "sidebar-collapsed:justify-center sidebar-collapsed:px-0",
+    active
+      ? "bg-accent-soft text-accent-ink"
+      : "text-ink-muted hover:bg-ink/5 hover:text-ink",
+  );
+
+/** A nav entry: a link to a page, or (with onClick) a button that opens something. */
+function SidebarLink({
+  item,
+  active = false,
+  onClick,
+}: {
+  item: Pick<NavItem, "label" | "icon"> & { href?: string };
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  const inner = (
+    <>
       <item.icon className="size-[18px] shrink-0" aria-hidden />
       <span className="truncate sidebar-collapsed:sr-only">{item.label}</span>
-    </Link>
+    </>
   );
+  const link =
+    onClick || !item.href ? (
+      <button type="button" onClick={onClick} className={linkClass(false)}>
+        {inner}
+      </button>
+    ) : (
+      <Link
+        href={item.href}
+        aria-current={active ? "page" : undefined}
+        className={linkClass(active)}
+      >
+        {inner}
+      </Link>
+    );
   return (
     <Tooltip
       content={item.label}
@@ -73,13 +102,7 @@ export function Sidebar() {
 
       {/* Feedback, then Settings with the collapse toggle as a quiet icon beside it. */}
       <div className="flex flex-col gap-1 border-t border-border pt-3">
-        {secondaryNav.slice(0, -1).map((item) => (
-          <SidebarLink
-            key={item.href}
-            item={item}
-            active={isActive(pathname, item.href, item.also)}
-          />
-        ))}
+        <SidebarLink item={feedbackNav} onClick={openFeedback} />
       </div>
       <div className="mt-1 flex items-center gap-1 sidebar-collapsed:flex-col">
         {secondaryNav.slice(-1).map((item) => (

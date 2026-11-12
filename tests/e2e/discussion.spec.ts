@@ -126,7 +126,7 @@ test.describe("group discussion", () => {
     await expect(page.getByText(/accepted your answer to/)).toBeVisible();
     await page.getByRole("button", { name: "Mark all read" }).click();
     await expect(
-      page.getByRole("link", { name: "Notifications" }),
+      page.getByRole("button", { name: "Notifications", exact: true }),
     ).toBeVisible();
     expect(await noSideScroll(page)).toBeLessThanOrEqual(0);
 

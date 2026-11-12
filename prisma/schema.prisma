@@ -137,9 +137,6 @@ model User {
   dmThreadsB         DirectThread[]      @relation("DmB")
   directMessages     DirectMessage[]
   appRating          AppRating?
-  ideas              Idea[]
-  ideaVotes          IdeaVote[]
-  problemReports     ProblemReport[]
 }
 
 model RefreshToken {
@@ -786,6 +783,13 @@ model PaperBundle {
   includedIn  Plan[]
   /// A library bundle shows to everyone once published. Null: a draft.
   publishedAt DateTime?        @db.Timestamptz(6)
+  /// Its maker asked to sell it in the Store: an admin approves it before anyone sees it
+  /// there (rule 5). Null: not listed.
+  listing     StoreListing?
+  /// Why an admin sent the listing back, shown to its maker.
+  listingNote String?
+  /// When the maker last asked to list it.
+  listedAt    DateTime?        @db.Timestamptz(6)
   hiddenAt    DateTime?        @db.Timestamptz(6)
   createdAt   DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
@@ -796,6 +800,14 @@ model PaperBundle {
   @@index([groupId, createdAt])
   @@index([ownerId, createdAt])
   @@index([catalogue, publishedAt])
+  @@index([listing, listedAt])
+}
+
+/// Where a seller's Store listing stands.
+enum StoreListing {
+  PENDING
+  LIVE
+  REJECTED
 }
 
 model BundlePaper {
@@ -818,6 +830,9 @@ model BundlePurchase {
   userId      String        @db.Uuid
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   amountPaise Int
+  /// studypods' share of a seller's Store sale, fixed at the sale. Null: no share (a
+  /// squad sale, a free add, or the studypods library's own).
+  cutPaise    Int?
   provider    PassProvider?
   /// The provider's payment id: the idempotency key once payments are real.
   providerRef String?       @unique
@@ -1814,9 +1829,8 @@ enum NotificationKind {
   /// A post they follow: confirmation opens or closes, tickets are out, the exam is near,
   /// or its date moved.
   EXAM_DATE
-  /// The team answered feedback: a status change or a reply on an idea or a problem, or
-  /// an idea the person backed shipped.
-  FEEDBACK
+  /// An admin approved their Store listing, or sent it back with a note.
+  STORE_LISTING
 }
 
 /// A thread in a group: a discussion, or a question tagged with a topic.
@@ -2125,7 +2139,7 @@ model ExamReminder {
   @@unique([userId, catNo, examOn, kind])
 }
 
-// ---- Feedback: rating the app, ideas people vote on, problems they report ----------
+// ---- Feedback: rating the app ---------------------------------------------------------
 
 /// One rating per person, changed whenever they like.
 model AppRating {
@@ -2140,99 +2154,4 @@ model AppRating {
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@index([updatedAt])
-}
-
-enum IdeaArea {
-  PODS
-  PLAN
-  TESTS
-  SQUADS
-  STORE
-  OTHER
-}
-
-/// REVIEW: only its author sees it, until the team opens it for votes (no duplicates,
-/// nothing abusive). DECLINED: its author sees it with the team's reason.
-enum IdeaStatus {
-  REVIEW
-  OPEN
-  PLANNED
-  BUILDING
-  SHIPPED
-  DECLINED
-}
-
-/// Something people want added. The team posts its own ("Would you use this?") too.
-model Idea {
-  id        String     @id @default(uuid()) @db.Uuid
-  authorId  String     @db.Uuid
-  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  title     String
-  body      String     @default("")
-  area      IdeaArea   @default(OTHER)
-  status    IdeaStatus @default(REVIEW)
-  /// Posted by staff to ask whether people would use it.
-  fromTeam  Boolean    @default(false)
-  /// The author agreed to be named on the idea and on the contributors wall.
-  credit    Boolean    @default(true)
-  /// The team's answer, shown under the idea.
-  teamNote  String?
-  /// Votes, kept in step with IdeaVote so the board sorts without counting.
-  votes     Int        @default(0)
-  createdAt DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
-
-  voters IdeaVote[]
-
-  @@index([status, votes])
-  @@index([authorId])
-}
-
-/// "I'd use this". One per person per idea, taken back by deleting it.
-model IdeaVote {
-  ideaId    String   @db.Uuid
-  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  userId    String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
-  @@id([ideaId, userId])
-  @@index([userId])
-}
-
-enum ProblemCategory {
-  BUG
-  CONFUSING
-  CONTENT
-  ACCOUNT
-  OTHER
-}
-
-enum ProblemStatus {
-  RECEIVED
-  LOOKING
-  FIXED
-  CLOSED
-}
-
-/// A complaint or a bug. Private: only its author and staff ever see it.
-model ProblemReport {
-  id        String          @id @default(uuid()) @db.Uuid
-  userId    String          @db.Uuid
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category  ProblemCategory
-  body      String
-  /// Where it happened: the page they came from, or what they typed.
-  page      String?
-  /// The browser, trimmed, so a bug can be reproduced.
-  device    String?
-  status    ProblemStatus   @default(RECEIVED)
-  /// The author agreed to be named on the contributors wall if it gets fixed.
-  credit    Boolean         @default(true)
-  teamNote  String?
-  createdAt DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime        @updatedAt @db.Timestamptz(6)
-
-  @@index([status, createdAt])
-  @@index([userId, createdAt])
 }

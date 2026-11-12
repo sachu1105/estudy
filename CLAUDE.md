@@ -307,16 +307,21 @@ admin grant. Locked users see what it does and a calm upgrade card, never a dead
   counts only a real subscription (paid or admin-granted), like paidOnly features: the
   free launch's ELITE for everyone doesn't include library bundles. Every admin change
   is in the audit log.
-- Feedback (/feedback, Feedback in the sidebar and Ctrl+K, Settings on a phone): one
-  1-5 star rating per person (changeable), ideas people back with "I'd use this", and
-  problem reports. A new idea is seen only by its author until staff open it for votes
-  (no duplicates, nothing abusive); at most 5 wait for review per person. Staff may
-  post their own ideas ("Would you use this?"), open at once. Problem reports are
-  private to their author and staff. Staff (Admin > Feedback, moderators up) set
-  status and reply as "studypods team", never by name; the author is notified, and
-  everyone who backed an idea hears when it ships. People who ticked "credit me" and
-  had an idea ship or a report fixed are listed on the contributors wall. Every staff
-  change is in the audit log.
+- Selling in the Store: anyone lists their own papers (/store/sell, or "List in the
+  Store" on a bundle they made, squad ones too) as one paper or a bundle. Every paper
+  needs a complete key. Free for anyone; a price needs the same gate as paid squads
+  (sellInSquads and the paid squads switch). A listing (PaperBundle.listing) waits
+  PENDING for an admin (Admin > Papers), who approves it (LIVE) or sends it back with a
+  note (REJECTED; a live one is taken down the same way); the seller is notified either
+  way and the admin is never named. While reviewing, an admin reads each paper and key
+  as their own stamped copy but can't sit it. The card and page name the seller and say
+  whose key it is. The seller can withdraw it; buyers keep it. studypods keeps a share
+  of each sale of a live listing (AppSetting `storeCut`, default 20%, 0-50%), fixed on
+  the purchase as `cutPaise` (lib/omr/store); squad and library sales have none.
+- Feedback is a modal, not a page (Feedback in the sidebar, Ctrl+K "Rate studypods",
+  Settings on a phone): one 1-5 star rating per person with an optional note, changed
+  whenever they like. Staff read the average, the spread and the notes in Admin >
+  Feedback (moderators up). No ideas board, votes or problem reports.
 - XP: 1 per verified study minute (capped at 300 a day), test points, streak bonus.
   XP feeds only the squad rank: a squad's members ranked by this week's XP.
 
@@ -395,7 +400,8 @@ Tokens are CSS variables on :root and [data-theme="dark"], mapped into Tailwind 
   cover art: a soft glow behind the hero window, the top of the featured plan card
   (the admin picks it under Plans and limits), the sample pod card and the squads
   picture (its rail tiles and the squad's banner) in the features grid, and the giant studypods wordmark at the foot of the page, where the gradient shows
-  through the letters. Nothing else.
+  through the letters. The closing call to action sits on a purple landscape photo
+  (public/landscapepurple.png), white type in both themes. Nothing else.
 
 ### Typography (next/font/google)
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { Bug, Lightbulb, LogOut, Moon, Search, Sun } from "lucide-react";
+import { LogOut, Moon, Search, Sun } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type ReactNode } from "react";
 
 import { Avatar } from "@/components/ui/avatar";
 import {
@@ -21,8 +21,8 @@ import {
 import { setThemePreference } from "@/lib/theme";
 
 import { Logo, LogoMark } from "./logo";
-import { NotificationBell } from "./notification-bell";
-import { accountNav, primaryNav, secondaryNav } from "./nav-items";
+import { accountNav, feedbackNav, primaryNav, secondaryNav } from "./nav-items";
+import { openFeedback } from "./open-feedback";
 import { ThemeToggle } from "./theme-toggle";
 
 export type Viewer = {
@@ -31,19 +31,18 @@ export type Viewer = {
   avatarUrl: string | null;
   /** Moderators and admins get a way into the admin panel. */
   staff?: boolean;
-  /** Unread notifications when the page was rendered. */
-  unread?: number;
 };
 
 type TopBarProps = {
   viewer: Viewer;
   /** Server action passed down by the layout, so the shell stays free of feature imports. */
   logout: () => Promise<void>;
+  /** The bell and its menu, from the layout for the same reason. */
+  notifications: ReactNode;
 };
 
-export function TopBar({ viewer, logout }: TopBarProps) {
+export function TopBar({ viewer, logout, notifications }: TopBarProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const groups: CommandGroup[] = [
@@ -60,19 +59,10 @@ export function TopBar({ viewer, logout }: TopBarProps) {
       heading: "Feedback",
       items: [
         {
-          id: "feedback-problem",
-          label: "Report a problem on this page",
-          icon: Bug,
-          onSelect: () =>
-            router.push(
-              `/feedback?tab=problems&from=${encodeURIComponent(pathname)}`,
-            ),
-        },
-        {
-          id: "feedback-idea",
-          label: "Suggest an idea",
-          icon: Lightbulb,
-          onSelect: () => router.push("/feedback?tab=ideas"),
+          id: "feedback",
+          label: "Rate studypods",
+          icon: feedbackNav.icon,
+          onSelect: openFeedback,
         },
       ],
     },
@@ -126,7 +116,7 @@ export function TopBar({ viewer, logout }: TopBarProps) {
 
       <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3 md:ml-0">
         <ThemeToggle className="hidden sm:inline-flex" />
-        <NotificationBell initial={viewer.unread ?? 0} />
+        {notifications}
         <DropdownMenu>
           {/* Under 768px the bottom bar's Profile tab stands in for it. */}
           <DropdownMenuTrigger

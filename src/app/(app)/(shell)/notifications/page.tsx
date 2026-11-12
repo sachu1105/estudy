@@ -4,25 +4,12 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NotificationList } from "@/features/notifications/components/notification-list";
+import { toView } from "@/features/notifications/view";
 import { systemClock } from "@/lib/clock";
-import { timeAgo } from "@/lib/format/ago";
 import { requireUser } from "@/server/auth/session";
 import { notificationService } from "@/server/services/notifications";
 
 export const metadata: Metadata = { title: "Notifications" };
-
-const TEXT = {
-  MENTION: "mentioned you in",
-  REPLY: "replied to",
-  ACCEPTED: "accepted your answer to",
-  GROUP_TEST: "shared a test:",
-  // Never names the reporter: the actor is left empty, so it reads "Someone reported".
-  REPORT: "reported",
-  FRIEND_REQUEST: "sent you a friend request",
-  FRIEND_ACCEPTED: "accepted your friend request",
-  EXAM_DATE: "",
-  FEEDBACK: "",
-} as const;
 
 /** Mentions, replies, accepted answers, new group tests, and reports for squad staff. */
 export default async function NotificationsPage() {
@@ -40,23 +27,7 @@ export default async function NotificationsPage() {
         />
       ) : (
         <NotificationList
-          items={items.map((n) => ({
-            id: n.id,
-            // An exam date reminder has no one behind it: it just says what's coming.
-            // Feedback answers come from the team, never from a named staff member.
-            text:
-              n.kind === "EXAM_DATE"
-                ? "Exam dates"
-                : n.kind === "FEEDBACK"
-                  ? "The studypods team answered your feedback"
-                  : `${n.actor?.displayName ?? "Someone"} ${TEXT[n.kind]}`,
-            subject: n.subject,
-            href: n.href,
-            when: timeAgo(n.createdAt, now, user.timezone),
-            unread: !n.readAt,
-            actor: n.actor,
-            report: n.kind === "REPORT",
-          }))}
+          items={items.map((n) => toView(n, now, user.timezone))}
         />
       )}
     </>

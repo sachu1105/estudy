@@ -50,6 +50,9 @@ export function createNotificationService(deps: NotificationDeps) {
     unread: (user: Actor) => deps.notifications.unread(user.id),
     markRead: (user: Actor, id: string | null) =>
       deps.notifications.markRead(user.id, id, deps.clock.now()),
+    /** Notifications are an inbox, not a log: the person may throw one away. */
+    remove: (user: Actor, id: string) =>
+      deps.notifications.remove(user.id, id),
   };
 }
 

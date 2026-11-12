@@ -1,4 +1,5 @@
 import type { Clock } from "@/lib/clock";
+import { storeCut } from "@/lib/omr/store";
 import { MAX_RUPEES, MIN_RUPEES } from "@/lib/squads/pay";
 import type { AuditEntry } from "@/server/repositories/audit-log-repository";
 import type {
@@ -30,6 +31,10 @@ export type BundleDeps = {
   /** Whether a library bundle's plans include this person's real plan (entitlements). */
   planIncludes: (user: User, plans: readonly LibraryPlan[]) => boolean;
   audit: (entry: AuditEntry) => Promise<unknown>;
+  /** studypods' share of a seller's Store sale, in percent (Admin > Papers). */
+  cutPercent: () => Promise<number>;
+  /** Whether this person reviews Store listings (Admin > Papers). */
+  reviewer: (user: User) => Promise<boolean>;
 };
 
 export type LibraryPlan = "FREE" | "PRO" | "ELITE";
@@ -67,7 +72,12 @@ const NOT_FOUND = failure(
  * sales or leaving the squad doesn't take it away.
  */
 export function createBundleService(deps: BundleDeps) {
-  const live = (b: BundleRow) => b.catalogue && !!b.publishedAt && !b.hiddenAt;
+  /** In the Store for everyone: the library once published, a seller's once approved. */
+  const inStore = (b: BundleRow) =>
+    !b.hiddenAt && (b.catalogue ? !!b.publishedAt : b.listing === "LIVE");
+  /** Only the studypods library is ever included in a plan. */
+  const includes = (user: User, b: BundleRow) =>
+    b.catalogue && inStore(b) && deps.planIncludes(user, b.includedIn);
 
   /**
    * Whether this person may open the bundle, and what they are to it: its maker, someone
@@ -75,13 +85,13 @@ export function createBundleService(deps: BundleDeps) {
    */
   async function reach(user: User, bundle: BundleRow) {
     const owner = bundle.ownerId === user.id;
-    const included = live(bundle) && deps.planIncludes(user, bundle.includedIn);
+    const included = includes(user, bundle);
     const have =
       owner || included || !!(await deps.bundles.purchase(bundle.id, user.id));
     const at = { owner, have, included };
     if (have) return at;
-    if (bundle.hiddenAt) return null;
-    if (bundle.catalogue) return live(bundle) ? at : null;
+    if (inStore(bundle)) return at;
+    if (bundle.hiddenAt || bundle.catalogue) return null;
     if (!bundle.groupId || !bundle.channelId) return null;
     const channel = await deps.channel(user, bundle.groupId, bundle.channelId);
     return channel ? at : null;
@@ -110,6 +120,13 @@ export function createBundleService(deps: BundleDeps) {
       channel: bundle.channel,
       hidden: !!bundle.hiddenAt,
       library: bundle.catalogue,
+      /** A seller's Store listing: waiting, live or sent back (null: not listed). */
+      listing: bundle.catalogue ? null : bundle.listing,
+      listingNote: bundle.catalogue ? null : bundle.listingNote,
+      /** Every paper's key is the official one; otherwise it's its maker's own. */
+      officialKey: bundle.papers.every(
+        ({ paper }) => paper.keySource === "OFFICIAL",
+      ),
       includedIn: bundle.includedIn,
       included: at.included ?? false,
       owner: at.owner,
@@ -119,6 +136,8 @@ export function createBundleService(deps: BundleDeps) {
         title: paper.title,
         questions: paper.questionCount,
         limitMin: paper.limitMin,
+        /** Taken off for a wrong answer, as an exact fraction (0 for none). */
+        penalty: { n: paper.wrongNum, d: paper.wrongDen },
       })),
     };
   }
@@ -237,10 +256,16 @@ export function createBundleService(deps: BundleDeps) {
         amountPaise: bundle.pricePaise,
         description: `Bundle: ${bundle.title}`,
       });
+      // A seller's Store listing pays studypods its share, fixed at the sale.
+      const cutPaise =
+        !bundle.catalogue && bundle.listing === "LIVE"
+          ? storeCut(bundle.pricePaise, await deps.cutPercent())
+          : null;
       await deps.bundles.addPurchase({
         bundleId: id,
         userId: user.id,
         amountPaise: bundle.pricePaise,
+        cutPaise,
         provider: paid.provider,
         providerRef: paid.ref,
       });
@@ -265,9 +290,30 @@ export function createBundleService(deps: BundleDeps) {
     /** The bundles on this person's Tests page: ones they have and ones they made. */
     async mine(user: User) {
       const rows = await deps.bundles.forUser(user.id);
-      return rows.map((b) =>
-        view(b, { owner: b.ownerId === user.id, have: true }),
+      return rows.map((b) => ({
+        ...view(b, { owner: b.ownerId === user.id, have: true }),
+        /** When they added or bought it (null for their own). */
+        gotAt: b.purchases.length ? b.purchases[0]!.createdAt : null,
+        /** How many have it, for its maker. */
+        holders: b.ownerId === user.id ? b._count.purchases : null,
+      }));
+    },
+
+    /** For its maker only: how it's doing, with nobody named. */
+    async stats(user: User, id: string) {
+      const bundle = await deps.bundles.find(id);
+      if (!bundle || bundle.ownerId !== user.id) return null;
+      const s = await deps.bundles.stats(
+        id,
+        bundle.papers.map((p) => p.paper.id),
+        user.id,
       );
+      return {
+        ...s,
+        have: s.bought + s.free,
+        /** What the seller keeps once studypods' Store share is taken. */
+        earnedPaise: s.grossPaise - s.cutPaise,
+      };
     },
 
     /** Someone who has a bundle holding this paper sits it, key and all. */
@@ -277,15 +323,23 @@ export function createBundleService(deps: BundleDeps) {
         (await deps.bundles.includedWithPaper(paperId)).some((plans) =>
           deps.planIncludes(user, plans),
         );
-      return has ? { canView: true, canPractise: true, keyOut: true } : null;
+      if (has) return { canView: true, canPractise: true, keyOut: true };
+      // An admin reviewing a seller's listing reads the paper and its key (their own
+      // stamped copy, like anyone's), but doesn't sit it.
+      if (
+        (await deps.bundles.listedWithPaper(paperId)) &&
+        (await deps.reviewer(user))
+      )
+        return { canView: true, canPractise: false, keyOut: true };
+      return null;
     },
 
-    /** The library as this person sees it: every published bundle, and which they have. */
+    /** The Store as this person sees it: every item in it, and which they have. */
     async library(user: User) {
       const rows = await deps.bundles.library();
       const mine = new Set(await deps.bundles.ownedIds(user.id));
       return rows.map((b) => {
-        const included = deps.planIncludes(user, b.includedIn);
+        const included = includes(user, b);
         return view(b, {
           owner: b.ownerId === user.id,
           have: included || mine.has(b.id),

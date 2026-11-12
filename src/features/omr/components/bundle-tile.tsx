@@ -13,6 +13,8 @@ export type BundleTileData = {
   how: string;
   /** Papers in it the reader has handed in at least once; null for ones they made. */
   attempted: number | null;
+  /** For one they made: how many have it. */
+  holders?: number;
   /** Just bought or added: outlined. */
   fresh?: boolean;
 };
@@ -49,7 +51,12 @@ export function BundleTile({ bundle }: { bundle: BundleTileData }) {
             <span className="flex items-center justify-between gap-3 text-small">
               <span className="text-ink-muted">
                 {done === null ? (
-                  "You made it"
+                  <>
+                    <span className="font-mono font-medium text-ink tabular-nums">
+                      {bundle.holders ?? 0}
+                    </span>{" "}
+                    {bundle.holders === 1 ? "has it" : "have it"}
+                  </>
                 ) : (
                   <>
                     <span className="font-mono font-medium text-ink tabular-nums">

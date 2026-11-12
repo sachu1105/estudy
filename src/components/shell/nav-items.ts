@@ -38,10 +38,11 @@ export const primaryNav: NavItem[] = [
 ];
 
 export const secondaryNav: NavItem[] = [
-  // Rating the app, ideas and problem reports. On a phone it's reached from Settings.
-  { href: "/feedback", label: "Feedback", icon: MessageSquareHeart },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
+
+/** Rating the app: opens the feedback modal, not a page. On a phone, from Settings. */
+export const feedbackNav = { label: "Feedback", icon: MessageSquareHeart };
 
 /**
  * The avatar's menu in the top bar from 768px, less Log out. Settings is the profile

@@ -287,6 +287,15 @@ export const progressRepository = {
     });
   },
 
+  /** Every minute ever studied, from the session log. */
+  async studyMinutesTotal(userId: string) {
+    const sum = await prisma.studySession.aggregate({
+      where: { userId },
+      _sum: { activeMinutes: true },
+    });
+    return sum._sum.activeMinutes ?? 0;
+  },
+
   async xpTotal(userId: string) {
     const sum = await prisma.xpLedger.aggregate({
       where: { userId },

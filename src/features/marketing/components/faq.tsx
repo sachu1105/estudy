@@ -51,6 +51,8 @@ export function Faq() {
     <Band
       id="faq"
       aria-labelledby="faq-title"
+      // Its bottom corners are the closing banner's top ones: no marks on the banner.
+      marks={false}
       inner="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]"
     >
       <Reveal className="px-4 pt-16 pb-8 md:px-8 lg:px-12 lg:py-24">

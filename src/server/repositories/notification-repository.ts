@@ -57,6 +57,11 @@ export const notificationRepository = {
       data: { readAt: at },
     });
   },
+
+  /** Deletes one of the person's own notifications; someone else's id does nothing. */
+  remove(userId: string, id: string) {
+    return prisma.notification.deleteMany({ where: { userId, id } });
+  },
 };
 
 export type NotificationRepository = typeof notificationRepository;

@@ -10,7 +10,7 @@ export const ADMIN_AREAS = {
   users: { label: "Users", href: "/admin/users" },
   settings: { label: "Site", href: "/admin/settings" },
   plans: { label: "Plans and limits", href: "/admin/plans" },
-  jobs: { label: "Jobs and AI", href: "/admin/jobs" },
+  jobs: { label: "Background jobs", href: "/admin/jobs" },
   ai: { label: "AI", href: "/admin/ai" },
   audit: { label: "Audit log", href: "/admin/audit" },
 } as const;

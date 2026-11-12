@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { BundleHero } from "@/features/omr/components/bundle/bundle-hero";
 import { BundlePanel } from "@/features/omr/components/bundle/bundle-panel";
 import { BundlePapers } from "@/features/omr/components/bundle/bundle-papers";
+import { SellerStats } from "@/features/omr/components/bundle/seller-stats";
+import { StoreListingCard } from "@/features/omr/components/bundle/store-listing-card";
 import { isId } from "@/lib/ids";
 import { requireUser } from "@/server/auth/session";
 import { bundleService, omrService } from "@/server/services/omr";
@@ -37,16 +39,24 @@ export default async function BundlePage({
       : []
     ).map((p) => [p.id, p]),
   );
+  const stats = bundle.owner
+    ? await bundleService.stats(user, bundle.id)
+    : null;
   const questions = bundle.papers.reduce((n, p) => n + p.questions, 0);
   const squad = bundle.squad
     ? ` in ${bundle.squad.name}${bundle.channel ? ` · #${bundle.channel.name}` : ""}`
     : "";
-  const from = bundle.library
-    ? "From the studypods store"
-    : `By ${bundle.by}${squad}`;
-  const back = bundle.library
-    ? { href: "/store", label: "Store" }
-    : { href: "/tests", label: "Tests" };
+  // Every key says whose it is; the app never vouches for one.
+  const key = bundle.officialKey
+    ? "Official answer key"
+    : `Answer key by ${bundle.library ? "studypods" : bundle.by}`;
+  const from = `${
+    bundle.library ? "From the studypods store" : `By ${bundle.by}${squad}`
+  } · ${key}`;
+  const back =
+    bundle.library || (bundle.listing === "LIVE" && !bundle.owner)
+      ? { href: "/store", label: "Store" }
+      : { href: "/tests", label: "Tests" };
 
   return (
     <div className="flex flex-col gap-6">
@@ -67,7 +77,7 @@ export default async function BundlePage({
         from={from}
       />
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_20rem] md:items-start">
-        <aside className="md:sticky md:top-6 md:col-start-2 md:row-start-1">
+        <aside className="flex flex-col gap-4 md:sticky md:top-6 md:col-start-2 md:row-start-1">
           <BundlePanel
             papers={bundle.papers.length}
             questions={questions}
@@ -85,8 +95,18 @@ export default async function BundlePage({
               includedIn: bundle.includedIn,
             }}
           />
+          {bundle.owner && !bundle.library && !bundle.hidden ? (
+            <StoreListingCard
+              id={bundle.id}
+              listing={bundle.listing}
+              note={bundle.listingNote}
+            />
+          ) : null}
         </aside>
         <div className="flex min-w-0 flex-col gap-6 md:col-start-1 md:row-start-1">
+          {stats ? (
+            <SellerStats stats={stats} timeZone={user.timezone} />
+          ) : null}
           {bundle.description ? (
             <section aria-labelledby="about" className="flex flex-col gap-2">
               <h2 id="about" className="font-heading text-h2 font-semibold">

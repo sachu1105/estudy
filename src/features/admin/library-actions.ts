@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { rateLimit, retryMessage } from "@/server/ratelimit";
 import { requireAdmin } from "@/server/services/admin";
-import { bundleService } from "@/server/services/omr";
+import { bundleService, storeListingService } from "@/server/services/omr";
 
 // Admin > Papers: the app's own library. The admin area first (rule 9), zod on input
 // (rule 11), rate limited (rule 13); the service writes the audit log.
@@ -52,6 +52,28 @@ export async function saveLibraryAction(input: unknown): Promise<Done> {
   if (!result.ok) return { ok: false, error: result.message };
   refresh();
   return { ok: true, id: result.id };
+}
+
+/** A seller's listing: approve it, or send it back (or take it down) with a note. */
+export async function reviewListingAction(input: unknown): Promise<Done> {
+  const admin = await requireAdmin("papers");
+  const parsed = z
+    .object({
+      id: z.uuid(),
+      op: z.enum(["approve", "reject"]),
+      note: z.string().trim().max(500).nullable(),
+    })
+    .safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Refresh and try again." };
+  const blocked = await limited(admin.id);
+  if (blocked) return blocked;
+  const { id, op, note } = parsed.data;
+  const result = await storeListingService.adminReview(admin, id, op, note);
+  if (!result.ok) return { ok: false, error: result.message };
+  refresh();
+  revalidatePath("/store");
+  revalidatePath(`/bundles/${id}`);
+  return { ok: true };
 }
 
 /** Publish to everyone, back to a draft, or take it down (those who have it keep it). */

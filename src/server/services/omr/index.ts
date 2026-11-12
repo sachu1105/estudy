@@ -1,13 +1,18 @@
 import "server-only";
 
+import { canAdmin } from "@/lib/admin/access";
 import { systemClock } from "@/lib/clock";
 import { randomIds } from "@/lib/ids";
+import { DEFAULT_STORE_CUT_PERCENT } from "@/lib/omr/store";
 import { limit, planIncludes } from "@/server/entitlements";
 import { auditLogRepository } from "@/server/repositories/audit-log-repository";
 import { bundleRepository } from "@/server/repositories/bundle-repository";
 import { examRepository } from "@/server/repositories/exam-repository";
 import { paperRepository } from "@/server/repositories/paper-repository";
 import { podFileRepository } from "@/server/repositories/pod-file-repository";
+import { userRepository } from "@/server/repositories/user-repository";
+import { notificationService } from "@/server/services/notifications";
+import { getSetting } from "@/server/settings";
 import {
   channelService,
   checkout,
@@ -20,6 +25,7 @@ import { storage } from "@/server/storage";
 import { createBundleService } from "./bundle-service";
 import { createExamService } from "./exam-service";
 import { createOmrService } from "./omr-service";
+import { createStoreListingService } from "./store-listing-service";
 
 export { PAPER_MAX_BYTES } from "./omr-service";
 
@@ -55,6 +61,22 @@ export const bundleService = createBundleService({
   clock: systemClock,
   planIncludes: (user, plans) => planIncludes(user, plans),
   audit: (entry) => auditLogRepository.append(entry),
+  cutPercent: async () =>
+    (await getSetting("storeCut"))?.percent ?? DEFAULT_STORE_CUT_PERCENT,
+  // Reviewing listings is Admin > Papers' job; the role is read fresh, not trusted.
+  reviewer: async (user) => {
+    const found = await userRepository.findById(user.id);
+    return !!found && canAdmin(found.role, "papers");
+  },
+});
+
+export const storeListingService = createStoreListingService({
+  bundles: bundleRepository,
+  papers: paperRepository,
+  canPrice: (user) => squadPay.canPrice(user),
+  notify: (rows) => notificationService.notify(rows),
+  audit: (entry) => auditLogRepository.append(entry),
+  clock: systemClock,
 });
 
 export const omrService = createOmrService({

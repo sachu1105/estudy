@@ -6,18 +6,27 @@ import { PageHeader } from "@/components/shell/page-header";
 import { AiPromptsForm } from "@/features/admin/components/ai-prompts-form";
 import { AiProviderForm } from "@/features/admin/components/ai-provider-form";
 import { AiSwitchForm } from "@/features/admin/components/ai-switch-form";
+import { AiUsage } from "@/features/admin/components/ai-usage";
 import { AI_PROVIDERS } from "@/lib/settings/schemas";
-import { aiSettings, requireAdmin } from "@/server/services/admin";
+import {
+  adminService,
+  aiSettings,
+  requireAdmin,
+} from "@/server/services/admin";
 
 export const metadata: Metadata = { title: "AI · Admin" };
 
 /**
- * Super admins only: whether AI runs at all, which model and key it uses, and what each
- * task tells the model. Nothing on this page sends the saved key back to the browser.
+ * Super admins only: whether AI runs at all, which model and key it uses, what each task
+ * tells the model, and what it has cost this month. Nothing on this page sends the saved
+ * key back to the browser.
  */
 export default async function AdminAi() {
   await requireAdmin("ai");
-  const view = await aiSettings.view();
+  const [view, usage] = await Promise.all([
+    aiSettings.view(),
+    adminService.aiUsage(),
+  ]);
   const status = !view.enabled
     ? "AI is off. Syllabuses are read by their headings and lists."
     : view.missing
@@ -39,8 +48,8 @@ export default async function AdminAi() {
         <Bot className="mt-0.5 size-5 shrink-0 text-ink-muted" aria-hidden />
         <span>
           {status}{" "}
-          <Link href="/admin/jobs" className="text-accent-ink hover:underline">
-            See costs under Jobs and AI
+          <Link href="#cost" className="text-accent-ink hover:underline">
+            See this month&apos;s cost
           </Link>
           .
         </span>
@@ -54,6 +63,9 @@ export default async function AdminAi() {
         <div className="lg:col-span-2">
           <AiPromptsForm prompts={view.prompts} />
         </div>
+      </div>
+      <div className="mt-10">
+        <AiUsage usage={usage} />
       </div>
     </>
   );

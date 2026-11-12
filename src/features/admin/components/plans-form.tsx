@@ -1,10 +1,9 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input, Label } from "@/components/ui/input";
 import {
   FLAG_FEATURES,
   LIMIT_FEATURES,
@@ -12,63 +11,48 @@ import {
   type SettingValue,
 } from "@/lib/settings/schemas";
 
+import {
+  MB,
+  countChanges,
+  isBytes,
+  type Flag,
+  type Limit,
+  type Plan,
+  type PlanTable,
+} from "./plans/plan-rows";
+import { PlanCard } from "./plans/plan-card";
 import { useSaveSetting } from "./use-save-setting";
 
-type Plan = (typeof PLAN_NAMES)[number];
-type Limit = (typeof LIMIT_FEATURES)[number];
-type Flag = (typeof FLAG_FEATURES)[number];
-/** null = unlimited. */
-export type PlanTable = Record<
-  Plan,
-  { limits: Record<Limit, number | null>; flags: Record<Flag, boolean> }
->;
+export type { PlanTable } from "./plans/plan-rows";
 
-const MB = 1024 * 1024;
-const isBytes = (f: Limit) => f.endsWith("Bytes");
-/** Names users know (sentence case): the code's "vault" is the pods of the app. */
-const LABELS: Record<Limit | Flag, string> = {
-  syllabusUploads: "Syllabus uploads",
-  activePlans: "Active study plans",
-  afterTaskMocksPerDay: "Check tests a day",
-  sectionMocksPerWeek: "Section and full mocks a week",
-  groupsCreated: "Squads created",
-  groupsJoined: "Squads joined",
-  groupStorageBytes: "Squad storage (MB)",
-  squadMembers: "Members per squad (owner's plan)",
-  channelsPerSquad: "Channels per squad (owner's plan)",
-  vaultStorageBytes: "Pod storage (MB)",
-  vaultFolders: "Pods",
-  vaultMocksPerMonth: "Mocks from my material a month",
-  pagesPerVaultMock: "Pages per material mock",
-  aiExplanations: "AI answer explanations",
-  priorityParsing: "Priority syllabus reading",
-  sellInSquads: "Paid squads and channels (paid plans only)",
-  verifiedBadge: "Verified mark (paid plans only)",
-};
-const label = (f: Limit | Flag) => LABELS[f];
-
-/** The plans table, editable. Only what differs from the built-in defaults is saved. */
+/**
+ * What each plan includes, a card per plan. Changed boxes are marked until saved; the
+ * bar at the foot counts them and holds the page's one Save. Only what differs from the
+ * built-in defaults is stored.
+ */
 export function PlansForm({
   initial,
   defaults,
+  paidOnly,
+  billingOn,
 }: {
   initial: PlanTable;
   defaults: PlanTable;
+  paidOnly: readonly string[];
+  billingOn: boolean;
 }) {
   const [table, setTable] = useState(initial);
+  const [saved, setSaved] = useState(initial);
   const { save, pending } = useSaveSetting("entitlements");
+  const changed = countChanges(table, saved);
+  const atDefaults = countChanges(table, defaults) === 0;
 
   const setLimit = (plan: Plan, f: Limit, raw: string) => {
-    const n =
-      raw.trim() === ""
-        ? null
-        : Math.max(0, Math.round(Number(raw) * (isBytes(f) ? MB : 1)));
+    const typed = raw.replace(/[^\d]/g, "");
+    const n = typed === "" ? null : Number(typed) * (isBytes(f) ? MB : 1);
     setTable((t) => ({
       ...t,
-      [plan]: {
-        ...t[plan],
-        limits: { ...t[plan].limits, [f]: Number.isFinite(n) ? n : null },
-      },
+      [plan]: { ...t[plan], limits: { ...t[plan].limits, [f]: n } },
     }));
   };
   const setFlag = (plan: Plan, f: Flag, on: boolean) =>
@@ -77,7 +61,7 @@ export function PlansForm({
       [plan]: { ...t[plan], flags: { ...t[plan].flags, [f]: on } },
     }));
 
-  const changes = (): SettingValue<"entitlements"> =>
+  const overrides = (): SettingValue<"entitlements"> =>
     Object.fromEntries(
       PLAN_NAMES.map((plan) => [
         plan,
@@ -98,77 +82,81 @@ export function PlansForm({
 
   return (
     <div className="flex flex-col gap-4">
+      {billingOn ? null : (
+        <p className="flex gap-2.5 rounded-control border border-border bg-surface-muted p-3 text-small text-ink">
+          <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+          <span>
+            Billing is off, so everyone gets Elite for free right now. Rows
+            marked <strong className="font-medium">Paid only</strong> still
+            follow each person&apos;s real plan. Free and Pro limits start to
+            count when billing is on.
+          </span>
+        </p>
+      )}
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {PLAN_NAMES.map((plan) => (
-          <section
+          <PlanCard
             key={plan}
-            aria-label={plan}
-            className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4"
-          >
-            <h2 className="text-h3">{plan.toLowerCase()}</h2>
-            {LIMIT_FEATURES.map((f) => {
-              const value = table[plan].limits[f];
-              const id = `${plan}-${f}`;
-              return (
-                <div
-                  key={f}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <Label htmlFor={id} className="text-small font-normal">
-                    {label(f)}
-                  </Label>
-                  <Input
-                    id={id}
-                    inputMode="numeric"
-                    className="w-28 text-right"
-                    placeholder="No limit"
-                    value={
-                      value === null
-                        ? ""
-                        : String(isBytes(f) ? Math.round(value / MB) : value)
-                    }
-                    onChange={(e) => setLimit(plan, f, e.target.value)}
-                  />
-                </div>
-              );
-            })}
-            <div className="flex flex-col gap-2 border-t border-border pt-3">
-              {FLAG_FEATURES.map((f) => (
-                <label
-                  key={f}
-                  className="flex min-h-11 items-center gap-3 text-small md:min-h-0"
-                >
-                  <Checkbox
-                    checked={table[plan].flags[f]}
-                    onCheckedChange={(v) => setFlag(plan, f, v === true)}
-                  />
-                  {label(f)}
-                </label>
-              ))}
-            </div>
-          </section>
+            plan={plan}
+            table={table}
+            saved={saved}
+            paidOnly={paidOnly}
+            everyoneNow={!billingOn && plan === "ELITE"}
+            onLimit={setLimit}
+            onFlag={setFlag}
+          />
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="primary"
-          disabled={pending}
-          onClick={() => save(changes(), "Plans saved")}
-        >
-          Save plans
-        </Button>
-        <Button
-          variant="ghost"
-          disabled={pending}
-          onClick={() => setTable(defaults)}
-        >
-          Back to defaults
-        </Button>
-      </div>
       <p className="text-small text-ink-muted">
-        Leave a limit empty for no limit. Changes reach every user within 30
+        Leave a box empty for no limit. Saved changes reach everyone within 30
         seconds.
       </p>
+
+      {changed === 0 ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <p role="status" className="mr-auto text-small text-ink-muted">
+            Everything is saved.
+          </p>
+          <Button
+            variant="ghost"
+            disabled={pending || atDefaults}
+            onClick={() => setTable(defaults)}
+          >
+            Fill in the defaults
+          </Button>
+        </div>
+      ) : (
+        // Only while something is unsaved: one line, held at the foot of the screen.
+        <div className="sticky bottom-3 z-10 flex items-center gap-2 rounded-card border border-accent/40 bg-surface p-2 pl-4 shadow-lg">
+          <p role="status" className="mr-auto text-small text-ink">
+            {changed} unsaved
+            <span className="hidden sm:inline">
+              {changed === 1 ? " change" : " changes"}
+            </span>
+          </p>
+          <Button
+            variant="ghost"
+            disabled={pending}
+            onClick={() => setTable(saved)}
+          >
+            Discard
+          </Button>
+          <Button
+            variant="primary"
+            disabled={pending}
+            onClick={() => {
+              const next = table;
+              save(overrides(), "Plans saved", {
+                saved: () => setSaved(next),
+              });
+            }}
+          >
+            <span className="sm:hidden">Save</span>
+            <span className="hidden sm:inline">Save changes</span>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

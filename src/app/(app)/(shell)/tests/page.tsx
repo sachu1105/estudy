@@ -26,24 +26,34 @@ const StoreButton = () => (
 
 type Bundle = Awaited<ReturnType<typeof bundleService.mine>>[number];
 
-/** How the reader came by a bundle they have, and where from. */
-function howHad(b: Bundle) {
+/** How and when the reader came by a bundle they have, and where from. */
+function howHad(b: Bundle, day: Intl.DateTimeFormat) {
   const how = b.included
     ? "In your plan"
     : b.pricePaise === null
       ? "Added free"
       : "Bought";
-  const where = b.library ? "the Store" : (b.squad?.name ?? null);
-  return where ? `${how} · from ${where}` : how;
+  const when = b.gotAt && !b.included ? ` ${day.format(b.gotAt)}` : "";
+  const where = b.library || b.listing === "LIVE" ? "the Store" : b.squad?.name;
+  return where ? `${how}${when} · from ${where}` : `${how}${when}`;
 }
 
 /** Where a bundle the reader made is offered. */
 function whereMade(b: Bundle) {
   if (b.hidden) return "No longer offered · buyers keep it";
   if (b.library) return "In the Store";
-  return b.squad
+  const store =
+    b.listing === "LIVE"
+      ? "In the Store"
+      : b.listing === "PENDING"
+        ? "Store · waiting for review"
+        : b.listing === "REJECTED"
+          ? "Store · sent back"
+          : null;
+  const squad = b.squad
     ? `In ${b.squad.name}${b.channel ? ` · #${b.channel.name}` : ""}`
-    : "Shared";
+    : null;
+  return [squad, store].filter(Boolean).join(" · ") || "Not offered";
 }
 
 /**
@@ -64,7 +74,9 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
   // Bundles they have: bought or added, then Store items their plan includes.
   const have = [
     ...mine.filter((b) => !b.owner),
-    ...library.filter((b) => b.included && !b.owner && !mineIds.has(b.id)),
+    ...library
+      .filter((b) => b.included && !b.owner && !mineIds.has(b.id))
+      .map((b) => ({ ...b, gotAt: null, holders: null })),
   ];
   // Just bought or added (the Store sends them here): said at the top, shown first.
   const added = have.find((b) => b.id === query.added) ?? null;
@@ -83,6 +95,11 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
     month: "short",
     hour: "numeric",
     minute: "2-digit",
+    timeZone: user.timezone,
+  });
+  const day = new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
     timeZone: user.timezone,
   });
 
@@ -145,7 +162,7 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
                     id: b.id,
                     title: b.title,
                     papers: b.papers.length,
-                    how: howHad(b),
+                    how: howHad(b, day),
                     attempted: b.papers.filter((p) => attempted.has(p.id))
                       .length,
                     fresh: b === added,
@@ -169,7 +186,7 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
           <Section
             id="made-bundles"
             title="Bundles you made"
-            detail="What you offer in your squads or the Store."
+            detail="What you offer in your squads or the Store. Open one to list it in the Store."
           >
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {made.map((b) => (
@@ -181,6 +198,7 @@ export default async function TestsPage({ searchParams }: PageProps<"/tests">) {
                     papers: b.papers.length,
                     how: whereMade(b),
                     attempted: null,
+                    holders: b.holders ?? 0,
                   }}
                 />
               ))}
